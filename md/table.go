@@ -8,6 +8,7 @@ import (
 
 type RName struct {
 	Raw    string
+	CName  string
 	Main   string
 	Short  string
 	Prefix string
@@ -34,6 +35,7 @@ func NewTable(name, desc, extinfo string) *Table {
 		Name: &RName{Raw: fname,
 			Short:  strings.Join(names[1:], "_"),
 			Prefix: names[0],
+			CName:  ToCName(strings.Join(names[1:], "_")),
 			Main:   strings.Join(names[1:2], "_")},
 		Desc:    desc,
 		Rows:    make([]*Row, 0, 1),

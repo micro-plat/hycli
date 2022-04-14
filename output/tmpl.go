@@ -2,19 +2,19 @@ package output
 
 import (
 	"bytes"
-	"html/template"
+	"text/template"
 
 	"github.com/micro-plat/lib4go/types"
 )
 
 //Translate 翻译模板
-func Translate(content string, input interface{}, xfuncs ...map[string]interface{}) (string, error) {
+func Translate(name string, content string, input interface{}, xfuncs ...map[string]interface{}) (string, error) {
 	nfuncs := types.NewXMap()
 	nfuncs.MergeMap(funcs)
 	if len(xfuncs) > 0 {
 		nfuncs.MergeMap(xfuncs[0])
 	}
-	var tmpl = template.New("table").Funcs(nfuncs.ToMap())
+	var tmpl = template.New(name).Funcs(nfuncs.ToMap())
 	np, err := tmpl.Parse(content)
 	if err != nil {
 		return "", err

@@ -33,6 +33,7 @@ func (r *RDesc) String() string {
 type Row struct {
 	Index       int      `json:"index"`       //索引
 	Name        string   `json:"name"`        //字段名
+	CName       string   `json:"cname"`       //字段名
 	Type        *RType   `json:"type"`        //类型
 	DefValue    string   `json:"defValue"`    //默认值
 	AllowNull   bool     `json:"allowNull"`   //为空
@@ -64,12 +65,14 @@ func line2TableRow(line *Line) (*Row, error) {
 	c := &Row{
 		Index:       line.LineID,
 		Name:        strings.TrimSpace(strings.Replace(colums[0], "&#124;", "|", -1)),
+		CName:       ToCName(strings.TrimSpace(strings.Replace(colums[0], "&#124;", "|", -1))),
 		Type:        rtp,
 		DefValue:    strings.TrimSpace(strings.Replace(colums[2], "&#124;", "|", -1)),
 		AllowNull:   types.GetStringByIndex(getNames(strings.TrimSpace(colums[3])), 0, "是") != "否",
 		Constraints: getNames(strings.TrimSpace(colums[4])),
 		Desc:        &RDesc{Raw: desc, Name: getShortDesc(desc)},
 	}
+
 	return c, nil
 }
 func getRType(t string, index int) (*RType, error) {
@@ -87,12 +90,13 @@ func getRType(t string, index int) (*RType, error) {
 	return &RType{Raw: t, Name: names[0], Len: types.GetInt(names[1]), DLen: types.GetInt(names[2])}, nil
 }
 func getNames(t string) []string {
-	reg := regexp.MustCompile(`[\w\p{Han}]+`)
+	reg := regexp.MustCompile(`[^,]+`)
 	names := reg.FindAllString(t, -1)
 	return names
 }
 func getShortDesc(t string) string {
-	names := getNames(t)
+	reg := regexp.MustCompile(`[\w\p{Han}]+`)
+	names := reg.FindAllString(t, -1)
 	if len(names) == 0 {
 		return ""
 	}

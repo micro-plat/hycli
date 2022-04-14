@@ -14,10 +14,14 @@ func Create(c *cli.Context) (err error) {
 	}
 
 	//转换md文件
-	tbls, err := md.Mds2Tables(c.Args().First())
+	otbls, err := md.Mds2Tables(c.Args().First())
 	if err != nil {
 		return err
 	}
+
+	//过滤表格
+	tbls := otbls.Filter(c.String("table"))
+
 	//获取输出路径
 	root := "./"
 	if len(c.Args()) > 1 {
@@ -31,10 +35,10 @@ func Create(c *cli.Context) (err error) {
 		}
 	}
 
-	//创建路由文件
-	if err = createRouter(root, tbls); err != nil {
-		return err
-	}
+	// //创建路由文件
+	// if err = createRouter(root, tbls); err != nil {
+	// 	return err
+	// }
 	return nil
 
 }
