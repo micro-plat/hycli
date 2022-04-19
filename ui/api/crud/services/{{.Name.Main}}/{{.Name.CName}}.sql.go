@@ -3,6 +3,8 @@ package {{.Name.Main}}
 {{- $table := .|fltrCodeTable -}}
 {{ $clen := (len $table.CRows)|minus}}
 {{ $ulen := (len $table.URows)|minus}}
+{{ $vlen := (len $table.VRows)|minus}}
+{{ $sigleQueryRows:= mergeCodeRow $table.LRows $table.LERows}}
 
 //get{{.Name.CName}}ListCount 获取{{.Desc}}列表条数
 const get{{.Name.CName}}ListCount = `
@@ -29,7 +31,7 @@ where
 //get{{.Name.CName}}List 查询{{.Desc}}列表数据
 const get{{.Name.CName}}List = `
 select
-	{{range $i,$v :=  $table.LRows -}}
+	{{range $i,$v :=  $sigleQueryRows -}}
 	t.{{$v.Name}},
 	{{end -}}
 	1
@@ -79,3 +81,23 @@ where
 	&{{$v.Name}}
 {{- end}}`
 
+//get{{.Name.CName}} 查询单条{{.Desc}}数据
+const get{{.Name.CName}} = `
+select
+{{- range $i,$v := $table.VRows}}
+	t.{{$v.Name}}{{if lt $i $vlen }},{{end}}
+{{- end}}
+from {{.Name.Raw}} t
+where 
+{{- range $i,$v := $table.PKRows}}
+	&{{$v.Name}}
+{{- end}}`
+
+
+//delete{{.Name.CName}} 删除单条{{.Desc}}数据
+const delete{{.Name.CName}} = `
+delete from {{.Name.Raw}}
+where 
+{{- range $i,$v := $table.PKRows}}
+	&{{$v.Name}}
+{{- end}}`

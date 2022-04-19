@@ -92,7 +92,11 @@ func getRType(t string, index int) (*RType, error) {
 func getNames(t string) []string {
 	reg := regexp.MustCompile(`[^,]+`)
 	names := reg.FindAllString(t, -1)
-	return names
+	lname := make([]string, 0, len(names))
+	for _, v := range names {
+		lname = append(lname, strings.Trim(v, " "))
+	}
+	return lname
 }
 func getShortDesc(t string) string {
 	reg := regexp.MustCompile(`[\w\p{Han}]+`)

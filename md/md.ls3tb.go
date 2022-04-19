@@ -54,7 +54,7 @@ func getTableDesc(line *Line) string {
 }
 
 func getTableExtInfo(line *Line) string {
-	reg := regexp.MustCompile(`{(.*?)}$`)
+	reg := regexp.MustCompile(`<(.*?)>$`)
 	names := reg.FindStringSubmatch(line.Text)
 	if len(names) == 0 {
 		return ""

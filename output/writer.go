@@ -19,6 +19,9 @@ func CreateFiles(tmpls embed.FS, rootDir, prefix string, name string, input inte
 
 		//处理目录
 		fpath := fmt.Sprintf("%s/%s", name, entity.Name())
+		if strings.Contains(fpath, ".tmpl") {
+			continue
+		}
 		if entity.IsDir() {
 			if err := CreateFiles(tmpls, rootDir, prefix, fpath, input, xfuncs...); err != nil {
 				return err
@@ -26,21 +29,15 @@ func CreateFiles(tmpls embed.FS, rootDir, prefix string, name string, input inte
 			continue
 		}
 
-		//读取文件内容
-		buff, err := tmpls.ReadFile(fpath)
-		if err != nil {
-			return err
-		}
-
 		//翻译内容
-		result, err := Translate(fpath, string(buff), input, xfuncs...)
+		result, err := TranslateFs(tmpls, fpath, input, xfuncs...)
 		if err != nil {
 			return err
 		}
 
 		//构建路径
 		npath := filepath.Join(".", rootDir, strings.TrimPrefix(fpath, prefix))
-		npath, err = Translate(npath, npath, input)
+		npath, err = TranslateContent(npath, npath, input)
 		if err != nil {
 			return err
 		}

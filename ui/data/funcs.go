@@ -5,4 +5,11 @@ var Funcs = map[string]interface{}{
 	"fltrCodeTables": fltrCodeTables, //代码
 	"fltrUITable":    fltrUITable,    //代码
 	"fltrUITables":   fltrUITables,   //代码
+	"fltrRows":       fltrRows,
+	"mergeCodeRow":   mergeCodeRow,
 }
+
+// func fltrIsInput(t string) bool {
+// 	return strings.EqualFold(t, "input") || strings.EqualFold(t, "link") ||
+// 		strings.EqualFold(t, "progress") || strings.EqualFold(t, "tag")
+// }

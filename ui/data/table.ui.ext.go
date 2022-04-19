@@ -7,7 +7,8 @@ import (
 
 type Ext struct {
 	SLType    string
-	ColorType bool
+	IsSelect  bool
+	ColorType string
 	Format    string
 	DefValue  string
 	Valid     string
@@ -21,7 +22,9 @@ func newExt(t string, r *md.Row) *Ext {
 	}
 
 	//处理color参数
-	ext.ColorType = md.HasConstraint(r.Constraints, "color")
+	if md.HasConstraint(r.Constraints, "color") {
+		ext.ColorType = "colorful"
+	}
 
 	//处理输出格式
 	if md.HasConstraint(r.Constraints, "f") {
@@ -29,6 +32,8 @@ func newExt(t string, r *md.Row) *Ext {
 	}
 	//默认值
 	ext.DefValue = md.GetDefValue(r.Constraints...)
+
+	ext.IsSelect = md.HasConstraint(r.Constraints, "sl")
 
 	//验证方式
 	ext.Valid = md.GetVdlValue(r.Constraints...)

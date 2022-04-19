@@ -11,8 +11,10 @@ type CodeTable struct {
 	AsEnum bool
 	QRows  []*CodeRow
 	LRows  []*CodeRow
+	LERows []*CodeRow
 	CRows  []*CodeRow
 	URows  []*CodeRow
+	VRows  []*CodeRow
 	PKRows []*CodeRow
 }
 
@@ -32,6 +34,7 @@ func fltrCodeTable(t *md.Table) *CodeTable {
 		Table:  t,
 		QRows:  make([]*CodeRow, 0, 1),
 		LRows:  make([]*CodeRow, 0, 1),
+		LERows: make([]*CodeRow, 0, 1),
 		CRows:  make([]*CodeRow, 0, 1),
 		URows:  make([]*CodeRow, 0, 1),
 		PKRows: make([]*CodeRow, 0, 1),
@@ -45,11 +48,17 @@ func fltrCodeTable(t *md.Table) *CodeTable {
 		if md.HasConstraint(r.Constraints, "L") {
 			table.LRows = append(table.LRows, NewCodeRow("L", r))
 		}
+		if md.HasConstraint(r.Constraints, "LE") {
+			table.LERows = append(table.LERows, NewCodeRow("LE", r))
+		}
 		if md.HasConstraint(r.Constraints, "C") {
 			table.CRows = append(table.CRows, NewCodeRow("C", r))
 		}
 		if md.HasConstraint(r.Constraints, "U") {
 			table.URows = append(table.URows, NewCodeRow("U", r))
+		}
+		if md.HasConstraint(r.Constraints, "V") {
+			table.VRows = append(table.VRows, NewCodeRow("V", r))
 		}
 		if md.HasConstraint(r.Constraints, "PK") {
 			table.PKRows = append(table.PKRows, NewCodeRow("", r))

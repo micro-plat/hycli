@@ -83,3 +83,13 @@ func TestCName(t *testing.T) {
 	v = ToCName("_user__i")
 	assert.Equal(t, "UserI", v)
 }
+func TestGetName(t *testing.T) {
+	v := getNames("IDX(idx_sso_sysinfo_urlident),c,U ,V ")
+	assert.Equal(t, 4, len(v))
+	assert.Equal(t, "U", v[2])
+
+}
+func TestGetExtOpt(t *testing.T) { //>/right/info,x
+	lst := GetExtOpt("lst(权限,link>/right/info,x),lst(启用,dialog>/right/save,m),pnl(启用,dialog>/right/save,m)", "lst")
+	assert.Equal(t, "", lst)
+}

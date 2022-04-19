@@ -1,222 +1,53 @@
 <template>
-  {{ $table := .|fltrUITable}}
-  {{ $qrow := $table.QRows}}
-  {{ $lstRow := $table.LRows}}
+  {{- $table := .|fltrUITable}}
+  {{- $qrow := $table.QRows}}
+  {{- $leRow := $table.LERows}}
+  {{- $optRow :=$table.Optrs}}
+  {{- $delRow :=$table.DRows}}
   <div>
-    <div class="query">
-      <el-form :model="form" inline size="small">
-        <!-- 日期范围控件 -->
-        {{ range $i,$c:= $qrow }}
-        {{- if eq "daterange" $c.RType.Type  -}}
-        <el-form-item>
-          <el-date-picker
-            style="width: 200px"
-            v-model="form.{{$c.Name}}"
-            type="daterange"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            format="YYYY-MM-DD"
-            value-format="YYYY-MM-DD"
-          />
-        </el-form-item>
-        {{- end -}}{{ end }}
 
-        <!-- 日期控件 -->
-        {{ range $i,$c:= $qrow }}
-        {{- if eq "date" $c.RType.Type  -}}
-        <el-form-item>
-          <el-date-picker
-            style="width: 120px"
-            v-model="form.{{$c.Name}}"
-            clearable
-            type="date"
-            placeholder="{{.Desc}}"
-            format="YYYY-MM-DD"
-            value-format="YYYY-MM-DD"
-          />
-        </el-form-item>
-        {{- end -}}{{ end }}
+     <!-- 查询条件 -->
+    {{template "query.tmpl.html" $qrow}}
 
-        <!-- 下拉控件 -->
-        {{ range $i,$c:= $qrow }}
-        {{- if eq "select" $c.RType.Type  -}}
-        <el-form-item>
-          <el-select
-            v-model="form.{{.Name}}"
-            style="width: 120px"
-            clearable
-            placeholder="{{.Desc}}"
-          >
-            <el-option
-              v-for="item in {{.Name}}List"
-              :key="item.value"
-              :label="item.name"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        {{- end -}}{{ end }}
 
-        <!-- 下拉控件多选 -->
-        {{ range $i,$c:= $qrow }}
-        {{- if eq "multiselect" $c.RType.Type  -}}
-        <el-form-item>
-          <el-select
-            v-model="form.{{.Name}}"
-            clearable
-            multiple
-            collapse-tags
-            placeholder="{{.Desc}}"
-          >
-            <el-option
-              v-for="item in {{.Name}}List"
-              :key="item.value"
-              :label="item.name"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        {{- end -}}{{ end }}
-
-        <!--  数字控件 -->
-        {{ range $i,$c:= $qrow }}
-        {{- if eq "number" $c.RType.Type  -}}
-        <el-form-item label="{{$c.Desc}}">
-          <el-input-number v-model="form.{{ $c.Name }}"
-          {{ if ne "" $c.RType.Min}} :min="{{ $c.RType.Min }}" {{ end }}
-          {{ if ne "" $c.RType.Max}} :max="{{ $c.RType.Max }}" {{ end }}
-          />
-        </el-form-item>
-        {{- end -}} {{ end }}
-        <!-- 输入控件 -->
-        {{ range $i,$c:= $qrow }}
-        {{- if eq "input" $c.RType.Type  -}}
-        <el-form-item>
-          <el-input
-            clearable
-            style="width: 120px"
-            v-model="form.{{$c.Name}}"
-            maxlength="{{$c.RType.Len}}"
-            placeholder="{{$c.Desc}}"
-          />
-        </el-form-item>
-        {{- end -}} {{ end }}
-        <el-form-item>
-          <el-button type="primary" :icon="Search" @click="onQuery"
-            >查询</el-button
-          >
-          <el-button type="success" :icon="Search" @click="showAdd"
-            >添加</el-button
-          >
-        </el-form-item>
-      </el-form>
-    </div>
-    <div class="list">
-      <el-table
-        :data="dataList"
-        v-loading="conf.loading"
-        stripe
-        style="width: 100%"
-        size="small"
-        empty-text="无数据"
-        height="540px"
-      >
-        {{- range $i,$c:=$lstRow -}}
-        {{- if eq "switch" $c.RType.Type}}
-        <el-table-column align="center" label="{{$c.Desc}}">
-          <template #default="scope">
-            <el-switch disabled v-model="scope.row.{{$c.Name}}_switch" />
-          </template>
-        </el-table-column>
-        {{- else if eq "progress" $c.RType.Type}}
-        <el-table-column align="center" label="{{$c.Desc}}">
-          <template #default="scope">
-            <el-progress
-              :percentage="scope.row.{{$c.Name}}"
-              :color="conf.progressColor"
-            />
-          </template>
-        </el-table-column>
-        {{- else if eq "link" $c.RType.Type}}
-        <el-table-column align="center" label="{{$c.Desc}}">
-          <template #default="scope">
-            <el-link
-              type="primary"
-              :href="scope.row.{{$c.Name}}"
-              :title="scope.row.{{$c.Name}}"
-            >查看</el-link>
-          </template>
-        </el-table-column>
-        {{- else if eq "select" $c.RType.Type}}
-        {{- if eq true $c.Ext.ColorType -}}
-        <el-table-column align="center" label="{{$c.Desc}}">
-          <template #default="scope">
-            <span
-              :class="scope.row.{{$c.Name}}==0?'text-success':'text-warning'"
-              v-text="scope.row.{{$c.Name}}_label"
-            ></span>
-          </template>
-        </el-table-column>
-        {{- else}}
-        <el-table-column
-          prop="{{$c.Name}}_label"
-          align="center"
-          label="{{$c.Desc}}"
-        />
-        {{- end -}}
-        {{- else}}
-        <el-table-column
-          prop="{{$c.Name}}"
-          align="center"
-          label="{{$c.Desc}}"
-        />
-        {{- end -}}
-        {{- end }}
-      </el-table>
-      <el-pagination
-        :currentPage="form.pi"
-        :page-size="form.ps"
-        style="position: absolute; right: 30px"
-        :page-sizes="[10, 20, 50, 100]"
-        :background="false"
-        small
-        layout="total,sizes,prev, pager, next, jumper"
-        :total="total"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      />
-    </div>
+    <!-- 列表 -->
+    {{template "list.tmpl.html" $table}}
     <CAdd ref="cadd" @onsaved="onQuery"></CAdd>
+    <CEdit ref="cedit" @onsaved="onQuery"></CEdit>
+    <CView ref="cview"></CView>
+    <el-dialog draggable v-model="conf.confirmVisible" title="删除" width="30%">
+      <span>确认删除{{range $i,$c:= $delRow}} {{ $c.Desc }}:[<span
+          v-text="delForm.{{$c.Name}}"></span>{{ end }}] 吗?</span>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="conf.confirmVisible = false">取消</el-button>
+          <el-button type="primary" @click="onDelete">确认</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 
 <script>
 import CAdd from "./{{.Name}}.add"
+import CEdit from "./{{.Name}}.edit"
+import CView from "./{{.Name}}.view"
 export default {
    components: {
 		CAdd,
+    CEdit,
+    CView
   },
   data() {
     return {
       conf:{
+        confirmVisible:false,
         loading:false,
         progressColor: this.$theia.env.conf.progress||[]
       },
-      form: {
-        pi: 1,
-        ps: 10,
-        {{- range $i,$c := $qrow}}
-        {{$c.Name}}:"",
-        {{- end}}
-        },
-        {{- range $i,$c := $qrow -}}
-        {{- if or (eq "select" $c.RType.Type) (eq "multiselect" $c.RType.Type)}}
-        {{.Name}}List:this.$theia.enum.get("{{$c.Ext.SLType}}"),
-        {{- end}}
-        {{- end}}
-        dataList:[],
-        total:0,
+      delForm:{},
+      {{- template "queryform.tmpl.js" $qrow -}}
     };
   },
     created() {
@@ -245,7 +76,7 @@ export default {
         that.total = res.count
         that.dataList.forEach(item => {
         {{- range $i,$c := $qrow -}}
-        {{- if eq "select" $c.RType.Type}}
+        {{- if eq true $c.Ext.IsSelect}}
           item.{{$c.Name}}_label = that.$theia.enum.getName("{{$c.Ext.SLType}}",item.{{$c.Name}})
         {{- else if eq "switch" $c.RType.Type}}
           item.{{$c.Name}}_switch = item.{{$c.Name}} == 0
@@ -268,6 +99,39 @@ export default {
     },
     showAdd(){
        this.$refs.cadd.show()
+    },
+     showView(q){ 
+       this.$refs.cview.show(q)
+    },
+     delItem(q){ 
+       this.conf.confirmVisible = true
+       this.delForm = q
+    },
+    onDelete(){
+        let that = this
+        this.$theia.http.del("/{{.Name.CName|lower}}",this.delForm).then(res=>{
+          that.conf.confirmVisible = false
+          that.$notify.success({title: '成功',message: '{{.Desc}}删除成功',duration:5000})
+          that.onQuery()
+       }).catch(err=>{
+          that.conf.confirmVisible = false
+          let code = res.response.status
+          let msg= `{{.Desc}}保存失败(${code})`
+          that.$notify.error({title: '失败',message:msg,duration:5000})
+       })
+    },
+    showEdit(q){
+        this.$refs.cedit.show(q)
+      },
+    colorful(r){
+       return this.$theia.env.conf.colorful[r]
+    },
+     goto(url,param){
+       let p = ""
+       {{range $i,$c:= $table.PKRows -}}
+       p += "{{$c.Name}}=" + param.{{$c.Name}}
+       {{- end}}
+      window.location = url + "?" + p
     }
   },
 };

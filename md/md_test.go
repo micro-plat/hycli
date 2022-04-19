@@ -87,3 +87,8 @@ func TestTB(t *testing.T) {
 	assert.Equal(t, "创建时间", tbs[0].Rows[4].Desc.Raw)
 	assert.Equal(t, "创建时间", tbs[0].Rows[4].Desc.Name)
 }
+func TestV(t *testing.T) {
+	ln := &Line{Text: "系统信息[sso_system_info]<lst(权限,link>/right/info,x),lst(启用,dialog>/right/save,m)>"}
+	v := getTableExtInfo(ln)
+	assert.Equal(t, "lst(权限,link>/right/info,x),lst(启用,dialog>/right/save,m)", v)
+}

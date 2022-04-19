@@ -11,10 +11,12 @@ import (
 {{- $table := .|fltrCodeTable -}}
 {{ $clen := (len $table.CRows)|minus}}
 {{ $ulen := (len $table.URows)|minus}}
+{{ $pklen := (len $table.PKRows)|minus}}
 //AuditInfoHandler 获取{{.Desc}}处理服务
 type {{.Name.CName}}Handler struct {
 	insertRequiredFields []string
 	updateRequiredFields []string
+	pkRequiredFields []string
 }
 
 func New{{.Name.CName}}Handler() *{{.Name.CName}}Handler {
@@ -23,8 +25,47 @@ func New{{.Name.CName}}Handler() *{{.Name.CName}}Handler {
 			"{{$v.Name}}"{{if lt $i $clen }},{{end}}{{- end -}}},
 		updateRequiredFields:[]string{ {{- range $i,$v :=  $table.URows -}}
 			"{{$v.Name}}"{{if lt $i $ulen }},{{end}}{{- end -}}},
+		pkRequiredFields:[]string{ {{- range $i,$v :=  $table.PKRows -}}
+			"{{$v.Name}}"{{if lt $i $pklen }},{{end}}{{- end -}}},
 	}
 }
+
+//DeleteHandle  删除{{.Desc}}数据
+func (u *{{.Name.CName}}Handler) DeleteHandle(ctx hydra.IContext) (r interface{}) {
+
+	ctx.Log().Info("--------删除{{.Desc}}数据--------")
+
+	ctx.Log().Info("1.检查必须字段")
+	if err := ctx.Request().Check(u.pkRequiredFields...); err != nil {
+		return err
+	}
+	
+	ctx.Log().Info("2.查询数据")
+	i, err := hydra.C.DB().GetRegularDB().Execute(delete{{.Name.CName}}, ctx.Request().GetMap())
+	if err != nil||i <= 0 {
+		return errs.NewErrorf(http.StatusNotExtended, "删除数据出错:%+v", err)
+	}
+	return
+}
+
+//GetHandle  修改{{.Desc}}数据
+func (u *{{.Name.CName}}Handler) GetHandle(ctx hydra.IContext) (r interface{}) {
+
+	ctx.Log().Info("--------查询{{.Desc}}数据--------")
+
+	ctx.Log().Info("1.检查必须字段")
+	if err := ctx.Request().Check(u.pkRequiredFields...); err != nil {
+		return err
+	}
+	
+	ctx.Log().Info("2.查询数据")
+	items, err := hydra.C.DB().GetRegularDB().Query(get{{.Name.CName}}, ctx.Request().GetMap())
+	if err != nil {
+		return errs.NewErrorf(http.StatusNotExtended, "保存数据出错:%+v", err)
+	}
+	return items.Get(0)
+}
+
 //PutHandle  修改{{.Desc}}数据
 func (u *{{.Name.CName}}Handler) PutHandle(ctx hydra.IContext) (r interface{}) {
 

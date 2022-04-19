@@ -7,45 +7,64 @@ import (
 	"github.com/micro-plat/lib4go/types"
 )
 
-var tpmap = map[string]string{
+var aMap = map[string]string{
 	"varchar2":      "input",
 	"varchar":       "input",
 	"string":        "input",
-	"password":      "password",
-	"pwd":           "password",
+	"link":          "input",
+	"lnk":           "input",
+	"tag":           "input",
 	"number":        "number",
 	"decimal":       "number",
 	"int":           "number",
 	"tinyint":       "number",
 	"bigint":        "number",
+	"progress":      "number",
+	"switch":        "switch",
 	"date":          "date",
 	"time":          "time",
 	"daterange":     "daterange",
 	"datetime":      "daterange",
 	"datetimerange": "daterange",
 	"sl":            "select",
-	"multiselect":   "multiselect",
 	"select":        "select",
 	"radio":         "select",
 	"bool":          "select",
 	"bl":            "select",
-	"upload":        "file",
+	"multiselect":   "multiselect",
 	"file":          "file",
-	"link":          "link",
-	"lnk":           "link",
-	"tag":           "tag",
-	"progress":      "progress",
-	"switch":        "switch",
+	"upload":        "file",
+	"password":      "password",
+	"pwd":           "password",
+}
+var vmap = map[string]string{
+	"image":    "img",
+	"img":      "img",
+	"link":     "link",
+	"lnk":      "link",
+	"tag":      "tag",
+	"progress": "progress",
+	"switch":   "switch",
+}
+var tpmap = map[string]map[string]string{
+	"Q":  aMap,
+	"C":  aMap,
+	"U":  aMap,
+	"L":  vmap,
+	"LE": vmap,
+	"V":  vmap,
 }
 
-func getTP(vs ...string) string {
+func getShowTypeName(t string, vs ...string) string {
 	for _, v := range vs {
-		if v, ok := tpmap[v]; ok {
-			return v
+		if _, ok := tpmap[t]; !ok {
+			continue
+		}
+		if m, ok := tpmap[t][v]; ok {
+			return m
 		}
 	}
-
-	return "input"
+	return ""
 }
 
 type UIType struct {
@@ -61,22 +80,26 @@ type UIType struct {
 
 func NewUIType(t string, r *md.Row) *UIType {
 
+	// tname := md.GetTPName(t, r.Constraints...)
+
 	//1.未找到则查询tp对应的组件类型[如:tp(swith)]
 	tpName := md.GetTPName("tp", r.Constraints...)
 
 	//2.查找是否包含'sl'配置，[如：sl]
 	selectName := md.GetSelectName(r.Name, r.Constraints...)
 
+	defName := types.DecodeString(selectName, "", r.Type.Name, "select")
+
 	//3. 没有则使用当前字段对应的类型
-	tpName = types.GetString(tpName, types.DecodeString(selectName, "", r.Type.Name, "select"))
+	tpName = types.GetString(tpName, defName)
 
 	uit := &UIType{
 		Name:      r.Type.Name,
 		Len:       r.Type.Len,
-		IsDecimal: strings.EqualFold(getTP(tpName), "NUMBER") && r.Type.DLen > 0,
-		IsNumber:  strings.EqualFold(getTP(tpName), "NUMBER"),
+		IsDecimal: strings.EqualFold(getShowTypeName(t, tpName), "NUMBER") && r.Type.DLen > 0,
+		IsNumber:  strings.EqualFold(getShowTypeName(t, tpName), "NUMBER"),
 		Format:    md.GetFormat(r.Constraints...),
-		Type:      getTP(tpName + md.GetRangeName()),
+		Type:      getShowTypeName(t, tpName+md.GetRangeName()),
 	}
 
 	uit.Min, uit.Max = md.GetRanges(r.Constraints...)
