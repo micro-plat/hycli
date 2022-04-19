@@ -1,0 +1,61 @@
+{{- $lstRow := .LRows}}
+{{- $leRow := .LERows}}
+{{- $leLen := len $leRow}}
+{{- $optRow :=.Optrs}}
+{{- $optLen := len $optRow}}
+<div class="list">
+    <el-table :data="dataList" v-loading="conf.loading" stripe style="width: 100%" size="small" empty-text="无数据"
+        height="540px">
+        {{- if gt $leLen 0 -}}
+        {{- template "le.tmpl.html" $leRow -}}
+        {{- end}}
+        {{- range $i,$c:=$lstRow -}}
+        {{- if eq "switch" $c.RType.Type}}
+        <el-table-column align="center" label="{{$c.Desc}}">
+            <template #default="scope">
+                <el-switch disabled v-model="scope.row.{{$c.Name}}_switch" />
+            </template>
+        </el-table-column>
+        {{- else if eq "progress" $c.RType.Type}}
+        <el-table-column align="center" label="{{$c.Desc}}">
+            <template #default="scope">
+                <el-progress :percentage="scope.row.{{$c.Name}}" :color="conf.progressColor" />
+            </template>
+        </el-table-column>
+        {{- else if eq "img" $c.RType.Type}}
+        <el-table-column align="center" label="{{$c.Desc}}">
+            <template #default="scope">
+             <el-image style="width:48px" :src="scope.row.{{$c.Name}}" :fit="contain">
+            <template #error>
+                <div class="image-slot">
+                  <el-icon><icon-picture /></el-icon>
+                </div>
+              </template>
+        </el-image>
+        </template>
+        </el-table-column>
+        {{- else if eq "link" $c.RType.Type}}
+        <el-table-column align="center" label="{{$c.Desc}}">
+            <template #default="scope">
+                <el-link type="primary" :href="scope.row.{{$c.Name}}" :title="scope.row.{{$c.Name}}">查看</el-link>
+            </template>
+        </el-table-column>
+        {{- else if eq true $c.Ext.IsSelect}}
+        <el-table-column prop="{{$c.Name}}_label" align="center" label="{{$c.Desc}}">
+            <template #default="scope">
+                <span :class="'{{$c.Ext.ColorType}}'==''?'':{{$c.Ext.ColorType}}(scope.row.{{$c.Name}})"
+                    v-text="scope.row.{{$c.Name}}_label"></span>
+            </template>
+        </el-table-column>
+        {{- else}}
+        <el-table-column prop="{{$c.Name}}" align="center" label="{{$c.Desc}}" />
+        {{- end -}}
+        {{- end }}
+        {{if gt $optLen 0}}
+        {{- template "opts.tmpl.html" .}}
+        {{ end }}
+    </el-table>
+    <el-pagination :currentPage="form.pi" :page-size="form.ps" style="position: absolute; right: 30px"
+        :page-sizes="[10, 20, 50, 100]" :background="false" small layout="total,sizes,prev, pager, next, jumper"
+        :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+</div>

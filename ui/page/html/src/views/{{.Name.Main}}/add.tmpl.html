@@ -1,0 +1,64 @@
+{{- $crow := .}}
+<el-form :model="form" size="small" ref="form" :rules="rules">
+  {{- range $i,$c:= $crow}}
+
+  {{if eq "password" $c.RType.Type}}
+  <!--{{$c.Desc}} 密码控件 -->
+  <el-form-item prop="{{$c.Name}}" label="{{$c.Desc}}" label-width="100px" label-position="right">
+    <el-input clearable type="password" show-password style="width: 100%" v-model="form.{{$c.Name}}"
+      maxlength="{{$c.RType.Len}}" placeholder="请输入{{$c.Desc}}" />
+  </el-form-item>
+
+  {{else if eq "switch" $c.RType.Type}}
+  <!--{{$c.Desc}} switch控件 -->
+  <el-form-item prop="{{$c.Name}}" label="{{$c.Desc}}" label-width="100px" label-position="right">
+    <el-switch v-model="form.{{$c.Name}}_switch" />
+  </el-form-item>
+
+  {{else if or (eq "date" $c.RType.Type) (eq "daterange" $c.RType.Type)}}
+ <!--{{$c.Desc}} 日期控件 -->
+  <el-form-item prop="{{$c.Name}}" label-width="100px" label-position="right">
+    <el-date-picker style="width: 100%" v-model="form.{{$c.Name}}" clearable type="date" placeholder="请选择{{.Desc}}"
+      format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
+  </el-form-item>
+
+  {{else if eq "select" $c.RType.Type}}
+   <!--{{$c.Desc}} 下拉控件 -->
+  <el-form-item prop="{{$c.Name}}" label="{{$c.Desc}}" label-width="100px" label-position="right">
+    <el-select v-model="form.{{.Name}}" style="width: 100%" clearable placeholder="请选择{{.Desc}}">
+      <el-option v-for="item in {{.Name}}List" :key="item.value" :label="item.name" :value="item.value" />
+    </el-select>
+  </el-form-item>
+
+  {{ else if eq "multiselect" $c.RType.Type}}
+  <!--{{$c.Desc}} 多选控件 -->
+  <el-form-item prop="{{$c.Name}}" label="{{$c.Desc}}" label-width="100px" label-position="right">
+    <el-select style="width: 100%" v-model="form.{{.Name}}" clearable multiple collapse-tags placeholder="请选择{{.Desc}}">
+      <el-option v-for="item in {{.Name}}List" :key="item.value" :label="item.name" :value="item.value" />
+    </el-select>
+  </el-form-item>
+ 
+  {{else if eq "number" $c.RType.Type}}
+  <!--{{$c.Desc}} 数字控件 -->
+  <el-form-item prop="{{$c.Name}}" label="{{$c.Desc}}" label-width="100px" label-position="right">
+    <el-input-number style="width: 100%" v-model="form.{{ $c.Name }}" {{- if ne "" $c.RType.Min -}}
+      :min="{{ $c.RType.Min }}" {{- end -}} {{- if ne "" $c.RType.Max -}} :max="{{ $c.RType.Max }}" {{- end -}} />
+  </el-form-item>
+
+  {{else if or (eq "file" $c.RType.Type) (eq "img" $c.RType.Type)}}
+   <!--{{$c.Desc}} 文件控件 -->
+  <el-form-item prop="{{$c.Name}}" label="{{$c.Desc}}" label-width="100px" label-position="right">
+    <el-upload :action="conf.uploadPath" :limit="1" :on-success="onUploadSuccess">
+      <el-button type="primary">上传文件</el-button>
+    </el-upload>
+  </el-form-item>
+
+ {{else}}
+ <!--{{$c.Desc}} 输入控件 -->
+ <el-form-item prop="{{$c.Name}}" label="{{$c.Desc}}" label-width="100px" label-position="right">
+   <el-input clearable style="width: 100%" v-model="form.{{$c.Name}}" maxlength="{{$c.RType.Len}}" {{if gt $c.RType.Len
+     255}} type="textarea" show-word-limit {{end}} placeholder="请输入{{$c.Desc}}" />
+ </el-form-item>
+  {{- end -}}
+  {{end}}
+</el-form>
