@@ -1,0 +1,55 @@
+package api
+
+import (
+	"embed"
+	"fmt"
+
+	"github.com/micro-plat/hycli/md"
+	"github.com/micro-plat/hycli/mgr/data"
+	"github.com/micro-plat/hycli/output"
+	"github.com/micro-plat/lib4go/types"
+	"github.com/urfave/cli"
+)
+
+//CreateEnumsByCtx 创建页面文件
+func CreateEnumsByCtx(c *cli.Context) (err error) {
+	if len(c.Args()) == 0 {
+		return fmt.Errorf("未指定md文件路径")
+	}
+	//获取输出路径
+	outpath := types.GetString(c.Args().Get(1), "./")
+	return CreateEnums(c.Args().First(), c.String("table"), outpath)
+}
+
+//CreateEnums 创建页面文件
+func CreateEnums(mdpath string, tbs string, outpath string) error {
+
+	//转换md文件
+	otbls, err := md.Mds2Tables(mdpath)
+	if err != nil {
+		return err
+	}
+
+	//过滤表格
+	tbls := otbls.Filter(tbs)
+
+	//设置包名称
+	tbls.JoinPkgName(outpath)
+
+	return createEnums(outpath, tbls)
+}
+
+//go:embed comm/services
+var enumTmpls embed.FS
+var enumTmplName = "comm/services"
+var enumPrefix = "comm"
+
+//createEnums 创建服务文件
+func createEnums(root string, input interface{}) error {
+	return output.CreateFiles(enumTmpls,
+		root,
+		enumPrefix,
+		enumTmplName,
+		input,
+		data.Funcs)
+}

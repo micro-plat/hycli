@@ -1,0 +1,31 @@
+<el-table-column width="24px" type="expand">
+    <template #default="view">
+        <el-row :gutter="24">
+            {{- $leRow := .}}
+            {{- range $i,$v:=$leRow}}
+            <el-col :span="5" class="text-right" style="height: 26px">{{ $v.Label }}:</el-col>
+            {{- if eq "img" $v.RType.Type}}
+            <el-col :span="7" style="height: 26px">
+                <el-image style="width:48px" :src="view.row.{{$v.Name}}" :fit="contain">
+                    <template #error>
+                        <div class="image-slot">
+                          <el-icon><icon-picture /></el-icon>
+                        </div>
+                      </template>
+                </el-image>
+            </el-col>
+            {{- else if eq true $v.Ext.IsSelect}}
+            <el-col :span="7" v-text="view.row.{{$v.Name}}_label" style="height: 26px"
+                :class="'{{$v.Ext.ColorType}}'==''?'':{{$v.Ext.ColorType}}(view.row.{{$v.Name}})"></el-col>
+            {{- else if eq "link" $v.RType.Type}}
+            <el-col :span="7" style="height: 26px"
+                :class="'{{$v.Ext.ColorType}}'==''?'':{{$v.Ext.ColorType}}(view.row.{{$v.Name}})">
+                <el-link type="primary" :href="view.row.{{$v.Name}}" :title="view.row.{{$v.Name}}">查看</el-link>
+            </el-col>
+            {{- else}}
+            <el-col :span="7" v-text="view.row.{{$v.Name}}" style="height: 26px"></el-col>
+            {{- end -}}
+            {{- end }}
+        </el-row>
+    </template>
+</el-table-column>
