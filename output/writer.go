@@ -3,6 +3,7 @@ package output
 import (
 	"embed"
 	"fmt"
+	"io/fs"
 	"path/filepath"
 	"strings"
 
@@ -15,6 +16,7 @@ func CreateFiles(tmpls embed.FS, rootDir, prefix string, name string, input inte
 	if err != nil {
 		return err
 	}
+	hasTmplFile := hasTmpl(name, entities)
 	for _, entity := range entities {
 
 		//处理目录
@@ -30,7 +32,7 @@ func CreateFiles(tmpls embed.FS, rootDir, prefix string, name string, input inte
 		}
 
 		//翻译内容
-		result, err := TranslateFs(tmpls, fpath, input, xfuncs...)
+		result, err := TranslateFs(tmpls, fpath, hasTmplFile, input, xfuncs...)
 		if err != nil {
 			return err
 		}
@@ -54,4 +56,13 @@ func CreateFiles(tmpls embed.FS, rootDir, prefix string, name string, input inte
 		logs.Log.Info("生成文件:", npath)
 	}
 	return nil
+}
+func hasTmpl(name string, es []fs.DirEntry) bool {
+	for _, e := range es {
+		fpath := fmt.Sprintf("%s/%s", name, e.Name())
+		if strings.Contains(fpath, ".tmpl.") {
+			return true
+		}
+	}
+	return false
 }

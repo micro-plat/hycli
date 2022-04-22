@@ -12,18 +12,27 @@ import (
 )
 
 //Translate 翻译模板
-func TranslateFs(fs fs.FS, indexTmplName string, input interface{}, xfuncs ...map[string]interface{}) (t string, err error) {
+func TranslateFs(fs fs.FS, indexTmplName string, hasParseFs bool, input interface{}, xfuncs ...map[string]interface{}) (t string, err error) {
 	nfuncs := types.NewXMap()
 	nfuncs.MergeMap(funcs)
 	if len(xfuncs) > 0 {
 		nfuncs.MergeMap(xfuncs[0])
 	}
 	var tmpl = template.New(indexTmplName).Funcs(nfuncs.ToMap())
-	partten := strings.Replace(filepath.Join(filepath.Dir(indexTmplName), "*.tmpl.*"), "\\", "/", -1)
-	tmpl, err = tmpl.ParseFS(fs, indexTmplName, partten)
-	if err != nil {
-		return "", fmt.Errorf("转换模板失败:%s %s %w", indexTmplName, partten, err)
+	if hasParseFs {
+		partten := strings.Replace(filepath.Join(filepath.Dir(indexTmplName), "*.tmpl.*"),
+			"\\", "/", -1)
+		tmpl, err = tmpl.ParseFS(fs, indexTmplName, partten)
+		if err != nil {
+			return "", fmt.Errorf("转换模板失败:%s %s %w", indexTmplName, partten, err)
+		}
+	} else {
+		tmpl, err = tmpl.ParseFS(fs, indexTmplName)
+		if err != nil {
+			return "", fmt.Errorf("转换模板失败:%s %w", indexTmplName, err)
+		}
 	}
+
 	buff := bytes.NewBufferString("")
 	err = tmpl.ExecuteTemplate(buff, filepath.Base(indexTmplName), input)
 	if err != nil {
