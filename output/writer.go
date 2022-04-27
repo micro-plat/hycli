@@ -39,21 +39,24 @@ func CreateFiles(tmpls embed.FS, rootDir, prefix string, name string, input inte
 
 		//构建路径
 		npath := filepath.Join(".", rootDir, strings.TrimPrefix(fpath, prefix))
-		npath, err = TranslateContent(npath, npath, input)
+		npathBytes, err := TranslateContent(npath, npath, input)
 		if err != nil {
 			return err
 		}
 
 		//创建文件
-		fs, err := Create(npath, true)
+		fs, err := Create(string(npathBytes), true)
 		if err != nil {
 			return err
 		}
 
 		//写入文件
 		defer fs.Close()
-		fs.WriteString(result)
-		logs.Log.Info("生成文件:", npath)
+		_, err = fs.Write(result)
+		if err != nil {
+			return err
+		}
+		logs.Log.Info("生成文件:", string(npathBytes))
 	}
 	return nil
 }

@@ -21,7 +21,9 @@
         <el-button size="small" type="text" @click="goto_{{$m.UNQ}}(scope.row)">{{$m.Label}}</el-button>
         {{- else if eq "DIALOG" $m.Name}}
         <el-button size="small" type="text" @click="show_dialog_{{$m.UNQ}}(scope.row)">{{$m.Label}}</el-button>
+        {{- else if eq "CMPNT" $m.Name -}}
+        <el-button size="small" type="text" @click="show_cmpnt_{{$m.UNQ}}(scope.row)">{{$m.Label}}</el-button>
+         {{- end -}}
         {{end -}}
-        {{- end -}}
     </template>
 </el-table-column>

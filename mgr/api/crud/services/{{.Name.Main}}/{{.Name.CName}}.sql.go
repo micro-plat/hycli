@@ -1,10 +1,13 @@
+//go:build ignore
+
 package {{.Name.Main}}
 
 {{- $table := .|fltrCodeTable -}}
 {{ $clen := (len $table.CRows)|minus}}
 {{ $ulen := (len $table.URows)|minus}}
-{{ $vlen := (len $table.VRows)|minus}}
+
 {{ $sigleQueryRows:= mergeCodeRow $table.LRows $table.LERows}}
+{{ $vlen := (len $sigleQueryRows)|minus}}
 
 //get{{.Name.CName}}ListCount 获取{{.Desc}}列表条数
 const get{{.Name.CName}}ListCount = `
@@ -84,7 +87,7 @@ where
 //get{{.Name.CName}} 查询单条{{.Desc}}数据
 const get{{.Name.CName}} = `
 select
-{{- range $i,$v := $table.VRows}}
+{{- range $i,$v := $sigleQueryRows}}
 	t.{{$v.Name}}{{if lt $i $vlen }},{{end}}
 {{- end}}
 from {{.Name.Raw}} t

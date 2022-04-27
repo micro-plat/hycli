@@ -11,6 +11,7 @@ type EnumType struct {
 	Name     string
 	Type     string
 	Multiple bool
+	DERows   []*CodeRow
 }
 
 func (e *EnumType) String() string {

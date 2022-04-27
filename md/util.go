@@ -2,6 +2,8 @@ package md
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -97,11 +99,24 @@ func GetExtOpt(t string, tag string) [][]string {
 	lst := reg.FindAllString(t, -1)
 	rlst := make([][]string, 0, 1)
 	for _, l := range lst {
-		n := regexp.MustCompile(`\(([\w\p{Han}]+),([\w]+)>([/\w]+)[,]?([\w]*)\)`)
+		n := regexp.MustCompile(`\(([\w\p{Han}]+),([\w]+)>([/\w\.]+)[,]?([\w]*)\)`)
 		xn := n.FindAllStringSubmatch(l, -1)
 		if len(xn) > 0 && len(xn[0]) > 1 {
 			rlst = append(rlst, xn[0][1:])
 		}
 	}
 	return rlst
+}
+func GetPkgName() string {
+	gopath, _ := os.LookupEnv("GOPATH")
+	if gopath == "" {
+		return ""
+	}
+	currentPath, _ := os.Getwd()
+	root := filepath.Join(gopath, "src")
+	if strings.HasPrefix(strings.ToLower(currentPath), strings.ToLower(root)) {
+		currentPath = currentPath[len(root)+1:]
+	}
+	return strings.Trim(strings.Replace(currentPath, "\\", "/", -1), "/")
+
 }

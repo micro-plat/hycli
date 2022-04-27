@@ -33,7 +33,7 @@
         {{- if eq "multiselect" $c.RType.Type -}}
         <!--{{.Desc}} 下拉控件多选 -->
         <el-form-item>
-            <el-select v-model="form.{{.Name}}" clearable multiple collapse-tags placeholder="{{.Desc}}">
+            <el-select v-model="form.{{.Name}}" filterable clearable multiple collapse-tags placeholder="{{.Desc}}">
                 <el-option v-for="item in {{.Name}}List" :key="item.value" :label="item.name" :value="item.value" />
             </el-select>
         </el-form-item>

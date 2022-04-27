@@ -23,7 +23,7 @@
   {{else if eq "select" $c.RType.Type}}
    <!--{{$c.Desc}} 下拉控件 -->
   <el-form-item prop="{{$c.Name}}" label="{{$c.Desc}}" label-width="100px" label-position="right">
-    <el-select v-model="{{$c.Ext.FormName}}.{{.Name}}" style="width: 100%" clearable placeholder="请选择{{.Desc}}">
+    <el-select v-model="{{$c.Ext.FormName}}.{{.Name}}" style="width: 100%" filterable  clearable placeholder="请选择{{.Desc}}">
       <el-option v-for="item in {{.Name}}List" :key="item.value" :label="item.name" :value="item.value" />
     </el-select>
   </el-form-item>

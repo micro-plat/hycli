@@ -17,7 +17,7 @@ func init() {
 				{
 					Name:   "create",
 					Usage:  "创建项目",
-					Action: project.Create,
+					Action: project.CreateByCtx,
 				},
 				{
 					Name:   "code",

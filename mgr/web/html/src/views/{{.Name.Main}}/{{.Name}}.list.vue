@@ -16,6 +16,11 @@
     <CEdit ref="cedit" @onsaved="onQuery"></CEdit>
     <CView ref="cview" @onsaved="onQuery"></CView>
     <DLGOpts ref="dlgOpts" @onsaved="onQuery"></DLGOpts>
+    {{ range $x,$m:=$optRow -}}
+    {{- if eq "CMPNT" $m.Name -}}
+    <{{$m.UNQ}} ref="cmpnt_{{$m.UNQ}}"  @onsaved="onQuery"></{{$m.UNQ}}>
+    {{- end -}}
+    {{end}}
     <el-dialog draggable v-model="conf.confirmVisible" title="删除" width="30%">
       <span>确认删除{{range $i,$c:= $delRow}} {{ $c.Desc }}:[<span
           v-text="delForm.{{$c.Name}}"></span>{{ end }}] 吗?</span>
@@ -35,12 +40,22 @@ import CAdd from "./{{.Name}}.add"
 import CEdit from "./{{.Name}}.edit"
 import CView from "./{{.Name}}.view"
 import DLGOpts from "./{{.Name}}.opts.vue"
+  {{ range $x,$m:=$optRow -}}
+    {{- if eq "CMPNT" $m.Name -}}
+   import {{$m.UNQ}} from "{{$m.URL}}"
+    {{- end -}}
+    {{end}}
 export default {
    components: {
 		CAdd,
     CEdit,
     CView,
-    DLGOpts
+    DLGOpts,
+    {{ range $x,$m:=$optRow -}}
+    {{- if eq "CMPNT" $m.Name -}}
+    {{$m.UNQ}},
+    {{- end -}}
+    {{end}}
   },
   data() {
     return {
@@ -81,7 +96,8 @@ export default {
         {{- range $i,$c := $qrow -}}
         {{- if eq true $c.Ext.IsSelect}}
           item.{{$c.Name}}_label = that.$theia.enum.getName("{{$c.Ext.SLType}}",item.{{$c.Name}})
-        {{- else if eq "switch" $c.RType.Type}}
+        {{- end -}}
+        {{- if eq "switch" $c.RType.Type}}
           item.{{$c.Name}}_switch = item.{{$c.Name}} == 0
         {{- end}}
         {{- end}}
@@ -144,6 +160,15 @@ export default {
     {{- if eq "DIALOG" $m.Name -}}
     show_dialog_{{$m.UNQ}}(fm){
        this.$refs.dlgOpts.show_{{$m.UNQ}}(fm)
+    },
+    {{- else if eq "CMPNT"  $m.Name -}}
+    show_cmpnt_{{$m.UNQ}}(fm){
+      let query={}
+      {{- $rows:= fltrUIRows $table $m.RwName -}}
+        {{range $i,$c:=$rows}} 
+      query.{{$c.Name}} = fm.{{$c.Name}}
+        {{- end}}
+      this.$refs.cmpnt_{{$m.UNQ}}.show(query)
     },
     {{- end -}}
     {{- end}}

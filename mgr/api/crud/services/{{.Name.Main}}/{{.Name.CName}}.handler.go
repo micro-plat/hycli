@@ -1,3 +1,5 @@
+//go:build ignore
+
 package {{.Name.Main}}
 
 import (
@@ -7,10 +9,11 @@ import (
 	"github.com/micro-plat/lib4go/errs"
 	"github.com/micro-plat/lib4go/types"
 )
-
 {{- $table := .|fltrCodeTable -}}
-{{ $clen := (len $table.CRows)|minus}}
-{{ $ulen := (len $table.URows)|minus}}
+{{- $crows := fltrNotNullRows  $table.CRows -}}
+{{- $clen := (len $crows)|minus}}
+{{- $urows := fltrNotNullRows  $table.URows -}}
+{{- $ulen := (len $urows)|minus -}}
 {{ $pklen := (len $table.PKRows)|minus}}
 //AuditInfoHandler 获取{{.Desc}}处理服务
 type {{.Name.CName}}Handler struct {
@@ -21,9 +24,9 @@ type {{.Name.CName}}Handler struct {
 
 func New{{.Name.CName}}Handler() *{{.Name.CName}}Handler {
 	return &{{.Name.CName}}Handler{
-		insertRequiredFields:[]string{ {{- range $i,$v :=  $table.CRows -}}
+		insertRequiredFields:[]string{ {{- range $i,$v := $crows -}}
 			"{{$v.Name}}"{{if lt $i $clen }},{{end}}{{- end -}}},
-		updateRequiredFields:[]string{ {{- range $i,$v :=  $table.URows -}}
+		updateRequiredFields:[]string{ {{- range $i,$v :=  $urows -}}
 			"{{$v.Name}}"{{if lt $i $ulen }},{{end}}{{- end -}}},
 		pkRequiredFields:[]string{ {{- range $i,$v :=  $table.PKRows -}}
 			"{{$v.Name}}"{{if lt $i $pklen }},{{end}}{{- end -}}},

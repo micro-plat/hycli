@@ -39,7 +39,7 @@ func fltrCodeTable(t *md.Table) *CodeTable {
 		URows:  make([]*CodeRow, 0, 1),
 		PKRows: make([]*CodeRow, 0, 1),
 	}
-	table.EType = &EnumType{}
+	table.EType = &EnumType{DERows: make([]*CodeRow, 0, 1)}
 	tp := &EnumType{}
 	for _, r := range t.Rows {
 		if md.HasConstraint(r.Constraints, "Q") {
@@ -72,6 +72,9 @@ func fltrCodeTable(t *md.Table) *CodeTable {
 		if md.HasConstraint(r.Constraints, "DT") {
 			tp.Type = types.GetString(md.GetTPName("DT", r.Constraints...), r.Name)
 			tp.Multiple = true
+		}
+		if md.HasConstraint(r.Constraints, "DE") {
+			tp.DERows = append(tp.DERows, NewCodeRow("", r))
 		}
 	}
 	tp.SetTypeIfAbsence(t.Name.Short)

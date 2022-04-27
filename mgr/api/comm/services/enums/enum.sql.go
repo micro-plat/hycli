@@ -1,10 +1,12 @@
+//go:build ignore
+
 package enums
 
 {{ $etable := .|fltrCodeTables}}
 var enumSQL = map[string]string{
 	{{- range $i,$v:=$etable -}}
 	{{- if and ($v.AsEnum) (eq false $v.EType.Multiple) }}
-	"{{$v.EType.Type}}":"select {{$v.EType.Id}} value,{{$v.EType.Name}} name,'{{$v.EType.Type}}' type from {{$v.Name.Raw}}",
+	"{{$v.EType.Type}}":"select {{$v.EType.Id}} value,{{$v.EType.Name}} name,{{- range $j,$v:=$v.EType.DERows -}}{{$v.Name}} {{$v.Desc}},{{end}}'{{$v.EType.Type}}' type from {{$v.Name.Raw}}",
 	{{- end -}}
 	{{- end}}
 }
@@ -12,7 +14,7 @@ var enumSQL = map[string]string{
 var unspecifiedEnum = []string{
 	{{- range $i,$v:=$etable -}}
 	{{- if and ($v.AsEnum) (eq true $v.EType.Multiple) }}
-	"select {{$v.EType.Id}} value,{{$v.EType.Name}} name,{{$v.EType.Type}} type from {{$v.Name.Raw}} where {{$v.EType.Type}}=if(@type='',{{$v.EType.Type}},@type)",
+	"select {{$v.EType.Id}} value,{{$v.EType.Name}} name,{{- range $j,$v:=$v.EType.DERows -}}{{$v.Name}} {{$v.Desc}},{{end}}{{$v.EType.Type}} type from {{$v.Name.Raw}} where {{$v.EType.Type}}=if(@type='',{{$v.EType.Type}},@type)",
 	{{- end -}}
 	{{- end}}
 }

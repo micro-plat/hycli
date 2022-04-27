@@ -21,7 +21,7 @@ var optLabels = map[string]string{
 }
 
 type Operation struct {
-	Name   string //update,view,del,link,dialog
+	Name   string //update,view,del,link,dialog,cmpnt
 	Label  string //修改,预览，删除
 	URL    string
 	RwName string
