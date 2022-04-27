@@ -11,7 +11,7 @@
     "core-js": "^3.8.3",
     "element-plus": "^2.1.8",
     "jquery": "^3.6.0",
-    "theia-ui": "^0.1.161",
+    "theia-ui": "^0.1.170",
     "vue": "^3.2.13"
   },
   "devDependencies": {

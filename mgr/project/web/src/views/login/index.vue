@@ -16,21 +16,32 @@ export default {
       errs: { 901: "用户名密码错误", 902: "用户已锁定，暂时不能登录" },
     };
   },
-  created(){
-    this.$theia.system =  this.$theia.env.getSystemInfo();
+  created() {
+    this.$theia.system = this.$theia.env.getSystemInfo();
   },
 
   mounted() {
-    this.$theia.http.clearAuthorization()
-    this.$theia.http.post("/member/logout", {})
+    this.$theia.http.clearAuthorization();
+    this.$theia.http.post("/member/logout", {});
   },
   methods: {
     login(u, p) {
       let that = this;
       this.$theia.http
-        .post("/member/login", {userName: u, password: this.$theia.crypto.md5(p) })
-        .then(() => {
-          that.$router.push("/user");
+        .post("/member/login", {
+          userName: u,
+          password: this.$theia.crypto.md5(p),
+        })
+        .then((data) => {
+          if (that.$route.query.returnurl) {
+            window.location = that.$route.query.returnurl;
+            return;
+          }
+          if (data.index_url) {
+            window.location = data.index_url;
+            return;
+          }
+          that.$router.push("/");
         })
         .catch((err) => {
           let msg = "";

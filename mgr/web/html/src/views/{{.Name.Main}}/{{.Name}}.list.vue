@@ -188,9 +188,6 @@ export default {
   },
 };
 </script>
-
-
-
 <style>
 .el-form-item {
   margin-right: 10px !important;
