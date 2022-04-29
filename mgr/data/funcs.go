@@ -5,8 +5,9 @@ import "strings"
 var Funcs = map[string]interface{}{
 	"fltrCodeTable":     fltrCodeTable,  //代码
 	"fltrCodeTables":    fltrCodeTables, //代码
-	"fltrUITable":       fltrUITable,    //代码
-	"fltrUITables":      fltrUITables,   //代码
+	"flterMainTable":    flterMainTable,
+	"fltrUITable":       fltrUITable,  //代码
+	"fltrUITables":      fltrUITables, //代码
 	"fltrUIRows":        fltrUIRows,
 	"fltrNotNullRows":   fltrNotNullRows,
 	"getFirstCodeTable": getFirstCodeTable,
@@ -21,6 +22,7 @@ func getFirstCodeTable(ts []*CodeTable) *CodeTable {
 	}
 	return &CodeTable{}
 }
+
 func multiply(v int, b int) int {
 	return v * b
 }

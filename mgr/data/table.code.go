@@ -18,6 +18,18 @@ type CodeTable struct {
 	PKRows []*CodeRow
 }
 
+func flterMainTable(tbs []*CodeTable) []*CodeTable {
+	cache := map[string]bool{}
+	ntbs := make([]*CodeTable, 0, len(tbs))
+	for _, t := range tbs {
+		if _, ok := cache[t.Name.Main]; !ok {
+			cache[t.Name.Main] = true
+			ntbs = append(ntbs, t)
+		}
+	}
+	return ntbs
+}
+
 //过滤行
 func fltrCodeTables(t md.Tables) []*CodeTable {
 	tbs := make([]*CodeTable, 0, 1)

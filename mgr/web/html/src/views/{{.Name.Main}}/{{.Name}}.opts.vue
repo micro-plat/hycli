@@ -85,11 +85,19 @@ export default {
       //保存 {{$m.Label}} 弹出框数据
       save_{{$m.UNQ}}(){
         let that = this
-        this.$refs.form_{{$m.UNQ}}.validate((v=>{
+        this.$refs.fm_{{$m.UNQ}}.validate((v=>{
             if(!v){
                 return
             }
-        this.$theia.http.post("{{$m.URL}}",this.form_{{$m.UNQ}}).then(res=>{
+        let post_form_{{$m.UNQ}}=this.form_{{$m.UNQ}}
+        {{- $rows:= fltrUIRows $table $m.RwName (sjoin "form_" $m.UNQ)}}
+        {{range $i,$c:= $rows -}}
+       
+         {{- if eq "password" $c.RType.Type  -}}
+        post_form_{{$m.UNQ}}.{{$c.Name}} = this.$theia.crypto.md5(this.form_{{$m.UNQ}}.{{$c.Name}})
+         {{- end -}}
+          {{end}}
+        this.$theia.http.post("{{$m.URL}}",post_form_{{$m.UNQ}}).then(res=>{
             that.$notify.success({title: '成功',message: '提交成功',duration:5000})
             that.$emit("onsaved")
             that.hide_{{$m.UNQ}}()

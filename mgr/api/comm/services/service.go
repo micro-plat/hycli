@@ -2,11 +2,12 @@
 
 package services
 
-{{$etable := .|fltrCodeTables}}
+{{- $etable := .|fltrCodeTables -}}
+{{- $mtable :=$etable|flterMainTable -}}
 {{$ft := getFirstCodeTable $etable}}
 import (
 	"github.com/micro-plat/hydra"
-	{{range $i,$v:=$etable -}}
+	{{range $i,$v:=$mtable -}}
 	"{{$v.PkgName}}/services/{{$v.Name.Main}}"
 	{{end -}}
 	"{{$ft.PkgName}}/services/enums"

@@ -6,6 +6,7 @@ import  "font-awesome/css/font-awesome.min.css";
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import locale from 'element-plus/lib/locale/lang/zh-cn'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 import theia from "theia-ui"
 

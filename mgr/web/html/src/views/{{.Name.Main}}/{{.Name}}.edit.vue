@@ -40,7 +40,12 @@ export default {
       get(form){
         let that = this
         this.$theia.http.get("/{{.Name.CName|lower}}",form).then(res=>{
-           Object.assign(that.form, res)
+        {{- range $i,$c := $crow -}}
+        {{- if eq "switch" $c.RType.Type}}
+          res.{{$c.Name}}_switch = res.{{$c.Name}} == 0
+        {{- end}}
+        {{- end}}
+        Object.assign(that.form, res)
         }).catch(res=>{
           let code = res.response.status
           let msg = `{{.Desc}}查询失败(${code})`

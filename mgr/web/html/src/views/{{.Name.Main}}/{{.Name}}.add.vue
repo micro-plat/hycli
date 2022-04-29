@@ -49,7 +49,13 @@ export default {
     },
     onSave(){
         let that = this
-        this.$theia.http.post("/{{.Name.CName|lower}}",this.form).then(res=>{
+        let postForm=this.form
+        {{range $i,$c:= $crow -}}
+         {{- if eq "password" $c.RType.Type  -}}
+        postForm.{{$c.Name}} = this.$theia.crypto.md5(this.form.{{$c.Name}})
+         {{- end -}}
+          {{end}}
+        this.$theia.http.post("/{{.Name.CName|lower}}",postForm).then(res=>{
             that.$notify.success({title: '成功',message: '{{.Desc}}保存成功',duration:5000})
             that.$emit("onsaved")
             that.hide()
