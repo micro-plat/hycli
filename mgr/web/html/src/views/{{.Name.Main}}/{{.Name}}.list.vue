@@ -117,9 +117,6 @@ export default {
      showView(q){ 
        this.$refs.cview.show(q)
     },
-     show_confirm(name,label,url,q){ 
-       this.$refs.diaConfirm.show({Name:name,URL:url,Label:label},q)
-    },
     showEdit(q){
         this.$refs.cedit.show(q)
       },
@@ -137,39 +134,8 @@ export default {
       let p = this.$theia.url.encode(param)
       window.location =`${url}?${p}`
     },
-     {{ range $x,$m:=$optRow -}}
-    {{- if eq "DIALOG" $m.Name -}}
-    show_dialog_{{$m.UNQ}}(fm){
-       this.$refs.dlgOpts.show_{{$m.UNQ}}(fm)
-    },
-    {{- else if eq "CMPNT" $m.Name -}}
-    show_cmpnt_{{$m.UNQ}}(fm){
-      let query={}
-      {{- $rows:= fltrUIRows $table $m.RwName -}}
-        {{range $i,$c:=$rows}} 
-      query.{{$c.Name}} = fm.{{$c.Name}}
-        {{- end}}
-      this.$refs.cmpnt_{{$m.UNQ}}.show(query)
-    },
-     {{- else if or (eq "CNFRM" $m.Name) (eq "DEL" $m.Name) -}}
-    show_confirm_{{$m.UNQ}}(fm){
-      this.$refs.dlgCnfrm.show_{{$m.UNQ}}(fm)
-    },
-    {{- end -}}
-    {{- end}}
-
-    {{ range $x,$m:=$optRow -}}
-    {{- if eq "LINK" $m.Name -}}
-    goto_{{$m.UNQ}}(fm){
-      let query={}
-      {{- $rows:= fltrUIRows $table $m.RwName -}}
-        {{range $i,$c:=$rows}} 
-      query.{{$c.Name}} = fm.{{$c.Name}}
-        {{- end}}
-      this.goto('{{$m.URL}}',query)
-    }
-    {{- end -}}
-    {{- end}}
+    
+    {{template "opts.tmpl.js" $table}}
   },
 };
 </script>
