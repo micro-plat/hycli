@@ -59,7 +59,6 @@ export default {
         loading:false,
         progressColor: this.$theia.env.conf.progress||[]
       },
-      delForm:{},
       {{- template "queryform.tmpl.js" $qrow -}}
     };
   },
