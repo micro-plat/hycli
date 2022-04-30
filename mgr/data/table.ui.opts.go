@@ -19,9 +19,14 @@ var optLabels = map[string]string{
 	VIEW:   "预览",
 	DEL:    "删除",
 }
+var RwNames = map[string]string{
+	UPDATE: "U",
+	VIEW:   "V",
+	DEL:    "D",
+}
 
 type Operation struct {
-	Name   string //update,view,del,link,dialog,cmpnt
+	Name   string //update,view,del,link,dialog,cmpnt,cnfrm
 	Label  string //修改,预览，删除
 	URL    string
 	RwName string
@@ -35,9 +40,10 @@ func (o *Operation) String() string {
 
 func newOperation(name string, tname ...string) *Operation {
 	return &Operation{
-		Name:  name,
-		Label: types.GetString(optLabels[name], types.GetStringByIndex(tname, 0)),
-		UNQ:   defFids.Next(),
+		Name:   name,
+		Label:  types.GetString(optLabels[name], types.GetStringByIndex(tname, 0)),
+		UNQ:    defFids.Next(),
+		RwName: RwNames[name],
 	}
 }
 

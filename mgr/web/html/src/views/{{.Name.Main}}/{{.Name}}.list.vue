@@ -16,21 +16,14 @@
     <CEdit ref="cedit" @onsaved="onQuery"></CEdit>
     <CView ref="cview" @onsaved="onQuery"></CView>
     <DLGOpts ref="dlgOpts" @onsaved="onQuery"></DLGOpts>
+  <DLGCnfrm ref="dlgCnfrm"  @onsaved="onQuery"></DLGCnfrm>
+
     {{ range $x,$m:=$optRow -}}
     {{- if eq "CMPNT" $m.Name -}}
     <{{$m.UNQ}} ref="cmpnt_{{$m.UNQ}}"  @onsaved="onQuery"></{{$m.UNQ}}>
     {{- end -}}
     {{end}}
-    <el-dialog draggable v-model="conf.confirmVisible" title="删除" width="30%">
-      <span>确认删除{{range $i,$c:= $delRow}} {{ $c.Desc }}:[<span
-          v-text="delForm.{{$c.Name}}"></span>{{ end }}] 吗?</span>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="conf.confirmVisible = false">取消</el-button>
-          <el-button type="primary" @click="onDelete">确认</el-button>
-        </span>
-      </template>
-    </el-dialog>
+   
   </div>
 </template>
 
@@ -40,8 +33,10 @@ import CAdd from "./{{.Name}}.add"
 import CEdit from "./{{.Name}}.edit"
 import CView from "./{{.Name}}.view"
 import DLGOpts from "./{{.Name}}.opts.vue"
+import DLGCnfrm from "./{{.Name}}.cnfrm.vue"
+
   {{ range $x,$m:=$optRow -}}
-    {{- if eq "CMPNT" $m.Name -}}
+    {{- if eq "CMPNT" $m.Name  -}}
    import {{$m.UNQ}} from "{{$m.URL}}"
     {{- end -}}
     {{end}}
@@ -51,8 +46,9 @@ export default {
     CEdit,
     CView,
     DLGOpts,
+    DLGCnfrm,
     {{ range $x,$m:=$optRow -}}
-    {{- if eq "CMPNT" $m.Name -}}
+     {{- if eq "CMPNT" $m.Name -}}
     {{$m.UNQ}},
     {{- end -}}
     {{end}}
@@ -60,7 +56,6 @@ export default {
   data() {
     return {
       conf:{
-        confirmVisible:false,
         loading:false,
         progressColor: this.$theia.env.conf.progress||[]
       },
@@ -122,22 +117,8 @@ export default {
      showView(q){ 
        this.$refs.cview.show(q)
     },
-     delItem(q){ 
-       this.conf.confirmVisible = true
-       this.delForm = q
-    },
-    onDelete(){
-        let that = this
-        this.$theia.http.del("/{{.Name.CName|lower}}",this.delForm).then(res=>{
-          that.conf.confirmVisible = false
-          that.$notify.success({title: '成功',message: '{{.Desc}}删除成功',duration:5000})
-          that.onQuery()
-       }).catch(err=>{
-          that.conf.confirmVisible = false
-          let code = res.response.status
-          let msg= `{{.Desc}}保存失败(${code})`
-          that.$notify.error({title: '失败',message:msg,duration:5000})
-       })
+     show_confirm(name,label,url,q){ 
+       this.$refs.diaConfirm.show({Name:name,URL:url,Label:label},q)
     },
     showEdit(q){
         this.$refs.cedit.show(q)
@@ -161,7 +142,7 @@ export default {
     show_dialog_{{$m.UNQ}}(fm){
        this.$refs.dlgOpts.show_{{$m.UNQ}}(fm)
     },
-    {{- else if eq "CMPNT"  $m.Name -}}
+    {{- else if eq "CMPNT" $m.Name -}}
     show_cmpnt_{{$m.UNQ}}(fm){
       let query={}
       {{- $rows:= fltrUIRows $table $m.RwName -}}
@@ -169,6 +150,10 @@ export default {
       query.{{$c.Name}} = fm.{{$c.Name}}
         {{- end}}
       this.$refs.cmpnt_{{$m.UNQ}}.show(query)
+    },
+     {{- else if or (eq "CNFRM" $m.Name) (eq "DEL" $m.Name) -}}
+    show_confirm_{{$m.UNQ}}(fm){
+      this.$refs.dlgCnfrm.show_{{$m.UNQ}}(fm)
     },
     {{- end -}}
     {{- end}}
