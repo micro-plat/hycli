@@ -28,7 +28,7 @@ export default {
         visible: false,
         uploadPath:this.$theia.env.join("/file/upload"),
       },
-    {{- template "addform.tmpl.js" $crow -}}
+    {{- template "add.tmpl.js" $crow -}}
   },
   methods: {
     show() {
