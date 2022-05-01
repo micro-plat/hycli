@@ -66,6 +66,18 @@ func getShowTypeName(t string, vs ...string) string {
 	}
 	return ""
 }
+func getTypeName(vs ...string) string {
+	for _, k := range vs {
+		if v, ok := aMap[k]; ok {
+			return v
+		}
+		if v, ok := vmap[k]; ok {
+			return v
+		}
+
+	}
+	return ""
+}
 
 type UIType struct {
 	Name      string
@@ -73,9 +85,11 @@ type UIType struct {
 	Len       int
 	IsDecimal bool
 	IsNumber  bool
+	IsDate    bool
 	Type      string
 	Min       string
 	Max       string
+	Ext       string
 }
 
 func NewUIType(t string, r *md.Row) *UIType {
@@ -97,9 +111,11 @@ func NewUIType(t string, r *md.Row) *UIType {
 		Name:      r.Type.Name,
 		Len:       r.Type.Len,
 		IsDecimal: strings.EqualFold(getShowTypeName(t, tpName), "NUMBER") && r.Type.DLen > 0,
-		IsNumber:  strings.EqualFold(getShowTypeName(t, tpName), "NUMBER"),
-		Format:    md.GetFormat(r.Constraints...),
-		Type:      getShowTypeName(t, tpName+md.GetRangeName()),
+		IsNumber:  strings.EqualFold(getTypeName(r.Type.Name), "NUMBER"),
+		IsDate: strings.EqualFold(getTypeName(r.Type.Name), "date") ||
+			strings.EqualFold(getTypeName(r.Type.Name), "daterange"),
+		Format: md.GetFormat(r.Constraints...),
+		Type:   getShowTypeName(t, tpName+md.GetRangeName()),
 	}
 
 	uit.Min, uit.Max = md.GetRanges(r.Constraints...)

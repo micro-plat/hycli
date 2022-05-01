@@ -1,6 +1,7 @@
 <template>
   {{- $table := .|fltrUITable}}
   {{- $qrow := $table.QRows}}
+  {{- $lstRow := $table.LRows}}
   {{- $leRow := $table.LERows}}
   {{- $optRow :=$table.Optrs}}
   {{- $delRow :=$table.DRows}}
@@ -87,8 +88,15 @@ export default {
         that.dataList = res.items
         that.total = res.count
         that.dataList.forEach(item => {
+          {{- range $i,$c := $lstRow -}}
+          {{- if and (ne "" $c.RType.Format) (eq true $c.RType.IsDate)}}
+          item.{{$c.Name}} = that.$theia.str.dateFormat(item.{{$c.Name}},'{{$c.RType.Format}}')
+        {{- else if and (ne "" $c.RType.Format) (eq true $c.RType.IsNumber)}}
+           item.{{$c.Name}} = that.$theia.str.numberFormat(item.{{$c.Name}},'{{$c.RType.Format}}')
+        {{- end}}
+        {{- end }}
         {{- range $i,$c := $qrow -}}
-        {{- if eq true $c.Ext.IsSelect}}
+       {{- if eq true $c.Ext.IsSelect}}
           item.{{$c.Name}}_label = that.$theia.enum.getName("{{$c.Ext.SLType}}",item.{{$c.Name}})
         {{- end -}}
         {{- if eq "switch" $c.RType.Type}}

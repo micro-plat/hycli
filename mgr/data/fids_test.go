@@ -16,3 +16,7 @@ func TestFids2(t *testing.T) {
 	assert.Equal(t, "aaz", fd.Current())
 	assert.Equal(t, "aba", fd.Next())
 }
+func TestType(t *testing.T) {
+	v := getShowTypeName("Q", "int")
+	assert.Equal(t, "number", v)
+}
