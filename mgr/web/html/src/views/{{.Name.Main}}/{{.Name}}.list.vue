@@ -5,7 +5,7 @@
   {{- $leRow := $table.LERows}}
   {{- $optRow :=$table.Optrs}}
   {{- $delRow :=$table.DRows}}
-  <div>
+  <div style="height:100%">
 
      <!-- 查询条件 -->
     {{template "query.tmpl.html" $qrow}}
@@ -90,9 +90,13 @@ export default {
         that.dataList.forEach(item => {
           {{- range $i,$c := $lstRow -}}
           {{- if and (ne "" $c.RType.Format) (eq true $c.RType.IsDate)}}
-          item.{{$c.Name}} = that.$theia.str.dateFormat(item.{{$c.Name}},'{{$c.RType.Format}}')
+           item.{{$c.Name}} = that.$theia.str.dateFormat(item.{{$c.Name}},'{{$c.RType.Format}}')
         {{- else if and (ne "" $c.RType.Format) (eq true $c.RType.IsNumber)}}
            item.{{$c.Name}} = that.$theia.str.numberFormat(item.{{$c.Name}},'{{$c.RType.Format}}')
+        {{- else if eq true $c.RType.IsMobile}}
+           item.{{$c.Name}} = that.$theia.str.phoneFormat(item.{{$c.Name}})
+        {{- else if ne "" $c.RType.Format}}
+           item.{{$c.Name}} = that.$theia.str.cut(item.{{$c.Name}},'{{$c.RType.Format}}')
         {{- end}}
         {{- end }}
         {{- range $i,$c := $qrow -}}

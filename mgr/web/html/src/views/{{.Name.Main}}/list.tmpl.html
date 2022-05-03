@@ -4,8 +4,8 @@
 {{- $optRow :=.Optrs}}
 {{- $optLen := len $optRow}}
 <div class="list">
-    <el-table :data="dataList" v-loading="conf.loading" stripe style="width: 100%" size="small" empty-text="无数据"
-        height="540px">
+    <el-table :data="dataList" v-loading="conf.loading" stripe style="width: 100%;height:calc(100vh - 160px)" size="small" empty-text="无数据"
+    >
         {{- if gt $leLen 0 -}}
         {{- template "le.tmpl.html" $leRow -}}
         {{- end}}
@@ -55,7 +55,7 @@
         {{- template "opts.tmpl.html" .}}
         {{ end }}
     </el-table>
-    <el-pagination :currentPage="form.pi" :page-size="form.ps" style="position: absolute; right: 30px"
+    <el-pagination :currentPage="form.pi" :page-size="form.ps" style="position: absolute; right: 30px;bottom:10px;"
         :page-sizes="[10, 20, 50, 100]" :background="false" small layout="total,sizes,prev, pager, next, jumper"
         :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
 </div>

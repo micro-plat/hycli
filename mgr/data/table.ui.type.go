@@ -86,6 +86,7 @@ type UIType struct {
 	IsDecimal bool
 	IsNumber  bool
 	IsDate    bool
+	IsMobile  bool
 	Type      string
 	Min       string
 	Max       string
@@ -114,8 +115,9 @@ func NewUIType(t string, r *md.Row) *UIType {
 		IsNumber:  strings.EqualFold(getTypeName(r.Type.Name), "NUMBER"),
 		IsDate: strings.EqualFold(getTypeName(r.Type.Name), "date") ||
 			strings.EqualFold(getTypeName(r.Type.Name), "daterange"),
-		Format: md.GetFormat(r.Constraints...),
-		Type:   getShowTypeName(t, tpName+md.GetRangeName()),
+		IsMobile: strings.EqualFold(tpName, "MOBILE"),
+		Format:   md.GetFormat(r.Constraints...),
+		Type:     getShowTypeName(t, tpName+md.GetRangeName()),
 	}
 
 	uit.Min, uit.Max = md.GetRanges(r.Constraints...)
