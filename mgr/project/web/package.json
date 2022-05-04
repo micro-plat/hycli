@@ -3,8 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "serve": "vue-cli-service serve --mode dev",
+    "fat": "vue-cli-service build --mode fat",
+    "build": "vue-cli-service build  --mode prod",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -12,7 +13,7 @@
     "core-js": "^3.8.3",
     "element-plus": "^2.1.8",
     "jquery": "^3.6.0",
-    "theia-ui": "^0.1.173",
+    "theia-ui": "^0.1.189",
     "vue": "^3.2.13"
   },
   "devDependencies": {

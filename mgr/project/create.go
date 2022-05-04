@@ -17,6 +17,12 @@ func Create() error {
 	if err := CreateWeb("web", NewProject("web")); err != nil {
 		return err
 	}
+
+	//创建docs项目
+	if err := CreateDocs("docs", NewProject("docs")); err != nil {
+		return err
+	}
+
 	return nil
 }
 func CreateByCtx(c *cli.Context) (err error) {

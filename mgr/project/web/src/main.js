@@ -11,7 +11,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import theia from "theia-ui"
 
 var app=createApp(App)
-app.use(theia)
+app.use(theia, { env: process.env })
 app.use(ElementPlus, { locale })
 app.use(router)
 app.mount('#app')

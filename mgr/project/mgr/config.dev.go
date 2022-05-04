@@ -6,7 +6,9 @@ package main
 import (
 	"github.com/micro-plat/hydra"
 
+	"gitee.com/micro-plat/sso/ssov5"
 	"github.com/micro-plat/hydra/conf/server/api"
+	"github.com/micro-plat/hydra/conf/server/auth"
 	"github.com/micro-plat/hydra/conf/server/auth/jwt"
 	"github.com/micro-plat/hydra/conf/server/header"
 	"github.com/micro-plat/hydra/conf/server/processor"
@@ -14,7 +16,7 @@ import (
 
 //初始化配置
 func init() {
-	hydra.OnReady(func() {
+	hydra.OnReady(func() error {
 
 		//配置共有配置
 		hydra.Conf.Vars().DB().MySQLByConnStr("db", "{db.user_name}:{db.pwd}@tcp({db.ip}:3306)/{db.name}?charset=utf8")
@@ -28,8 +30,13 @@ func init() {
 				jwt.WithExpireAt(36000),
 				jwt.WithAuthURL("/login"),
 				jwt.WithHeader(),
-				jwt.WithExcludes("/**/member/*", "/**/login/*"),
+				jwt.WithExcludes(auth.GetExcludes()...),
 			)
+		if err := ssov5.Bind(hydra.S.Web, "http://localhost:6689",
+			"sso5", "a519dae547a11824b6fac1625dcf04a3", "api"); err != nil {
+			return err
+		}
+		return nil
 
 	})
 }
