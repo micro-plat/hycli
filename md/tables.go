@@ -30,13 +30,13 @@ func (t Tables) JoinPkgName(tx string) {
 		tb.PkgName = fmt.Sprintf("%s/%s", tb.PkgName, vtx)
 	}
 }
-func (t Tables) Filter(n string) Tables {
-	if n == "" {
-		return t
-	}
+func (t Tables) Filter(n string, exclude bool) Tables {
 	ns := strings.Split(n, ",")
 	ntables := make(Tables, 0, 1)
 	for _, tn := range t {
+		if exclude && tn.Exclude {
+			continue
+		}
 		for _, cc := range ns {
 			if strings.Contains(tn.Name.Raw, cc) {
 				ntables = append(ntables, tn)

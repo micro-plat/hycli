@@ -32,11 +32,10 @@ func init() {
 				jwt.WithHeader(),
 				jwt.WithExcludes(auth.GetExcludes()...),
 			)
-		if err := ssov5.Bind(hydra.S.Web, "http://localhost:6689",
-			"sso5", "a519dae547a11824b6fac1625dcf04a3", "api"); err != nil {
+		if err := ssov5.Bind(hydra.S.Web, "http://api.sso.hydra-cloud.com:6689",
+			"sso_x", "a519dae547a11824b6fac1625dcf04a3", "api"); err != nil {
 			return err
 		}
 		return nil
-
 	})
 }

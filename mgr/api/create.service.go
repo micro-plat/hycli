@@ -29,7 +29,7 @@ func CreateService(mdpath string, tbs string, outpath string) error {
 	}
 
 	//过滤表格
-	tbls := otbls.Filter(tbs)
+	tbls := otbls.Filter(tbs, true)
 
 	//设置包名称
 	tbls.JoinPkgName(outpath)

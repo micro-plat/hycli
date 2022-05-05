@@ -18,6 +18,9 @@ func init() {
 					Name:   "create",
 					Usage:  "创建项目",
 					Action: project.CreateByCtx,
+					Flags: []cli.Flag{
+						cli.StringFlag{Name: "docs,c", Usage: `-创建docs目录`},
+					},
 				},
 				{
 					Name:   "code",

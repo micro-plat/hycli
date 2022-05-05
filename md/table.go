@@ -8,6 +8,7 @@ import (
 
 type RName struct {
 	Raw    string
+	OName  string //原始名称
 	CName  string
 	Main   string
 	Short  string
@@ -24,6 +25,8 @@ type Table struct {
 	Desc    string //表描述
 	Rows    []*Row //原始行
 	ExtInfo string //扩展信息
+
+	Exclude bool
 	PkgName string
 	Cache   interface{}
 }
@@ -31,14 +34,20 @@ type Table struct {
 //NewTable 创建表
 func NewTable(name, desc, extinfo string) *Table {
 	fname := types.GetStringByIndex(getNames(name), 0)
-	names := strings.Split(fname, "_")
+	rname := strings.Trim(fname, "^")
+	names := strings.Split(rname, "_")
 
 	return &Table{
-		Name: &RName{Raw: fname,
+		Name: &RName{
+			Raw:    rname,
 			Short:  strings.Join(names[1:], "_"),
 			Prefix: names[0],
 			CName:  ToCName(strings.Join(names[1:], "_")),
-			Main:   strings.Join(names[1:2], "_")},
+			Main:   strings.Join(names[1:2], "_"),
+			OName:  fname,
+		},
+
+		Exclude: strings.HasPrefix(fname, "^"),
 		PkgName: GetPkgName(),
 		Desc:    desc,
 		Rows:    make([]*Row, 0, 1),

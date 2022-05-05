@@ -31,7 +31,7 @@ func CreateEnums(mdpath string, tbs string, outpath string) error {
 	}
 
 	//过滤表格
-	tbls := otbls.Filter(tbs)
+	tbls := otbls.Filter(tbs, false)
 
 	//设置包名称
 	tbls.JoinPkgName(outpath)

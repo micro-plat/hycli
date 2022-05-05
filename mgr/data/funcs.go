@@ -12,6 +12,7 @@ var Funcs = map[string]interface{}{
 	"fltrNotNullRows":   fltrNotNullRows,
 	"getFirstCodeTable": getFirstCodeTable,
 	"mergeCodeRow":      mergeCodeRow,
+	"mergeUIRow":        mergeUIRow,
 	"multiply":          multiply,
 	"sjoin":             sjoin,
 }

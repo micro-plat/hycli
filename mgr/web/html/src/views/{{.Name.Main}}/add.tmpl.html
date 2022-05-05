@@ -15,7 +15,7 @@
 
   {{else if or (eq "date" $c.RType.Type) (eq "daterange" $c.RType.Type)}}
  <!--{{$c.Desc}} 日期控件 -->
-  <el-form-item prop="{{$c.Name}}" label-width="100px" label-position="right">
+  <el-form-item prop="{{$c.Name}}" label="{{$c.Desc}}" label-width="100px" label-position="right">
     <el-date-picker style="width: 100%" v-model="{{$c.Ext.FormName}}.{{$c.Name}}" clearable type="date" placeholder="请选择{{.Desc}}"
       format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
   </el-form-item>

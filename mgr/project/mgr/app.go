@@ -18,11 +18,6 @@ func init() {
 		if _, err := components.Def.DB().GetDB(); err != nil {
 			return err
 		}
-
-		//检查Cache
-		if _, err := components.Def.Cache().GetCache(); err != nil {
-			return err
-		}
 		return nil
 	}, http.Web)
 }

@@ -8,7 +8,7 @@
       .then((res) => {
         Object.assign(that.view, res)
     {{- range $i,$c := $vrow -}}
-      {{- if eq true $c.Ext.IsSelect}}
+      {{- if eq true $c.RType.IsSelect}}
         that.view.{{$c.Name}}_label = that.$theia.enum.getName("{{$c.Ext.SLType}}",res.{{$c.Name}})
      {{- end -}}
       {{- end}}

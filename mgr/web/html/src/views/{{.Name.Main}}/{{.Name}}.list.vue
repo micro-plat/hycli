@@ -5,6 +5,9 @@
   {{- $leRow := $table.LERows}}
   {{- $optRow :=$table.Optrs}}
   {{- $delRow :=$table.DRows}}
+
+{{ $LLERows:= mergeUIRow $lstRow $leRow}}
+
   <div style="height:100%">
 
      <!-- 查询条件 -->
@@ -88,7 +91,7 @@ export default {
         that.dataList = res.items
         that.total = res.count
         that.dataList.forEach(item => {
-          {{- range $i,$c := $lstRow -}}
+          {{- range $i,$c := $LLERows -}}
           {{- if and (ne "" $c.RType.Format) (eq true $c.RType.IsDate)}}
            item.{{$c.Name}} = that.$theia.str.dateFormat(item.{{$c.Name}},'{{$c.RType.Format}}')
         {{- else if and (ne "" $c.RType.Format) (eq true $c.RType.IsNumber)}}
@@ -99,8 +102,8 @@ export default {
            item.{{$c.Name}} = that.$theia.str.cut(item.{{$c.Name}},'{{$c.RType.Format}}')
         {{- end}}
         {{- end }}
-        {{- range $i,$c := $qrow -}}
-       {{- if eq true $c.Ext.IsSelect}}
+        {{- range $i,$c := $LLERows -}}
+       {{- if eq true $c.RType.IsSelect}}
           item.{{$c.Name}}_label = that.$theia.enum.getName("{{$c.Ext.SLType}}",item.{{$c.Name}})
         {{- end -}}
         {{- if eq "switch" $c.RType.Type}}

@@ -36,7 +36,7 @@ export default {
       let that = this;
       this.$theia.http
         .post("/member/login", {
-          userName: u,
+          user_name: u,
           password: this.$theia.crypto.md5(p),
         })
         .then((data) => {

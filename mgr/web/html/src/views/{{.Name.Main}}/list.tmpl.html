@@ -40,7 +40,7 @@
                 <el-link type="primary" :href="scope.row.{{$c.Name}}" :title="scope.row.{{$c.Name}}">查看</el-link>
             </template>
         </el-table-column>
-        {{- else if eq true $c.Ext.IsSelect}}
+        {{- else if eq true $c.RType.IsSelect}}
         <el-table-column prop="{{$c.Name}}_label" align="center" label="{{$c.Desc}}">
             <template #default="scope">
                 <span :class="'{{$c.Ext.ColorType}}'==''?'':{{$c.Ext.ColorType}}(scope.row.{{$c.Name}})"

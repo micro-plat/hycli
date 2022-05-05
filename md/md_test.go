@@ -10,7 +10,7 @@ import (
 
 func TestTB(t *testing.T) {
 	row := `
-	### 4. 角色表[sso_role_info]
+	### 4. 角色表[^sso_role_info]
 	
 	| 字段名      | 类型        |      默认值       | 为空  |  约束   | 描述                 |
 	| ----------- | ----------- | :---------------: | :---: | :-----: | :------------------- |
@@ -26,6 +26,7 @@ func TestTB(t *testing.T) {
 	assert.Equal(t, nil, err)
 	assert.Equal(t, 1, len(tbs))
 	assert.Equal(t, "sso_role_info", tbs[0].Name.Raw)
+	assert.Equal(t, strings.HasPrefix(tbs[0].Name.OName, "^"), tbs[0].Exclude)
 	assert.Equal(t, "角色表", tbs[0].Desc)
 	assert.Equal(t, 5, len(tbs[0].Rows))
 

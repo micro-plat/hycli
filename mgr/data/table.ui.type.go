@@ -87,6 +87,7 @@ type UIType struct {
 	IsNumber  bool
 	IsDate    bool
 	IsMobile  bool
+	IsSelect  bool
 	Type      string
 	Min       string
 	Max       string
@@ -118,6 +119,7 @@ func NewUIType(t string, r *md.Row) *UIType {
 		IsMobile: strings.EqualFold(tpName, "MOBILE"),
 		Format:   md.GetFormat(r.Constraints...),
 		Type:     getShowTypeName(t, tpName+md.GetRangeName()),
+		IsSelect: md.HasConstraint(r.Constraints, "sl"),
 	}
 
 	uit.Min, uit.Max = md.GetRanges(r.Constraints...)

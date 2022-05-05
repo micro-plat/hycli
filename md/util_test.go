@@ -55,6 +55,9 @@ func TestHasConstraint(t *testing.T) {
 	b = HasConstraint([]string{"f(10-20)"}, "f")
 	assert.Equal(t, true, b)
 
+	b = HasConstraint([]string{"sl(project_info)", "L", "LE", "C", "U"}, "sl")
+	assert.Equal(t, true, b)
+
 }
 func TestRangeReg(t *testing.T) {
 	reg := regexp.MustCompile(`range\((\w+)[-]?([\w]*)\)`)

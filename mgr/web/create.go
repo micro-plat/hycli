@@ -28,7 +28,7 @@ func CreatePage(mdpath string, tbs string, outpath string) error {
 	}
 
 	//过滤表格
-	tbls := otbls.Filter(tbs)
+	tbls := otbls.Filter(tbs, true)
 
 	//创建页面文件
 	for _, tb := range tbls {

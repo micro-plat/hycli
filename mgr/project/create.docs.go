@@ -5,12 +5,13 @@ import (
 	"fmt"
 
 	"github.com/micro-plat/hycli/output"
+	"github.com/micro-plat/lib4go/types"
 	"github.com/urfave/cli"
 )
 
-//go:embed docs
+//go:embed 0docs
 var docsTmpls embed.FS
-var docsTmplName = "docs"
+var docsTmplName = "0docs"
 
 //CreateDocs 创建docs项目
 func CreateDocs(name string, input interface{}) error {
@@ -30,6 +31,6 @@ func CreateDocsByCtx(c *cli.Context) (err error) {
 	if len(c.Args()) == 0 {
 		return fmt.Errorf("未指定项目名称")
 	}
-	name := "docs"
-	return CreateAPI(name, NewProject(name))
+	name := types.GetString(c.Args().First(), "0docs")
+	return CreateDocs(name, NewProject(name))
 }

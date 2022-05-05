@@ -44,6 +44,20 @@ func mergeCodeRow(a []*CodeRow, b []*CodeRow) []*CodeRow {
 	}
 	return rows
 }
+func mergeUIRow(a []*UIRow, b []*UIRow) []*UIRow {
+	rows := make([]*UIRow, 0, len(a)+len(b))
+	cache := map[string]string{}
+	for _, r := range a {
+		rows = append(rows, r)
+		cache[r.Name] = r.Name
+	}
+	for _, r := range b {
+		if _, ok := cache[r.Name]; !ok {
+			rows = append(rows, r)
+		}
+	}
+	return rows
+}
 
 //fltrUIRows 过滤用户自定义类型对应的行，自定义行对应的控件按新增模式处理
 func fltrUIRows(t *UITable, tp string, formName ...string) []*UIRow {

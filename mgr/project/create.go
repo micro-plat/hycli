@@ -5,7 +5,7 @@ import (
 )
 
 //CreateAPI 创建web项目
-func Create() error {
+func Create(creatDocs bool) error {
 
 	//创建api项目
 
@@ -19,12 +19,14 @@ func Create() error {
 	}
 
 	//创建docs项目
-	if err := CreateDocs("docs", NewProject("docs")); err != nil {
-		return err
+	if creatDocs {
+		if err := CreateDocs("0docs", NewProject("0docs")); err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 func CreateByCtx(c *cli.Context) (err error) {
-	return Create()
+	return Create(c.Bool("docs"))
 }

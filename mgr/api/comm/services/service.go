@@ -7,15 +7,20 @@ package services
 {{$ft := getFirstCodeTable $etable}}
 import (
 	"github.com/micro-plat/hydra"
-	{{range $i,$v:=$mtable -}}
+	{{- range $i,$v:=$mtable -}}
+	{{- if eq false $v.Exclude}}
 	"{{$v.PkgName}}/services/{{$v.Name.Main}}"
-	{{end -}}
+	{{- end}}
+	{{- end}}
 	"{{$ft.PkgName}}/services/enums"
+	_ "{{$ft.PkgName}}/modules/const/db/mysql"
 )
 
 func init() {
-	{{range $i,$v:=$etable -}}
+	{{- range $i,$v:=$etable -}}
+	{{- if eq false $v.Exclude}}
 	hydra.S.Micro("/{{.Name.CName|lower}}", {{$v.Name.Main}}.New{{.Name.CName}}Handler)
-	{{end -}}
+	{{- end}}
+	{{- end}}
 	hydra.S.Micro("/enums",enums.NewEnumsHandler)
 }

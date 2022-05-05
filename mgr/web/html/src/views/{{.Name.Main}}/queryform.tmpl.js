@@ -7,7 +7,7 @@
         {{- end}}
         },
     {{- range $i,$c := $qrow -}}
-    {{- if or (eq true $c.Ext.IsSelect) (eq "multiselect" $c.RType.Type)}}
+    {{- if or (eq true $c.RType.IsSelect) (eq "multiselect" $c.RType.Type)}}
     {{.Name}}List:this.$theia.enum.get("{{$c.Ext.SLType}}"),
     {{.Name}}Exts:this.$theia.enum.getExts("{{$c.Ext.SLType}}"),
     {{- end}}
