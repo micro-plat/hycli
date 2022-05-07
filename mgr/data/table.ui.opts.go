@@ -30,6 +30,7 @@ type Operation struct {
 	Label  string //修改,预览，删除
 	URL    string
 	RwName string
+	FwName string
 	UNQ    string
 }
 
@@ -52,11 +53,13 @@ func newOperations(t string, tag string) []*Operation {
 	list := md.GetExtOpt(t, tag)
 	opts := make([]*Operation, 0, len(list))
 	for _, lst := range list {
+		fields := strings.Split(types.GetStringByIndex(lst, 3), "->")
 		opts = append(opts, &Operation{
 			Name:   strings.ToUpper(types.GetStringByIndex(lst, 1)),
 			Label:  lst[0],
 			URL:    types.GetStringByIndex(lst, 2),
-			RwName: types.GetStringByIndex(lst, 3),
+			RwName: types.GetStringByIndex(fields, 0),
+			FwName: types.GetStringByIndex(fields, 1),
 			UNQ:    defFids.Next(),
 		})
 	}

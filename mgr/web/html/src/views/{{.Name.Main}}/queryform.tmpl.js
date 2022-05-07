@@ -1,5 +1,5 @@
-{{- $qrow := .}}
-    form: {
+{{- $qrow := .QRows}}
+    form_{{.UNQ}}: {
         pi: 1,
         ps: 10,
         {{- range $i,$c := $qrow}}
@@ -12,5 +12,5 @@
     {{.Name}}Exts:this.$theia.enum.getExts("{{$c.Ext.SLType}}"),
     {{- end}}
     {{- end}}
-    dataList:[],
-    total:0,
+    dataList_{{.UNQ}}:[],
+    total_{{.UNQ}}:0,

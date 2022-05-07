@@ -1,4 +1,4 @@
-{{- $table := .|fltrUITable}}
+{{- $table := .}}
 {{- $crow := $table.URows}}
 <template>
   <el-dialog
@@ -8,7 +8,7 @@
     draggable
     :before-close="hide"
   >
-{{- $table := .|fltrUITable}}
+{{- $table := .}}
 {{- $crow := $table.URows}}
 <el-form :model="form" size="small" ref="form" :rules="rules">
 {{template "add.tmpl.html" $crow}}

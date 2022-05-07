@@ -30,14 +30,18 @@ func CreatePage(mdpath string, tbs string, outpath string) error {
 	//过滤表格
 	tbls := otbls.Filter(tbs, true)
 
+	ntbs := data.FltrUITables(tbls)
+	data.Caches(ntbs)
+
 	//创建页面文件
-	for _, tb := range tbls {
+	for _, tb := range ntbs {
 		if err = createViews(outpath, tb); err != nil {
 			return err
 		}
 	}
 
 	// //创建路由文件
+
 	if err = createRouter(outpath, tbls); err != nil {
 		return err
 	}

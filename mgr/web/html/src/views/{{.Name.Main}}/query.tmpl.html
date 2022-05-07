@@ -1,11 +1,13 @@
+{{$table :=.}}
+{{- $qrow :=$table.QRows}}
 <div class="query">
-    {{- $qrow := .}}
-    <el-form :model="form" inline size="small">
+   
+    <el-form :model="form_{{$table.UNQ}}" inline size="small">
         {{ range $i,$c:= $qrow }}
         {{- if eq "daterange" $c.RType.Type -}}
         <!--{{.Desc}} 日期范围控件 -->
         <el-form-item>
-            <el-date-picker style="width: 200px" v-model="form.{{$c.Name}}" type="daterange" start-placeholder="开始日期"
+            <el-date-picker style="width: 200px" v-model="form_{{$table.UNQ}}.{{$c.Name}}" type="daterange" start-placeholder="开始日期"
                 end-placeholder="结束日期" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
         </el-form-item>
         {{- end -}}{{ end }}
@@ -14,7 +16,7 @@
         {{- if eq "date" $c.RType.Type -}}
         <!--{{.Desc}} 日期控件 -->
         <el-form-item>
-            <el-date-picker style="width: 120px" v-model="form.{{$c.Name}}" clearable type="date"
+            <el-date-picker style="width: 120px" v-model="form_{{$table.UNQ}}.{{$c.Name}}" clearable type="date"
                 placeholder="{{.Desc}}" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
         </el-form-item>
         {{- end -}}{{ end }}
@@ -23,7 +25,7 @@
         {{- if eq "select" $c.RType.Type -}}
         <!--{{.Desc}} 下拉控件 -->
         <el-form-item>
-            <el-select v-model="form.{{.Name}}" style="width: 120px" clearable placeholder="{{.Desc}}">
+            <el-select v-model="form_{{$table.UNQ}}.{{.Name}}" style="width: 120px" clearable placeholder="{{.Desc}}">
                 <el-option v-for="item in {{.Name}}List" :key="item.value" :label="item.name" :value="item.value" />
             </el-select>
         </el-form-item>
@@ -33,7 +35,7 @@
         {{- if eq "multiselect" $c.RType.Type -}}
         <!--{{.Desc}} 下拉控件多选 -->
         <el-form-item>
-            <el-select v-model="form.{{.Name}}" filterable clearable multiple collapse-tags placeholder="{{.Desc}}">
+            <el-select v-model="form_{{$table.UNQ}}.{{.Name}}" filterable clearable multiple collapse-tags placeholder="{{.Desc}}">
                 <el-option v-for="item in {{.Name}}List" :key="item.value" :label="item.name" :value="item.value" />
             </el-select>
         </el-form-item>
@@ -43,7 +45,7 @@
         {{- if eq "number" $c.RType.Type -}}
         <!--{{.Desc}}  数字控件 -->
         <el-form-item label="{{$c.Desc}}">
-            <el-input-number v-model="form.{{ $c.Name }}" {{ if ne "" $c.RType.Min}} :min="{{ $c.RType.Min }}" {{ end }}
+            <el-input-number v-model="form_{{$table.UNQ}}.{{ $c.Name }}" {{ if ne "" $c.RType.Min}} :min="{{ $c.RType.Min }}" {{ end }}
                 {{ if ne "" $c.RType.Max}} :max="{{ $c.RType.Max }}" {{ end }} />
         </el-form-item>
         {{- end -}} {{ end }}
@@ -52,7 +54,7 @@
         {{- if eq "input" $c.RType.Type -}}
         <!--{{.Desc}} 输入控件 -->
         <el-form-item>
-            <el-input clearable style="width: 120px" v-model="form.{{$c.Name}}" maxlength="{{$c.RType.Len}}"
+            <el-input clearable style="width: 120px" v-model="form_{{$table.UNQ}}.{{$c.Name}}" maxlength="{{$c.RType.Len}}"
                 placeholder="{{$c.Desc}}" />
         </el-form-item>
         {{- end -}} {{ end }}

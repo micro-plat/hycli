@@ -14,6 +14,7 @@ type UIRow struct {
 	Label       string
 	Required    bool
 	Ext         *Ext
+	UNQ         string
 }
 
 //NewUIRow 构建查询行数据
@@ -26,6 +27,7 @@ func NewUIRow(t string, r *md.Row, formName ...string) *UIRow {
 		Required:    !r.AllowNull,
 		RType:       NewUIType(t, r),
 		Ext:         newExt(t, r, types.GetStringByIndex(formName, 0)),
+		UNQ:         defFids.Next(),
 	}
 
 	return row

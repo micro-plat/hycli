@@ -1,4 +1,4 @@
-{{- $table := .|fltrUITable}}
+{{- $table := .}}
 {{- $crow := $table.CRows}}
 <template>
   <el-dialog

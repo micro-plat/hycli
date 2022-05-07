@@ -1,10 +1,11 @@
-{{- $lstRow := .LRows}}
-{{- $leRow := .LERows}}
-{{- $leLen := len $leRow}}
-{{- $optRow :=.Optrs}}
-{{- $optLen := len $optRow}}
+{{- $table := .}}
+{{- $lstRow := .LRows -}}
+{{- $leRow := .LERows -}}
+{{- $leLen := len $leRow -}}
+{{- $optRow :=.Optrs -}}
+{{- $optLen := len $optRow -}}
 <div class="list">
-    <el-table :data="dataList" v-loading="conf.loading" stripe style="width: 100%;height:calc(100vh - 160px)" size="small" empty-text="无数据"
+    <el-table :data="dataList_{{.UNQ}}" v-loading="conf.loading" stripe style="width: 100%;height:calc(100vh - 160px)" size="small" empty-text="无数据"
     >
         {{- if gt $leLen 0 -}}
         {{- template "le.tmpl.html" $leRow -}}
@@ -55,7 +56,12 @@
         {{- template "opts.tmpl.html" .}}
         {{ end }}
     </el-table>
-    <el-pagination :currentPage="form.pi" :page-size="form.ps" style="position: absolute; right: 30px;bottom:10px;"
+    <el-pagination :currentPage="form_{{$table.UNQ}}.pi" :page-size="form_{{$table.UNQ}}.ps" style="position: absolute; right: 30px;bottom:10px;"
         :page-sizes="[10, 20, 50, 100]" :background="false" small layout="total,sizes,prev, pager, next, jumper"
-        :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
-</div>
+        :total="total_{{$table.UNQ}}" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+        {{ range $x,$m:=$optRow -}}
+        {{- if eq "CMPNT" $m.Name -}}
+        <{{$m.UNQ}} ref="cmpnt_{{$m.UNQ}}"  @onsaved="onQuery"></{{$m.UNQ}}>
+        {{- end -}}
+        {{end}}
+    </div>

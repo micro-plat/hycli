@@ -6,7 +6,7 @@ const routes = [
       children: [
         {{range $i,$c:=. -}}
         {
-          path: "{{$c.Name.Main}}",
+          path: "{{$c.Name.MainPath}}",
           component: () => import("../views/{{$c.Name.Main}}/{{$c.Name}}.list.vue"),
         },
        {{- end}}

@@ -9,8 +9,19 @@ import (
 	"strings"
 )
 
-//Mds2Tables 读取markdown文件并转换为MarkDownDB对象
 func Mds2Tables(filePath string) (Tables, error) {
+	tbs, err := mds2Tables(filePath)
+	if err != nil {
+		return nil, err
+	}
+	for _, tb := range tbs {
+		tb.Tbs = tbs
+	}
+	return tbs, nil
+}
+
+//Mds2Tables 读取markdown文件并转换为MarkDownDB对象
+func mds2Tables(filePath string) (Tables, error) {
 	if !strings.Contains(filePath, "*") {
 		return md2Tbl(filePath)
 	}
@@ -27,6 +38,7 @@ func Mds2Tables(filePath string) (Tables, error) {
 	if err := tbs.Duplicate(); err != nil {
 		return nil, err
 	}
+
 	return tbs, nil
 }
 
@@ -44,6 +56,7 @@ func md2Tbl(fn string) (Tables, error) {
 	if err = tbs.Duplicate(); err != nil {
 		return nil, err
 	}
+
 	return tbs, nil
 }
 

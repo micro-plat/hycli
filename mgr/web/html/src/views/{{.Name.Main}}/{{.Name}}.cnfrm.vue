@@ -1,4 +1,4 @@
-{{- $table := .|fltrUITable}}
+{{- $table := .}}
 {{- $optRow :=$table.Optrs}}
 <template>
   <div>

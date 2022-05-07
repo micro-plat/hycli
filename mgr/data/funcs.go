@@ -3,11 +3,13 @@ package data
 import "strings"
 
 var Funcs = map[string]interface{}{
-	"fltrCodeTable":     fltrCodeTable,  //代码
-	"fltrCodeTables":    fltrCodeTables, //代码
+	"fltrCodeTable":     fltrCodeTable,     //代码
+	"fltrCodeTables":    fltrCodeTables,    //代码
+	"fltrSearchUITable": fltrSearchUITable, //全局查找指定表
+	"IsTmplTb":          IsTmplTb,
 	"flterMainTable":    flterMainTable,
-	"fltrUITable":       fltrUITable,  //代码
-	"fltrUITables":      fltrUITables, //代码
+	// "fltrUITable":       fltrUITable,  //代码
+	// "fltrUITables":      fltrUITables, //代码
 	"fltrUIRows":        fltrUIRows,
 	"fltrNotNullRows":   fltrNotNullRows,
 	"getFirstCodeTable": getFirstCodeTable,
@@ -15,6 +17,13 @@ var Funcs = map[string]interface{}{
 	"mergeUIRow":        mergeUIRow,
 	"multiply":          multiply,
 	"sjoin":             sjoin,
+}
+
+func IsTmplTb(o interface{}) bool {
+	if v, ok := o.(*TUITable); ok {
+		return v.IsTmpl
+	}
+	return false
 }
 
 func getFirstCodeTable(ts []*CodeTable) *CodeTable {
