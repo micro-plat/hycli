@@ -92,4 +92,8 @@ func TestV(t *testing.T) {
 	ln := &Line{Text: "系统信息[sso_system_info]<lst(权限,link>/right/info,x),lst(启用,dialog>/right/save,m)>"}
 	v := getTableExtInfo(ln)
 	assert.Equal(t, "lst(权限,link>/right/info,x),lst(启用,dialog>/right/save,m)", v)
+
+	ln = &Line{Text: "商户信息[ots_merchant_info]<view(货架,tab>ots_merchant_shelf)>"}
+	v = getTableExtInfo(ln)
+	assert.Equal(t, "view(货架,tab>ots_merchant_shelf)", v)
 }

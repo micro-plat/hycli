@@ -80,18 +80,19 @@ func getTypeName(vs ...string) string {
 }
 
 type UIType struct {
-	Name      string
-	Format    string
-	Len       int
-	IsDecimal bool
-	IsNumber  bool
-	IsDate    bool
-	IsMobile  bool
-	IsSelect  bool
-	Type      string
-	Min       string
-	Max       string
-	Ext       string
+	Name       string
+	Format     string
+	Len        int
+	IsDecimal  bool
+	IsNumber   bool
+	IsDate     bool
+	IsMobile   bool
+	IsSelect   bool
+	SelectName string
+	Type       string
+	Min        string
+	Max        string
+	Ext        string
 }
 
 func NewUIType(t string, r *md.Row) *UIType {
@@ -116,10 +117,11 @@ func NewUIType(t string, r *md.Row) *UIType {
 		IsNumber:  strings.EqualFold(getTypeName(r.Type.Name), "NUMBER"),
 		IsDate: strings.EqualFold(getTypeName(r.Type.Name), "date") ||
 			strings.EqualFold(getTypeName(r.Type.Name), "daterange"),
-		IsMobile: strings.EqualFold(tpName, "MOBILE"),
-		Format:   md.GetFormat(r.Constraints...),
-		Type:     getShowTypeName(t, tpName+md.GetRangeName()),
-		IsSelect: md.HasConstraint(r.Constraints, "sl"),
+		IsMobile:   strings.EqualFold(tpName, "MOBILE"),
+		Format:     md.GetFormat(r.Constraints...),
+		Type:       getShowTypeName(t, tpName+md.GetRangeName()),
+		IsSelect:   md.HasConstraint(r.Constraints, "sl"),
+		SelectName: selectName,
 	}
 
 	uit.Min, uit.Max = md.GetRanges(r.Constraints...)

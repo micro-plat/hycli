@@ -1,9 +1,25 @@
 {{- $table :=. -}}
+{{- $pkRows:=$table.PKRows}}
+
 {{- $vrow := $table.VRows -}}
 {{- $viewOptRow :=$table.ViewOpts}}
  show(form) {
     this.conf.visible = true
-    let that = this;
+    {{- range $i,$c:= $viewOptRow}}
+    {{- if eq "TAB" $c.Name}}
+    //{{ $c.Label}}查询
+    {{- $ct:= fltrSearchUITable $c.URL}}
+    {{- range $y,$x:= $pkRows}}
+    {{- $currRow:= fltrForginKey $ct $table $x.Name -}}
+    {{- if ne "" $currRow.UNQ}}
+    this.form_{{$ct.UNQ}}.{{$currRow.Name}} = form.{{$x.Name}}
+    {{- end}}
+    {{- end}}
+    this.queryData_{{$ct.UNQ}}()
+    {{- end}}
+   {{- end }}
+
+   let that = this;
     this.$theia.http
       .get("/{{.Name.CName|lower}}",form)
       .then((res) => {

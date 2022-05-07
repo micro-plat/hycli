@@ -3,6 +3,7 @@
 {{- $lstRow := $table.LRows -}}
 {{- $leRow := $table.LERows -}}
 {{- $LLERows:= mergeUIRow $lstRow $leRow}}
+
 queryData_{{$table.UNQ}}(){
     //构建查询参数
     let that = this
@@ -20,7 +21,7 @@ queryData_{{$table.UNQ}}(){
     this.conf.loading = true
     this.$theia.http.get("/{{$table.Name.CName|lower}}/query",this.form_{{$table.UNQ}}).then(res=>{
       that.conf.loading = false
-      that.dataList_{{$table.UNQ}} = res.items
+      that.dataList_{{$table.UNQ}} = res.items||[]
       that.total_{{$table.UNQ}} = res.count
       that.dataList_{{$table.UNQ}}.forEach(item => {
         {{- range $i,$c := $LLERows -}}

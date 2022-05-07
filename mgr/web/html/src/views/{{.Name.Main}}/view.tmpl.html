@@ -1,5 +1,5 @@
 {{- $vrow := . -}}
-<el-row :gutter="24">
+<el-row :gutter="24" style="font-size: 0.7rem;">
     {{- range $i,$v:=$vrow}}
     <el-col :span="4" class="text-right" style="height:26px">{{ $v.Label }}:</el-col>
     {{- if eq true $v.RType.IsSelect}}

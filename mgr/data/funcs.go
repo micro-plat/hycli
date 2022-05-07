@@ -8,8 +8,7 @@ var Funcs = map[string]interface{}{
 	"fltrSearchUITable": fltrSearchUITable, //全局查找指定表
 	"IsTmplTb":          IsTmplTb,
 	"flterMainTable":    flterMainTable,
-	// "fltrUITable":       fltrUITable,  //代码
-	// "fltrUITables":      fltrUITables, //代码
+	"fltrForginKey":     fltrForginKey,
 	"fltrUIRows":        fltrUIRows,
 	"fltrNotNullRows":   fltrNotNullRows,
 	"getFirstCodeTable": getFirstCodeTable,
@@ -47,4 +46,20 @@ func fltrNotNullRows(rs []*CodeRow) []*CodeRow {
 		}
 	}
 	return r
+}
+func fltrForginKey(t *TUITable, n *UITable, fiedName string) *UIRow {
+	//根据sl配置匹配
+	for _, r := range t.QRows {
+		if r.RType.IsSelect && strings.HasSuffix(n.Name.Raw, r.RType.SelectName) {
+			return r
+		}
+	}
+
+	//根据字段名称匹配
+	for _, r := range t.QRows {
+		if strings.EqualFold(r.Name, fiedName) {
+			return r
+		}
+	}
+	return &UIRow{}
 }

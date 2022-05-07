@@ -26,7 +26,6 @@ func CreatePage(mdpath string, tbs string, outpath string) error {
 	if err != nil {
 		return err
 	}
-
 	//过滤表格
 	tbls := otbls.Filter(tbs, true)
 

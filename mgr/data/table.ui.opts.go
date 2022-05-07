@@ -53,7 +53,7 @@ func newOperations(t string, tag string) []*Operation {
 	list := md.GetExtOpt(t, tag)
 	opts := make([]*Operation, 0, len(list))
 	for _, lst := range list {
-		fields := strings.Split(types.GetStringByIndex(lst, 3), "->")
+		fields := strings.Split(types.GetStringByIndex(lst, 3), "@")
 		opts = append(opts, &Operation{
 			Name:   strings.ToUpper(types.GetStringByIndex(lst, 1)),
 			Label:  lst[0],

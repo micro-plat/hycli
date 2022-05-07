@@ -4,8 +4,15 @@
 {{- $leLen := len $leRow -}}
 {{- $optRow :=.Optrs -}}
 {{- $optLen := len $optRow -}}
+{{ $tmpl :=IsTmplTb .}}
 <div class="list">
-    <el-table :data="dataList_{{.UNQ}}" v-loading="conf.loading" stripe style="width: 100%;height:calc(100vh - 160px)" size="small" empty-text="无数据"
+    <el-table :data="dataList_{{.UNQ}}" v-loading="conf.loading" stripe
+    {{if eq true $tmpl -}}
+     style="width: 100%;height:300px"
+     {{else -}}
+     style="width: 100%;height:calc(100vh - 160px)"
+     {{- end}}
+      size="small" empty-text="无数据"
     >
         {{- if gt $leLen 0 -}}
         {{- template "le.tmpl.html" $leRow -}}

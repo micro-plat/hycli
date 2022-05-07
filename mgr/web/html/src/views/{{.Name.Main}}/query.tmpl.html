@@ -1,5 +1,7 @@
 {{$table :=.}}
 {{- $qrow :=$table.QRows}}
+{{- $crow :=$table.CRows}}
+{{- $clen := len $crow}}
 <div class="query">
    
     <el-form :model="form_{{$table.UNQ}}" inline size="small">
@@ -60,7 +62,9 @@
         {{- end -}} {{ end }}
         <el-form-item>
             <el-button type="primary" :icon="Search" @click="onQuery">查询</el-button>
+            {{if gt $clen 0}}
             <el-button type="success" :icon="Search" @click="showAdd">添加</el-button>
+            {{end}}
         </el-form-item>
     </el-form>
 </div>

@@ -80,7 +80,6 @@ func FltrUITable(t *md.Table) *UITable {
 	table.BatchOpts = newOperations(t.ExtInfo, "blst")
 	table.QueryOpts = newOperations(t.ExtInfo, "qlst")
 	table.ViewOpts = newOperations(t.ExtInfo, "view")
-
 	updateOptr := false
 	viewOptr := false
 	delOptr := false
@@ -122,10 +121,4 @@ func FltrUITable(t *md.Table) *UITable {
 	}
 
 	return table
-}
-func (t *UITable) ClearOpts() {
-	t.Optrs = make([]*Operation, 0, 0)
-	t.BatchOpts = make([]*Operation, 0, 0)
-	t.QueryOpts = make([]*Operation, 0, 0)
-	t.ViewOpts = make([]*Operation, 0, 0)
 }

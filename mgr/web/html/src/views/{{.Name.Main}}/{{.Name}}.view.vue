@@ -64,14 +64,7 @@ export default {
         },
       }
   },
-  created(){
-{{- range $i,$c:= $viewOptRow -}}
- {{- if eq "TAB" $c.Name -}}
-  {{$ct:= fltrSearchUITable $c.URL -}}
-    this.queryData_{{$ct.UNQ}}()
- {{- end}}
-{{- end }}
-  },
+ 
   methods: {
     {{template "view.tmpl.js" $table}}
      {{range $i,$c:= $viewOptRow}}
