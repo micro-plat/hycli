@@ -3,7 +3,7 @@ package web
 import (
 	"embed"
 
-	"github.com/micro-plat/hycli/mgr/data"
+	"github.com/micro-plat/hycli/data"
 	"github.com/micro-plat/hycli/output"
 )
 

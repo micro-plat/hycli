@@ -4,8 +4,8 @@ import (
 	"embed"
 	"fmt"
 
+	"github.com/micro-plat/hycli/data"
 	"github.com/micro-plat/hycli/md"
-	"github.com/micro-plat/hycli/mgr/data"
 	"github.com/micro-plat/hycli/output"
 	"github.com/micro-plat/lib4go/types"
 	"github.com/urfave/cli"
