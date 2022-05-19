@@ -6,14 +6,9 @@
 {{- $optLen := len $optRow -}}
 {{ $tmpl :=IsTmplTb .}}
 <div class="list">
-    <el-table :data="dataList_{{.UNQ}}" v-loading="conf.loading" stripe
-    {{if eq true $tmpl -}}
-     style="width: 100%;height:300px"
-     {{else -}}
-     style="width: 100%;height:calc(100vh - 160px)"
-     {{- end}}
-      size="small" empty-text="无数据"
-    >
+    <el-table :data="dataList_{{.UNQ}}" v-loading="conf.loading" stripe {{if eq true $tmpl -}}
+        style="width: 100%;height:300px" {{else -}} style="width: 100%;height:calc(100vh - 160px)" {{- end}}
+        size="small" empty-text="无数据">
         {{- if gt $leLen 0 -}}
         {{- template "le.tmpl.html" $leRow -}}
         {{- end}}
@@ -33,14 +28,16 @@
         {{- else if eq "img" $c.RType.Type}}
         <el-table-column align="center" label="{{$c.Desc}}">
             <template #default="scope">
-             <el-image style="width:48px" :src="scope.row.{{$c.Name}}" :fit="contain">
-            <template #error>
-                <div class="image-slot">
-                  <el-icon><icon-picture /></el-icon>
-                </div>
-              </template>
-        </el-image>
-        </template>
+                <el-image style="width:48px" :src="scope.row.{{$c.Name}}" :fit="contain">
+                    <template #error>
+                        <div class="image-slot">
+                            <el-icon>
+                                <icon-picture />
+                            </el-icon>
+                        </div>
+                    </template>
+                </el-image>
+            </template>
         </el-table-column>
         {{- else if eq "link" $c.RType.Type}}
         <el-table-column align="center" label="{{$c.Desc}}">
@@ -51,8 +48,18 @@
         {{- else if eq true $c.RType.IsSelect}}
         <el-table-column prop="{{$c.Name}}_label" align="center" label="{{$c.Desc}}">
             <template #default="scope">
+                {{- if eq "tag" $c.RType.Type}}
+                <el-tag :type="tagColor(scope.row.{{$c.Name}})"  effect="dark" round v-text="scope.row.{{$c.Name}}_label"></el-tag>
+                {{else}}
                 <span :class="'{{$c.Ext.ColorType}}'==''?'':{{$c.Ext.ColorType}}(scope.row.{{$c.Name}})"
                     v-text="scope.row.{{$c.Name}}_label"></span>
+                {{- end}}
+            </template>
+        </el-table-column>
+        {{- else if eq "tag" $c.RType.Type}}
+        <el-table-column prop="{{$c.Name}}_label" align="center" label="{{$c.Desc}}">
+            <template #default="scope">
+                <el-tag ttype="tagColor(scope.row.{{$c.Name}})" round v-text="scope.row.{{$c.Name}}"></el-tag>
             </template>
         </el-table-column>
         {{- else}}
@@ -63,12 +70,13 @@
         {{- template "opts.tmpl.html" .}}
         {{ end }}
     </el-table>
-    <el-pagination :currentPage="form_{{$table.UNQ}}.pi" :page-size="form_{{$table.UNQ}}.ps" style="position: absolute; right: 30px;bottom:10px;"
-        :page-sizes="[10, 20, 50, 100]" :background="false" small layout="total,sizes,prev, pager, next, jumper"
-        :total="total_{{$table.UNQ}}" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
-        {{ range $x,$m:=$optRow -}}
-        {{- if eq "CMPNT" $m.Name -}}
-        <{{$m.UNQ}} ref="cmpnt_{{$m.UNQ}}"  @onsaved="onQuery"></{{$m.UNQ}}>
-        {{- end -}}
-        {{end}}
-    </div>
+    <el-pagination :currentPage="form_{{$table.UNQ}}.pi" :page-size="form_{{$table.UNQ}}.ps"
+        style="position: absolute; right: 30px;bottom:10px;" :page-sizes="[10, 20, 50, 100]" :background="false" small
+        layout="total,sizes,prev, pager, next, jumper" :total="total_{{$table.UNQ}}" @size-change="handleSizeChange"
+        @current-change="handleCurrentChange" />
+    {{ range $x,$m:=$optRow -}}
+    {{- if eq "CMPNT" $m.Name -}}
+    <{{$m.UNQ}} ref="cmpnt_{{$m.UNQ}}" @onsaved="onQuery"></{{$m.UNQ}}>
+    {{- end -}}
+    {{end}}
+</div>

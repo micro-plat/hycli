@@ -93,6 +93,8 @@ func TestGetName(t *testing.T) {
 
 }
 func TestGetExtOpt(t *testing.T) { //>/right/info,x
-	lst := GetExtOpt("lst(权限,link>/right/info,x),lst(启用,dialog>/right/save,m),pnl(启用,dialog>/right/save,m)", "lst")
-	assert.Equal(t, "", lst)
+	lst := GetExtOpt("lst(权限,link:/right/info,x:y),lst(启用,dialog:/right/save,m),pnl(启用,dialog:/right/save,m)", "lst")
+	assert.Equal(t, 2, len(lst))
+	assert.Equal(t, "lst(权限,link:/right/info,x:y)", lst[0])
+	assert.Equal(t, "lst(启用,dialog:/right/save,m)", lst[1])
 }

@@ -16,7 +16,7 @@ const (
 
 var optLabels = map[string]string{
 	UPDATE: "修改",
-	VIEW:   "预览",
+	VIEW:   "详情",
 	DEL:    "删除",
 }
 var RwNames = map[string]string{
@@ -53,13 +53,12 @@ func newOperations(t string, tag string) []*Operation {
 	list := md.GetExtOpt(t, tag)
 	opts := make([]*Operation, 0, len(list))
 	for _, lst := range list {
-		fields := strings.Split(types.GetStringByIndex(lst, 3), "@")
 		opts = append(opts, &Operation{
 			Name:   strings.ToUpper(types.GetStringByIndex(lst, 1)),
 			Label:  lst[0],
 			URL:    types.GetStringByIndex(lst, 2),
-			RwName: types.GetStringByIndex(fields, 0),
-			FwName: types.GetStringByIndex(fields, 1),
+			RwName: types.GetStringByIndex(lst, 3),
+			FwName: types.GetStringByIndex(lst, 4),
 			UNQ:    defFids.Next(),
 		})
 	}

@@ -99,7 +99,7 @@ func GetExtOpt(t string, tag string) [][]string {
 	lst := reg.FindAllString(t, -1)
 	rlst := make([][]string, 0, 1)
 	for _, l := range lst {
-		n := regexp.MustCompile(`\(([\w\p{Han}]+),([\w]+)@([/\w\.]+)[,]?([\w]*)\)`)
+		n := regexp.MustCompile(`\(([\w\p{Han}]+),([\w]+):([/\w\.]+)[,]?([/\w\.]*)[:]?([\w]*)\)`)
 		xn := n.FindAllStringSubmatch(l, -1)
 		if len(xn) > 0 && len(xn[0]) > 1 {
 			rlst = append(rlst, xn[0][1:])

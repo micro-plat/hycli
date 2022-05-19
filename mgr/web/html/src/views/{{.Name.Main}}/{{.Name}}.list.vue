@@ -78,7 +78,10 @@ export default {
         this.$refs.cedit.show(q)
       },
     colorful(r){
-       return this.$theia.env.conf.colorful[r]
+       return this.$theia.env.conf.colorful[r]||""
+    },
+    tagColor(r){
+       return this.$theia.env.conf.colorTag[r]||""
     },
      goto(url,param){
        if (!url) {
