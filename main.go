@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/lib4dev/cli"
 	_ "github.com/micro-plat/hycli/mgr"
+	_ "github.com/micro-plat/hycli/mob"
 	"github.com/micro-plat/lib4go/logger"
 )
 
