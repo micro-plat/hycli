@@ -9,9 +9,9 @@ import (
 	"github.com/urfave/cli"
 )
 
-//go:embed mgr
+//go:embed server
 var apiTmpls embed.FS
-var apiTmplName = "mgr"
+var apiTmplName = "server"
 
 //CreateAPI 创建web项目
 func CreateAPI(name string, input interface{}) error {
@@ -23,12 +23,6 @@ func CreateAPI(name string, input interface{}) error {
 	if err != nil {
 		return err
 	}
-
-	// //构建go.mod文件
-	// session := sh.InteractiveSession()
-	// session.SetDir(filepath.Join("./", name))
-	// session.Command("go", "mod", "init")
-	// _, err = session.Output()
 	return err
 }
 

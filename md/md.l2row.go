@@ -69,7 +69,7 @@ func line2TableRow(line *Line) (*Row, error) {
 		Type:        rtp,
 		DefValue:    strings.TrimSpace(strings.Replace(colums[2], "&#124;", "|", -1)),
 		AllowNull:   types.GetStringByIndex(getNames(strings.TrimSpace(colums[3])), 0, "是") != "否",
-		Constraints: getNames(strings.TrimSpace(colums[4])),
+		Constraints: mergeConstraint(getNames(strings.TrimSpace(colums[4]))),
 		Desc:        &RDesc{Raw: desc, Name: getShortDesc(desc)},
 	}
 
@@ -98,6 +98,28 @@ func getNames(t string) []string {
 	}
 	return lname
 }
+func mergeConstraint(input []string) []string {
+	output := make([]string, 0, 1)
+	for _, v := range input {
+		if strings.HasPrefix(v, "@") {
+			lst := []rune(v[1:])
+			for _, c := range lst {
+				output = append(output, string(c))
+			}
+			continue
+		}
+		output = append(output, v)
+	}
+	routput := make([]string, 0, len(output))
+	for _, v := range output {
+		if x, ok := mtp[v]; ok {
+			routput = append(routput, x...)
+			continue
+		}
+		routput = append(routput, v)
+	}
+	return routput
+}
 func getShortDesc(t string) string {
 	reg := regexp.MustCompile(`[\w\p{Han}]+`)
 	names := reg.FindAllString(t, -1)
@@ -105,4 +127,13 @@ func getShortDesc(t string) string {
 		return ""
 	}
 	return strings.TrimSpace(names[0])
+}
+
+var mtp = map[string][]string{
+	"e": {"le"},
+	"E": {"le"},
+	"i": {"DI"},
+	"n": {"DN"},
+	"s": {"sl"},
+	"t": {"DT"},
 }

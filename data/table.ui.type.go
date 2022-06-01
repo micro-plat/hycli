@@ -21,11 +21,13 @@ var aMap = map[string]string{
 	"bigint":        "number",
 	"progress":      "number",
 	"switch":        "switch",
+	"swth":          "switch",
 	"date":          "date",
 	"time":          "time",
 	"daterange":     "daterange",
 	"datetime":      "daterange",
 	"datetimerange": "daterange",
+	"dtr":           "daterange",
 	"sl":            "select",
 	"select":        "select",
 	"radio":         "select",
@@ -45,6 +47,7 @@ var vmap = map[string]string{
 	"tag":      "tag",
 	"progress": "progress",
 	"switch":   "switch",
+	"swth":     "switch",
 }
 var tpmap = map[string]map[string]string{
 	"Q":  aMap,

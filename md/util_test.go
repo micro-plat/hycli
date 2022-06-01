@@ -87,9 +87,10 @@ func TestCName(t *testing.T) {
 	assert.Equal(t, "UserI", v)
 }
 func TestGetName(t *testing.T) {
-	v := getNames("IDX(idx_sso_sysinfo_urlident),c,U ,V ")
-	assert.Equal(t, 4, len(v))
+	v := mergeConstraint(getNames("IDX(idx_sso_sysinfo_urlident),@cUve "))
+	assert.Equal(t, 5, len(v))
 	assert.Equal(t, "U", v[2])
+	assert.Equal(t, "le", v[4])
 
 }
 func TestGetExtOpt(t *testing.T) { //>/right/info,x
