@@ -58,15 +58,15 @@ export default {
     {{- template "list.tmpl.js" $table -}}
     handleSizeChange(ps){
       this.form_{{$table.UNQ}}.ps = ps
-      this.queryData()
+     this.queryData_{{$table.UNQ}}()
     },
     handleCurrentChange(pi){
       this.form_{{$table.UNQ}}.pi = pi
-      this.queryData()
+     this.queryData_{{$table.UNQ}}()
     },
     onQuery(){
       this.form_{{$table.UNQ}}.pi = 1
-      this.queryData()
+      this.queryData_{{$table.UNQ}}()
     },
     showAdd(){
        this.$refs.cadd.show()

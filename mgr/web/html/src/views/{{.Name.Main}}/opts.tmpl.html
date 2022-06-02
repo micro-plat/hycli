@@ -1,6 +1,6 @@
 {{- $optRow :=.Optrs}}
 {{- $len :=len $optRow}}
-{{ $width :=multiply $len 42}}
+{{ $width :=multiply $len 60}}
 {{ $tmpl :=IsTmplTb .}}
 {{ if eq false $tmpl}}
 <el-table-column fixed="right" label="操作" width="{{$width}}">
