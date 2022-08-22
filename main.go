@@ -4,6 +4,7 @@ import (
 	"github.com/lib4dev/cli"
 	_ "github.com/micro-plat/hycli/mgr"
 	_ "github.com/micro-plat/hycli/mob"
+	_ "github.com/micro-plat/hycli/project"
 	"github.com/micro-plat/lib4go/logger"
 )
 

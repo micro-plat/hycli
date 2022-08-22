@@ -57,7 +57,8 @@ export default {
           {{end}}
         this.$theia.http.post("/{{.Name.CName|lower}}",postForm).then(res=>{
             that.$notify.success({title: '成功',message: '{{.Desc}}保存成功',duration:5000})
-            that.$emit("onsaved")
+            that.$theia.enum.clear("{{.Name.Short}}")
+           that.$emit("onsaved")
             that.hide()
         }).catch(res=>{
           let code = res.response.status
