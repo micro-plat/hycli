@@ -26,7 +26,7 @@ func CreateByCtx(c *cli.Context) (err error) {
 //go:embed tmpl
 var srvsTmpls embed.FS
 var srvsTmplName = "tmpl"
-var prefix = ""
+var prefix = "tmpl"
 
 // createService 创建服务文件
 func createFiles(root string, input interface{}) error {

@@ -9,18 +9,13 @@ import (
 func init() {
 	cmds.Register(
 		cli.Command{
-			Name:  "project",
-			Usage: "创建项目",
-			Subcommands: cli.Commands{
-				{
-					Name:   "create",
-					Usage:  "创建项目",
-					Action: app.CreateByCtx,
-					Flags: []cli.Flag{
-						cli.StringFlag{Name: "platName,p", Usage: `-平台名称`},
-						cli.StringFlag{Name: "sysName,s", Usage: `-系统名称`},
-					},
-				},
+			Name:   "create",
+			Usage:  "创建项目",
+			Action: app.CreateByCtx,
+			Flags: []cli.Flag{
+				cli.StringFlag{Name: "platName,p", Usage: `-平台名称`},
+				cli.StringFlag{Name: "sysName,s", Usage: `-系统名称`},
 			},
-		})
+		},
+	)
 }

@@ -1,1 +1,3 @@
-package tmpl
+//go:build uat
+
+package main
