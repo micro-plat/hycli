@@ -30,7 +30,7 @@ func flterMainTable(tbs []*CodeTable) []*CodeTable {
 	return ntbs
 }
 
-//过滤行
+// 过滤行
 func fltrCodeTables(t md.Tables) []*CodeTable {
 	tbs := make([]*CodeTable, 0, 1)
 	for _, v := range t {
@@ -39,7 +39,7 @@ func fltrCodeTables(t md.Tables) []*CodeTable {
 	return tbs
 }
 
-//过滤行
+// 过滤行
 func fltrCodeTable(t *md.Table) *CodeTable {
 
 	table := &CodeTable{
@@ -87,6 +87,12 @@ func fltrCodeTable(t *md.Table) *CodeTable {
 		}
 		if md.HasConstraint(r.Constraints, "DE") {
 			tp.DERows = append(tp.DERows, NewCodeRow("", r))
+		}
+		if md.HasConstraint(r.Constraints, "DS") {
+			tp.Status = r.Name
+		}
+		if md.HasConstraint(r.Constraints, "expire") {
+			tp.Expire = r.Name
 		}
 	}
 	tp.SetTypeIfAbsence(t.Name.Short)

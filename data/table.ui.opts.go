@@ -48,19 +48,27 @@ func newOperation(name string, tname ...string) *Operation {
 	}
 }
 
-//lst(授权,link->/a/b,m)
-func newOperations(t string, tag string) []*Operation {
+// lst(授权,link->/a/b,m)
+func newOperations(mp string, t string, tag string) []*Operation {
 	list := md.GetExtOpt(t, tag)
 	opts := make([]*Operation, 0, len(list))
 	for _, lst := range list {
-		opts = append(opts, &Operation{
+		opt := &Operation{
 			Name:   strings.ToUpper(types.GetStringByIndex(lst, 1)),
 			Label:  lst[0],
 			URL:    types.GetStringByIndex(lst, 2),
 			RwName: types.GetStringByIndex(lst, 3),
 			FwName: types.GetStringByIndex(lst, 4),
 			UNQ:    defFids.Next(),
-		})
+		}
+
+		// if !strings.HasPrefix(opt.URL, "/") {
+		// 	fmt.Println(".....url:", mp, "----", opt.URL)
+		// 	opt.URL = fmt.Sprintf("%s", mp) //  strings.TrimRight(mp, "/") + "/" + strings.TrimLeft(opt.URL, "/")
+
+		// }
+		opts = append(opts, opt)
+
 	}
 	return opts
 }

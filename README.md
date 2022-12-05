@@ -1,29 +1,41 @@
-# hycli
 
 
-数据字典
+### 生成前后端代码
+命令: hycli mgr code ../db.md
 
-### 1. 用户表[sso_user_info]
-
-| 字段名          | 类型         | 默认值  | 为空  |       约束       | 描述                         |
-| --------------- | ------------ | :-----: | :---: | :--------------: | :--------------------------- |
-| user_id         | bigint(20)   |         |  否   |   PK, SEQ,L,DI   | 用户编号                     |
-| full_name       | varchar(32)  |         |  否   |      L,Q,DN      | 姓名                         |
-| user_name       | varchar(64)  |         |  否   |     UNQ  ,L      | 登录名                       |
-| password        | varchar(32)  |         |  否   |                  | 密码                         |
-| email           | varchar(32)  |         |  是   |        L         | 邮件地址                     |
-| mobile          | varchar(12)  |         |  否   |        L         | 电话号码                     |
-| create_time     | datetime     | sysdate |  否   |  L,Q,tp(daterange)  | 创建时间                     |
-| status          | tinyint(1)   |    1    |  否   | L,Q(bl),sl,color | 状态 0: 正常 1: 锁定 2: 禁用 |
-| source_id       | varchar(128) |    0    |  否   |                  | 来源id                       |
-| source          | varchar(36)  |   ''    |  否   |      Q,sl,L      | 用户来源                     |
-| last_login_time | datetime     |         |  是   |    L,Q(date)     | 最近登录                     |
+### 生成数据库
+命令: hicli db create ../docs/db/db.md .\api\modules\const\db\mysql -g
 
 
+### 命令清单
+| 指令          | 示例                | 说明                            |
+| ------------- | ------------------- | ------------------------------- |
+| row           | row(4)              | textarea的行数                  |
+| fl            | fl                  | 显示到首行                      |
+| tp(link)      | tp(link)            | 链接类型                        |
+| tp(image)     | tp(image)           | 显示未图片                      |
+| tp(switch)    | tp(switch)          | switch控件                      |
+| tp(date)      | tp(date)            | 日期控件类型                    |
+| tp(pwd)       | tp(pwd)             | 密码控件类型                    |
+| tp(mobile)    | tp(mobile)          | 手机号                          |
+| tp(progress)  | tp(progress)        | 查看时显示为进度条              |
+| tp(daterange) | tp(daterange)       | 查看时显示为日期范围            |
+| f             | f(yyyy-MM-dd HH:mm) | 字段格式                        |
+| lw            | lw(180)             | 列表宽度                        |
+| ds            | ds                  | 字典状态字段，值为0才查询出数据 |
 
-生成页面代码
-```sh
- hycli ui page ..\0docs\2.设计\db.mysql.md web --table "user_info"
 
-```
-
+###  控件类型说明
+| 名称     | 标签       | 查询 | 新增/编辑 | 列表 | 详情 |
+| -------- | ---------- | ---- | --------- | ---- | ---- |
+| 链接     | link       | √    | ☓         | √    | √    |
+| 图片     | image      | X    | X         | √    | √    |
+| 切换     | switch     | √    | √         | √    | √    |
+| 日期     | date       | √    | √         | X    | X    |
+| 密码     | pwd        | X    | √         | X    | X    |
+| 手机号   | mobile     | X    | √         | X    | X    |
+| 进度条   | progress   | X    | X         | √    | √    |
+| 日期范围 | daterange  | √    | X         | X    | X    |
+| 月份范围 | monthrange | √    | X         | X    | X    |
+| 年       | year       | √    | X         | X    | X    |
+| 月       | month      | √    | X         | X    | X    |

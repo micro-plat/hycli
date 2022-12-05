@@ -20,7 +20,7 @@ func (r *RName) String() string {
 	return r.Short
 }
 
-//Table 表名称
+// Table 表名称
 type Table struct {
 	Name    *RName `json:'name'`     //表名
 	Desc    string `json:'desc'`     //表描述
@@ -34,7 +34,7 @@ type Table struct {
 	Tbs Tables `json:'tbs'`
 }
 
-//NewTable 创建表
+// NewTable 创建表
 func NewTable(name, desc, extinfo string) *Table {
 	fname := types.GetStringByIndex(getNames(name), 0)
 	rname := strings.Trim(fname, "^")
@@ -42,13 +42,13 @@ func NewTable(name, desc, extinfo string) *Table {
 
 	return &Table{
 		Name: &RName{
-			Raw:      rname,
-			Short:    strings.Join(names[1:], "_"),
-			Prefix:   names[0],
-			CName:    ToCName(strings.Join(names[1:], "_")),
-			Main:     strings.Join(names[1:2], "_"),
-			OName:    fname,
-			MainPath: strings.Join(names[1:], "/"),
+			Raw:      rname,                                 //表名称
+			Short:    strings.Join(names[1:], "_"),          //以下划线连接的第二段后面的名称
+			Prefix:   names[0],                              //前缀名
+			CName:    ToCName(strings.Join(names[1:], "_")), //class name,去掉第一段，后面几段首字母大写
+			Main:     strings.Join(names[1:2], "_"),         //第二段字符
+			OName:    fname,                                 //原始名称
+			MainPath: strings.Join(names, "/"),              //以斜杠分隔的路径
 		},
 
 		Exclude: strings.HasPrefix(fname, "^"),
@@ -60,7 +60,7 @@ func NewTable(name, desc, extinfo string) *Table {
 	}
 }
 
-//AddRow 添加行信息
+// AddRow 添加行信息
 func (t *Table) AddRow(r *Row) error {
 	cache := t.Cache
 	t.Cache = nil

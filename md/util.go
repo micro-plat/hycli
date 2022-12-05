@@ -84,6 +84,7 @@ func HasConstraint(cns []string, f string) bool {
 	}
 	return false
 }
+
 func GetConstraintByReg(cns []string, f string) []string {
 	reg := regexp.MustCompile(f)
 	for _, c := range cns {

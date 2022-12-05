@@ -10,6 +10,8 @@ type EnumType struct {
 	Id       string
 	Name     string
 	Type     string
+	Status   string //枚举状态字段
+	Expire   string //日期过期字段
 	Multiple bool
 	DERows   []*CodeRow
 }

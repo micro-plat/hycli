@@ -2,6 +2,7 @@ package data
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/micro-plat/hycli/md"
 	"github.com/micro-plat/lib4go/jsons"
@@ -28,6 +29,9 @@ type UITable struct {
 	UNQ       string       `json:'unq'`
 }
 
+func (u *UITable) String() string {
+	return u.Name.String()
+}
 func (u *UITable) Copy() *UITable {
 	tb := &UITable{}
 	buff, err := jsons.Marshal(u)
@@ -48,9 +52,13 @@ func FltrUITables(t md.Tables) []*UITable {
 	return tbs
 }
 
-//全局查找指定表
-func fltrSearchUITable(name string) *TUITable {
-	ut := Get(name)
+// 全局查找指定表
+func fltrSearchUITable(name *Operation) *TUITable {
+	ut := Get(name.URL)
+	if ut == nil {
+		fmt.Printf("uitable.is nill:%+v \n", name)
+	}
+
 	return &TUITable{UITable: ut, IsTmpl: true}
 }
 
@@ -75,11 +83,12 @@ func FltrUITable(t *md.Table) *UITable {
 		UNQ:       defFids.Next(),
 	}
 
+	fmt.Println("-----------t:", t.Name.MainPath)
 	t.Cache = table
-	table.Optrs = newOperations(t.ExtInfo, "lst")
-	table.BatchOpts = newOperations(t.ExtInfo, "blst")
-	table.QueryOpts = newOperations(t.ExtInfo, "qlst")
-	table.ViewOpts = newOperations(t.ExtInfo, "view")
+	table.Optrs = newOperations("", t.ExtInfo, "lst")
+	table.BatchOpts = newOperations("", t.ExtInfo, "blst")
+	table.QueryOpts = newOperations("", t.ExtInfo, "qlst")
+	table.ViewOpts = newOperations("", t.ExtInfo, "view")
 	updateOptr := false
 	viewOptr := false
 	delOptr := false
@@ -100,19 +109,19 @@ func FltrUITable(t *md.Table) *UITable {
 			table.PKRows = append(table.PKRows, NewUIRow("", r))
 		}
 		if md.HasConstraint(r.Constraints, "U") {
-			if updateOptr == false {
+			if !updateOptr {
 				updateOptr = true
 				table.Optrs = append(table.Optrs, newOperation(UPDATE))
 			}
 			table.URows = append(table.URows, NewUIRow("U", r))
 		}
-		if md.HasConstraint(r.Constraints, "D") && delOptr == false {
+		if md.HasConstraint(r.Constraints, "D") && !delOptr {
 			delOptr = true
 			table.Optrs = append(table.Optrs, newOperation(DEL))
 			table.DRows = append(table.DRows, NewUIRow("D", r))
 		}
 		if md.HasConstraint(r.Constraints, "V") {
-			if viewOptr == false {
+			if !viewOptr {
 				viewOptr = true
 				table.Optrs = append(table.Optrs, newOperation(VIEW))
 			}

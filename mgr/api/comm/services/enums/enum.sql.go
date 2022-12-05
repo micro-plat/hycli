@@ -6,7 +6,7 @@ package enums
 var enumSQL = map[string]string{
 	{{- range $i,$v:=$etable -}}
 	{{- if and ($v.AsEnum) (eq false $v.EType.Multiple) }}
-	"{{$v.EType.Type}}":"select {{$v.EType.Id}} value,{{$v.EType.Name}} name,{{- range $j,$v:=$v.EType.DERows -}}{{$v.Name}} {{$v.Desc}},{{end}}'{{$v.EType.Type}}' type from {{$v.Name.Raw}}",
+	"{{$v.EType.Type}}":"select {{$v.EType.Id}} value,{{$v.EType.Name}} name,{{- range $j,$v:=$v.EType.DERows -}}{{$v.Name}} {{$v.Desc}},{{end}}'{{$v.EType.Type}}' type from {{$v.Name.Raw}} where 1=1  {{if ne "" $v.EType.Status}} and {{$v.EType.Status}} = 0{{end}} {{if ne "" $v.EType.Expire}} and {{$v.EType.Expire}} >=DATE_FORMAT(now(),'%Y-%m-%d'){{end}}",
 	{{- end -}}
 	{{- end}}
 }
@@ -14,7 +14,7 @@ var enumSQL = map[string]string{
 var unspecifiedEnum = []string{
 	{{- range $i,$v:=$etable -}}
 	{{- if and ($v.AsEnum) (eq true $v.EType.Multiple) }}
-	"select {{$v.EType.Id}} value,{{$v.EType.Name}} name,{{- range $j,$v:=$v.EType.DERows -}}{{$v.Name}} {{$v.Desc}},{{end}}{{$v.EType.Type}} type from {{$v.Name.Raw}} where {{$v.EType.Type}}=if(@type='',{{$v.EType.Type}},@type)",
+	"select {{$v.EType.Id}} value,{{$v.EType.Name}} name,{{- range $j,$v:=$v.EType.DERows -}}{{$v.Name}} {{$v.Desc}},{{end}}{{$v.EType.Type}} type from {{$v.Name.Raw}} where {{$v.EType.Type}}=if(@type='',{{$v.EType.Type}},@type) {{if ne "" $v.EType.Status}} and {{$v.EType.Status}} = 0{{end}}  {{if ne "" $v.EType.Expire}} and {{$v.EType.Expire}} >=DATE_FORMAT(now(),'%Y-%m-%d'){{end}}",
 	{{- end -}}
 	{{- end}}
 }

@@ -16,8 +16,21 @@ var Funcs = map[string]interface{}{
 	"mergeUIRow":        mergeUIRow,
 	"multiply":          multiply,
 	"sjoin":             sjoin,
+	"add":               fltrAdd,
+	"spare":             spare,
+	"bleft":             bleft,
+	"bright":            bright,
 }
 
+func bleft() string {
+	return `{{`
+}
+func bright() string {
+	return `}}`
+}
+func fltrAdd(x int, y int) int {
+	return x + y
+}
 func IsTmplTb(o interface{}) bool {
 	if v, ok := o.(*TUITable); ok {
 		return v.IsTmpl
@@ -30,6 +43,10 @@ func getFirstCodeTable(ts []*CodeTable) *CodeTable {
 		return ts[0]
 	}
 	return &CodeTable{}
+}
+
+func spare(x int, y int) int {
+	return x % y
 }
 
 func multiply(v int, b int) int {
