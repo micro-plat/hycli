@@ -1,0 +1,14 @@
+{{- $vrow := . -}}
+<el-row :gutter="24" style="font-size: 0.7rem;">
+    {{- range $i,$v:=$vrow}}
+    <el-col :span="4" class="text-right" style="height:26px">{{ $v.Label }}:</el-col>
+    {{- if eq true $v.RType.IsSelect}}
+    <el-col :span="8" v-text="view.{{$v.Name}}_label" style="height:26px"></el-col>
+    {{- else if eq "img" $v.RType.Type}}
+    <el-col :span="8" style="height:26px">
+        <el-image style="width:48px" :src="view.{{$v.Name}}" :fit="contain" /></el-col>
+    {{- else}}
+    <el-col :span="8" v-text="view.{{$v.Name}}" style="height:26px"></el-col>
+    {{- end}}
+    {{- end}}
+</el-row>
