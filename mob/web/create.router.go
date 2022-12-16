@@ -11,12 +11,13 @@ import (
 var routerTmpls embed.FS
 var routerTmplName = "html/src/router"
 
-//create 创建页面文件
-func createRouter(root string, input interface{}) error {
+// create 创建页面文件
+func createRouter(root string, input interface{}, cover bool) error {
 	return output.CreateFiles(routerTmpls,
 		root,
 		prefix,
 		routerTmplName,
 		input,
+		cover,
 		data.Funcs)
 }

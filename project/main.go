@@ -13,6 +13,7 @@ func init() {
 			Usage:  "创建项目",
 			Action: app.CreateByCtx,
 			Flags: []cli.Flag{
+				cli.BoolFlag{Name: "cover,v", Usage: "覆盖文件"},
 				cli.StringFlag{Name: "platName,p", Usage: `-平台名称`},
 				cli.StringFlag{Name: "sysName,s", Usage: `-系统名称`},
 			},

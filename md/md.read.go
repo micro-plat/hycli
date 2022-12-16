@@ -7,18 +7,18 @@ import (
 	"strings"
 )
 
-//Line 每一行信息
+// Line 每一行信息
 type Line struct {
 	Text   string
 	LineID int
 }
 
-//Lines 表的每一行
+// Lines 表的每一行
 type Lines struct {
 	Lines [][]*Line
 }
 
-//readMarkdown 读取md文件
+// readMarkdown 读取md文件
 func readMarkdown(name string) ([]*Line, error) {
 	f, err := os.Open(name)
 	if err != nil {
@@ -28,7 +28,7 @@ func readMarkdown(name string) ([]*Line, error) {
 	return readMarkdownByReader(bufio.NewReader(f))
 }
 
-//readMarkdown 读取md文件
+// readMarkdown 读取md文件
 func readMarkdownByReader(rd *bufio.Reader) ([]*Line, error) {
 	lines := make([]*Line, 0, 64)
 	num := 0

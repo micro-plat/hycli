@@ -89,6 +89,7 @@ func getTypeName(vs ...string) string {
 type UIType struct {
 	Name       string
 	Format     string
+	FKName     string
 	Len        int
 	IsDecimal  bool
 	IsNumber   bool

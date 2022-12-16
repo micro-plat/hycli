@@ -2,7 +2,7 @@ package data
 
 import (
 	"encoding/json"
-	"fmt"
+	"strings"
 
 	"github.com/micro-plat/hycli/md"
 	"github.com/micro-plat/lib4go/jsons"
@@ -54,12 +54,27 @@ func FltrUITables(t md.Tables) []*UITable {
 
 // 全局查找指定表
 func fltrSearchUITable(name *Operation) *TUITable {
-	ut := Get(name.URL)
-	if ut == nil {
-		fmt.Printf("uitable.is nill:%+v \n", name)
+	uname := name.URL
+	if strings.Contains(name.URL, "/") {
+		uname = strings.Replace(strings.Trim(name.URL, "/"), "/", "_", -1)
 	}
-
+	ut := Get(uname)
 	return &TUITable{UITable: ut, IsTmpl: true}
+}
+
+func ResetSelectRelation(tbs []*UITable) {
+	for _, tn := range tbs {
+		lleRows := mergeUIRow(tn.LRows, tn.LERows)
+		for _, row := range lleRows {
+			if row.RType.IsSelect {
+				pkRows := Get(row.RType.SelectName).PKRows
+				if len(pkRows) > 0 {
+					row.RType.FKName = pkRows[0].Name
+				}
+
+			}
+		}
+	}
 }
 
 func FltrUITable(t *md.Table) *UITable {
@@ -82,8 +97,6 @@ func FltrUITable(t *md.Table) *UITable {
 		ViewOpts:  make([]*Operation, 0, 1),
 		UNQ:       defFids.Next(),
 	}
-
-	fmt.Println("-----------t:", t.Name.MainPath)
 	t.Cache = table
 	table.Optrs = newOperations("", t.ExtInfo, "lst")
 	table.BatchOpts = newOperations("", t.ExtInfo, "blst")

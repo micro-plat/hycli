@@ -13,13 +13,13 @@ import (
 var apiTmpls embed.FS
 var apiTmplName = "mgr"
 
-//CreateAPI 创建web项目
-func CreateAPI(name string, input interface{}) error {
+// CreateAPI 创建web项目
+func CreateAPI(name string, input interface{}, cover bool) error {
 	err := output.CreateFiles(apiTmpls,
 		name,
 		apiTmplName,
 		apiTmplName,
-		input)
+		input, cover)
 	if err != nil {
 		return err
 	}
@@ -32,11 +32,12 @@ func CreateAPI(name string, input interface{}) error {
 	return err
 }
 
-//CreateAPIByCtx 创建API项目基础文件
+// CreateAPIByCtx 创建API项目基础文件
 func CreateAPIByCtx(c *cli.Context) (err error) {
 	if len(c.Args()) == 0 {
 		return fmt.Errorf("未指定项目名称")
 	}
 	name := types.GetString(c.Args().First(), "mgr")
-	return CreateAPI(name, NewProject(name))
+	cover := c.Bool("cover")
+	return CreateAPI(name, NewProject(name), cover)
 }

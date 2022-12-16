@@ -10,6 +10,7 @@ type CodeTable struct {
 	EType  *EnumType
 	AsEnum bool
 	QRows  []*CodeRow
+	BQRows []*CodeRow
 	LRows  []*CodeRow
 	LERows []*CodeRow
 	CRows  []*CodeRow
@@ -45,6 +46,7 @@ func fltrCodeTable(t *md.Table) *CodeTable {
 	table := &CodeTable{
 		Table:  t,
 		QRows:  make([]*CodeRow, 0, 1),
+		BQRows: make([]*CodeRow, 0, 1),
 		LRows:  make([]*CodeRow, 0, 1),
 		LERows: make([]*CodeRow, 0, 1),
 		CRows:  make([]*CodeRow, 0, 1),
@@ -56,6 +58,9 @@ func fltrCodeTable(t *md.Table) *CodeTable {
 	for _, r := range t.Rows {
 		if md.HasConstraint(r.Constraints, "Q") {
 			table.QRows = append(table.QRows, NewCodeRow("Q", r))
+		}
+		if md.HasConstraint(r.Constraints, "BQ") {
+			table.BQRows = append(table.BQRows, NewCodeRow("BQ", r))
 		}
 		if md.HasConstraint(r.Constraints, "L") {
 			table.LRows = append(table.LRows, NewCodeRow("L", r))

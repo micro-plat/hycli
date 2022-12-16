@@ -29,7 +29,7 @@ func (r *RDesc) String() string {
 	return r.Name
 }
 
-//Row 行信息
+// Row 行信息
 type Row struct {
 	Index       int      `json:"index"`       //索引
 	Name        string   `json:"name"`        //字段名
@@ -51,7 +51,7 @@ func (s *Row) Equal(t *Row) bool {
 
 func line2TableRow(line *Line) (*Row, error) {
 	if strings.Count(line.Text, "|") != 7 {
-		return nil, fmt.Errorf("表结构有误(行:%d)", line.LineID)
+		return nil, fmt.Errorf("数据表结构有误(行:%d)", line.LineID)
 	}
 	colums := strings.Split(strings.Trim(strings.TrimSpace(line.Text), "|"), "|")
 	if colums[0] == "" {

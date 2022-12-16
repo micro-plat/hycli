@@ -20,6 +20,7 @@ var Funcs = map[string]interface{}{
 	"spare":             spare,
 	"bleft":             bleft,
 	"bright":            bright,
+	"contactTBS":        contactTables,
 }
 
 func bleft() string {

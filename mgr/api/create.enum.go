@@ -11,18 +11,19 @@ import (
 	"github.com/urfave/cli"
 )
 
-//CreateEnumsByCtx 创建页面文件
+// CreateEnumsByCtx 创建页面文件
 func CreateEnumsByCtx(c *cli.Context) (err error) {
 	if len(c.Args()) == 0 {
 		return fmt.Errorf("未指定md文件路径")
 	}
 	//获取输出路径
 	outpath := types.GetString(c.Args().Get(1), "./")
-	return CreateEnums(c.Args().First(), c.String("table"), outpath)
+	cover := c.Bool("cover")
+	return CreateEnums(c.Args().First(), c.String("table"), outpath, cover)
 }
 
-//CreateEnums 创建页面文件
-func CreateEnums(mdpath string, tbs string, outpath string) error {
+// CreateEnums 创建页面文件
+func CreateEnums(mdpath string, tbs string, outpath string, cover bool) error {
 
 	//转换md文件
 	otbls, err := md.Mds2Tables(mdpath)
@@ -36,7 +37,7 @@ func CreateEnums(mdpath string, tbs string, outpath string) error {
 	//设置包名称
 	tbls.JoinPkgName(outpath)
 
-	return createEnums(outpath, tbls)
+	return createEnums(outpath, tbls, cover)
 }
 
 //go:embed comm/services
@@ -44,12 +45,13 @@ var enumTmpls embed.FS
 var enumTmplName = "comm/services"
 var enumPrefix = "comm"
 
-//createEnums 创建服务文件
-func createEnums(root string, input interface{}) error {
+// createEnums 创建服务文件
+func createEnums(root string, input interface{}, cover bool) error {
 	return output.CreateFiles(enumTmpls,
 		root,
 		enumPrefix,
 		enumTmplName,
 		input,
+		cover,
 		data.Funcs)
 }

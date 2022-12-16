@@ -55,7 +55,8 @@ export default {
       this.queryData_{{$table.UNQ}}()
     },
   methods:{
-    {{- template "list.tmpl.js" $table -}}
+    {{ $tbs := contactTBS  $table $table}}
+    {{- template "list.tmpl.js" $tbs -}}
     handleSizeChange(ps){
       this.form_{{$table.UNQ}}.ps = ps
      this.queryData_{{$table.UNQ}}()

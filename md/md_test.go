@@ -22,7 +22,7 @@ func TestTB(t *testing.T) {
 
 	reader, err := readMarkdownByReader(bufio.NewReader(strings.NewReader(row)))
 	assert.Equal(t, err, nil)
-	tbs, err := Lines2Table(line2Lines(reader))
+	tbs, err := Lines2Table(line2TbLines(reader))
 	assert.Equal(t, nil, err)
 	assert.Equal(t, 1, len(tbs))
 	assert.Equal(t, "sso_role_info", tbs[0].Name.Raw)

@@ -115,6 +115,11 @@ func (u *{{.Name.CName}}Handler) QueryHandle(ctx hydra.IContext) (r interface{})
 	m["ps"] = ctx.Request().GetInt("ps", 10)
 	m["offset"] = (ctx.Request().GetInt("pi", 1) - 1) * ctx.Request().GetInt("ps", 10)
 
+	{{- range $i,$v := $table.BQRows -}}
+	{{- if ne "" $v.BQDefValue}}
+	m["{{$v.Name}}"] = types.GetString(m["{{$v.Name}}"],"{{$v.BQDefValue}}")
+	{{- end -}}
+	{{- end}}
 	count, err := hydra.C.DB().GetRegularDB().Scalar(get{{.Name.CName}}ListCount, m)
 	if err != nil {
 		return errs.NewErrorf(http.StatusNotExtended, "查询数据数量出错:%+v", err)

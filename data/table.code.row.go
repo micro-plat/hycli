@@ -5,7 +5,7 @@ import (
 	"github.com/micro-plat/lib4go/types"
 )
 
-//CodeRow 查询行
+// CodeRow 查询行
 type CodeRow struct {
 	*md.Row
 	RType         *UIType
@@ -15,13 +15,16 @@ type CodeRow struct {
 	IsUpdateField bool
 	IsDeleteField bool
 	IsPKField     bool
+	BQDefValue    string
 }
 
-//NewCodeRow 构建查询行数据
+// NewCodeRow 构建查询行数据
 func NewCodeRow(t string, r *md.Row) *CodeRow {
 	return &CodeRow{
-		Row:           r,
-		IsQueryField:  md.HasConstraint(r.Constraints, "Q"),
+		Row: r,
+		IsQueryField: md.HasConstraint(r.Constraints, "Q") ||
+			md.HasConstraint(r.Constraints, "BQ"),
+		BQDefValue:    md.GetValue("BQ", r.Constraints...),
 		IsListField:   md.HasConstraint(r.Constraints, "L"),
 		IsInsertField: md.HasConstraint(r.Constraints, "C"),
 		IsUpdateField: md.HasConstraint(r.Constraints, "U"),
@@ -59,7 +62,7 @@ func mergeUIRow(a []*UIRow, b []*UIRow) []*UIRow {
 	return rows
 }
 
-//fltrUIRows 过滤用户自定义类型对应的行，自定义行对应的控件按新增模式处理
+// fltrUIRows 过滤用户自定义类型对应的行，自定义行对应的控件按新增模式处理
 func fltrUIRows(t *UITable, tp string, formName ...string) []*UIRow {
 	rows := make([]*UIRow, 0, 1)
 	for _, r := range t.Rows {

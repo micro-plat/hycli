@@ -7,6 +7,7 @@ package {{.Name.Main}}
 {{ $ulen := (len $table.URows)|minus}}
 
 {{ $sigleQueryRows:= mergeCodeRow $table.LRows $table.LERows}}
+{{ $totalQRows:= mergeCodeRow $table.QRows $table.BQRows}}
 {{ $vlen := (len $sigleQueryRows)|minus}}
 
 //get{{.Name.CName}}ListCount 获取{{.Desc}}列表条数
@@ -15,7 +16,7 @@ select
 	count(1)
 from {{.Name.Raw}} t
 where
-{{- range $i,$v := $table.QRows}}
+{{- range $i,$v := $totalQRows}}
 {{- if eq "daterange" $v.RType.Type}}
 	and t.{{$v.Name}} >=  if(@start_{{$v.Name}}='', t.{{$v.Name}},@start_{{$v.Name}})
 	and t.{{$v.Name}} <  date_add(if(@end_{{$v.Name}}='',t.{{$v.Name}},@end_{{$v.Name}}), interval 1 day)
@@ -40,7 +41,7 @@ select
 	1
 from {{.Name.Raw}} t
 where
-	{{- range $i,$v := $table.QRows -}}
+	{{- range $i,$v := $totalQRows -}}
 	{{- if eq "daterange" $v.RType.Type}}
 	and t.{{$v.Name}} >=  if(@start_{{$v.Name}}='', t.{{$v.Name}},@start_{{$v.Name}})
 	and t.{{$v.Name}} <  date_add(if(@end_{{$v.Name}}='',t.{{$v.Name}},@end_{{$v.Name}}), interval 1 day)

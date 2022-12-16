@@ -93,9 +93,9 @@
         </el-form-item>
         {{- end -}} {{ end }}
         <el-form-item>
-            <el-button type="primary" :icon="Search" @click="onQuery">查询</el-button>
+            <el-button type="primary" icon="Search" @click="onQuery">查询</el-button>
             {{if gt $clen 0}}
-            <el-button type="success" :icon="Search" @click="showAdd">添加</el-button>
+            <el-button type="success" icon="Plus" @click="showAdd">添加</el-button>
             {{end}}
         </el-form-item>
         <div class="blist">

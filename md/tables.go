@@ -5,9 +5,10 @@ import (
 	"strings"
 
 	"github.com/micro-plat/lib4go/jsons"
+	"github.com/micro-plat/lib4go/types"
 )
 
-//Tables markdown中的所有表信息
+// Tables markdown中的所有表信息
 type Tables []*Table
 
 func (r Tables) String() string {
@@ -43,7 +44,35 @@ func (t Tables) Filter(n string, exclude bool) Tables {
 				break
 			}
 		}
-
 	}
 	return ntables
+}
+
+func (t Tables) resetConf(cnf TableConfs) {
+
+	cnfs := cnf.Map()
+	if len(cnfs) == 0 {
+		return
+	}
+	for _, tb := range t {
+
+		//获取表的配置信息
+		conf, ok := cnfs[tb.Name.RealName]
+		if !ok {
+			continue
+		}
+		tb.ExtInfo = types.GetString(conf.ExtInfo, tb.ExtInfo)
+		tb.Desc = types.GetString(conf.Desc, tb.Desc)
+		tb.Exclude = conf.Exclude || tb.Exclude
+
+		//循环列，查找配置信息
+		for _, row := range tb.Rows {
+			rconf, ok := conf.Rows[row.Name]
+			if !ok {
+				continue
+			}
+			row.Constraints = append(row.Constraints, rconf.Constraints...)
+			row.Desc = rconf.Desc
+		}
+	}
 }

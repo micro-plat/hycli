@@ -8,10 +8,11 @@ import (
 	"strings"
 
 	logs "github.com/lib4dev/cli/logger"
+	"github.com/micro-plat/lib4go/errs"
 )
 
-//createFiles 创建文件
-func CreateFiles(tmpls embed.FS, rootDir, prefix string, name string, input interface{}, xfuncs ...map[string]interface{}) error {
+// createFiles 创建文件
+func CreateFiles(tmpls embed.FS, rootDir, prefix string, name string, input interface{}, cover bool, xfuncs ...map[string]interface{}) error {
 	entities, err := tmpls.ReadDir(name)
 	if err != nil {
 		return err
@@ -25,7 +26,7 @@ func CreateFiles(tmpls embed.FS, rootDir, prefix string, name string, input inte
 			continue
 		}
 		if entity.IsDir() {
-			if err := CreateFiles(tmpls, rootDir, prefix, fpath, input, xfuncs...); err != nil {
+			if err := CreateFiles(tmpls, rootDir, prefix, fpath, input, cover, xfuncs...); err != nil {
 				return err
 			}
 			continue
@@ -45,8 +46,12 @@ func CreateFiles(tmpls embed.FS, rootDir, prefix string, name string, input inte
 		}
 
 		//创建文件
-		fs, err := Create(string(npathBytes), true)
+		fs, err := Create(string(npathBytes), cover)
 		if err != nil {
+			if errs.GetCode(err) == 204 {
+				logs.Log.Warn(err)
+				continue
+			}
 			return err
 		}
 

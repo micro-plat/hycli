@@ -8,10 +8,11 @@ import (
 
 type RName struct {
 	Raw      string `json:'raw'`
-	OName    string `json:'oname'` //原始名称
-	CName    string `json:'cname'`
+	OName    string `json:'oname'` //原始名称，包含~
+	CName    string `json:'cname'` //单词间首字母大写
 	Main     string `json:'main'`
 	Short    string `json:'short'`
+	RealName string `json:'realName'` ////原始名称去掉~等特殊字符
 	Prefix   string `json:'prefix'`
 	MainPath string `json:'main_path'`
 }
@@ -42,7 +43,8 @@ func NewTable(name, desc, extinfo string) *Table {
 
 	return &Table{
 		Name: &RName{
-			Raw:      rname,                                 //表名称
+			Raw:      rname, //表名称
+			RealName: rname,
 			Short:    strings.Join(names[1:], "_"),          //以下划线连接的第二段后面的名称
 			Prefix:   names[0],                              //前缀名
 			CName:    ToCName(strings.Join(names[1:], "_")), //class name,去掉第一段，后面几段首字母大写

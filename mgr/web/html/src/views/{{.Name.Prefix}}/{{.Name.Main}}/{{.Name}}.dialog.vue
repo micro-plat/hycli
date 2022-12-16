@@ -76,9 +76,25 @@ export default {
      {{- range $x,$m:=$optRow -}}
      {{- if eq "DIALOG" $m.Name}}
      //--------------------{{$m.Label}}---------------------------------
-      //显示 {{$m.Label}} 弹出框
+      //显示 {{$m.Label}} 弹出框 {{$m}}
       show_{{$m.UNQ}}(fm){
-         Object.assign(this.form_{{$m.UNQ}},fm)
+        {{- $ct:= fltrSearchUITable  $m -}}
+        {{- $tbs := contactTBS  $table $ct -}}
+        {{- $ctable := $tbs.Current -}}
+        {{- $mtable := $tbs.Main -}}
+        {{- $MLLERows:= mergeUIRow $mtable.LRows $mtable.LERows}}
+          
+        //处理关联表{{$m.URL}}
+        let currentForm = {}
+        {{- range $i,$c := $MLLERows -}}
+          {{- if eq true $c.RType.IsSelect -}}
+            {{- if eq $ctable.Name.Short $c.Ext.SLType}}
+        currentForm.{{$c.Name}} = fm.{{$c.RType.FKName}}
+            {{- end -}}
+        {{- end -}}
+        {{- end}}
+
+         Object.assign(this.form_{{$m.UNQ}},currentForm)
          this.conf.{{$m.UNQ}}_visible = true;
       },
       //隐藏 {{$m.Label}} 弹出框

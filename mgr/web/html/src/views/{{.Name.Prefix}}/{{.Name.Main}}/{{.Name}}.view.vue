@@ -71,7 +71,8 @@ export default {
      {{range $i,$c:= $viewOptRow}}
        {{ if eq "TAB" $c.Name}}
           {{$ct:= fltrSearchUITable  $c}}
-        {{- template "list.tmpl.js" $ct}}
+          {{ $tbs := contactTBS  $ct $table}}
+        {{- template "list.tmpl.js" $tbs}}
       {{end}}
       {{ end }}
   },

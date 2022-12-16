@@ -11,16 +11,17 @@ import (
 	"github.com/urfave/cli"
 )
 
-//CreatePageByCtx 创建页面文件
+// CreatePageByCtx 创建页面文件
 func CreatePageByCtx(c *cli.Context) (err error) {
 	if len(c.Args()) == 0 {
 		return fmt.Errorf("未指定md文件路径")
 	}
 	//获取输出路径
 	outpath := types.GetString(c.Args().Get(1), "./")
-	return CreatePage(c.Args().First(), c.String("table"), outpath)
+	cover := c.Bool("cover")
+	return CreatePage(c.Args().First(), c.String("table"), outpath, cover)
 }
-func CreatePage(mdpath string, tbs string, outpath string) error {
+func CreatePage(mdpath string, tbs string, outpath string, cover bool) error {
 	//转换md文件
 	otbls, err := md.Mds2Tables(mdpath)
 	if err != nil {
@@ -31,17 +32,18 @@ func CreatePage(mdpath string, tbs string, outpath string) error {
 
 	ntbs := data.FltrUITables(tbls)
 	data.Caches(ntbs)
+	data.ResetSelectRelation(ntbs)
 
 	//创建页面文件
 	for _, tb := range ntbs {
-		if err = createViews(outpath, tb); err != nil {
+		if err = createViews(outpath, tb, cover); err != nil {
 			return err
 		}
 	}
 
 	// //创建路由文件
 
-	if err = createRouter(outpath, tbls); err != nil {
+	if err = createRouter(outpath, tbls, cover); err != nil {
 		return err
 	}
 	return nil
@@ -52,12 +54,13 @@ var viewTmpls embed.FS
 var viewTmplName = "html/src/views"
 var prefix = "html"
 
-//create 创建页面文件
-func createViews(root string, input interface{}) error {
+// create 创建页面文件
+func createViews(root string, input interface{}, cover bool) error {
 	return output.CreateFiles(viewTmpls,
 		root,
 		prefix,
 		viewTmplName,
 		input,
+		cover,
 		data.Funcs)
 }

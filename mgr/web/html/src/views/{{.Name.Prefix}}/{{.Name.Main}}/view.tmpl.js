@@ -9,16 +9,16 @@
       //{{ $c.Label}}查询
       {{- $ct:= fltrSearchUITable $c}}
       {{if and (ne "" $c.RwName) (ne "" $c.FwName)}}
-          this.form_{{$ct.UNQ}}.{{ $c.FwName}} = form.{{$c.RwName}}
+      // this.form_{{$ct.UNQ}}.{{ $c.FwName}} = form.{{$c.RwName}}
       {{- else -}}
         {{- range $y,$x:= $pkRows}}
           {{- $currRow:= fltrForginKey $ct $table $x.Name -}}
           {{- if ne "" $currRow.UNQ}}
-              this.form_{{$ct.UNQ}}.{{$currRow.Name}} = form.{{$x.Name}}
+      // this.form_{{$ct.UNQ}}.{{$currRow.Name}} = form.{{$x.Name}}
           {{- end }}
         {{- end}}
       {{- end}}
-      this.queryData_{{$ct.UNQ}}()
+      this.queryData_{{$ct.UNQ}}(form)
       {{- end}}
      {{- end}}
   
@@ -29,7 +29,7 @@
         Object.assign(that.view, res)
         {{- range $i,$c := $vrow -}}
           {{- if eq true $c.RType.IsSelect}}
-            that.view.{{$c.Name}}_label = that.$theia.enum.getName("{{$c.Ext.SLType}}",res.{{$c.Name}})
+            that.view.{{$c.Name}}_label = that.$theia.enum.getNames("{{$c.Ext.SLType}}",res.{{$c.Name}})
           {{- end -}}
         {{- end}}
       })

@@ -1,19 +1,19 @@
 {{- $crow := .}}
 {{$m := 0}}
-<el-row :gutter="20">
+<el-row>
 
   {{range $i,$c:= $crow -}}
 
 {{- if le 33 $c.RType.Len -}}
   {{$m =  0}}
-  <el-col :span="20">
- {{- else if and (eq true $c.Ext.Fline) (ne 0 (spare $m 20)) -}}
-    <el-col :span="10"></el-col>
-    <el-col :span="10">
-    {{$m = add $m 20 -}}
+  <el-col :span="24">
+ {{- else if and (eq true $c.Ext.Fline) (ne 0 (spare $m 24)) -}}
+    <el-col :span="12"></el-col>
+    <el-col :span="12">
+    {{$m = add $m 24 -}}
     {{- else -}}
-    <el-col :span="10">
-      {{$m = add $m 10}}
+    <el-col :span="12">
+      {{$m = add $m 12}}
  {{- end -}}
 
 

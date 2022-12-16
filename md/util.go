@@ -30,13 +30,19 @@ func GetFormat(cns ...string) string {
 	lst := GetConstraintByReg(cns, `f\(([^\(^\)]+)\)`)
 	return types.GetStringByIndex(lst, 0)
 }
-func GetDefValue(cns ...string) string {
-	lst := GetConstraintByReg(cns, `def\((\w+)\)`)
+func GetValue(name string, cns ...string) string {
+	lst := GetConstraintByReg(cns, fmt.Sprintf(`%s\((\w+)\)`, name))
 	return types.GetStringByIndex(lst, 0)
 }
+func GetDefValue(cns ...string) string {
+	return GetValue("def", cns...)
+	// lst := GetConstraintByReg(cns, `def\((\w+)\)`)
+	// return types.GetStringByIndex(lst, 0)
+}
 func GetVdlValue(cns ...string) string {
-	lst := GetConstraintByReg(cns, `valid\((\w+)\)`)
-	return types.GetStringByIndex(lst, 0)
+	return GetValue("valid", cns...)
+	// lst := GetConstraintByReg(cns, `valid\((\w+)\)`)
+	// return types.GetStringByIndex(lst, 0)
 }
 func GetRangeName(cns ...string) string {
 	if r := types.GetStringByIndex(GetConstraintByReg(cns, `range\((\w+)\)`), 0); r != "" {

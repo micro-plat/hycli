@@ -14,13 +14,14 @@ import (
 func CreateByCtx(c *cli.Context) (err error) {
 	//获取输出路径
 	outpath := types.GetString(c.Args().Get(1), "")
+	cover := c.Bool("cover")
 
 	data := map[string]interface{}{
 		"platName": types.GetString(c.String("platName"), ""),
 		"sysName":  types.GetString(c.String("sysName"), ""),
 		"PkgName":  md.GetPkgName(),
 	}
-	return createFiles(outpath, data)
+	return createFiles(outpath, data, cover)
 }
 
 //go:embed tmpl
@@ -29,11 +30,12 @@ var srvsTmplName = "tmpl"
 var prefix = "tmpl"
 
 // createService 创建服务文件
-func createFiles(root string, input interface{}) error {
+func createFiles(root string, input interface{}, cover bool) error {
 	return output.CreateFiles(srvsTmpls,
 		root,
 		prefix,
 		srvsTmplName,
 		input,
+		cover,
 		data.Funcs)
 }
