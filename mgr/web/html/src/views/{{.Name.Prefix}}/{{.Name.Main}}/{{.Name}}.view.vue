@@ -65,16 +65,15 @@ export default {
         },
       }
   },
- 
   methods: {
     {{template "view.tmpl.js" $table}}
-     {{range $i,$c:= $viewOptRow}}
-       {{ if eq "TAB" $c.Name}}
-          {{$ct:= fltrSearchUITable  $c}}
-          {{ $tbs := contactTBS  $ct $table}}
+     {{- range $i,$c:= $viewOptRow -}}
+       {{- if eq "TAB" $c.Name -}}
+          {{- $ct:= fltrSearchUITable  $c -}}
+          {{- $tbs := contactTBS  $ct $table -}}
         {{- template "list.tmpl.js" $tbs}}
-      {{end}}
-      {{ end }}
+      {{- end -}}
+      {{- end -}}
   },
 };
 </script>

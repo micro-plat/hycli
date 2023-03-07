@@ -61,12 +61,6 @@ func newOperations(mp string, t string, tag string) []*Operation {
 			FwName: types.GetStringByIndex(lst, 4),
 			UNQ:    defFids.Next(),
 		}
-
-		// if !strings.HasPrefix(opt.URL, "/") {
-		// 	fmt.Println(".....url:", mp, "----", opt.URL)
-		// 	opt.URL = fmt.Sprintf("%s", mp) //  strings.TrimRight(mp, "/") + "/" + strings.TrimLeft(opt.URL, "/")
-
-		// }
 		opts = append(opts, opt)
 
 	}

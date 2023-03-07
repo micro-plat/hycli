@@ -4,6 +4,7 @@ import (
 	"embed"
 	"fmt"
 
+	logs "github.com/lib4dev/cli/logger"
 	"github.com/micro-plat/hycli/data"
 	"github.com/micro-plat/hycli/md"
 	"github.com/micro-plat/hycli/output"
@@ -25,6 +26,7 @@ func CreateEnumsByCtx(c *cli.Context) (err error) {
 // CreateEnums 创建页面文件
 func CreateEnums(mdpath string, tbs string, outpath string, cover bool) error {
 
+	logs.Log.Info("------------------生成枚举文件------------------")
 	//转换md文件
 	otbls, err := md.Mds2Tables(mdpath)
 	if err != nil {

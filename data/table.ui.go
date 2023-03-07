@@ -32,6 +32,13 @@ type UITable struct {
 func (u *UITable) String() string {
 	return u.Name.String()
 }
+func (u *UITable) Marshal() string {
+	buff, err := jsons.Marshal(u.Table.Rows)
+	if err != nil {
+		return err.Error()
+	}
+	return string(buff)
+}
 func (u *UITable) Copy() *UITable {
 	tb := &UITable{}
 	buff, err := jsons.Marshal(u)
@@ -71,10 +78,29 @@ func ResetSelectRelation(tbs []*UITable) {
 				if len(pkRows) > 0 {
 					row.RType.FKName = pkRows[0].Name
 				}
-
 			}
+
+		}
+
+		//反向获取级联查询的引用列信息
+		for _, row := range tn.CRows {
+			row.RefedRows = getReferencedRows(row.Name, tn.CRows)
+		}
+		for _, row := range tn.URows {
+			row.RefedRows = getReferencedRows(row.Name, tn.URows)
 		}
 	}
+}
+
+// 获取，引用了当前字段名的行
+func getReferencedRows(name string, rows []*UIRow) []*UIRow {
+	rrows := make([]*UIRow, 0, 1)
+	for _, r := range rows {
+		if r.RType.IsSelect && r.RType.SelectFieldName == name {
+			rrows = append(rrows, r)
+		}
+	}
+	return rrows
 }
 
 func FltrUITable(t *md.Table) *UITable {

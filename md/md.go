@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	logs "github.com/lib4dev/cli/logger"
 )
 
 func Mds2Tables(filePath string) (Tables, error) {
@@ -33,8 +35,8 @@ func mds2Tables(filePath string) (Tables, error) {
 
 	//读取完整表结构
 	tbpaths, confpaths := groupPath(fns)
-	fmt.Println("字典文件:", tbpaths)
-	fmt.Println("配置文件:", confpaths)
+	logs.Log.Info("字典文件:", tbpaths)
+	logs.Log.Info("配置文件:", confpaths)
 	for _, fn := range tbpaths {
 		ntbs, err := md2Tbl(fn)
 		if err != nil {
@@ -148,7 +150,7 @@ func getFiles(path string) (paths []string) {
 func groupPath(p []string) ([]string, []string) {
 	file, confs := []string{}, []string{}
 	for _, v := range p {
-		if strings.Contains(v, ".ui.conf.") {
+		if strings.Contains(v, ".hi.conf.") {
 			confs = append(confs, v)
 			continue
 		}

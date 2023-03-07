@@ -8,8 +8,8 @@
       {{- if eq "TAB" $c.Name}}
       //{{ $c.Label}}查询
       {{- $ct:= fltrSearchUITable $c}}
-      {{if and (ne "" $c.RwName) (ne "" $c.FwName)}}
-      // this.form_{{$ct.UNQ}}.{{ $c.FwName}} = form.{{$c.RwName}}
+      // {{if and (ne "" $c.RwName) (ne "" $c.FwName)}}
+        this.form_{{$ct.UNQ}}.{{ $c.FwName}} = form.{{$c.RwName}}
       {{- else -}}
         {{- range $y,$x:= $pkRows}}
           {{- $currRow:= fltrForginKey $ct $table $x.Name -}}
@@ -26,7 +26,7 @@
     this.$theia.http
       .get("/{{.Name.MainPath|lower}}",form)
       .then((res) => {
-        Object.assign(that.view, res)
+            Object.assign(that.view, res)
         {{- range $i,$c := $vrow -}}
           {{- if eq true $c.RType.IsSelect}}
             that.view.{{$c.Name}}_label = that.$theia.enum.getNames("{{$c.Ext.SLType}}",res.{{$c.Name}})
@@ -54,4 +54,10 @@
  {{- end}}
    colorful(r){
      return this.$theia.env.conf.colorful[r]
+  },
+  tagColor(r,name){
+    if(this.$theia.env.conf.colorTag[name]){
+          return this.$theia.env.conf.colorTag[name][r]||""
+      }
+     return this.$theia.env.conf.colorTag[r]||""
   },

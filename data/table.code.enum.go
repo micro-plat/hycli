@@ -10,6 +10,7 @@ type EnumType struct {
 	Id       string
 	Name     string
 	Type     string
+	PID      string
 	Status   string //枚举状态字段
 	Expire   string //日期过期字段
 	Multiple bool
@@ -23,9 +24,9 @@ func (e *EnumType) String() string {
 
 func NewEnumType(r *md.Row) *EnumType {
 	return &EnumType{
-		Id:   types.GetString(md.GetTPName("DI", r.Constraints...), r.Name),
-		Name: types.GetString(md.GetTPName("DN", r.Constraints...), r.Name),
-		Type: types.GetString(md.GetTPName("DT", r.Constraints...), r.Name),
+		Id:   types.GetString(md.GetConsNameByTag("DI", r.Constraints...), r.Name),
+		Name: types.GetString(md.GetConsNameByTag("DN", r.Constraints...), r.Name),
+		Type: types.GetString(md.GetConsNameByTag("DT", r.Constraints...), r.Name),
 	}
 }
 func (d *EnumType) SetTypeIfAbsence(tp string) {

@@ -21,9 +21,7 @@ type Ext struct {
 func newExt(t string, r *md.Row, formName string) *Ext {
 	ext := &Ext{FormName: types.GetString(formName, "form")}
 	//处理sl参数
-	if md.HasConstraint(r.Constraints, "sl") {
-		ext.SLType = types.GetString(md.GetTPName("sl", r.Constraints...), r.Name)
-	}
+	ext.SLType, _ = md.GetSelectName(r.Name, r.Constraints...)
 
 	//处理color参数
 	if md.HasConstraint(r.Constraints, "color") {
@@ -40,11 +38,11 @@ func newExt(t string, r *md.Row, formName string) *Ext {
 		ext.Fline = md.HasConstraint(r.Constraints, "fl")
 	}
 
-	ext.TextRows = types.GetInt(md.GetTPName("row", r.Constraints...), 3)
+	ext.TextRows = types.GetInt(md.GetConsNameByTag("row", r.Constraints...), 3)
 
 	ext.HideOverflow = md.HasConstraint(r.Constraints, "hof")
 
-	ext.Width = md.GetTPName("lw", r.Constraints...)
+	ext.Width = md.GetConsNameByTag("lw", r.Constraints...)
 
 	//默认值
 	ext.DefValue = md.GetDefValue(r.Constraints...)

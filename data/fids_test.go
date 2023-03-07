@@ -23,14 +23,14 @@ func TestType(t *testing.T) {
 	assert.Equal(t, "number", v)
 }
 func TestGetExtOpt(t *testing.T) { //>/right/info,x
-	lst := newOperations("", "view(项目,tab:wp_project_info),view(计划,tab:wp_plan_info)", "view")
+	lst := newOperations("", "view(项目,tab:wp_project_info,x:y),view(计划,tab:wp_plan_info)", "view")
 	assert.Equal(t, 2, len(lst))
 	fmt.Println("lst:", lst)
 	assert.Equal(t, "TAB", lst[0].Name)
-	assert.Equal(t, "/right/info", lst[0].URL)
+	assert.Equal(t, "wp_project_info", lst[0].URL)
 	assert.Equal(t, "x", lst[0].RwName)
 	assert.Equal(t, "y", lst[0].FwName)
-	assert.Equal(t, "权限", lst[0].Label)
+	assert.Equal(t, "项目", lst[0].Label)
 }
 
 func TestRelation(t *testing.T) {
@@ -46,8 +46,8 @@ func TestRelation(t *testing.T) {
 | password         | varchar(32) |         |  否   |               C,tp(pwd)               | 密码                         |
 | mobile           | varchar(12) |         |  否   |        L,C,U,LE,DE,tp(mobile)         | 电话号码                     |
 | wx_openid        | varchar(64) |         |  是   |                                       | 微信openid                   |
-| scorp_id         | number(10)  |         |  是   |                                       | 服务公司编号                 |
-| role_id          | bigint(10)  |         |  否   |              LE,sl(role_info)                      | 角色编号                     |
+| scorp_id         | number(10)  |         |  是   |             c,u                        | 服务公司编号                 |
+| role_id          | bigint(10)  |         |  否   |              c,u,LE,sl(role_info,scorp_id)                      | 角色编号                     |
 
 	### 4. 角色表[sso_role_info]
 	
@@ -68,4 +68,31 @@ func TestRelation(t *testing.T) {
 	ntbs := FltrUITables(tbls)
 	Caches(ntbs)
 	ResetSelectRelation(ntbs)
+	// assert.Equal(t, 1, 2)
+	fmt.Println(ntbs)
+}
+
+func TestRelation2(t *testing.T) {
+
+	row := `
+		### 4. 角色表[sso_role_info]
+	
+	| 字段名      | 类型        |      默认值       | 为空  |  约束   | 描述                 |
+	| ----------- | ----------- | :---------------: | :---: | :-----: | :------------------- |
+	| role_id     | bigint(20)  |                   |  否   | PK,SEQ,DI | 角色id               |
+	| name        | varchar(64) |                   |  否   |   UNQ,DN  | 角色名称             |
+	| price      | decimal(10,5)  |         0         |  是   |         | 价格 |
+	| status      | tinyint(1)  |         0         |  否   |         | 状态 1: 禁用 0: 正常 |
+	| create_time | datetime    | sysdate |  否   |         | 创建时间             |`
+
+	//转换md文件
+	otbls, err := md.Md2TbByContent(row)
+	assert.Equal(t, err, nil)
+	//过滤表格
+	tbls := otbls.Filter("", true)
+
+	ntbs := FltrUITables(tbls)
+	Caches(ntbs)
+	ResetSelectRelation(ntbs)
+	assert.Equal(t, ntbs[0].Rows[0].AllowNull, false)
 }

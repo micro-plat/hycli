@@ -4,6 +4,7 @@ import (
 	"embed"
 	"fmt"
 
+	logs "github.com/lib4dev/cli/logger"
 	"github.com/micro-plat/hycli/data"
 	"github.com/micro-plat/hycli/md"
 	"github.com/micro-plat/hycli/output"
@@ -22,20 +23,21 @@ func CreatePageByCtx(c *cli.Context) (err error) {
 	return CreatePage(c.Args().First(), c.String("table"), outpath, cover)
 }
 func CreatePage(mdpath string, tbs string, outpath string, cover bool) error {
-	//转换md文件
+	logs.Log.Info("------------------生成页面文件------------------")
+	//转换md文件，todo:解决constans解析错误问题
 	otbls, err := md.Mds2Tables(mdpath)
 	if err != nil {
 		return err
 	}
 	//过滤表格
 	tbls := otbls.Filter(tbs, true)
-
 	ntbs := data.FltrUITables(tbls)
 	data.Caches(ntbs)
 	data.ResetSelectRelation(ntbs)
 
 	//创建页面文件
 	for _, tb := range ntbs {
+
 		if err = createViews(outpath, tb, cover); err != nil {
 			return err
 		}

@@ -7,10 +7,8 @@
 {{- $LLERows:= mergeUIRow $lstRow $leRow}}
 {{- $MLLERows:= mergeUIRow $mtable.LRows $mtable.LERows}}
 
-queryData_{{$table.UNQ}}(mform = {}){
-
+    queryData_{{$table.UNQ}}(mform = {}){
     //构建查询参数
-   
      {{- range $i,$c:= $qrow -}}
       {{- if eq "daterange" $c.RType.Type}}
     this.form_{{$table.UNQ}}.start_{{$c.Name}} = null
@@ -22,14 +20,24 @@ queryData_{{$table.UNQ}}(mform = {}){
       {{end -}}
       {{- end}}
  
-    //处理关联表{{$table.Name}}
+    //处理关联表{{$table.Name}} {{$xtable.Main.Name}}
     {{- range $i,$c := $MLLERows -}}
       {{- if eq true $c.RType.IsSelect -}}
         {{- if eq $table.Name.Short $c.Ext.SLType}}
+        {{- if ne "" $c.RType.FKName}}
     this.form_{{$table.UNQ}}.{{$c.Name}} = mform.{{$c.RType.FKName}}
+        {{- end -}}
         {{- end -}}
     {{- end -}}
     {{- end}}
+
+    {{- range $x,$v := $xtable.Main.ViewOpts -}}
+          {{if eq $v.URL $table.Name.Raw}}
+          {{if and (ne "" $v.RwName) (ne "" $v.FwName)}}
+     this.form_{{$table.UNQ}}.{{$v.FwName}} = mform.{{$v.RwName}}   
+        {{end}}
+          {{- end -}}
+    {{end}}
      
     //发送查询请求
     let that = this
@@ -39,7 +47,7 @@ queryData_{{$table.UNQ}}(mform = {}){
         that.dataList_{{$table.UNQ}} = res.items||[]
         that.total_{{$table.UNQ}} = res.count
         that.dataList_{{$table.UNQ}}.forEach(item => {
-            {{- range $i,$c := $LLERows -}}
+            {{- range $i,$c := $LLERows}}
             {{- if and (ne "" $c.RType.Format) (eq true $c.RType.IsDate)}}
             item.{{$c.Name}} = that.$theia.str.dateFormat(item.{{$c.Name}},'{{$c.RType.Format}}')
           {{- else if and (ne "" $c.RType.Format) (eq true $c.RType.IsNumber)}}
@@ -61,3 +69,13 @@ queryData_{{$table.UNQ}}(mform = {}){
       });
     })
   },
+
+  {{ range $i,$c:= $qrow }}
+  {{- if eq "ddl" $c.RType.Type -}}
+  on{{.Name}}dropdownClick(f, x) {
+    let mf = f || {}
+    x.{{.Name}}_label = mf.name
+    x.{{.Name}} = mf.value
+    this.onQuery()
+  },
+{{- end }}{{ end }}

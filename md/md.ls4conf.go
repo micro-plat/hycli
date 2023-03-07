@@ -117,6 +117,7 @@ func line2TableRowConf(line *Line) (*RowConf, error) {
 		Constraints: mergeConstraint(getNames(strings.TrimSpace(colums[1]))),
 		Desc:        &RDesc{Raw: desc, Name: getShortDesc(desc)},
 	}
+	// fmt.Println("---toconf:", colums[0], ":", getNames(colums[1]))
 
 	return c, nil
 }

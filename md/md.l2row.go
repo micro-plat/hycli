@@ -68,7 +68,7 @@ func line2TableRow(line *Line) (*Row, error) {
 		CName:       ToCName(strings.TrimSpace(strings.Replace(colums[0], "&#124;", "|", -1))),
 		Type:        rtp,
 		DefValue:    strings.TrimSpace(strings.Replace(colums[2], "&#124;", "|", -1)),
-		AllowNull:   types.GetStringByIndex(getNames(strings.TrimSpace(colums[3])), 0, "是") != "否",
+		AllowNull:   strings.TrimSpace(colums[3]) != "否",
 		Constraints: mergeConstraint(getNames(strings.TrimSpace(colums[4]))),
 		Desc:        &RDesc{Raw: desc, Name: getShortDesc(desc)},
 	}
@@ -89,7 +89,7 @@ func getRType(t string, index int) (*RType, error) {
 	}
 	return &RType{Raw: t, Name: names[0], Len: types.GetInt(names[1]), DLen: types.GetInt(names[2])}, nil
 }
-func getNames(t string) []string {
+func getNamesx(t string) []string {
 	reg := regexp.MustCompile(`[^,]+`)
 	names := reg.FindAllString(t, -1)
 	lname := make([]string, 0, len(names))
@@ -97,6 +97,25 @@ func getNames(t string) []string {
 		lname = append(lname, strings.Trim(v, " "))
 	}
 	return lname
+}
+
+func getNames(p string) []string {
+	// reg := regexp.MustCompile(`([\w]+[\(][\w]+[,]?[\w]*\))|([@]?[\w]+)`)
+	reg := regexp.MustCompile(`([\w]+\([^(]*\))|([@]?[\w]+)`)
+	xn := reg.FindAllStringSubmatch(p, -1)
+	if len(xn) == 0 {
+		return nil
+	}
+	names := make([]string, 0, len(xn))
+	for _, r := range xn {
+		for i := 1; i < len(r); i++ {
+			if r[i] == "" {
+				continue
+			}
+			names = append(names, r[i])
+		}
+	}
+	return names
 }
 func mergeConstraint(input []string) []string {
 	output := make([]string, 0, 1)

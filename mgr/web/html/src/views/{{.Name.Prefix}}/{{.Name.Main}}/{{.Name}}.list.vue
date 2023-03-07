@@ -8,7 +8,7 @@
   {{- $LLERows:= mergeUIRow $lstRow $leRow}}
   <div style="height: 100%">
     <!-- 查询条件 -->
-    {{template "query.tmpl.html" $table}}
+    {{template "query.tmpl.html" $table -}}
     <!-- 列表 -->
     {{template "list.tmpl.html" $table}}
     <CAdd ref="cadd" @onsaved="onQuery"></CAdd>
@@ -55,14 +55,14 @@ export default {
       this.queryData_{{$table.UNQ}}()
     },
   methods:{
-    {{ $tbs := contactTBS  $table $table}}
-    {{- template "list.tmpl.js" $tbs -}}
+    {{- $tbs := contactTBS  $table $table -}}
+    {{- template "list.tmpl.js" $tbs}}
     handleSizeChange(ps){
       this.form_{{$table.UNQ}}.ps = ps
      this.queryData_{{$table.UNQ}}()
     },
     handleCurrentChange(pi){
-      this.form_{{$table.UNQ}}.pi = pi
+     this.form_{{$table.UNQ}}.pi = pi
      this.queryData_{{$table.UNQ}}()
     },
     onQuery(){
@@ -115,9 +115,18 @@ export default {
     margin-right: 4px;
 }
 .blist{
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    width: 100%;
 }
 .blist .el-radio-group{
-margin-right: 10px;
+margin-right: 8px;
+}
+.ddl{
+  margin-bottom: 8px;
+  width: 100%;
+ 
+}
+.ddl .el-dropdown{
+    margin-right: 8px; 
 }
 </style>

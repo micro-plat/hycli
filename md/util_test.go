@@ -3,6 +3,7 @@ package md
 import (
 	"fmt"
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/micro-plat/lib4go/assert"
@@ -21,23 +22,30 @@ func TestRange1(t *testing.T) {
 
 }
 func TestTP(t *testing.T) {
-	tp := GetTPName("tp", "tp(bl)")
+	tp := GetConsNameByTag("tp", "tp(bl)")
 	assert.Equal(t, "bl", tp)
 
-	tp = GetTPName("l", "l(bl)")
+	tp = GetConsNameByTag("l", "l(bl)")
 	assert.Equal(t, "bl", tp)
 
-	tp = GetTPName("DI", "DI")
+	tp = GetConsNameByTag("DI", "DI")
 	assert.Equal(t, "", tp)
 
 }
 func TestSelect(t *testing.T) {
-	s := GetSelectName("status", "sl")
+	s, f := GetSelectName("status", "sl")
 	assert.Equal(t, "status", s)
+	assert.Equal(t, "", f)
 }
 func TestSelect2(t *testing.T) {
-	s := GetSelectName("status", "sl(bool)")
+	s, f := GetSelectName("status", "sl(bool)")
 	assert.Equal(t, "bool", s)
+	assert.Equal(t, "", f)
+}
+func TestSelect3(t *testing.T) {
+	s, f := GetSelectName("status", "sl(bool,fabc)")
+	assert.Equal(t, "bool", s)
+	assert.Equal(t, "fabc", f)
 }
 func TestHasConstraint(t *testing.T) {
 	b := HasConstraint([]string{"f"}, "f")
@@ -91,11 +99,43 @@ func TestGetName(t *testing.T) {
 	assert.Equal(t, 5, len(v))
 	assert.Equal(t, "U", v[2])
 	assert.Equal(t, "le", v[4])
+}
+
+func TestGetName2(t *testing.T) {
+	p := "l,v,q,sl(status_id,id),sl(bool),@cUve"
+	xn := getNames(p)
+	fmt.Println("xxxy:", strings.Join(xn, "|"))
+	assert.Equal(t, 6, len(xn))
 
 }
+func TestGetName3x(t *testing.T) {
+	p := "	PK,SEQ,L,DI              "
+	xn := getNames(p)
+	fmt.Println("xxxy:", strings.Join(xn, "|"))
+	assert.Equal(t, 4, len(xn))
+
+}
+func TestGetNameFor(t *testing.T) {
+	p := "Q,l,LE,C,U,lw(120),sl(project_system,project_id),tp(blist)"
+	xn := getNames(p)
+	fmt.Println("xxxy:", strings.Join(xn, "|"))
+	assert.Equal(t, 4, len(xn))
+
+}
+
 func TestGetExtOpt(t *testing.T) { //>/right/info,x
 	lst := GetExtOpt("lst(权限,link:/right/info,x:y),lst(启用,dialog:/right/save,m),pnl(启用,dialog:/right/save,m)", "lst")
 	assert.Equal(t, 2, len(lst))
 	assert.Equal(t, "lst(权限,link:/right/info,x:y)", lst[0])
 	assert.Equal(t, "lst(启用,dialog:/right/save,m)", lst[1])
+}
+func TestGetFormat(t *testing.T) {
+	f := GetFormat("   le,f(MM/dd HH:mm:ss),v")
+	assert.Equal(t, "MM/dd HH:mm:ss", f)
+}
+
+func TestMergeConstraint(t *testing.T) {
+	f := getNames("   le,f(MM/dd HH:mm:ss),v")
+	fmt.Println("f:", f)
+	assert.Equal(t, "MM/dd HH:mm:ss", f[1])
 }

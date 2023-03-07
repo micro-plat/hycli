@@ -4,6 +4,7 @@ import (
 	"embed"
 	"fmt"
 
+	logs "github.com/lib4dev/cli/logger"
 	"github.com/micro-plat/hycli/data"
 	"github.com/micro-plat/hycli/md"
 	"github.com/micro-plat/hycli/output"
@@ -23,6 +24,8 @@ func CreateServiceByCtx(c *cli.Context) (err error) {
 
 }
 func CreateService(mdpath string, tbs string, outpath string, cover bool) error {
+
+	logs.Log.Info("------------------生成接口文件------------------")
 	//转换md文件
 	otbls, err := md.Mds2Tables(mdpath)
 	if err != nil {

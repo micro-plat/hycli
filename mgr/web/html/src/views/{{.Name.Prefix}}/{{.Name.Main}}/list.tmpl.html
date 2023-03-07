@@ -68,7 +68,7 @@
         {{- end }}
         {{if gt $optLen 0}}
         {{- template "opts.tmpl.html" .}}
-        {{ end }}
+        {{- end -}}
     </el-table>
     <el-pagination :currentPage="form_{{$table.UNQ}}.pi" :page-size="form_{{$table.UNQ}}.ps"
         style="position: absolute; right: 30px;bottom:10px;" :page-sizes="[10, 20, 50, 100]" :background="false" small

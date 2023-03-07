@@ -50,25 +50,40 @@ func GetRangeName(cns ...string) string {
 	}
 	return ""
 }
-func GetTPName(t string, cns ...string) string {
+func GetConsNameByTag(t string, cns ...string) string {
 	if r := types.GetStringByIndex(GetConstraintByReg(cns,
-		fmt.Sprintf(`%s\((\w+)[-]?([\w]*)\)`, t)), 0); r != "" {
+		fmt.Sprintf(`%s\((\w+)[,]?([\w]*)\)`, t)), 0); r != "" {
 		return r
 	}
 	return ""
+}
+func GetConsByTag(t string, cns ...string) (string, string) {
+	cons := GetConstraintByReg(cns, fmt.Sprintf(`%s\((\w+)[,]?([\w]*)\)`, t))
+	if len(cons) == 2 {
+		return cons[0], cons[1]
+	}
+	if len(cons) == 1 {
+		return cons[0], ""
+	}
+	return "", ""
 }
 
-func GetSelectName(fname string, cns ...string) string {
-	if r := types.GetStringByIndex(GetConstraintByReg(cns, `sl\((\w+)\)`), 0); r != "" {
-		return r
+func GetSelectName(fname string, cns ...string) (string, string) {
+
+	lst := GetConstraintByReg(cns, `sl\((\w+)[,]?([\w]*)\)`)
+	if len(lst) > 1 && lst[1] != "" {
+		return lst[0], lst[1]
+	}
+	if len(lst) > 0 {
+		return lst[0], ""
 	}
 	if HasConstraint(cns, "sl") {
-		return fname
+		return fname, ""
 	}
-	return ""
+	return "", ""
 }
 func GetRanges(cns ...string) (string, string) {
-	lst := GetConstraintByReg(cns, `range\((\w+)[-]?([\w]*)\)`)
+	lst := GetConstraintByReg(cns, `range\((\w+)[,]?([\w]*)\)`)
 	if len(lst) > 1 && lst[1] != "" {
 		return lst[0], lst[1]
 	}

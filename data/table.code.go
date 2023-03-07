@@ -81,13 +81,13 @@ func fltrCodeTable(t *md.Table) *CodeTable {
 			table.PKRows = append(table.PKRows, NewCodeRow("", r))
 		}
 		if md.HasConstraint(r.Constraints, "DI") {
-			tp.Id = types.GetString(md.GetTPName("DI", r.Constraints...), r.Name)
+			tp.Id = types.GetString(md.GetConsNameByTag("DI", r.Constraints...), r.Name)
 		}
 		if md.HasConstraint(r.Constraints, "DN") {
-			tp.Name = types.GetString(md.GetTPName("DN", r.Constraints...), r.Name)
+			tp.Name = types.GetString(md.GetConsNameByTag("DN", r.Constraints...), r.Name)
 		}
 		if md.HasConstraint(r.Constraints, "DT") {
-			tp.Type = types.GetString(md.GetTPName("DT", r.Constraints...), r.Name)
+			tp.Type = types.GetString(md.GetConsNameByTag("DT", r.Constraints...), r.Name)
 			tp.Multiple = true
 		}
 		if md.HasConstraint(r.Constraints, "DE") {
@@ -95,6 +95,9 @@ func fltrCodeTable(t *md.Table) *CodeTable {
 		}
 		if md.HasConstraint(r.Constraints, "DS") {
 			tp.Status = r.Name
+		}
+		if md.HasConstraint(r.Constraints, "DP") {
+			tp.PID = r.Name
 		}
 		if md.HasConstraint(r.Constraints, "expire") {
 			tp.Expire = r.Name

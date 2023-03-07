@@ -78,8 +78,17 @@ export default {
       {{- end -}}
       {{- end}}
     },
-  },
-};
+    {{range $i,$c:= $crow -}}
+    {{- if ge (len $c.RefedRows) 1 -}} 
+    change{{$c.CName}}(value){
+    {{- range $x,$r:= $c.RefedRows}}
+      this.{{$r.Name}}List =  this.$theia.enum.get("{{$r.Ext.SLType}}",value)
+    {{end -}}
+    },
+    {{- end -}}
+    {{- end}}
+},
+}
 </script>
 
 <style scoped>

@@ -7,6 +7,7 @@ import (
 	"github.com/micro-plat/hycli/mgr/web"
 	"github.com/micro-plat/lib4go/types"
 	"github.com/urfave/cli"
+
 )
 
 // CreateCodeByCtx 创建页面文件
@@ -22,6 +23,7 @@ func CreateCodeByCtx(c *cli.Context) (err error) {
 	cover := c.Bool("cover")
 
 	//创建页面代码
+	
 	err = web.CreatePage(c.Args().First(), c.String("table"), webOutput, cover)
 	if err != nil {
 		return err
