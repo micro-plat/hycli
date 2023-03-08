@@ -6,7 +6,6 @@ import (
 
 	logs "github.com/lib4dev/cli/logger"
 	"github.com/micro-plat/hycli/data"
-	"github.com/micro-plat/hycli/md"
 	"github.com/micro-plat/hycli/output"
 	"github.com/micro-plat/lib4go/types"
 	"github.com/urfave/cli"
@@ -25,7 +24,7 @@ func CreatePageByCtx(c *cli.Context) (err error) {
 func CreatePage(mdpath string, tbs string, outpath string, cover bool) error {
 	logs.Log.Info("------------------生成页面文件------------------")
 	//转换md文件，todo:解决constans解析错误问题
-	otbls, err := md.Mds2Tables(mdpath)
+	otbls, err := data.Mds2Tables(mdpath)
 	if err != nil {
 		return err
 	}

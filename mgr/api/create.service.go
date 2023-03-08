@@ -6,7 +6,6 @@ import (
 
 	logs "github.com/lib4dev/cli/logger"
 	"github.com/micro-plat/hycli/data"
-	"github.com/micro-plat/hycli/md"
 	"github.com/micro-plat/hycli/output"
 	"github.com/micro-plat/lib4go/types"
 	"github.com/urfave/cli"
@@ -27,7 +26,7 @@ func CreateService(mdpath string, tbs string, outpath string, cover bool) error 
 
 	logs.Log.Info("------------------生成接口文件------------------")
 	//转换md文件
-	otbls, err := md.Mds2Tables(mdpath)
+	otbls, err := data.Mds2Tables(mdpath)
 	if err != nil {
 		return err
 	}

@@ -1,6 +1,6 @@
 package project
 
-import "github.com/micro-plat/hycli/md"
+import "github.com/micro-plat/hycli/data"
 
 type Project struct {
 	Name    string
@@ -11,7 +11,7 @@ type Project struct {
 func NewProject(name string) *Project {
 	return &Project{
 		Name:    name,
-		PkgName: md.GetPkgName(),
+		PkgName: data.GetPkgName(),
 		Dot:     ".",
 	}
 }

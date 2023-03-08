@@ -4,7 +4,6 @@ import (
 	"embed"
 
 	"github.com/micro-plat/hycli/data"
-	"github.com/micro-plat/hycli/md"
 	"github.com/micro-plat/hycli/output"
 	"github.com/micro-plat/lib4go/types"
 	"github.com/urfave/cli"
@@ -19,7 +18,7 @@ func CreateByCtx(c *cli.Context) (err error) {
 	data := map[string]interface{}{
 		"platName": types.GetString(c.String("platName"), ""),
 		"sysName":  types.GetString(c.String("sysName"), ""),
-		"PkgName":  md.GetPkgName(),
+		"PkgName":  data.GetPkgName(),
 	}
 	return createFiles(outpath, data, cover)
 }

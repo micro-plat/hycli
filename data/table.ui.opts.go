@@ -3,7 +3,7 @@ package data
 import (
 	"strings"
 
-	"github.com/micro-plat/hycli/md"
+	"github.com/micro-plat/hycli/data/internal/md"
 	"github.com/micro-plat/lib4go/jsons"
 	"github.com/micro-plat/lib4go/types"
 )

@@ -16,7 +16,7 @@ type fids struct {
 func newFids(l int) *fids {
 	return &fids{
 		len:       l,
-		charIndex: make([]int, l, l),
+		charIndex: make([]int, l),
 	}
 }
 func (f *fids) Current() string {

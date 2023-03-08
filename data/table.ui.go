@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/micro-plat/hycli/md"
+	"github.com/micro-plat/hycli/data/internal/md"
 	"github.com/micro-plat/lib4go/jsons"
 )
 
