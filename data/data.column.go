@@ -1,6 +1,7 @@
 package data
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/micro-plat/hycli/data/internal/md"
@@ -39,6 +40,7 @@ type fieldType struct {
 }
 
 func createFieldType(r *md.Row) fieldType {
+	fmt.Println(md.HasConstraint(r.Constraints, "L", "l"), r.Constraints)
 	return fieldType{
 		Name:              strings.TrimLeft(r.Name, "_"),
 		Type:              r.Type.Name, //字段原长度
@@ -53,7 +55,7 @@ func createFieldType(r *md.Row) fieldType {
 		IsSEQ:             md.HasConstraint(r.Constraints, "SEQ", "seq"), //是否自增字段
 		IsCreateField:     md.HasConstraint(r.Constraints, "C", "c"),     //是否是创建字段
 		IsUpdateField:     md.HasConstraint(r.Constraints, "U", "u"),     //是否是
-		IsSelectField:     md.HasConstraint(r.Constraints, "LV", "l"),    //是否是查询
+		IsSelectField:     md.HasConstraint(r.Constraints, "L", "l"),     //是否是查询
 		IsSelectViewField: md.HasConstraint(r.Constraints, "LE", "le"),   //是否是查询
 		IsViewField:       md.HasConstraint(r.Constraints, "V", "v"),     //是否是预览字段
 		IsExtFuncField:    strings.HasPrefix(r.Name, "_"),                //扩展字段
@@ -88,14 +90,26 @@ type ext struct {
 
 type displayCmpts map[string]displayCmpt
 
-func (d displayCmpts) getCmpt(tp string) displayCmpt {
-	if c, ok := d[strings.ToUpper(tp)]; ok {
-		return c
+func (d displayCmpts) getCmpt(tp string, r *md.Row) displayCmpt {
+	cmpt := displayCmpt{Type: "text"}
+	c, ok := d[strings.ToUpper(tp)]
+	if ok {
+		cmpt = c
+	} else if c, ok := d["*"]; ok {
+		cmpt = c
+	} else if md.HasConstraint(r.Constraints, "sl", "SL") {
+		cmpt = displayCmpt{Type: "select"}
+	} else if strings.EqualFold(r.Type.Name, "date") ||
+		strings.EqualFold(r.Type.Name, "datetime") {
+		cmpt = displayCmpt{Type: "date"}
 	}
-	if c, ok := d["*"]; ok {
-		return c
+	cmpt.Page = tp
+	cmpt.Format = md.GetFormat(tp, r.Constraints...)
+	if cmpt.Format == "" {
+		cmpt.Format = md.GetFormat("f", r.Constraints...)
 	}
-	return displayCmpt{Type: "text"}
+
+	return cmpt
 }
 
 // 显示样式
@@ -129,6 +143,10 @@ func newLstCMPT(r *md.Row) displayCmpts {
 func createStyle(r *md.Row) displayStyle {
 	min, max := md.GetRanges(r.Constraints...)
 	fc, bc := md.GetConsByTagIgnorecase("color", r.Constraints...)
+	bgcolor := md.HasConstraint(r.Constraints, "color")
+	if bgcolor && bc == "" {
+		bc = "colorful"
+	}
 	return displayStyle{
 		ListWidth:    md.GetConsNameByTagIgnorecase("lw", r.Constraints...),
 		Rows:         types.GetInt(md.GetConsNameByTagIgnorecase("row", r.Constraints...)),
@@ -183,15 +201,16 @@ func newColum(r *md.Row) *Column {
 			UNQ:       defFids.Next(),
 			RawConsts: r.Constraints,
 		},
-		QCMPT:  cmpts.getCmpt("q"),
-		LCMPT:  cmpts.getCmpt("l"),
-		LECMPT: cmpts.getCmpt("le"),
-		VCMPT:  cmpts.getCmpt("v"),
-		CCMPT:  cmpts.getCmpt("c"),
-		UCMPT:  cmpts.getCmpt("u"),
-		DCMPT:  cmpts.getCmpt("d"),
+		QCMPT:  cmpts.getCmpt("q", r),
+		LCMPT:  cmpts.getCmpt("l", r),
+		LECMPT: cmpts.getCmpt("le", r),
+		VCMPT:  cmpts.getCmpt("v", r),
+		CCMPT:  cmpts.getCmpt("c", r),
+		UCMPT:  cmpts.getCmpt("u", r),
+		DCMPT:  cmpts.getCmpt("d", r),
 		Enum:   createEnumType(r),
 		Field:  createFieldType(r),
 		Style:  createStyle(r),
+		Ext:    ext{FormName: "form"},
 	}
 }

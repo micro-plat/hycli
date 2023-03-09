@@ -48,17 +48,7 @@
         that.dataList_{{$table.UNQ}} = res.items||[]
         that.total_{{$table.UNQ}} = res.count
         that.dataList_{{$table.UNQ}}.forEach(item => {
-            {{- range $i,$c := $LLERows}}
-            {{- if and (ne "" $c.LCMPT.Format) (eq true $c.Field.IsDate)}}
-            item.{{$c.Name}} = that.$theia.str.dateFormat(item.{{$c.Name}},'{{$c.LCMPT.Format}}')
-          {{- else if and (ne "" $c.LCMPT.Format) (eq true $c.Field.IsNumber)}}
-            item.{{$c.Name}} = that.$theia.str.numberFormat(item.{{$c.Name}},'{{$c.LCMPT.Format}}')
-          {{- else if eq "mobile" $c.CCMPT.Type}}
-            item.{{$c.Name}} = that.$theia.str.phoneFormat(item.{{$c.Name}})
-          {{- else if ne "" $c.LCMPT.Format}}
-            item.{{$c.Name}} = that.$theia.str.cut(item.{{$c.Name}},'{{$c.LCMPT.Format}}')
-          {{- end}}
-          {{- end }}
+            
           {{- range $i,$c := $LLERows -}}
         {{- if eq true $c.Enum.IsEnum}}
             item.{{$c.Name}}_label = that.$theia.enum.getNames("{{$c.Enum.EnumType}}",item.{{$c.Name}})
@@ -67,6 +57,17 @@
             item.{{$c.Name}}_switch = item.{{$c.Name}} == 0
           {{- end}}
       {{- end}}
+      {{- range $i,$c := $LLERows}}
+            {{- if and (ne "" $c.LCMPT.Format) (eq true $c.Field.IsDate)}}
+            item.{{$c.Name}} = that.$theia.str.dateFormat(item.{{$c.Name}},'{{$c.LCMPT.Format}}')
+          {{- else if and (ne "" $c.LCMPT.Format) (eq true $c.Field.IsNumber)}}
+            item.{{$c.Name}} = that.$theia.str.numberFormat(item.{{$c.Name}},'{{$c.LCMPT.Format}}')
+          {{- else if eq "mobile" $c.LCMPT.Type}}
+            item.{{$c.Name}} = that.$theia.str.phoneFormat(item.{{$c.Name}})
+          {{- else if eq "text" $c.LCMPT.Type}}
+            item.{{$c.Name}} = that.$theia.str.cut(item.{{$c.Name}},{{$c.Field.Len}})
+          {{- end}}
+          {{- end }}
       });
     })
   },

@@ -1,8 +1,6 @@
 package data
 
 import (
-	"fmt"
-
 	"github.com/micro-plat/hycli/data/internal/md"
 )
 
@@ -87,8 +85,6 @@ func NewTable(t *md.Table) *Table {
 			table.EnumColums = append(table.EnumColums, col)
 		}
 	}
-	fmt.Println("q.colums:", table.QColums)
-
 	table.ListOpts = createLstOptrs(t.ExtInfo)
 	table.ViewOpts = createViewOptrs(t.ExtInfo)
 	if len(table.VColums) > 0 {

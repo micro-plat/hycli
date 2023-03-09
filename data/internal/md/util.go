@@ -26,8 +26,8 @@ func ToCName(f string) string {
 	return sb.String()
 }
 
-func GetFormat(cns ...string) string {
-	lst := GetConstraintByReg(cns, `f\(([^\(^\)]+)\)`)
+func GetFormat(tp string, cns ...string) string {
+	lst := GetConstraintByReg(cns, fmt.Sprintf(`%s\(([^\(^\)]+)\)`, tp))
 	return types.GetStringByIndex(lst, 0)
 }
 func GetValue(name string, cns ...string) string {
@@ -115,7 +115,7 @@ func HasConstraint(cns []string, fx ...string) bool {
 			if strings.EqualFold(c, f) {
 				return true
 			}
-			reg := regexp.MustCompile(fmt.Sprintf(`%s\([\w-\s:]+\)`, f))
+			reg := regexp.MustCompile(fmt.Sprintf(`^%s\([\w-\s:]+\)$`, f))
 			if len(reg.FindAllString(c, -1)) > 0 {
 				return true
 			}
