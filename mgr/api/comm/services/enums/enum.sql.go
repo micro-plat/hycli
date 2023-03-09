@@ -2,19 +2,19 @@
 
 package enums
 
-{{ $etable := .|fltrCodeTables}}
+{{ $etable := .}}
 var enumSQL = map[string]string{
 	{{- range $i,$v:=$etable -}}
-	{{- if and ($v.AsEnum) (eq false $v.EType.Multiple) }}
-	"{{$v.EType.Type}}":"select {{$v.EType.Id}} value,{{if ne "" $v.EType.PID}} {{$v.EType.PID}} pid, {{end}}{{$v.EType.Name}} name,{{- range $j,$v:=$v.EType.DERows -}}{{$v.Name}} {{$v.Desc}},{{end}}'{{$v.EType.Type}}' type from {{$v.Name.Raw}} where 1=1  {{if ne "" $v.EType.Status}} and {{$v.EType.Status}} = 0{{end}} {{if ne "" $v.EType.Expire}} and {{$v.EType.Expire}} >= DATE_FORMAT(now(),'%Y-%m-%d'){{end}}",
+	{{- if and (ne "" $v.Enum.EnumType) (eq false $v.Enum.Multiple) }}
+	"{{$v.Enum.EnumType}}":"select {{$v.Enum.Id}} value,{{if ne "" $v.Enum.PID}} {{$v.Enum.PID}} pid, {{end}}{{$v.Enum.Name}} name,{{- range $j,$v:=$v.Enum.DEColums -}}{{$v.Name}} {{$v.Desc}},{{end}}'{{$v.Enum.Type}}' type from {{$v.Name.Raw}} where 1=1  {{if ne "" $v.Enum.Status}} and {{$v.Enum.Status}} = 0{{end}} {{if ne "" $v.Enum.Expire}} and {{$v.Enum.Expire}} >= DATE_FORMAT(now(),'%Y-%m-%d'){{end}}",
 	{{- end -}}
 	{{- end}}
 }
 
 var unspecifiedEnum = []string{
 	{{- range $i,$v:=$etable -}}
-	{{- if and ($v.AsEnum) (eq true $v.EType.Multiple) }}
-	"select {{$v.EType.Id}} value,{{$v.EType.Name}} name,{{- range $j,$v:=$v.EType.DERows -}}{{$v.Name}} {{$v.Desc}},{{end}}{{$v.EType.Type}} type from {{$v.Name.Raw}} where {{$v.EType.Type}}=if(@type='',{{$v.EType.Type}},@type) {{if ne "" $v.EType.Status}} and {{$v.EType.Status}} = 0{{end}}  {{if ne "" $v.EType.Expire}} and {{$v.EType.Expire}} >= DATE_FORMAT(now(),'%Y-%m-%d'){{end}}",
+	{{- if and (ne "" $v.Enum.EnumType) (eq true $v.Enum.Multiple) }}
+	"select {{$v.Enum.Id}} value,{{$v.Enum.Name}} name,{{- range $j,$v:=$v.Enum.DEColums -}}{{$v.Name}} {{$v.Desc}},{{end}}{{$v.Enum.Type}} type from {{$v.Name.Raw}} where {{$v.Enum.Type}}=if(@type='',{{$v.Enum.Type}},@type) {{if ne "" $v.Enum.Status}} and {{$v.Enum.Status}} = 0{{end}}  {{if ne "" $v.Enum.Expire}} and {{$v.Enum.Expire}} >= DATE_FORMAT(now(),'%Y-%m-%d'){{end}}",
 	{{- end -}}
 	{{- end}}
 }

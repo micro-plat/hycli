@@ -9,12 +9,12 @@ import (
 	"github.com/micro-plat/lib4go/errs"
 	"github.com/micro-plat/lib4go/types"
 )
-{{- $table := .|fltrCodeTable -}}
-{{- $crows := fltrNotNullRows  $table.CRows -}}
+{{- $table := . -}}
+{{- $crows := fltrNotNullRows  $table.CColums -}}
 {{- $clen := (len $crows)|minus}}
-{{- $urows := fltrNotNullRows  $table.URows -}}
+{{- $urows := fltrNotNullRows  $table.UColums -}}
 {{- $ulen := (len $urows)|minus -}}
-{{ $pklen := (len $table.PKRows)|minus}}
+{{ $pklen := (len $table.PKColums)|minus}}
 //AuditInfoHandler 获取{{.Desc}}处理服务
 type {{.Name.CName}}Handler struct {
 	insertRequiredFields []string
@@ -28,7 +28,7 @@ func New{{.Name.CName}}Handler() *{{.Name.CName}}Handler {
 			"{{$v.Name}}"{{if lt $i $clen }},{{end}}{{- end -}}},
 		updateRequiredFields:[]string{ {{- range $i,$v :=  $urows -}}
 			"{{$v.Name}}"{{if lt $i $ulen }},{{end}}{{- end -}}},
-		pkRequiredFields:[]string{ {{- range $i,$v :=  $table.PKRows -}}
+		pkRequiredFields:[]string{ {{- range $i,$v :=  $table.PKColums -}}
 			"{{$v.Name}}"{{if lt $i $pklen }},{{end}}{{- end -}}},
 	}
 }
@@ -115,11 +115,7 @@ func (u *{{.Name.CName}}Handler) QueryHandle(ctx hydra.IContext) (r interface{})
 	m["ps"] = ctx.Request().GetInt("ps", 10)
 	m["offset"] = (ctx.Request().GetInt("pi", 1) - 1) * ctx.Request().GetInt("ps", 10)
 
-	{{- range $i,$v := $table.BQRows -}}
-	{{- if ne "" $v.BQDefValue}}
-	m["{{$v.Name}}"] = types.GetString(m["{{$v.Name}}"],"{{$v.BQDefValue}}")
-	{{- end -}}
-	{{- end}}
+	
 	count, err := hydra.C.DB().GetRegularDB().Scalar(get{{.Name.CName}}ListCount, m)
 	if err != nil {
 		return errs.NewErrorf(http.StatusNotExtended, "查询数据数量出错:%+v", err)

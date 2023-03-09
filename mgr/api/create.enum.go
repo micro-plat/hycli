@@ -38,7 +38,8 @@ func CreateEnums(mdpath string, tbs string, outpath string, cover bool) error {
 	//设置包名称
 	tbls.JoinPkgName(outpath)
 
-	return createEnums(outpath, tbls, cover)
+	ntbs := data.NewTables(tbls)
+	return createEnums(outpath, ntbs, cover)
 }
 
 //go:embed comm/services

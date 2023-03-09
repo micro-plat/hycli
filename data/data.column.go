@@ -163,17 +163,19 @@ func createStyle(r *md.Row) displayStyle {
 }
 
 type enumType struct {
-	IsEnum   bool   //是否是枚举类型
-	EnumType string //枚举名
-	JoinName string //关联字段名
+	IsEnum     bool   //是否是枚举类型
+	EnumType   string //枚举名
+	JoinName   string //关联字段名
+	IsDEColumn bool
 }
 
 func createEnumType(r *md.Row) enumType {
 	sl, fname := md.GetSelectName(r.Name, r.Constraints...)
 	return enumType{
-		IsEnum:   sl != "",
-		EnumType: sl,
-		JoinName: fname,
+		IsEnum:     sl != "",
+		EnumType:   sl,
+		JoinName:   fname,
+		IsDEColumn: md.HasConstraint(r.Constraints, "DE", "de"),
 	}
 }
 

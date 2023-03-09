@@ -10,37 +10,39 @@
     queryData_{{$table.UNQ}}(mform = {}){
     //构建查询参数
      {{- range $i,$c:= $qrow -}}
-      {{- if eq "daterange" $c.CCMPT.Type}}
+      {{- if eq "daterange" $c.CCMPT.Type -}}
     this.form_{{$table.UNQ}}.start_{{$c.Name}} = null
     this.form_{{$table.UNQ}}.end_{{$c.Name}} = null
     if(this.form_{{$table.UNQ}}.{{- $c.Name}} && this.form_{{$table.UNQ}}.{{$c.Name}}.length > 1){
         this.form_{{$table.UNQ}}.start_{{$c.Name}} = this.form_{{$table.UNQ}}.{{$c.Name}}[0]
         this.form_{{$table.UNQ}}.end_{{$c.Name}} = this.form_{{$table.UNQ}}.{{$c.Name}}[1]
     }
-      {{end -}}
+      {{- end -}}
       {{- end}}
  
+    //处理关联表{{$table.Name}} {{$xtable.Main.Name}} {{$table.Enum.EnumType}}
+    {{- $exit := false -}}
+    {{- range $x,$v := $xtable.Main.ViewOpts -}}
+    {{- if eq $v.URL $table.Name.Raw -}}
+    {{- if and (ne "" $v.RwName) (ne "" $v.FwName) -}}
+    {{- $exit = true}}
+   this.form_{{$table.UNQ}}.{{$v.FwName}} = mform.{{$v.RwName}}   
+  {{end -}}
+    {{- end -}}
+{{- end -}}
 
-    //处理关联表{{$table.Name}} {{$xtable.Main.Name}}  ：todo
+    {{- if eq false $exit -}}
     {{- range $i,$c := $MLLERows -}}
       {{- if eq true $c.Enum.IsEnum -}}
-        {{- if eq $table.Name.Short $c.Enum.EnumType}}
-        {{- if ne "" $mtable.PKColum.Name}}
-    this.form_{{$table.UNQ}}.{{$c.Name}} = mform.{{$mtable.PKColum.Name}}
-        {{- end -}}
-        {{- end -}}
+        {{- if eq $table.Enum.EnumType $c.Enum.EnumType}}
+    this.form_{{$table.UNQ}}.{{$table.Enum.Id}} = mform.{{$c.Name}}
+        {{end -}}
+    {{- end -}}
     {{- end -}}
     {{- end}}
-
-    {{- range $x,$v := $xtable.Main.ViewOpts -}}
-          {{if eq $v.URL $table.Name.Raw}}
-          {{if and (ne "" $v.RwName) (ne "" $v.FwName)}}
-     this.form_{{$table.UNQ}}.{{$v.FwName}} = mform.{{$v.RwName}}   
-        {{end}}
-          {{- end -}}
-    {{end}}
-     
+   
     //发送查询请求
+
     let that = this
     that.conf.loading = true
     this.$theia.http.get("/{{$table.Name.MainPath|lower}}/query",this.form_{{$table.UNQ}}).then(res=>{

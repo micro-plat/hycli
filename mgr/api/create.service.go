@@ -37,8 +37,10 @@ func CreateService(mdpath string, tbs string, outpath string, cover bool) error 
 	//设置包名称
 	tbls.JoinPkgName(outpath)
 
+	ntbs := data.NewTables(tbls)
+
 	//创建服务文件
-	for _, tb := range tbls {
+	for _, tb := range ntbs {
 		if err = createService(outpath, tb, cover); err != nil {
 			return err
 		}

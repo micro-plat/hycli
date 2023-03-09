@@ -2,7 +2,7 @@
 
 package services
 
-{{- $etable := .|fltrCodeTables -}}
+{{- $etable := . -}}
 {{- $mtable :=$etable|flterMainTable -}}
 {{$ft := getFirstCodeTable $etable}}
 import (

@@ -22,7 +22,8 @@ type Table struct {
 	PKColum    *Column   //主键列
 	ViewOpts   viewOptrs //预览操作
 	ListOpts   lstOptrs  //列表操作
-	UNQ        string    `json:'unq'`
+	Enum       *EnumType
+	UNQ        string `json:'unq'`
 }
 
 func NewTable(t *md.Table) *Table {
@@ -47,6 +48,7 @@ func NewTable(t *md.Table) *Table {
 		UNQ:        defFids.Next(),
 	}
 	t.Cache = table
+	table.Enum = newEnumType(t.Name.Short, t.Rows)
 	for _, row := range t.Rows {
 		col := newColum(row)
 		table.Colums = append(table.Colums, col)
@@ -76,6 +78,7 @@ func NewTable(t *md.Table) *Table {
 		}
 		if col.Field.IsFrontQueryField {
 			table.QColums = append(table.QColums, col)
+			table.BQColums = append(table.BQColums, col)
 		}
 		if col.Field.IsPK {
 			table.PKColum = col
@@ -84,6 +87,10 @@ func NewTable(t *md.Table) *Table {
 		if col.Enum.IsEnum {
 			table.EnumColums = append(table.EnumColums, col)
 		}
+		if col.Enum.IsDEColumn {
+			table.Enum.DEColums = append(table.Enum.DEColums, col)
+		}
+
 	}
 	table.ListOpts = createLstOptrs(t.ExtInfo)
 	table.ViewOpts = createViewOptrs(t.ExtInfo)

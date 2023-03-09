@@ -88,8 +88,8 @@ export default {
         let currentForm = {}
         {{- range $i,$c := $MLLERows -}}
           {{- if eq true $c.Enum.IsEnum -}}
-            {{- if eq $ctable.Name.Short $c.Enum.EnumType}}
-        currentForm.{{$c.Name}} = fm.{{$mtable.PKColum.Name}}
+            {{- if eq $ctable.Enum.EnumType $c.Enum.EnumType}}
+        currentForm.{{$table.Enum.Id}} = fm.{{$c.Name}}
             {{- end -}}
         {{- end -}}
         {{- end}}

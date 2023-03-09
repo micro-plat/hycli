@@ -27,7 +27,7 @@ func ToCName(f string) string {
 }
 
 func GetFormat(tp string, cns ...string) string {
-	lst := GetConstraintByReg(cns, fmt.Sprintf(`%s\(([^\(^\)]+)\)`, tp))
+	lst := GetConstraintByReg(cns, fmt.Sprintf(`^%s\(([^\(^\)]+)\)$`, tp))
 	return types.GetStringByIndex(lst, 0)
 }
 func GetValue(name string, cns ...string) string {

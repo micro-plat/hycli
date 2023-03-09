@@ -11,11 +11,11 @@ var Funcs = map[string]interface{}{
 	// "fltrCodeTable":     fltrCodeTable,     //代码
 	// "fltrCodeTables":    fltrCodeTables,    //代码
 
-	// "flterMainTable":    flterMainTable,
+	"flterMainTable": flterMainTable,
 	// "fltrForginKey":     fltrForginKey,
 
-	// "fltrNotNullRows":   fltrNotNullRows,
-	// "getFirstCodeTable": getFirstCodeTable,
+	"fltrNotNullRows":   fltrNotNullRows,
+	"getFirstCodeTable": getFirstCodeTable,
 	// "mergeCodeRow":      mergeCodeRow,
 	// "mergeUIRow":        mergeUIRow,
 	"fltrUIRows":        fltrUIRows,
@@ -48,12 +48,23 @@ func IsTmplTb(o interface{}) bool {
 	return false
 }
 
-// func getFirstCodeTable(ts []*CodeTable) *CodeTable {
-// 	if len(ts) > 0 {
-// 		return ts[0]
-// 	}
-// 	return &CodeTable{}
-// }
+func getFirstCodeTable(ts []*Table) *Table {
+	if len(ts) > 0 {
+		return ts[0]
+	}
+	return &Table{}
+}
+func flterMainTable(tbs []*Table) []*Table {
+	cache := map[string]bool{}
+	ntbs := make([]*Table, 0, len(tbs))
+	for _, t := range tbs {
+		if _, ok := cache[t.Name.Main]; !ok {
+			cache[t.Name.Main] = true
+			ntbs = append(ntbs, t)
+		}
+	}
+	return ntbs
+}
 
 func spare(x int, y int) int {
 	return x % y
@@ -78,15 +89,15 @@ func fltrUIRows(t *Table, tp string, formName ...string) []*Column {
 	return rows
 }
 
-// func fltrNotNullRows(rs []*CodeRow) []*CodeRow {
-// 	r := make([]*CodeRow, 0, 1)
-// 	for _, v := range rs {
-// 		if !v.AllowNull {
-// 			r = append(r, v)
-// 		}
-// 	}
-// 	return r
-// }
+func fltrNotNullRows(rs []*Column) []*Column {
+	r := make([]*Column, 0, 1)
+	for _, v := range rs {
+		if v.Field.Required {
+			r = append(r, v)
+		}
+	}
+	return r
+}
 
 // func fltrForginKey(t *TUITable, n *UITable, fiedName string) *UIRow {
 // 	//根据sl配置匹配
