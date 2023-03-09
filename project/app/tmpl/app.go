@@ -1,3 +1,5 @@
+//go:build ignore
+
 package main
 
 import (
@@ -7,7 +9,7 @@ import (
 	_ "{{.PkgName}}/services"
 )
 
-//init 检查应用程序配置文件，并根据配置初始化服务
+// init 检查应用程序配置文件，并根据配置初始化服务
 func init() {
 	//启动时参数配置检查
 	App.OnStarting(func(conf app.IAPPConf) error {

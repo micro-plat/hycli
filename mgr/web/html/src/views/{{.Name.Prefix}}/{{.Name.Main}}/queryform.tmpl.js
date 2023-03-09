@@ -1,15 +1,15 @@
-{{- $qrow := .QRows}}
+{{- $qcols := .QColums}}
     form_{{.UNQ}}: {
         pi: 1,
         ps: 10,
-        {{- range $i,$c := $qrow}}
+        {{- range $i,$c := $qcols}}
         {{$c.Name}}:"",
         {{- end}}
         },
-    {{- range $i,$c := $qrow -}}
-    {{- if or (eq true $c.RType.IsSelect) (eq "multiselect" $c.RType.Type)}}
-    {{.Name}}List:this.$theia.enum.get("{{$c.Ext.SLType}}"),
-    {{.Name}}Exts:this.$theia.enum.getExts("{{$c.Ext.SLType}}"),
+    {{- range $i,$c := $qcols -}}
+    {{- if or (eq true $c.Enum.IsEnum) (eq "multiselect" $c.QCMPT.Type)}}
+    {{.Name}}List:this.$theia.enum.get("{{$c.Enum.EnumType}}"),
+    {{.Name}}Exts:this.$theia.enum.getExts("{{$c.Enum.EnumType}}"),
     {{- end}}
     {{- end}}
     dataList_{{.UNQ}}:[],

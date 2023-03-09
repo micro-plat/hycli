@@ -1,16 +1,16 @@
 {{- $xtable := . -}}
 {{- $table := $xtable.Current -}}
 {{- $mtable := $xtable.Main -}}
-{{- $qrow := $table.QRows -}}
-{{- $lstRow := $table.LRows -}}
-{{- $leRow := $table.LERows -}}
-{{- $LLERows:= mergeUIRow $lstRow $leRow}}
-{{- $MLLERows:= mergeUIRow $mtable.LRows $mtable.LERows}}
+{{- $qrow := $table.QColums -}}
+{{- $lstRow := $table.LColums -}}
+{{- $leRow := $table.LEColums -}}
+{{- $LLERows:= $table.LLEColums }}
+{{- $MLLERows:= $mtable.LLEColums }}
 
     queryData_{{$table.UNQ}}(mform = {}){
     //构建查询参数
      {{- range $i,$c:= $qrow -}}
-      {{- if eq "daterange" $c.RType.Type}}
+      {{- if eq "daterange" $c.CCMPT.Type}}
     this.form_{{$table.UNQ}}.start_{{$c.Name}} = null
     this.form_{{$table.UNQ}}.end_{{$c.Name}} = null
     if(this.form_{{$table.UNQ}}.{{- $c.Name}} && this.form_{{$table.UNQ}}.{{$c.Name}}.length > 1){
@@ -20,12 +20,13 @@
       {{end -}}
       {{- end}}
  
-    //处理关联表{{$table.Name}} {{$xtable.Main.Name}}
+
+    //处理关联表{{$table.Name}} {{$xtable.Main.Name}}  ：todo
     {{- range $i,$c := $MLLERows -}}
-      {{- if eq true $c.RType.IsSelect -}}
-        {{- if eq $table.Name.Short $c.Ext.SLType}}
-        {{- if ne "" $c.RType.FKName}}
-    this.form_{{$table.UNQ}}.{{$c.Name}} = mform.{{$c.RType.FKName}}
+      {{- if eq true $c.Enum.IsEnum -}}
+        {{- if eq $table.Name.Short $c.Enum.EnumType}}
+        {{- if ne "" $mtable.PKColum.Name}}
+    this.form_{{$table.UNQ}}.{{$c.Name}} = mform.{{$mtable.PKColum.Name}}
         {{- end -}}
         {{- end -}}
     {{- end -}}
@@ -48,21 +49,21 @@
         that.total_{{$table.UNQ}} = res.count
         that.dataList_{{$table.UNQ}}.forEach(item => {
             {{- range $i,$c := $LLERows}}
-            {{- if and (ne "" $c.RType.Format) (eq true $c.RType.IsDate)}}
-            item.{{$c.Name}} = that.$theia.str.dateFormat(item.{{$c.Name}},'{{$c.RType.Format}}')
-          {{- else if and (ne "" $c.RType.Format) (eq true $c.RType.IsNumber)}}
-            item.{{$c.Name}} = that.$theia.str.numberFormat(item.{{$c.Name}},'{{$c.RType.Format}}')
-          {{- else if eq true $c.RType.IsMobile}}
+            {{- if and (ne "" $c.LCMPT.Format) (eq true $c.Field.IsDate)}}
+            item.{{$c.Name}} = that.$theia.str.dateFormat(item.{{$c.Name}},'{{$c.LCMPT.Format}}')
+          {{- else if and (ne "" $c.LCMPT.Format) (eq true $c.Field.IsNumber)}}
+            item.{{$c.Name}} = that.$theia.str.numberFormat(item.{{$c.Name}},'{{$c.LCMPT.Format}}')
+          {{- else if eq "mobile" $c.CCMPT.Type}}
             item.{{$c.Name}} = that.$theia.str.phoneFormat(item.{{$c.Name}})
-          {{- else if ne "" $c.RType.Format}}
-            item.{{$c.Name}} = that.$theia.str.cut(item.{{$c.Name}},'{{$c.RType.Format}}')
+          {{- else if ne "" $c.LCMPT.Format}}
+            item.{{$c.Name}} = that.$theia.str.cut(item.{{$c.Name}},'{{$c.LCMPT.Format}}')
           {{- end}}
           {{- end }}
           {{- range $i,$c := $LLERows -}}
-        {{- if eq true $c.RType.IsSelect}}
-            item.{{$c.Name}}_label = that.$theia.enum.getNames("{{$c.Ext.SLType}}",item.{{$c.Name}})
+        {{- if eq true $c.Enum.IsEnum}}
+            item.{{$c.Name}}_label = that.$theia.enum.getNames("{{$c.Enum.EnumType}}",item.{{$c.Name}})
           {{- end -}}
-          {{- if eq "switch" $c.RType.Type}}
+          {{- if eq "switch" $c.CCMPT.Type}}
             item.{{$c.Name}}_switch = item.{{$c.Name}} == 0
           {{- end}}
       {{- end}}
@@ -71,7 +72,7 @@
   },
 
   {{ range $i,$c:= $qrow }}
-  {{- if eq "ddl" $c.RType.Type -}}
+  {{- if eq "ddl" $c.CCMPT.Type -}}
   on{{.Name}}dropdownClick(f, x) {
     let mf = f || {}
     x.{{.Name}}_label = mf.name

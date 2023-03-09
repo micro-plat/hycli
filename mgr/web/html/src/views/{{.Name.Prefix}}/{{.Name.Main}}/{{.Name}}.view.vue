@@ -1,6 +1,6 @@
 {{- $table := . -}}
-{{- $vrow := $table.VRows -}}
-{{- $viewOptRow :=$table.ViewOpts}}
+{{- $vcols := $table.VColums -}}
+{{- $viewOpts :=$table.ViewOpts}}
 <template>
   <el-dialog
     v-model="conf.visible"
@@ -12,9 +12,9 @@
   >
     <el-tabs v-model="conf.selected">
       <el-tab-pane label="详情" name="first">
-        {{template "view.tmpl.html" $vrow}}
+        {{template "view.tmpl.html" $vcols}}
       </el-tab-pane>
-      {{range $i,$c:= $viewOptRow}}
+      {{range $i,$c:= $viewOpts}}
       {{if eq "CMPNT" $c.Name}}
       <el-tab-pane label="{{$c.Label}}" name="{{$c.Label}}"  @tab-click="show_view_{{$c.UNQ}}">
          <{{$c.UNQ}} ref="view_{{$c.UNQ}}"></{{$c.UNQ}}>
@@ -33,14 +33,14 @@
   </el-dialog>
 </template>
 <script>
- {{ range $x,$m:=$viewOptRow -}}
+ {{ range $x,$m:=$viewOpts -}}
     {{- if eq "CMPNT" $m.Name  -}}
    import {{$m.UNQ}} from "{{$m.URL}}"
     {{- end -}}
     {{end}}
 export default {
    components: {
-    {{ range $x,$m:=$viewOptRow -}}
+    {{ range $x,$m:=$viewOpts -}}
      {{- if eq "CMPNT" $m.Name -}}
     {{$m.UNQ}},
     {{- end -}}
@@ -52,14 +52,14 @@ export default {
         visible:false,
         selected:"first"
       },
-       {{- range $i,$c:= $viewOptRow -}}
+       {{- range $i,$c:= $viewOpts -}}
        {{ if eq "TAB" $c.Name}}
           {{$ct:= fltrSearchUITable  $c}}
         {{- template "queryform.tmpl.js" $ct}}
       {{end}}
       {{ end }}
       view: {
-        {{- range $i,$c := $vrow}}
+        {{- range $i,$c := $vcols}}
         {{$c.Name}}:"",
         {{- end}}
         },
@@ -67,7 +67,7 @@ export default {
   },
   methods: {
     {{template "view.tmpl.js" $table}}
-     {{- range $i,$c:= $viewOptRow -}}
+     {{- range $i,$c:= $viewOpts -}}
        {{- if eq "TAB" $c.Name -}}
           {{- $ct:= fltrSearchUITable  $c -}}
           {{- $tbs := contactTBS  $ct $table -}}

@@ -1,8 +1,8 @@
 {{- $table := .}}
-{{- $optRow :=$table.Optrs}}
+{{- $opts :=$table.ListOpts}}
 <template>
   <div>
-    {{ range $x,$m:=$optRow -}}
+    {{ range $x,$m:=$opts -}}
     {{- if or (eq "CNFRM" $m.Name) (eq "DEL" $m.Name) -}}
     <el-dialog
       v-model="conf.{{$m.UNQ}}_visible"
@@ -12,9 +12,9 @@
       :close-on-click-modal="false"
       :before-close="hide_{{$m.UNQ}}"
     >
-      {{- $rows:= fltrUIRows $table $m.RwName (sjoin "form_" $m.UNQ)}}
+      {{- $cols:= fltrColums $table $m.RwName (sjoin "form_" $m.UNQ)}}
       <span
-        >确认{{$m.Label}}({{range $i,$c:= $rows}} {{ $c.Desc }}:<span
+        >确认{{$m.Label}}({{range $i,$c:= $cols}} {{ $c.Label }}:<span
           v-text="form_{{$m.UNQ}}.{{$c.Name}}"
         ></span
         >{{ end }}) 吗?</span
@@ -36,18 +36,18 @@ export default {
   data(){
     return{
       conf:{
-        {{ range $x,$m:=$optRow -}}
+        {{ range $x,$m:=$opts -}}
         {{- if or (eq "CNFRM" $m.Name) (eq "DEL" $m.Name) -}}
         {{$m.UNQ}}_visible:false,
         {{- end}}
         {{- end}}
       },
-  {{ range $x,$m:=$optRow -}}
+  {{ range $x,$m:=$opts -}}
      {{- if or (eq "CNFRM" $m.Name) (eq "DEL" $m.Name) -}}
       //{{$m.Label}} form by  [{{$m.RwName}}]
       form_{{$m.UNQ}}:{
-       {{- $rows:= fltrUIRows $table $m.RwName -}}
-        {{range $i,$c:=$rows -}} 
+       {{- $cols:= fltrColums $table $m.RwName -}}
+        {{range $i,$c:=$cols -}} 
         {{$c.Name}}:"",
         {{- end}}
          },
@@ -56,7 +56,7 @@ export default {
     }
   },
   methods:{
-     {{- range $x,$m:=$optRow -}}
+     {{- range $x,$m:=$opts -}}
      {{- if or (eq "CNFRM" $m.Name) (eq "DEL" $m.Name) -}}
      //--------------------{{$m.Label}}---------------------------------
       //显示 {{$m.Label}} 弹出框

@@ -1,11 +1,11 @@
 {{$table :=.}}
-{{- $qrow :=$table.QRows -}}
-{{- $crow :=$table.CRows -}}
+{{- $qcols :=$table.QColums -}}
+{{- $crow :=$table.CColums -}}
 {{- $clen := len $crow -}}
 <div class="query">
     <div class="tabs">
-        {{ range $i,$c:= $qrow }}
-        {{- if eq "tabs" $c.RType.Type -}}
+        {{ range $i,$c:= $qcols }}
+        {{- if eq "tabs" $c.QCMPT.Type -}}
         <el-tabs v-model="form_{{$table.UNQ}}.{{.Name}}"  @tab-change="onQuery">
             <el-tab-pane label="全部" name="" ></el-tab-pane>
             <el-tab-pane v-for="item in {{.Name}}List" :name="item.value" :key="item.value" :label="item.name" 
@@ -14,97 +14,97 @@
         {{- end }}{{ end }}
     </div>
     <el-form :model="form_{{$table.UNQ}}" inline size="small">
-        {{- range $i,$c:= $qrow -}}
-        {{- if eq "year" $c.RType.Type -}}
-        <!--{{.Desc}} 年控件 -->
+        {{- range $i,$c:= $qcols -}}
+        {{- if eq "year" $c.QCMPT.Type -}}
+        <!--{{$table.Desc}} 年控件 -->
         <el-form-item>
             <el-date-picker style="width: 120px" v-model="form_{{$table.UNQ}}.{{$c.Name}}" clearable type="year"
-                placeholder="{{.Desc}}" />
+                placeholder="{{$table.Desc}}" />
         </el-form-item>
         {{- end -}}{{- end }}
 
-        {{- range $i,$c:= $qrow -}}
-        {{- if eq "month" $c.RType.Type -}}
-        <!--{{.Desc}} 月控件 -->
+        {{- range $i,$c:= $qcols -}}
+        {{- if eq "month" $c.QCMPT.Type -}}
+        <!--{{$table.Desc}} 月控件 -->
         <el-form-item>
             <el-date-picker style="width: 120px" v-model="form_{{$table.UNQ}}.{{$c.Name}}" clearable type="month"
-                placeholder="{{.Desc}}" />
+                placeholder="{{$table.Desc}}" />
         </el-form-item>
         {{- end -}}{{ end }}
 
 
-        {{- range $i,$c:= $qrow -}}
-        {{- if eq "monthrange" $c.RType.Type -}}
-        <!--{{.Desc}} 月份控件 -->
+        {{- range $i,$c:= $qcols -}}
+        {{- if eq "monthrange" $c.QCMPT.Type -}}
+        <!--{{$table.Desc}} 月份控件 -->
         <el-form-item>
             <el-date-picker style="width: 150px" v-model="form_{{$table.UNQ}}.{{$c.Name}}" clearable type="monthrange"
-                placeholder="{{.Desc}}" />
+                placeholder="{{$table.Desc}}" />
         </el-form-item>
         {{- end -}}{{ end }}
 
 
-        {{- range $i,$c:= $qrow -}}
-        {{- if eq "daterange" $c.RType.Type -}}
-        <!--{{.Desc}} 日期范围控件 -->
+        {{- range $i,$c:= $qcols -}}
+        {{- if eq "daterange" $c.QCMPT.Type -}}
+        <!--{{$table.Desc}} 日期范围控件 -->
         <el-form-item>
             <el-date-picker style="width: 200px" v-model="form_{{$table.UNQ}}.{{$c.Name}}" type="daterange" start-placeholder="开始日期"
                 end-placeholder="结束日期" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
         </el-form-item>
         {{- end -}}{{ end }}
 
-        {{ range $i,$c:= $qrow }}
-        {{- if eq "date" $c.RType.Type -}}
-        <!--{{.Desc}} 日期控件 -->
+        {{ range $i,$c:= $qcols }}
+        {{- if eq "date" $c.QCMPT.Type -}}
+        <!--{{$table.Desc}} 日期控件 -->
         <el-form-item>
             <el-date-picker style="width: 120px" v-model="form_{{$table.UNQ}}.{{$c.Name}}" clearable type="date"
-                placeholder="{{.Desc}}" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
+                placeholder="{{$table.Desc}}" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
         </el-form-item>
         {{- end -}}{{ end }}
 
-        {{- range $i,$c:= $qrow -}}
-        {{- if eq "select" $c.RType.Type -}}
-        <!--{{.Desc}} 下拉控件 -->
+        {{- range $i,$c:= $qcols -}}
+        {{- if eq "select" $c.QCMPT.Type -}}
+        <!--{{$table.Desc}} 下拉控件 -->
         <el-form-item>
-            <el-select v-model="form_{{$table.UNQ}}.{{.Name}}" style="width: 120px" clearable placeholder="{{.Desc}}">
+            <el-select v-model="form_{{$table.UNQ}}.{{.Name}}" style="width: 120px" clearable placeholder="{{$table.Desc}}">
                 <el-option v-for="item in {{.Name}}List" :key="item.value" :label="item.name" :value="item.value" />
             </el-select>
         </el-form-item>
         {{- end -}}{{ end }}
 
-        {{- range $i,$c:= $qrow -}}
-        {{- if eq "multiselect" $c.RType.Type -}}
-        <!--{{.Desc}} 下拉控件多选 -->
+        {{- range $i,$c:= $qcols -}}
+        {{- if eq "multiselect" $c.QCMPT.Type -}}
+        <!--{{$table.Desc}} 下拉控件多选 -->
         <el-form-item>
-            <el-select v-model="form_{{$table.UNQ}}.{{.Name}}" filterable clearable multiple collapse-tags placeholder="{{.Desc}}">
+            <el-select v-model="form_{{$table.UNQ}}.{{.Name}}" filterable clearable multiple collapse-tags placeholder="{{$table.Desc}}">
                 <el-option v-for="item in {{.Name}}List" :key="item.value" :label="item.name" :value="item.value" />
             </el-select>
         </el-form-item>
         {{- end -}}{{ end }}
 
-        {{- range $i,$c:= $qrow -}}
-        {{- if eq "number" $c.RType.Type -}}
-        <!--{{.Desc}}  数字控件 -->
-        <el-form-item label="{{$c.Desc}}">
-            <el-input-number  controls-position="right" v-model="form_{{$table.UNQ}}.{{ $c.Name }}" {{ if ne "" $c.RType.Min}}
-              :min="{{ $c.RType.Min }}" {{ end }}
-            {{if le 0 $c.Type.DLen }} :precision="{{$c.Type.DLen}}" {{end}}   
-            {{ if ne "" $c.RType.Max}} :max="{{ $c.RType.Max }}" {{ end }} />
+        {{- range $i,$c:= $qcols -}}
+        {{- if eq "number" $c.QCMPT.Type -}}
+        <!--{{$table.Desc}}  数字控件 -->
+        <el-form-item label="{{$c.Label}}">
+            <el-input-number  controls-position="right" v-model="form_{{$table.UNQ}}.{{ $c.Name }}" {{ if ne "" $c.Style.Min}}
+              :min="{{ $c.Style.Min }}" {{ end }}
+            {{if le 0 $c.Field.DLen }} :precision="{{$c.Field.DLen}}" {{end}}   
+            {{ if ne "" $c.Style.Max}} :max="{{ $c.Style.Max }}" {{ end }} />
         </el-form-item>
         {{- end -}} {{ end }}
 
-        {{- range $i,$c:= $qrow -}}
-        {{- if eq "input" $c.RType.Type -}}
-        <!--{{.Desc}} 输入控件 -->
+        {{- range $i,$c:= $qcols -}}
+        {{- if eq "input" $c.QCMPT.Type -}}
+        <!--{{$table.Desc}} 输入控件 -->
         <el-form-item>
-            <el-input clearable style="width: 120px" v-model="form_{{$table.UNQ}}.{{$c.Name}}" maxlength="{{$c.RType.Len}}"
-                placeholder="{{$c.Desc}}" />
+            <el-input clearable style="width: 120px" v-model="form_{{$table.UNQ}}.{{$c.Name}}" maxlength="{{$c.Field.Len}}"
+                placeholder="{{$c.Label}}" />
         </el-form-item>
         {{- end -}} {{ end }}
         <span class="ddl">
-            {{ range $i,$c:= $qrow }}
-            {{- if eq "ddl" $c.RType.Type -}}
+            {{ range $i,$c:= $qcols }}
+            {{- if eq "ddl" $c.QCMPT.Type -}}
             <el-dropdown >
-                <el-button plain >{{$c.Desc}}
+                <el-button plain >{{$c.Label}}
                   {{bleft}}form_{{$table.UNQ}}.{{.Name}}_label{{bright}}<el-icon class="el-icon--right"><arrow-down /></el-icon>
                 </el-button>
                 <template #dropdown>
@@ -123,10 +123,10 @@
             {{end}}
         </el-form-item>
         <div class="blist">
-            {{ range $i,$c:= $qrow }}
-            {{- if eq "blist" $c.RType.Type -}}
+            {{ range $i,$c:= $qcols }}
+            {{- if eq "blist" $c.QCMPT.Type -}}
             <el-radio-group v-model="form_{{$table.UNQ}}.{{.Name}}" size="small" @change="onQuery">
-                <el-radio-button>{{.Desc}}</el-radio-button>
+                <el-radio-button>{{$table.Desc}}</el-radio-button>
                 <el-radio-button v-for="item in {{.Name}}List" :key="item.value" :label="item.value">
                     {{bleft}}item.name{{bright}}
                 </el-radio-button>

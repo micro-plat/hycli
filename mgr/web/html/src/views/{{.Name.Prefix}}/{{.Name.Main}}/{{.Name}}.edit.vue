@@ -1,5 +1,6 @@
 {{- $table := .}}
-{{- $crow := $table.URows}}
+{{- $ucols := $table.UColums}}
+{{- $enumColums :=$table.EnumColums}}
 <template>
   <el-dialog
     v-model="conf.visible"
@@ -9,10 +10,8 @@
     :close-on-click-modal="false"
     :before-close="hide"
   >
-{{- $table := .}}
-{{- $crow := $table.URows}}
 <el-form :model="form" size="small" ref="form" :rules="rules">
-{{template "add.tmpl.html" $crow}}
+{{template "add.tmpl.html" $ucols}}
 </el-form>
     <template #footer>
       <span class="dialog-footer">
@@ -31,7 +30,7 @@ export default {
         visible: false,
         uploadPath:this.$theia.env.join("/file/upload"),
       },
-      {{- template "add.tmpl.js" $crow -}}
+      {{- template "add.tmpl.js" $ucols -}}
   },
   methods: {
     show(form) {
@@ -41,8 +40,8 @@ export default {
       get(form){
         let that = this
         this.$theia.http.get("/{{.Name.MainPath|lower}}",form).then(res=>{
-        {{- range $i,$c := $crow -}}
-        {{- if eq "switch" $c.RType.Type}}
+        {{- range $i,$c := $ucols -}}
+        {{- if eq "switch" $c.CCMPT.Type}}
           res.{{$c.Name}}_switch = res.{{$c.Name}} == 0
         {{- end}}
         {{- end}}
@@ -54,8 +53,8 @@ export default {
         })
     },
     save(){
-       {{range $i,$c:= $crow -}}
-         {{- if eq "switch" $c.RType.Type  -}}
+       {{range $i,$c:= $ucols -}}
+         {{- if eq "switch" $c.CCMPT.Type  -}}
         this.form.{{$c.Name}} = this.form.{{$c.Name}}_switch?0:1;
          {{- end -}}
           {{end}}
@@ -84,20 +83,17 @@ export default {
       this.$refs.form.resetFields();
     },
      onUploadSuccess(response){
-      {{range $i,$c:= $crow -}}
-      {{- if eq "file" $c.RType.Type  -}}
+      {{range $i,$c:= $ucols -}}
+      {{- if eq "file" $c.CCMPT.Type  -}}
       this.form.{{$c.Name}} = response.path
       {{- end -}}
       {{- end}}
     },
-    {{range $i,$c:= $crow -}}
-    {{- if ge (len $c.RefedRows) 1 -}} 
-    change{{$c.CName}}(value){
-    {{- range $x,$r:= $c.RefedRows}}
-      this.{{$r.Name}}List =  this.$theia.enum.get("{{$r.Ext.SLType}}",value)
-    {{end -}}
+
+ {{range $i,$c:= $enumColums -}}
+    change{{$c.Name}}(value){
+      this.{{$c.Name}}List =  this.$theia.enum.get("{{$c.Enum.EnumType}}",value)
     },
-    {{- end -}}
     {{- end}}
   },
 };

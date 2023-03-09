@@ -1,5 +1,5 @@
 {{- $table := . -}}
-{{- $optRow :=$table.Optrs -}}
+{{- $optRow :=$table.ListOpts -}}
 {{- range $x,$m:=$optRow -}}
 {{- if eq "DIALOG" $m.Name}}
   show_dialog_{{$m.UNQ}}(fm){

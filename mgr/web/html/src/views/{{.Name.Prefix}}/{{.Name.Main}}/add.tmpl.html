@@ -1,11 +1,11 @@
-{{- $crow := .  -}}
+{{- $ccols := .  -}}
 {{- $m := 0}}
   <el-row>
-  {{range $i,$c:= $crow -}}
-  {{- if le 33 $c.RType.Len -}}
+  {{range $i,$c:= $ccols -}}
+  {{- if le 33 $c.Field.Len -}}
     {{$m =  0}}
         <el-col :span="24">
-  {{- else if and (eq true $c.Ext.Fline) (ne 0 (spare $m 24))}}
+  {{- else if and (eq "newline" $c.Style.Position) (ne 0 (spare $m 24))}}
       <el-col :span="12"></el-col>
       <el-col :span="12">
       {{$m = add $m 24 -}}
@@ -13,68 +13,68 @@
       <el-col :span="12">
         {{$m = add $m 12}}
   {{- end -}}
-      {{- if eq "password" $c.RType.Type}}
-      <!--{{$c.Desc}} 密码控件 -->
-      <el-form-item prop="{{$c.Name}}" label="{{$c.Desc}}" label-width="100px" label-position="right">
+      {{- if eq "password" $c.CCMPT.Type}}
+      <!--{{$c.Label}} 密码控件 -->
+      <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
         <el-input clearable type="password" show-password style="width: 100%" v-model="{{$c.Ext.FormName}}.{{$c.Name}}"
-          maxlength="{{$c.RType.Len}}" placeholder="请输入{{$c.Desc}}" />
+          maxlength="{{$c.Field.Len}}" placeholder="请输入{{$c.Label}}" />
       </el-form-item>
 
-      {{else if eq "switch" $c.RType.Type}}
-      <!--{{$c.Desc}} switch控件 -->
-      <el-form-item prop="{{$c.Name}}" label="{{$c.Desc}}" label-width="100px" label-position="right">
+      {{else if eq "switch" $c.CCMPT.Type}}
+      <!--{{$c.Label}} switch控件 -->
+      <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
         <el-switch v-model="{{$c.Ext.FormName}}.{{$c.Name}}_switch" />
       </el-form-item>
 
-      {{else if or (eq "date" $c.RType.Type) (eq "daterange" $c.RType.Type)}}
-      <!--{{$c.Desc}} 日期控件 -->
-      <el-form-item prop="{{$c.Name}}" label="{{$c.Desc}}" label-width="100px" label-position="right">
+      {{else if or (eq "date" $c.CCMPT.Type) (eq "daterange" $c.CCMPT.Type)}}
+      <!--{{$c.Label}} 日期控件 -->
+      <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
         <el-date-picker style="width: 100%" v-model="{{$c.Ext.FormName}}.{{$c.Name}}" clearable type="date"
-          placeholder="请选择{{.Desc}}" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
+          placeholder="请选择{{.Label}}" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
       </el-form-item>
 
-      {{else if eq true $c.RType.IsSelect}}
-      <!--{{$c.Desc}} 下拉控件 -->
-      <el-form-item prop="{{$c.Name}}" label="{{$c.Desc}}" label-width="100px" label-position="right">
+      {{else if eq true $c.Enum.IsEnum}}
+      <!--{{$c.Label}} 下拉控件 -->
+      <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
         <el-select v-model="{{$c.Ext.FormName}}.{{.Name}}" style="width: 100%" filterable clearable
-          placeholder="请选择{{.Desc}}" {{if ge (len $c.RefedRows) 1}} @change=change{{$c.CName}}({{$c.Ext.FormName}}.{{.Name}}) {{end}}>
+          placeholder="请选择{{.Label}}"  @change="change{{$c.Name}}({{$c.Ext.FormName}}.{{.Name}})" >
           <el-option v-for="item in {{.Name}}List" :key="item.value" :label="item.name" :value="item.value" />
         </el-select>
       </el-form-item>
 
-      {{ else if eq "multiselect" $c.RType.Type}}
-      <!--{{$c.Desc}} 多选控件 -->
-      <el-form-item prop="{{$c.Name}}" label="{{$c.Desc}}" label-width="100px" label-position="right">
+      {{ else if eq "multiselect" $c.CCMPT.Type}}
+      <!--{{$c.Label}} 多选控件 -->
+      <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
         <el-select style="width: 100%" v-model="{{$c.Ext.FormName}}.{{.Name}}" clearable multiple collapse-tags
-          placeholder="请选择{{.Desc}}">
+          placeholder="请选择{{.Label}}">
           <el-option v-for="item in {{.Name}}List" :key="item.value" :label="item.name" :value="item.value" />
         </el-select>
       </el-form-item>
 
-      {{else if eq "number" $c.RType.Type}}
-      <!--{{$c.Desc}} 数字控件 -->
-      <el-form-item prop="{{$c.Name}}" label="{{$c.Desc}}" label-width="100px" label-position="right">
+      {{else if eq "number" $c.CCMPT.Type}}
+      <!--{{$c.Label}} 数字控件 -->
+      <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
         <el-input-number
-        {{if le 0 $c.Type.DLen }} :precision="{{$c.Type.DLen}}" {{end}} 
+        {{if le 0 $c.Field.DLen }} :precision="{{$c.Field.DLen}}" {{end}} 
          controls-position="right" style="width: 100%" v-model="{{$c.Ext.FormName}}.{{ $c.Name }}" 
-        {{- if ne "" $c.RType.Min}}
-         :min="{{ $c.RType.Min }}" {{- end -}} {{- if ne "" $c.RType.Max}}  :max="{{ $c.RType.Max }}" {{- end -}} />
+        {{- if ne "" $c.Style.Min}}
+         :min="{{ $c.Style.Min }}" {{- end -}} {{- if ne "" $c.Style.Max}}  :max="{{ $c.Style.Max }}" {{- end -}} />
       </el-form-item>
 
-      {{else if or (eq "file" $c.RType.Type) (eq "img" $c.RType.Type)}}
-      <!--{{$c.Desc}} 文件控件 -->
-      <el-form-item prop="{{$c.Name}}" label="{{$c.Desc}}" label-width="100px" label-position="right">
+      {{else if or (eq "file" $c.CCMPT.Type) (eq "img" $c.CCMPT.Type)}}
+      <!--{{$c.Label}} 文件控件 -->
+      <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
         <el-upload :action="conf.uploadPath" :limit="1" :on-success="onUploadSuccess">
           <el-button type="primary">上传文件</el-button>
         </el-upload>
       </el-form-item>
       
       {{else}}
-      <!--{{$c.Desc}} 输入控件 -->
-      <el-form-item prop="{{$c.Name}}" label="{{$c.Desc}}" label-width="100px" label-position="right">
-        <el-input clearable style="width: 100%" v-model="{{$c.Ext.FormName}}.{{$c.Name}}" maxlength="{{$c.RType.Len}}"
-          :rows="{{$c.Ext.TextRows}}" {{if gt $c.RType.Len 33}} type="textarea" show-word-limit {{end}}
-          placeholder="请输入{{$c.Desc}}" />
+      <!--{{$c.Label}} 输入控件 -->
+      <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
+        <el-input clearable style="width: 100%" v-model="{{$c.Ext.FormName}}.{{$c.Name}}" maxlength="{{$c.Field.Len}}"
+          :rows="{{$c.Style.Rows}}" {{if gt $c.Field.Len 33}} type="textarea" show-word-limit {{end}}
+          placeholder="请输入{{$c.Label}}" />
       </el-form-item>
       {{end -}}
     </el-col>

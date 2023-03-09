@@ -1,25 +1,25 @@
-{{- $crow := .}}
+{{- $ccols := .}}
     rules:{
-      {{- range $i,$c := $crow}}
+      {{- range $i,$c := $ccols}}
       {{$c.Name}}:[{
-          required:{{$c.Required}},
-          message:"请输入{{$c.Desc}}",
+          required:{{$c.Field.Required}},
+          message:"请输入{{$c.Label}}",
           trigger: 'blur',
       }],
     {{- end}}
     },
     form:{
-        {{- range $i,$c := $crow}}
-        {{if eq "switch" $c.RType.Type  -}}
+        {{- range $i,$c := $ccols}}
+        {{if eq "switch" $c.CCMPT.Type  -}}
         {{$c.Name}}_switch:false,
         {{- else -}}
         {{$c.Name}}:"",
         {{- end}}
         {{- end}}
         },
-        {{- range $i,$c := $crow -}}
-        {{- if or (eq true $c.RType.IsSelect) (eq "multiselect" $c.RType.Type)}}
-        {{.Name}}List:this.$theia.enum.get("{{$c.Ext.SLType}}"),
+        {{- range $i,$c := $ccols -}}
+        {{- if or (eq true $c.Enum.IsEnum) (eq "multiselect" $c.CCMPT.Type)}}
+        {{.Name}}List:this.$theia.enum.get("{{$c.Enum.EnumType}}"),
         {{- end}}
         {{- end}}
       }

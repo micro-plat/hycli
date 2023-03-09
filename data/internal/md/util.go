@@ -50,6 +50,21 @@ func GetRangeName(cns ...string) string {
 	}
 	return ""
 }
+func GetConsByTagIgnorecase(t string, cns ...string) (string, string) {
+	k, v := GetConsByTag(strings.ToLower(t), cns...)
+	if k == "" {
+		k, v = GetConsByTag(strings.ToUpper(t), cns...)
+	}
+	return k, v
+}
+func GetConsNameByTagIgnorecase(t string, cns ...string) string {
+	k := GetConsNameByTag(strings.ToLower(t), cns...)
+	if k == "" {
+		k = GetConsNameByTag(strings.ToUpper(t), cns...)
+	}
+	return k
+}
+
 func GetConsNameByTag(t string, cns ...string) string {
 	if r := types.GetStringByIndex(GetConstraintByReg(cns,
 		fmt.Sprintf(`%s\((\w+)[,]?([\w]*)\)`, t)), 0); r != "" {
@@ -57,6 +72,7 @@ func GetConsNameByTag(t string, cns ...string) string {
 	}
 	return ""
 }
+
 func GetConsByTag(t string, cns ...string) (string, string) {
 	cons := GetConstraintByReg(cns, fmt.Sprintf(`%s\((\w+)[,]?([\w]*)\)`, t))
 	if len(cons) == 2 {

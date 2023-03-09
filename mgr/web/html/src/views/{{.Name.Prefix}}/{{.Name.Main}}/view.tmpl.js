@@ -1,22 +1,14 @@
 {{- $table :=. -}}
-{{- $pkRows:=$table.PKRows}}
-{{- $vrow := $table.VRows -}}
-{{- $viewOptRow :=$table.ViewOpts}}
+{{- $vcols := $table.VColums -}}
+{{- $viewOpts :=$table.ViewOpts}}
  show(form) {
     this.conf.visible = true
-    {{- range $i,$c:= $viewOptRow}}
+    {{- range $i,$c:= $viewOpts}}
       {{- if eq "TAB" $c.Name}}
       //{{ $c.Label}}查询
       {{- $ct:= fltrSearchUITable $c}}
       // {{if and (ne "" $c.RwName) (ne "" $c.FwName)}}
         this.form_{{$ct.UNQ}}.{{ $c.FwName}} = form.{{$c.RwName}}
-      {{- else -}}
-        {{- range $y,$x:= $pkRows}}
-          {{- $currRow:= fltrForginKey $ct $table $x.Name -}}
-          {{- if ne "" $currRow.UNQ}}
-      // this.form_{{$ct.UNQ}}.{{$currRow.Name}} = form.{{$x.Name}}
-          {{- end }}
-        {{- end}}
       {{- end}}
       this.queryData_{{$ct.UNQ}}(form)
       {{- end}}
@@ -27,9 +19,9 @@
       .get("/{{.Name.MainPath|lower}}",form)
       .then((res) => {
             Object.assign(that.view, res)
-        {{- range $i,$c := $vrow -}}
-          {{- if eq true $c.RType.IsSelect}}
-            that.view.{{$c.Name}}_label = that.$theia.enum.getNames("{{$c.Ext.SLType}}",res.{{$c.Name}})
+        {{- range $i,$c := $vcols -}}
+          {{- if eq true $c.Enum.IsEnum}}
+            that.view.{{$c.Name}}_label = that.$theia.enum.getNames("{{$c.Enum.EnumType}}",res.{{$c.Name}})
           {{- end -}}
         {{- end}}
       })
@@ -39,7 +31,7 @@
         that.$notify.error({ title: "失败", message: msg, duration: 5000 });
       });
   },
-  {{ range $x,$m:=$viewOptRow -}}
+  {{ range $x,$m:=$viewOpts -}}
     {{- if eq "CMPNT" $m.Name -}}
     show_view_{{$m.UNQ}}(){
       let that = this;

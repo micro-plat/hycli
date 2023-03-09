@@ -29,9 +29,9 @@ func CreatePage(mdpath string, tbs string, outpath string, cover bool) error {
 	//过滤表格
 	tbls := otbls.Filter(tbs, true)
 
-	ntbs := data.FltrUITables(tbls)
+	ntbs := data.NewTables(tbls)
 	data.Caches(ntbs)
-	data.ResetSelectRelation(ntbs)
+	// data.ResetSelectRelation(ntbs)
 
 	//创建页面文件
 	for _, tb := range ntbs {

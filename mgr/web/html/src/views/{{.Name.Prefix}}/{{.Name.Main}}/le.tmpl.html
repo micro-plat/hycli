@@ -1,12 +1,12 @@
 <el-table-column width="24px" type="expand">
     <template #default="view">
         <el-row :gutter="24">
-            {{- $leRow := .}}
-            {{- range $i,$v:=$leRow}}
-            <el-col :span="5" class="text-right" style="height: 26px">{{ $v.Label }}:</el-col>
-            {{- if eq "img" $v.RType.Type}}
+            {{- $lecols := .}}
+            {{- range $i,$c:=$lecols}}
+            <el-col :span="5" class="text-right" style="height: 26px">{{ $c.Label }}:</el-col>
+            {{- if eq "img" $c.CCMPT.Type}}
             <el-col :span="7" style="height: 26px">
-                <el-image style="width:48px" :src="view.row.{{$v.Name}}" :fit="contain">
+                <el-image style="width:48px" :src="view.row.{{$c.Name}}" :fit="contain">
                     <template #error>
                         <div class="image-slot">
                           <el-icon><icon-picture /></el-icon>
@@ -14,16 +14,16 @@
                       </template>
                 </el-image>
             </el-col>
-            {{- else if eq true $v.RType.IsSelect}}
-            <el-col :span="7" v-text="view.row.{{$v.Name}}_label" style="height: 26px"
-                :class="'{{$v.Ext.ColorType}}'==''?'':{{$v.Ext.ColorType}}(view.row.{{$v.Name}},'{{$v.Name}}')"></el-col>
-            {{- else if eq "link" $v.RType.Type}}
+            {{- else if eq true $c.Enum.IsEnum}}
+            <el-col :span="7" v-text="view.row.{{$c.Name}}_label" style="height: 26px"
+                :class="'{{$c.Style.CLR.BgColor}}'==''?'':{{$c.Style.CLR.BgColor}}(view.row.{{$c.Name}},'{{$c.Name}}')"></el-col>
+            {{- else if eq "link" $c.CCMPT.Type}}
             <el-col :span="7" style="height: 26px"
-                :class="'{{$v.Ext.ColorType}}'==''?'':{{$v.Ext.ColorType}}(view.row.{{$v.Name}},'{{$v.Name}}')">
-                <el-link type="primary" :href="view.row.{{$v.Name}}" :title="view.row.{{$v.Name}}">查看</el-link>
+                :class="'{{$c.Style.CLR.BgColor}}'==''?'':{{$c.Style.CLR.BgColor}}(view.row.{{$c.Name}},'{{$c.Name}}')">
+                <el-link type="primary" :href="view.row.{{$c.Name}}" :title="view.row.{{$c.Name}}">查看</el-link>
             </el-col>
             {{- else}}
-            <el-col :span="7" v-text="view.row.{{$v.Name}}" style="height: 26px"></el-col>
+            <el-col :span="7" v-text="view.row.{{$c.Name}}" style="height: 26px"></el-col>
             {{- end -}}
             {{- end }}
         </el-row>

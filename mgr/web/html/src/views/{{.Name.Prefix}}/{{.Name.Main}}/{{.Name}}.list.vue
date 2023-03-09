@@ -1,11 +1,6 @@
 <template>
   {{- $table := . -}}
-  {{- $qrow := $table.QRows -}}
-  {{- $lstRow := $table.LRows -}}
-  {{- $leRow := $table.LERows -}}
-  {{- $optRow :=$table.Optrs -}}
-  {{- $delRow :=$table.DRows -}}
-  {{- $LLERows:= mergeUIRow $lstRow $leRow}}
+  {{- $opts :=$table.ListOpts -}}
   <div style="height: 100%">
     <!-- 查询条件 -->
     {{template "query.tmpl.html" $table -}}
@@ -24,7 +19,7 @@ import CEdit from "./{{.Name}}.edit"
 import CView from "./{{.Name}}.view"
 import DLGOpts from "./{{.Name}}.dialog.vue"
 import DLGCnfrm from "./{{.Name}}.cnfrm.vue"
-{{range $x,$m:=$optRow -}}
+{{range $x,$m:=$opts -}}
  {{- if eq "CMPNT" $m.Name  -}}
 import {{$m.UNQ}} from "{{$m.URL}}"
 {{- end}}
@@ -36,7 +31,7 @@ export default {
     CView,
     DLGOpts,
     DLGCnfrm,
-    {{ range $x,$m:=$optRow -}}
+    {{ range $x,$m:=$opts -}}
      {{- if eq "CMPNT" $m.Name -}}
     {{$m.UNQ}},
     {{- end -}}

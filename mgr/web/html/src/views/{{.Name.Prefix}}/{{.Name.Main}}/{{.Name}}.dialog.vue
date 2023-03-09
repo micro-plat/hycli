@@ -1,8 +1,8 @@
 {{- $table := .}}
-{{- $optRow :=$table.Optrs}}
+{{- $optCols :=$table.ListOpts}}
 <template>
   <div>
-    {{ range $x,$m:=$optRow -}}
+    {{ range $x,$m:=$optCols -}}
     {{- if eq "DIALOG" $m.Name -}}
     <el-dialog
       v-model="conf.{{$m.UNQ}}_visible"
@@ -12,7 +12,7 @@
       draggable
       :before-close="hide_{{$m.UNQ}}"
     >
-      {{- $rows:= fltrUIRows $table $m.RwName (sjoin "form_" $m.UNQ)}}
+      {{- $rows:= fltrColums $table $m.RwName (sjoin "form_" $m.UNQ)}}
       <el-form
         :model="form_{{$m.UNQ}}"
         size="small"
@@ -38,19 +38,19 @@ export default {
   data(){
     return{
       conf:{
-        {{ range $x,$m:=$optRow -}}
+        {{ range $x,$m:=$optCols -}}
         {{- if eq "DIALOG" $m.Name -}}
         {{$m.UNQ}}_visible:false,
         {{- end}}
         {{- end}}
       },
-  {{ range $x,$m:=$optRow -}}
+  {{ range $x,$m:=$optCols -}}
      {{- if eq "DIALOG" $m.Name}}
       //{{$m.Label}} form by  {{$m.RwName}}
-      {{- $rows:= fltrUIRows $table $m.RwName -}}
+      {{- $rows:= fltrColums $table $m.RwName -}}
         {{range $i,$c:=$rows -}} 
-        {{- if or (eq true $c.RType.IsSelect) (eq "multiselect" $c.RType.Type)}}
-    {{.Name}}List:this.$theia.enum.get("{{$c.Ext.SLType}}"),
+        {{- if or (eq true $c.Enum.IsEnum) (eq "multiselect" $c.CCMPT.Type)}}
+    {{.Name}}List:this.$theia.enum.get("{{$c.Enum.EnumType}}"),
          {{- else}}
     {{$c.Name}}:"",
          {{- end -}}
@@ -58,12 +58,12 @@ export default {
     form_{{$m.UNQ}}:{},
    {{- end}}
    {{- end}}
-    {{ range $x,$m:=$optRow -}}
+    {{ range $x,$m:=$optCols -}}
     {{- if eq "DIALOG" $m.Name}}
     rules_{{$m.UNQ}}:{
-        {{- $rows:= fltrUIRows $table $m.RwName -}}
+        {{- $rows:= fltrColums $table $m.RwName -}}
          {{- range $i,$c:=$rows}} 
-          {{$c.Name}}:[{required:{{$c.Required}}, message:"请输入{{$c.Desc}}", trigger: 'blur'}],
+          {{$c.Name}}:[{required:{{$c.Field.Required}}, message:"请输入{{$c.Label}}", trigger: 'blur'}],
           {{- end}}
         },
       {{- end}}
@@ -73,7 +73,7 @@ export default {
     }
   },
   methods:{
-     {{- range $x,$m:=$optRow -}}
+     {{- range $x,$m:=$optCols -}}
      {{- if eq "DIALOG" $m.Name}}
      //--------------------{{$m.Label}}---------------------------------
       //显示 {{$m.Label}} 弹出框 {{$m}}
@@ -82,14 +82,14 @@ export default {
         {{- $tbs := contactTBS  $table $ct -}}
         {{- $ctable := $tbs.Current -}}
         {{- $mtable := $tbs.Main -}}
-        {{- $MLLERows:= mergeUIRow $mtable.LRows $mtable.LERows}}
+        {{- $MLLERows:=  $mtable.LLEColums}}
           
         //处理关联表{{$m.URL}}
         let currentForm = {}
         {{- range $i,$c := $MLLERows -}}
-          {{- if eq true $c.RType.IsSelect -}}
-            {{- if eq $ctable.Name.Short $c.Ext.SLType}}
-        currentForm.{{$c.Name}} = fm.{{$c.RType.FKName}}
+          {{- if eq true $c.Enum.IsEnum -}}
+            {{- if eq $ctable.Name.Short $c.Enum.EnumType}}
+        currentForm.{{$c.Name}} = fm.{{$mtable.PKColum.Name}}
             {{- end -}}
         {{- end -}}
         {{- end}}
@@ -111,10 +111,10 @@ export default {
                 return
             }
         let post_form_{{$m.UNQ}}=this.form_{{$m.UNQ}}
-        {{- $rows:= fltrUIRows $table $m.RwName (sjoin "form_" $m.UNQ)}}
+        {{- $rows:= fltrColums $table $m.RwName (sjoin "form_" $m.UNQ)}}
         {{range $i,$c:= $rows -}}
        
-         {{- if eq "password" $c.RType.Type  -}}
+         {{- if eq "password" $c.CCMPT.Type  -}}
         post_form_{{$m.UNQ}}.{{$c.Name}} = this.$theia.crypto.md5(this.form_{{$m.UNQ}}.{{$c.Name}})
          {{- end -}}
           {{end}}
