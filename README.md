@@ -70,7 +70,7 @@
 
 
 ![image](https://github.com/micro-plat/hycli/raw/master/zimg/1.jpeg)
-![image](https://github.com/micro-plat/hycli/raw/master/zimg/2.jpeg)
-![image](https://github.com/micro-plat/hycli/raw/master/zimg/3.jpeg)
-![image](https://github.com/micro-plat/hycli/raw/master/zimg/4.jpeg)
-![image](https://github.com/micro-plat/hycli/raw/master/zimg/5.jpeg)
+![image](https://github.com/micro-plat/hycli/raw/master/zimg/2.jpg)
+![image](https://github.com/micro-plat/hycli/raw/master/zimg/3.jpg)
+![image](https://github.com/micro-plat/hycli/raw/master/zimg/4.jpg)
+![image](https://github.com/micro-plat/hycli/raw/master/zimg/5.jpg)
