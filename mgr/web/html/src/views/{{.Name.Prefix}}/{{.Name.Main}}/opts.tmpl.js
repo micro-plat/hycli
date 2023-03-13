@@ -8,7 +8,7 @@
 {{- else if eq "CMPNT" $m.Name}}
   show_cmpnt_{{$m.UNQ}}(fm){
     let query={}
-    {{- $rows:= fltrUIRows $table $m.RwName -}}
+    {{- $rows:= fltrUICols $table $m.RwName -}}
       {{range $i,$c:=$rows}} 
     query.{{$c.Name}} = fm.{{$c.Name}}
       {{- end}}
@@ -24,7 +24,7 @@
 {{- if eq "LINK" $m.Name -}}
   goto_{{$m.UNQ}}(fm){
     let query={}
-    {{- $rows:= fltrUIRows $table $m.RwName -}}
+    {{- $rows:= fltrUICols $table $m.RwName -}}
       {{range $i,$c:=$rows}} 
     query.{{$c.Name}} = fm.{{$c.Name}}
       {{- end}}

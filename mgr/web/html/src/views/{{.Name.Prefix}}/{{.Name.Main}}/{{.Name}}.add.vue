@@ -1,5 +1,5 @@
 {{- $table := .}}
-{{- $ccolums := $table.CColums}}
+{{- $ccolums := fltrColums $table "C"}}
 {{- $enumColums :=$table.EnumColums}}
 <template>
   <el-dialog
@@ -11,7 +11,7 @@
     :before-close="hide"
   >
   <el-form :model="form" size="small" ref="form" :rules="rules">
-    {{- template "add.tmpl.html" $ccolums}}
+    {{- template "edit.tmpl.html" $ccolums}}
     </el-form>
     <template #footer>
       <span class="dialog-footer">
@@ -38,7 +38,7 @@ export default {
     },
     save(){
        {{range $i,$c:= $ccolums -}}
-         {{- if eq "switch" $c.CCMPT.Type  -}}
+         {{- if eq "switch" $c.ExCMPT.Type  -}}
         this.form.{{$c.Name}} = this.form.{{$c.Name}}_switch?0:1;
          {{- end -}}
           {{end}}
@@ -53,7 +53,7 @@ export default {
         let that = this
         let postForm=this.form
         {{range $i,$c:= $ccolums -}}
-         {{- if eq "password" $c.CCMPT.Type  -}}
+         {{- if eq "password" $c.ExCMPT.Type  -}}
         postForm.{{$c.Name}} = this.$theia.crypto.md5(this.form.{{$c.Name}})
          {{- end -}}
           {{end}}
@@ -74,7 +74,7 @@ export default {
     },
     onUploadSuccess(response){
       {{range $i,$c:= $ccolums -}}
-      {{- if eq "file" $c.CCMPT.Type  -}}
+      {{- if eq "file" $c.ExCMPT.Type  -}}
       this.form.{{$c.Name}} = response.path
       {{- end -}}
       {{- end}}

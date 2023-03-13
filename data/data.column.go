@@ -1,7 +1,6 @@
 package data
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/micro-plat/hycli/data/internal/md"
@@ -13,6 +12,7 @@ type BaseColumn struct {
 	Label     string //字段中文名
 	UNQ       string //字段唯一标
 	RawConsts []string
+	rawRow    *md.Row
 }
 type fieldType struct {
 	Name              string //字段原名称
@@ -40,9 +40,8 @@ type fieldType struct {
 }
 
 func createFieldType(r *md.Row) fieldType {
-	fmt.Println(md.HasConstraint(r.Constraints, "L", "l"), r.Constraints)
 	return fieldType{
-		Name:              strings.TrimLeft(r.Name, "_"),
+		Name:              r.Name,
 		Type:              r.Type.Name, //字段原长度
 		Len:               r.Type.Len,
 		DLen:              r.Type.DLen,  //字段实际长度
@@ -58,7 +57,7 @@ func createFieldType(r *md.Row) fieldType {
 		IsSelectField:     md.HasConstraint(r.Constraints, "L", "l"),     //是否是查询
 		IsSelectViewField: md.HasConstraint(r.Constraints, "LE", "le"),   //是否是查询
 		IsViewField:       md.HasConstraint(r.Constraints, "V", "v"),     //是否是预览字段
-		IsExtFuncField:    strings.HasPrefix(r.Name, "_"),                //扩展字段
+		IsExtFuncField:    strings.HasPrefix(r.Raw, "^"),                 //扩展字段
 		IsFrontQueryField: md.HasConstraint(r.Constraints, "Q", "q"),     //是否是查询
 		IsBackQueryField:  md.HasConstraint(r.Constraints, "BQ", "bq"),   //是否是后询
 		IsDeleteField:     md.HasConstraint(r.Constraints, "D", "d"),
@@ -81,7 +80,7 @@ type idx struct {
 type displayCmpt struct {
 	Type   string //text,link,image,switch,pwd,mobile,progress,file,tag,daterange,date,multiselect,select
 	Format string //字段显示格式，如:yyyy-MM-dd
-	Page   string //页面类型
+	// Page   string //页面类型
 
 }
 type ext struct {
@@ -90,25 +89,36 @@ type ext struct {
 
 type displayCmpts map[string]displayCmpt
 
-func (d displayCmpts) getCmpt(tp string, r *md.Row) displayCmpt {
+func (d displayCmpts) getCmpt(r *md.Row, tps ...string) displayCmpt {
 	cmpt := displayCmpt{Type: "text"}
-	c, ok := d[strings.ToUpper(tp)]
-	if ok {
-		cmpt = c
-	} else if c, ok := d["*"]; ok {
-		cmpt = c
-	} else if md.HasConstraint(r.Constraints, "sl", "SL") {
-		cmpt = displayCmpt{Type: "select"}
-	} else if strings.EqualFold(r.Type.Name, "date") ||
-		strings.EqualFold(r.Type.Name, "datetime") {
-		cmpt = displayCmpt{Type: "date"}
-	}
-	cmpt.Page = tp
-	cmpt.Format = md.GetFormat(tp, r.Constraints...)
-	if cmpt.Format == "" {
-		cmpt.Format = md.GetFormat("f", r.Constraints...)
+	var c displayCmpt
+	var tp string
+	var ok bool
+	for _, tp = range tps {
+		if c, ok = d[strings.ToUpper(tp)]; ok {
+			cmpt = c
+			break
+		}
 	}
 
+	if !ok {
+		if c, ok := d["*"]; ok {
+			cmpt = c
+		} else if md.HasConstraint(r.Constraints, "sl", "SL") {
+			cmpt = displayCmpt{Type: "select"}
+		} else if strings.EqualFold(r.Type.Name, "date") ||
+			strings.EqualFold(r.Type.Name, "datetime") {
+			cmpt = displayCmpt{Type: "date"}
+		}
+	}
+	if cmpt.Format != "" {
+		return cmpt
+	}
+	cmpt.Format = md.GetFormat(types.GetStringByIndex(tps, 0, tp), r.Constraints...)
+	if cmpt.Format != "" {
+		return cmpt
+	}
+	cmpt.Format = md.GetFormat("f", r.Constraints...)
 	return cmpt
 }
 
@@ -127,13 +137,13 @@ type displayStyle struct {
 func newLstCMPT(r *md.Row) displayCmpts {
 	cmpts := make(map[string]displayCmpt)
 	for _, k := range r.Constraints {
-		tp, pn := md.GetConsByTagIgnorecase("tp", k)
+		tp, pn, f := md.GetConsByTagIgnorecase("tp", k)
 		if tp == "" {
 			continue
 		}
 		cmpts[types.GetString(strings.ToUpper(pn), "*")] = displayCmpt{
-			Type: tp,
-			Page: pn,
+			Type:   tp,
+			Format: f,
 		}
 	}
 	return cmpts
@@ -142,7 +152,7 @@ func newLstCMPT(r *md.Row) displayCmpts {
 // 解析列表样式
 func createStyle(r *md.Row) displayStyle {
 	min, max := md.GetRanges(r.Constraints...)
-	fc, bc := md.GetConsByTagIgnorecase("color", r.Constraints...)
+	fc, bc, _ := md.GetConsByTagIgnorecase("color", r.Constraints...)
 	bgcolor := md.HasConstraint(r.Constraints, "color")
 	if bgcolor && bc == "" {
 		bc = "colorful"
@@ -150,7 +160,7 @@ func createStyle(r *md.Row) displayStyle {
 	return displayStyle{
 		ListWidth:    md.GetConsNameByTagIgnorecase("lw", r.Constraints...),
 		Rows:         types.GetInt(md.GetConsNameByTagIgnorecase("row", r.Constraints...)),
-		Position:     types.GetString(md.GetConsNameByTagIgnorecase("ps")),
+		Position:     types.GetString(md.GetConsNameByTagIgnorecase("ps", r.Constraints...)),
 		HideOverflow: md.HasConstraint(r.Constraints, "hof", "HOF"),
 		Min:          types.GetInt(min),
 		Max:          types.GetInt(max),
@@ -181,17 +191,19 @@ func createEnumType(r *md.Row) enumType {
 
 type Column struct { //字段基础息
 	BaseColumn
-	Field  fieldType    //字段类型
-	Enum   enumType     //枚举类型
-	QCMPT  displayCmpt  //查询显示组件
-	LCMPT  displayCmpt  //列表显示组件
-	LECMPT displayCmpt  //列表详情组件
-	VCMPT  displayCmpt  //预览组件
-	CCMPT  displayCmpt  //创建页面组件
-	UCMPT  displayCmpt  //修改页面组件
-	DCMPT  displayCmpt  //删除页面组件
-	Style  displayStyle //显示样式
-	Ext    ext
+	Field   fieldType    //字段类型
+	Enum    enumType     //枚举类型
+	QCMPT   displayCmpt  //查询显示组件
+	LCMPT   displayCmpt  //列表显示组件
+	LECMPT  displayCmpt  //列表详情组件
+	VCMPT   displayCmpt  //预览组件
+	CCMPT   displayCmpt  //创建页面组件
+	UCMPT   displayCmpt  //修改页面组件
+	DCMPT   displayCmpt  //删除页面组件
+	ExCMPT  displayCmpt  //扩展参数组件
+	Style   displayStyle //显示样式
+	allCMPT displayCmpts //所有组件
+	Ext     ext
 }
 
 func newColum(r *md.Row) *Column {
@@ -202,17 +214,22 @@ func newColum(r *md.Row) *Column {
 			Label:     r.Desc.Name,
 			UNQ:       defFids.Next(),
 			RawConsts: r.Constraints,
+			rawRow:    r,
 		},
-		QCMPT:  cmpts.getCmpt("q", r),
-		LCMPT:  cmpts.getCmpt("l", r),
-		LECMPT: cmpts.getCmpt("le", r),
-		VCMPT:  cmpts.getCmpt("v", r),
-		CCMPT:  cmpts.getCmpt("c", r),
-		UCMPT:  cmpts.getCmpt("u", r),
-		DCMPT:  cmpts.getCmpt("d", r),
-		Enum:   createEnumType(r),
-		Field:  createFieldType(r),
-		Style:  createStyle(r),
-		Ext:    ext{FormName: "form"},
+		allCMPT: cmpts,
+		QCMPT:   cmpts.getCmpt(r, "q"),
+		LCMPT:   cmpts.getCmpt(r, "l", "le"),
+		LECMPT:  cmpts.getCmpt(r, "l", "le"),
+		VCMPT:   cmpts.getCmpt(r, "v"),
+		CCMPT:   cmpts.getCmpt(r, "c", "u"),
+		UCMPT:   cmpts.getCmpt(r, "c", "u"),
+		DCMPT:   cmpts.getCmpt(r, "d"),
+		Enum:    createEnumType(r),
+		Field:   createFieldType(r),
+		Style:   createStyle(r),
+		Ext:     ext{FormName: "form"},
 	}
+}
+func (c *Column) ResetExtCMPT(t string) {
+	c.ExCMPT = c.allCMPT.getCmpt(c.rawRow, t)
 }

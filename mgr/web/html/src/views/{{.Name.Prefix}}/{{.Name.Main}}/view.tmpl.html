@@ -8,7 +8,7 @@
     <el-col :span="8" style="height:26px">
         <el-image style="width:48px" :src="view.{{$c.Name}}" :fit="contain" /></el-col>
     {{- else}}
-    <el-col :span="8" v-text="view.{{$c.Name}}" style="height:26px"></el-col>
+    <el-col :span="8" :class="'{{$c.Style.CLR.BgColor}}'==''?'':{{$c.Style.CLR.BgColor}}(view.{{$c.Name}},'{{$c.Name}}')" v-text="view.{{$c.Name}}" style="height:26px"></el-col>
     {{- end}}
     {{- end}}
 </el-row>

@@ -10,9 +10,16 @@ func fltrColums(t *Table, tp string, formName ...string) []*Column {
 	cols := make([]*Column, 0, 1)
 	for _, r := range t.Colums {
 		if md.HasConstraint(r.RawConsts, tp) {
-			r.Ext.FormName = types.GetStringByIndex(formName, 0)
+			r.ResetExtCMPT(tp) //重置扩展组件
+			r.Ext.FormName = types.GetStringByIndex(formName, 0, "form")
 			cols = append(cols, r)
 		}
 	}
 	return cols
+}
+func resetForm(t *Table) *Table {
+	for _, c := range t.Colums {
+		c.Ext.FormName = "form"
+	}
+	return t
 }

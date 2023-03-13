@@ -10,7 +10,7 @@
     queryData_{{$table.UNQ}}(mform = {}){
     //构建查询参数
      {{- range $i,$c:= $qrow -}}
-      {{- if eq "daterange" $c.CCMPT.Type -}}
+      {{- if eq "daterange" $c.LCMPT.Type -}}
     this.form_{{$table.UNQ}}.start_{{$c.Name}} = null
     this.form_{{$table.UNQ}}.end_{{$c.Name}} = null
     if(this.form_{{$table.UNQ}}.{{- $c.Name}} && this.form_{{$table.UNQ}}.{{$c.Name}}.length > 1){
@@ -55,19 +55,20 @@
         {{- if eq true $c.Enum.IsEnum}}
             item.{{$c.Name}}_label = that.$theia.enum.getNames("{{$c.Enum.EnumType}}",item.{{$c.Name}})
           {{- end -}}
-          {{- if eq "switch" $c.CCMPT.Type}}
+          {{- if eq "switch" $c.LCMPT.Type}}
             item.{{$c.Name}}_switch = item.{{$c.Name}} == 0
           {{- end}}
-      {{- end}}
-      {{- range $i,$c := $LLERows}}
+        {{- end}}
+
+        {{- range $i,$c := $LLERows}}
             {{- if and (ne "" $c.LCMPT.Format) (eq true $c.Field.IsDate)}}
             item.{{$c.Name}} = that.$theia.str.dateFormat(item.{{$c.Name}},'{{$c.LCMPT.Format}}')
           {{- else if and (ne "" $c.LCMPT.Format) (eq true $c.Field.IsNumber)}}
             item.{{$c.Name}} = that.$theia.str.numberFormat(item.{{$c.Name}},'{{$c.LCMPT.Format}}')
           {{- else if eq "mobile" $c.LCMPT.Type}}
             item.{{$c.Name}} = that.$theia.str.phoneFormat(item.{{$c.Name}})
-          {{- else if eq "text" $c.LCMPT.Type}}
-            item.{{$c.Name}} = that.$theia.str.cut(item.{{$c.Name}},{{$c.Field.Len}})
+          {{- else if eq "cut" $c.LCMPT.Type }}
+            item.{{$c.Name}} = that.$theia.str.cut(item.{{$c.Name}},{{$c.LCMPT.Format}})
           {{- end}}
           {{- end }}
       });
@@ -75,7 +76,7 @@
   },
 
   {{ range $i,$c:= $qrow }}
-  {{- if eq "ddl" $c.CCMPT.Type -}}
+  {{- if eq "ddl" $c.LCMPT.Type -}}
   on{{.Name}}dropdownClick(f, x) {
     let mf = f || {}
     x.{{.Name}}_label = mf.name

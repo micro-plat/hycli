@@ -1,5 +1,5 @@
-{{- $table := .}}
-{{- $ucols := $table.UColums}}
+{{- $table := . }}
+{{- $ucols := fltrColums $table "U"}}
 {{- $enumColums :=$table.EnumColums}}
 <template>
   <el-dialog
@@ -11,7 +11,7 @@
     :before-close="hide"
   >
 <el-form :model="form" size="small" ref="form" :rules="rules">
-{{template "add.tmpl.html" $ucols}}
+{{template "edit.tmpl.html" $ucols}}
 </el-form>
     <template #footer>
       <span class="dialog-footer">
@@ -41,7 +41,7 @@ export default {
         let that = this
         this.$theia.http.get("/{{.Name.MainPath|lower}}",form).then(res=>{
         {{- range $i,$c := $ucols -}}
-        {{- if eq "switch" $c.CCMPT.Type}}
+        {{- if eq "switch" $c.ExCMPT.Type}}
           res.{{$c.Name}}_switch = res.{{$c.Name}} == 0
         {{- end}}
         {{- end}}
@@ -54,7 +54,7 @@ export default {
     },
     save(){
        {{range $i,$c:= $ucols -}}
-         {{- if eq "switch" $c.CCMPT.Type  -}}
+         {{- if eq "switch" $c.ExCMPT.Type  -}}
         this.form.{{$c.Name}} = this.form.{{$c.Name}}_switch?0:1;
          {{- end -}}
           {{end}}
@@ -84,7 +84,7 @@ export default {
     },
      onUploadSuccess(response){
       {{range $i,$c:= $ucols -}}
-      {{- if eq "file" $c.CCMPT.Type  -}}
+      {{- if eq "file" $c.ExCMPT.Type  -}}
       this.form.{{$c.Name}} = response.path
       {{- end -}}
       {{- end}}

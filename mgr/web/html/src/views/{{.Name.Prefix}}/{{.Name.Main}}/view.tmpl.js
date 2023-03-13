@@ -19,11 +19,27 @@
       .get("/{{.Name.MainPath|lower}}",form)
       .then((res) => {
             Object.assign(that.view, res)
-        {{- range $i,$c := $vcols -}}
-          {{- if eq true $c.Enum.IsEnum}}
-            that.view.{{$c.Name}}_label = that.$theia.enum.getNames("{{$c.Enum.EnumType}}",res.{{$c.Name}})
-          {{- end -}}
-        {{- end}}
+            let item = that.view
+            {{- range $i,$c := $vcols -}}
+            {{- if eq true $c.Enum.IsEnum}}
+                item.{{$c.Name}}_label = that.$theia.enum.getNames("{{$c.Enum.EnumType}}",item.{{$c.Name}})
+              {{- end -}}
+              {{- if eq "switch" $c.VCMPT.Type}}
+                item.{{$c.Name}}_switch = item.{{$c.Name}} == 0
+              {{- end}}
+            {{- end}}
+            
+            {{- range $i,$c := $vcols}}
+                {{- if and (ne "" $c.VCMPT.Format) (eq true $c.Field.IsDate)}}
+                item.{{$c.Name}} = that.$theia.str.dateFormat(item.{{$c.Name}},'{{$c.VCMPT.Format}}')
+              {{- else if and (ne "" $c.VCMPT.Format) (eq true $c.Field.IsNumber)}}
+                item.{{$c.Name}} = that.$theia.str.numberFormat(item.{{$c.Name}},'{{$c.VCMPT.Format}}')
+              {{- else if eq "mobile" $c.VCMPT.Type}}
+                item.{{$c.Name}} = that.$theia.str.phoneFormat(item.{{$c.Name}})
+              {{- else if eq "cut" $c.VCMPT.Type}}
+                item.{{$c.Name}} = that.$theia.str.cut(item.{{$c.Name}},{{$c.VCMPT.Format}})
+              {{- end}}
+              {{- end }}
       })
       .catch((res) => {
         let code = res.response.status;
@@ -36,7 +52,7 @@
     show_view_{{$m.UNQ}}(){
       let that = this;
       let query={}
-      {{- $rows:= fltrUIRows $table $m.RwName -}}
+      {{- $rows:= fltrUICols $table $m.RwName -}}
       {{range $i,$c:=$rows}} 
         query.{{$c.Name}} = that.view.{{$c.Name}}
       {{- end}}

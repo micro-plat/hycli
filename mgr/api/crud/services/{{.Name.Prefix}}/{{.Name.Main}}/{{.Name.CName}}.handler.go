@@ -10,10 +10,10 @@ import (
 	"github.com/micro-plat/lib4go/types"
 )
 {{- $table := . -}}
-{{- $crows := fltrNotNullRows  $table.CColums -}}
-{{- $clen := (len $crows)|minus}}
-{{- $urows := fltrNotNullRows  $table.UColums -}}
-{{- $ulen := (len $urows)|minus -}}
+{{- $ccols := fltrNotNullCols  $table.CColums -}}
+{{- $clen := (len $ccols)|minus}}
+{{- $ucols := fltrNotNullCols  $table.UColums -}}
+{{- $ulen := (len $ucols)|minus -}}
 {{ $pklen := (len $table.PKColums)|minus}}
 //AuditInfoHandler 获取{{.Desc}}处理服务
 type {{.Name.CName}}Handler struct {
@@ -24,9 +24,9 @@ type {{.Name.CName}}Handler struct {
 
 func New{{.Name.CName}}Handler() *{{.Name.CName}}Handler {
 	return &{{.Name.CName}}Handler{
-		insertRequiredFields:[]string{ {{- range $i,$v := $crows -}}
+		insertRequiredFields:[]string{ {{- range $i,$v := $ccols -}}
 			"{{$v.Name}}"{{if lt $i $clen }},{{end}}{{- end -}}},
-		updateRequiredFields:[]string{ {{- range $i,$v :=  $urows -}}
+		updateRequiredFields:[]string{ {{- range $i,$v :=  $ucols -}}
 			"{{$v.Name}}"{{if lt $i $ulen }},{{end}}{{- end -}}},
 		pkRequiredFields:[]string{ {{- range $i,$v :=  $table.PKColums -}}
 			"{{$v.Name}}"{{if lt $i $pklen }},{{end}}{{- end -}}},

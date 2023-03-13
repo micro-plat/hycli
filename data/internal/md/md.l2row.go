@@ -31,7 +31,8 @@ func (r *RDesc) String() string {
 
 // Row 行信息
 type Row struct {
-	Index       int      `json:"index"`       //索引
+	Index       int      `json:"index"` //索引
+	Raw         string   `json:"raw"`
 	Name        string   `json:"name"`        //字段名
 	CName       string   `json:"cname"`       //字段名
 	Type        *RType   `json:"type"`        //类型
@@ -46,7 +47,7 @@ func (r *Row) String() string {
 	return string(buff)
 }
 func (s *Row) Equal(t *Row) bool {
-	return s.Name == t.Name
+	return s.Raw == t.Raw
 }
 
 func line2TableRow(line *Line) (*Row, error) {
@@ -64,8 +65,9 @@ func line2TableRow(line *Line) (*Row, error) {
 	desc := strings.TrimSpace(strings.Replace(colums[5], "&#124;", "|", -1))
 	c := &Row{
 		Index:       line.LineID,
-		Name:        strings.TrimSpace(strings.Replace(colums[0], "&#124;", "|", -1)),
-		CName:       ToCName(strings.TrimSpace(strings.Replace(colums[0], "&#124;", "|", -1))),
+		Raw:         strings.TrimSpace(strings.Replace(colums[0], "&#124;", "|", -1)),
+		Name:        strings.Trim(strings.TrimSpace(strings.Replace(colums[0], "&#124;", "|", -1)), "^"),
+		CName:       ToCName(strings.Trim(strings.TrimSpace(strings.Replace(colums[0], "&#124;", "|", -1)), "^")),
 		Type:        rtp,
 		DefValue:    strings.TrimSpace(strings.Replace(colums[2], "&#124;", "|", -1)),
 		AllowNull:   strings.TrimSpace(colums[3]) != "否",

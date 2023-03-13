@@ -69,10 +69,13 @@ func (t Tables) resetConf(cnf TableConfs) {
 		for _, row := range tb.Rows {
 			rconf, ok := conf.Rows[row.Name]
 			if !ok {
-				continue
+				rconf, ok = conf.Rows[row.Raw]
 			}
-			row.Constraints = append(row.Constraints, rconf.Constraints...)
-			row.Desc = rconf.Desc
+			if ok {
+				row.Constraints = append(row.Constraints, rconf.Constraints...)
+				row.Desc = rconf.Desc
+			}
+
 		}
 	}
 }

@@ -50,12 +50,12 @@ func GetRangeName(cns ...string) string {
 	}
 	return ""
 }
-func GetConsByTagIgnorecase(t string, cns ...string) (string, string) {
-	k, v := GetConsByTag(strings.ToLower(t), cns...)
+func GetConsByTagIgnorecase(t string, cns ...string) (string, string, string) {
+	k, v, m := GetConsByTag(strings.ToLower(t), cns...)
 	if k == "" {
-		k, v = GetConsByTag(strings.ToUpper(t), cns...)
+		k, v, m = GetConsByTag(strings.ToUpper(t), cns...)
 	}
-	return k, v
+	return k, v, m
 }
 func GetConsNameByTagIgnorecase(t string, cns ...string) string {
 	k := GetConsNameByTag(strings.ToLower(t), cns...)
@@ -73,15 +73,16 @@ func GetConsNameByTag(t string, cns ...string) string {
 	return ""
 }
 
-func GetConsByTag(t string, cns ...string) (string, string) {
-	cons := GetConstraintByReg(cns, fmt.Sprintf(`%s\((\w+)[,]?([\w]*)\)`, t))
-	if len(cons) == 2 {
-		return cons[0], cons[1]
+func GetConsByTag(t string, cns ...string) (string, string, string) {
+	cons := GetConstraintByReg(cns, fmt.Sprintf(`^(%s)$|^%s\(([^\(^\)^,]+)[,]?([^\(^\)^,]*)[,]?([^\(^\)]*)\)$`, t, t))
+	if len(cons) == 0 {
+		return "", "", ""
 	}
-	if len(cons) == 1 {
-		return cons[0], ""
+	if cons[0] == "" && len(cons) == 4 {
+		return cons[1], cons[2], cons[3]
 	}
-	return "", ""
+	return cons[0], "", ""
+
 }
 
 func GetSelectName(fname string, cns ...string) (string, string) {
@@ -115,7 +116,7 @@ func HasConstraint(cns []string, fx ...string) bool {
 			if strings.EqualFold(c, f) {
 				return true
 			}
-			reg := regexp.MustCompile(fmt.Sprintf(`^%s\([\w-\s:]+\)$`, f))
+			reg := regexp.MustCompile(fmt.Sprintf(`^%s\([^\(^\)]+\)$`, f))
 			if len(reg.FindAllString(c, -1)) > 0 {
 				return true
 			}

@@ -19,7 +19,7 @@
         ref="fm_{{$m.UNQ}}"
         :rules="rules_{{$m.UNQ}}"
       >
-        {{- template "add.tmpl.html" $rows}}
+        {{- template "edit.tmpl.html" $rows}}
       </el-form>
       <template #footer>
         <span class="dialog-footer">
@@ -49,7 +49,7 @@ export default {
       //{{$m.Label}} form by  {{$m.RwName}}
       {{- $rows:= fltrColums $table $m.RwName -}}
         {{range $i,$c:=$rows -}} 
-        {{- if or (eq true $c.Enum.IsEnum) (eq "multiselect" $c.CCMPT.Type)}}
+        {{- if or (eq true $c.Enum.IsEnum) (eq "multiselect" $c.ExCMPT.Type)}}
     {{.Name}}List:this.$theia.enum.get("{{$c.Enum.EnumType}}"),
          {{- else}}
     {{$c.Name}}:"",
@@ -114,7 +114,7 @@ export default {
         {{- $rows:= fltrColums $table $m.RwName (sjoin "form_" $m.UNQ)}}
         {{range $i,$c:= $rows -}}
        
-         {{- if eq "password" $c.CCMPT.Type  -}}
+         {{- if eq "password" $c.ExCMPT.Type  -}}
         post_form_{{$m.UNQ}}.{{$c.Name}} = this.$theia.crypto.md5(this.form_{{$m.UNQ}}.{{$c.Name}})
          {{- end -}}
           {{end}}

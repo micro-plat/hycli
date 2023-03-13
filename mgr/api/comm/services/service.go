@@ -4,7 +4,7 @@ package services
 
 {{- $etable := . -}}
 {{- $mtable :=$etable|flterMainTable -}}
-{{$ft := getFirstCodeTable $etable}}
+{{$ft := getFirstTable $etable}}
 import (
 	"github.com/micro-plat/hydra"
 	{{- range $i,$v:=$mtable -}}

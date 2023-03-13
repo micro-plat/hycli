@@ -15,7 +15,7 @@ func TestTB(t *testing.T) {
 	| 字段名      | 类型        |      默认值       | 为空  |  约束   | 描述                 |
 	| ----------- | ----------- | :---------------: | :---: | :-----: | :------------------- |
 	| role_id     | bigint(20)  |                   |  否   | PK,SEQ | 角色id               |
-	| name        | varchar(64) |                   |  否   |   UNQ   | 角色名称             |
+	| ^name        | varchar(64) |                   |  否   |   UNQ   | 角色名称             |
 	| price      | decimal(10,5)  |         0         |  是   |         | 价格 |
 	| status      | tinyint(1)  |         0         |  否   |         | 状态 1: 禁用 0: 正常 |
 	| create_time | datetime    | sysdate |  否   |         | 创建时间             |`
@@ -43,7 +43,7 @@ func TestTB(t *testing.T) {
 	assert.Equal(t, "角色id", tbs[0].Rows[0].Desc.Raw)
 	assert.Equal(t, "角色id", tbs[0].Rows[0].Desc.Name)
 
-	assert.Equal(t, "name", tbs[0].Rows[1].Name)
+	assert.Equal(t, "^name", tbs[0].Rows[1].Name)
 	assert.Equal(t, "varchar(64)", tbs[0].Rows[1].Type.Raw)
 	assert.Equal(t, "varchar", tbs[0].Rows[1].Type.Name)
 	assert.Equal(t, 64, tbs[0].Rows[1].Type.Len)

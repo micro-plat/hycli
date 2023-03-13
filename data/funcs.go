@@ -8,20 +8,15 @@ import (
 )
 
 var Funcs = map[string]interface{}{
-	// "fltrCodeTable":     fltrCodeTable,     //代码
-	// "fltrCodeTables":    fltrCodeTables,    //代码
 
-	"flterMainTable": flterMainTable,
-	// "fltrForginKey":     fltrForginKey,
-
-	"fltrNotNullRows":   fltrNotNullRows,
-	"getFirstCodeTable": getFirstCodeTable,
-	// "mergeCodeRow":      mergeCodeRow,
-	// "mergeUIRow":        mergeUIRow,
-	"fltrUIRows":        fltrUIRows,
+	"flterMainTable":    flterMainTable,
+	"fltrNotNullCols":   fltrNotNullRows,
+	"getFirstTable":     getFirstTable,
+	"fltrUICols":        fltrUICols,
 	"IsTmplTb":          IsTmplTb,
 	"fltrSearchUITable": fltrSearchUITable, //全局查找指定表??
 	"fltrColums":        fltrColums,
+	"resetForm":         resetForm,
 	"multiply":          multiply,
 	"sjoin":             sjoin,
 	"add":               fltrAdd,
@@ -48,7 +43,7 @@ func IsTmplTb(o interface{}) bool {
 	return false
 }
 
-func getFirstCodeTable(ts []*Table) *Table {
+func getFirstTable(ts []*Table) *Table {
 	if len(ts) > 0 {
 		return ts[0]
 	}
@@ -77,8 +72,8 @@ func sjoin(v ...string) string {
 	return strings.Join(v, "")
 }
 
-// fltrUIRows 过滤用户自定义类型对应的行，自定义行对应的控件按新增模式处理
-func fltrUIRows(t *Table, tp string, formName ...string) []*Column {
+// fltrUICols 过滤用户自定义类型对应的行，自定义行对应的控件按新增模式处理
+func fltrUICols(t *Table, tp string, formName ...string) []*Column {
 	rows := make([]*Column, 0, 1)
 	for _, r := range t.Colums {
 		if md.HasConstraint(r.RawConsts, tp) {
@@ -98,20 +93,3 @@ func fltrNotNullRows(rs []*Column) []*Column {
 	}
 	return r
 }
-
-// func fltrForginKey(t *TUITable, n *UITable, fiedName string) *UIRow {
-// 	//根据sl配置匹配
-// 	for _, r := range t.QRows {
-// 		if r.RType.IsSelect && strings.HasSuffix(n.Name.Raw, r.RType.SelectName) {
-// 			return r
-// 		}
-// 	}
-
-// 	//根据字段名称匹配
-// 	for _, r := range t.QRows {
-// 		if strings.EqualFold(r.Name, fiedName) {
-// 			return r
-// 		}
-// 	}
-// 	return &UIRow{}
-// }
