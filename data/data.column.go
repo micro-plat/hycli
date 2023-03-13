@@ -137,14 +137,18 @@ type displayStyle struct {
 func newLstCMPT(r *md.Row) displayCmpts {
 	cmpts := make(map[string]displayCmpt)
 	for _, k := range r.Constraints {
-		tp, pn, f := md.GetConsByTagIgnorecase("tp", k)
+		tp, pns, f := md.GetConsByTagIgnorecase("tp", k)
 		if tp == "" {
 			continue
 		}
-		cmpts[types.GetString(strings.ToUpper(pn), "*")] = displayCmpt{
-			Type:   tp,
-			Format: f,
+		pni := strings.Split(pns, "-")
+		for _, pn := range pni {
+			cmpts[types.GetString(strings.ToUpper(pn), "*")] = displayCmpt{
+				Type:   tp,
+				Format: f,
+			}
 		}
+
 	}
 	return cmpts
 }

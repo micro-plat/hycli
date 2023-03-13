@@ -19,7 +19,7 @@
         ref="fm_{{$m.UNQ}}"
         :rules="rules_{{$m.UNQ}}"
       >
-        {{- template "edit.tmpl.html" $rows}}
+        {{- template "add.tmpl.html" $rows}}
       </el-form>
       <template #footer>
         <span class="dialog-footer">

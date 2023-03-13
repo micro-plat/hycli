@@ -11,7 +11,7 @@
     :before-close="hide"
   >
   <el-form :model="form" size="small" ref="form" :rules="rules">
-    {{- template "edit.tmpl.html" $ccolums}}
+    {{- template "add.tmpl.html" $ccolums}}
     </el-form>
     <template #footer>
       <span class="dialog-footer">

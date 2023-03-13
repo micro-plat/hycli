@@ -1,7 +1,7 @@
-{{- $ccols := .  -}}
+{{- $ucols := .  -}}
 {{- $m := 0}}
   <el-row>
-  {{range $i,$c:= $ccols -}}
+  {{range $i,$c:= $ucols -}}
   {{- if le 33 $c.Field.Len -}}
     {{$m =  0}}
         <el-col :span="24">
@@ -77,6 +77,15 @@
          <el-option v-for="item in {{.Name}}List" :key="item.value" :label="item.name" :value="item.value" />
        </el-select>
      </el-form-item>
+      {{else if  (eq "readonly" $c.ExCMPT.Type)}}
+      <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
+        <el-input disabled  style="width: 100%" v-model="{{$c.Ext.FormName}}.{{$c.Name}}"
+          :rows="{{$c.Style.Rows}}" {{if gt $c.Field.Len 33}} type="textarea" show-word-limit {{end}} />
+      </el-form-item>
+      {{else if  (eq "label" $c.ExCMPT.Type)}}
+      <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
+        <span v-text="{{$c.Ext.FormName}}.{{$c.Name}}"></span>
+      </el-form-item>
       {{else}}
       <!--{{$c.Label}} 输入控件 -->
       <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
