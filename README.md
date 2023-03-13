@@ -6,6 +6,11 @@
 ### 生成数据库
 命令: hicli db create ../docs/db/db.md .\api\modules\const\db\mysql -g
 
+
+
+
+
+
 ### 基础参数
 | 指令 | 格式          | 示例                  | 说明                                    |
 | ---- | ------------- | --------------------- | --------------------------------------- |
@@ -62,3 +67,10 @@
 | tp(tabs[,页面类型])          | tp(tabs)       | 以tab栏显示到查询栏                   |
 | tp(readonly[,页面类型])      | tp(readonly)   | 显示为只读                            |
 | tp(cut[,页面类型][,长度])    | tp(cut,le,6)   | 列表详情页进行字符截取，长度为6各字符 |
+
+
+![image](https://github.com/micro-plat/hycli/raw/master/zimg/1.jpeg)
+![image](https://github.com/micro-plat/hycli/raw/master/zimg/2.jpeg)
+![image](https://github.com/micro-plat/hycli/raw/master/zimg/3.jpeg)
+![image](https://github.com/micro-plat/hycli/raw/master/zimg/4.jpeg)
+![image](https://github.com/micro-plat/hycli/raw/master/zimg/5.jpeg)
