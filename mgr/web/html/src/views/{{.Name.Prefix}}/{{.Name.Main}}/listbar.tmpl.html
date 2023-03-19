@@ -1,0 +1,15 @@
+{{$table :=.}}
+<div class="listbar">
+  {{- range $i,$c:= $table.LStatOpts -}}
+  {{- $ucols := fltrColums $table $c.RwName -}}
+  {{$l := len $ucols}}
+  {{$x := div 24 $l}}
+  <el-row>
+    {{range $j,$m:= $ucols}}
+    <el-col :span="{{$x}}">
+      <el-statistic title="{{$m.Label}}" :value="stat_{{$c.UNQ}}.{{$m.Name}}" />
+    </el-col>
+    {{end}}
+  </el-row>
+  {{end}}
+</div>
