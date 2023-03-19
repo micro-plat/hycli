@@ -12,21 +12,23 @@
         {{- if gt $leLen 0 -}}
         {{- template "le.tmpl.html" $lecols -}}
         {{- end}}
+        {{ if and (eq $table.NeedBatchCheck true) (eq false $tmpl)}}  <el-table-column type="selection" width="55" /> {{end}}
+       
         {{- range $i,$c:=$lcols -}}
         {{- if eq "switch" $c.LCMPT.Type}}
-        <el-table-column {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{end}}  align="center" label="{{$c.Label}}">
+        <el-table-column   {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{end}}  align="center" label="{{$c.Label}}">
             <template #default="scope">
                 <el-switch disabled v-model="scope.row.{{$c.Name}}_switch" />
             </template>
         </el-table-column>
         {{- else if eq "progress" $c.LCMPT.Type}}
-        <el-table-column {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{else}} width="120" {{end}} align="center" label="{{$c.Label}}">
+        <el-table-column  {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{else}} width="120" {{end}} align="center" label="{{$c.Label}}">
             <template #default="scope">
                 <el-progress  :percentage="scope.row.{{$c.Name}}" :color="conf.progressColor" />
             </template>
         </el-table-column>
         {{- else if eq "img" $c.LCMPT.Type}}
-        <el-table-column {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{end}} align="center" label="{{$c.Label}}">
+        <el-table-column  {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{end}} align="center" label="{{$c.Label}}">
             <template #default="scope">
                 <el-image style="width:48px" :src="scope.row.{{$c.Name}}" :fit="contain">
                     <template #error>
@@ -40,13 +42,13 @@
             </template>
         </el-table-column>
         {{- else if eq "link" $c.LCMPT.Type}}
-        <el-table-column {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{end}} {{if eq true $c.Style.HideOverflow}} :show-overflow-tooltip="true" {{end}}  align="center" label="{{$c.Label}}">
+        <el-table-column  {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{end}} {{if eq true $c.Style.HideOverflow}} :show-overflow-tooltip="true" {{end}}  align="center" label="{{$c.Label}}">
             <template #default="scope">
                 <el-link type="primary" :href="scope.row.{{$c.Name}}" :title="scope.row.{{$c.Name}}">查看</el-link>
             </template>
         </el-table-column>
         {{- else if eq true $c.Enum.IsEnum}}
-        <el-table-column {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{end}} {{if eq true $c.Style.HideOverflow}} :show-overflow-tooltip="true" {{end}} prop="{{$c.Name}}_label" align="center" label="{{$c.Label}}">
+        <el-table-column  {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{end}} {{if eq true $c.Style.HideOverflow}} :show-overflow-tooltip="true" {{end}} prop="{{$c.Name}}_label" align="center" label="{{$c.Label}}">
             <template #default="scope">
                 {{- if eq "tag" $c.LCMPT.Type}}
                 <el-tag :type="tagColor(scope.row.{{$c.Name}},'{{$c.Name}}')"  effect="plain" round v-text="scope.row.{{$c.Name}}_label"></el-tag>
@@ -57,13 +59,13 @@
             </template>
         </el-table-column>
         {{- else if eq "tag" $c.LCMPT.Type}}
-        <el-table-column {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{end}} prop="{{$c.Name}}_label" align="center" label="{{$c.Label}}">
+        <el-table-column  {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{end}} prop="{{$c.Name}}_label" align="center" label="{{$c.Label}}">
             <template #default="scope">
                 <el-tag type="tagColor(scope.row.{{$c.Name}},'{{$c.Name}}')" round  effect="plain" v-text="scope.row.{{$c.Name}}"></el-tag>
             </template>
         </el-table-column>
         {{- else}}
-        <el-table-column {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{end}} {{if eq true $c.Style.HideOverflow}} :show-overflow-tooltip="true" {{end}} prop="{{$c.Name}}" align="center" label="{{$c.Label}}" />
+        <el-table-column  {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{end}} {{if eq true $c.Style.HideOverflow}} :show-overflow-tooltip="true" {{end}} prop="{{$c.Name}}" align="center" label="{{$c.Label}}" />
         {{- end -}}
         {{- end }}
         {{if gt $optLen 0}}

@@ -4,6 +4,9 @@
   <div style="height: 100%">
     <!-- 查询条件 -->
     {{template "query.tmpl.html" $table -}}
+
+    <!-- 列表栏 -->
+    {{template "listbar.tmpl.html" $table -}}
     <!-- 列表 -->
     {{template "list.tmpl.html" $table}}
     <CAdd ref="cadd" @onsaved="onQuery"></CAdd>
@@ -44,6 +47,7 @@ export default {
         progressColor: this.$theia.env.conf.progress||[]
       },
       {{- template "queryform.tmpl.js" $table -}}
+       {{- template "listbar.tmpl.js" $table -}}
     };
   },
     created() {
@@ -123,5 +127,9 @@ margin-right: 8px;
 }
 .ddl .el-dropdown{
     margin-right: 8px; 
+}
+.listbar{
+  margin-bottom:8px;
+  text-align:center;
 }
 </style>

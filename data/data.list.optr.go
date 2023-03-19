@@ -9,6 +9,7 @@ import (
 
 // 操作信息
 type optrs struct {
+	Tag    string
 	Name   string //link,dialog,cmpnt,tab,cnfrm
 	Label  string //修改,预览，删除
 	URL    string
@@ -18,10 +19,24 @@ type optrs struct {
 }
 type lstOptrs []*optrs
 type viewOptrs []*optrs
+type lstatOptrs []*optrs
+type batchOptrs []*optrs
+
+var batchSelect = []string{"bcheck"}
+var batchOptrCmd = []string{"export", "import", "bcheck"}
 
 var detailOpts = &optrs{Name: "VIEW", Label: "详情", RwName: "V"}
 var updateOpts = &optrs{Name: "UPDATE", Label: "修改", RwName: "U"}
 var delOpts = &optrs{Name: "DEL", Label: "删除", RwName: "D"}
+
+func (b batchOptrs) NeedCheck(t string) bool {
+	for _, v := range b {
+		if types.StringContains(batchSelect, v.Tag) {
+			return true
+		}
+	}
+	return false
+}
 
 func createLstOptrs(t string) lstOptrs {
 	optrs := make([]*optrs, 0, 1)
@@ -35,12 +50,26 @@ func createViewOptrs(t string) viewOptrs {
 	optrs = append(optrs, createOptrs(t, "VIEW")...)
 	return optrs
 }
-
+func createLStatOptrs(t string) lstatOptrs {
+	optrs := make([]*optrs, 0, 1)
+	optrs = append(optrs, createOptrs(t, "lstat")...)
+	optrs = append(optrs, createOptrs(t, "LSTAT")...)
+	return optrs
+}
+func createBatchOptrs(t string) batchOptrs {
+	optrs := make([]*optrs, 0, 1)
+	for _, v := range batchOptrCmd {
+		optrs = append(optrs, createOptrs(t, strings.ToLower(v))...)
+		optrs = append(optrs, createOptrs(t, strings.ToUpper(v))...)
+	}
+	return optrs
+}
 func createOptrs(t string, tag string) []*optrs {
 	list := md.GetExtOpt(t, tag)
 	opts := make([]*optrs, 0, len(list))
 	for _, lst := range list {
 		opt := &optrs{
+			Tag:    tag,
 			Name:   strings.ToUpper(types.GetStringByIndex(lst, 1)),
 			Label:  lst[0],
 			URL:    types.GetStringByIndex(lst, 2),

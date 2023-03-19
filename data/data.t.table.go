@@ -15,7 +15,6 @@ func NewTables(tbs md.Tables) Tables {
 	}
 	return nt
 }
-
 func fltrSearchUITable(name *optrs) *TTable {
 	uname := name.URL
 	if strings.Contains(name.URL, "/") {

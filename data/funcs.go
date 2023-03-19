@@ -2,30 +2,31 @@ package data
 
 import (
 	"strings"
-
-	"github.com/micro-plat/hycli/data/internal/md"
-	"github.com/micro-plat/lib4go/types"
 )
 
 var Funcs = map[string]interface{}{
 
-	"flterMainTable":    flterMainTable,
-	"fltrNotNullCols":   fltrNotNullRows,
-	"getFirstTable":     getFirstTable,
-	"fltrUICols":        fltrUICols,
-	"IsTmplTb":          IsTmplTb,
-	"fltrSearchUITable": fltrSearchUITable, //全局查找指定表??
-	"fltrColums":        fltrColums,
-	"resetForm":         resetForm,
-	"multiply":          multiply,
-	"sjoin":             sjoin,
-	"add":               fltrAdd,
-	"spare":             spare,
-	"bleft":             bleft,
-	"bright":            bright,
-	"contactTBS":        contactTables,
+	"flterMainTable":       flterMainTable,
+	"fltrNotNullCols":      fltrNotNullRows,
+	"getFirstTable":        getFirstTable,
+	"IsTmplTb":             IsTmplTb,
+	"fltrSearchUITable":    fltrSearchUITable,
+	"fltrColums":           fltrColums,
+	"fltrColumsExcludeExt": fltrColumsExcludeExt,
+	"resetForm":            resetForm,
+	"multiply":             multiply,
+	"sjoin":                sjoin,
+	"add":                  fltrAdd,
+	"spare":                spare,
+	"bleft":                bleft,
+	"div":                  divide,
+	"bright":               bright,
+	"contactTBS":           contactTables,
 }
 
+func divide(x, y int) int {
+	return x / y
+}
 func bleft() string {
 	return `{{`
 }
@@ -60,7 +61,15 @@ func flterMainTable(tbs []*Table) []*Table {
 	}
 	return ntbs
 }
-
+func fltrColumsExcludeExt(cols []*Column) []*Column {
+	vc := make([]*Column, 0, 1)
+	for _, v := range cols {
+		if !v.Field.IsExtFuncField {
+			vc = append(vc, v)
+		}
+	}
+	return vc
+}
 func spare(x int, y int) int {
 	return x % y
 }
@@ -70,18 +79,6 @@ func multiply(v int, b int) int {
 }
 func sjoin(v ...string) string {
 	return strings.Join(v, "")
-}
-
-// fltrUICols 过滤用户自定义类型对应的行，自定义行对应的控件按新增模式处理
-func fltrUICols(t *Table, tp string, formName ...string) []*Column {
-	rows := make([]*Column, 0, 1)
-	for _, r := range t.Colums {
-		if md.HasConstraint(r.RawConsts, tp) {
-			r.Ext.FormName = types.GetStringByIndex(formName, 0)
-			rows = append(rows, r)
-		}
-	}
-	return rows
 }
 
 func fltrNotNullRows(rs []*Column) []*Column {

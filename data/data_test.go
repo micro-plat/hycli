@@ -1,6 +1,7 @@
 package data
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/micro-plat/hycli/data/internal/md"
@@ -26,4 +27,8 @@ func TestColor(t *testing.T) {
 	assert.Equal(t, "color", c)
 	assert.Equal(t, "", p)
 	assert.Equal(t, "", v)
+}
+func TestIdex(t *testing.T) {
+	fc, _, _ := md.GetConsByTagIgnorecase(fmt.Sprintf("%sidx", "l"), "lidx(1)")
+	assert.Equal(t, "1", fc)
 }

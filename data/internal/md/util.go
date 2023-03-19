@@ -36,13 +36,9 @@ func GetValue(name string, cns ...string) string {
 }
 func GetDefValue(cns ...string) string {
 	return GetValue("def", cns...)
-	// lst := GetConstraintByReg(cns, `def\((\w+)\)`)
-	// return types.GetStringByIndex(lst, 0)
 }
 func GetVdlValue(cns ...string) string {
 	return GetValue("valid", cns...)
-	// lst := GetConstraintByReg(cns, `valid\((\w+)\)`)
-	// return types.GetStringByIndex(lst, 0)
 }
 func GetRangeName(cns ...string) string {
 	if r := types.GetStringByIndex(GetConstraintByReg(cns, `range\((\w+)\)`), 0); r != "" {
@@ -85,19 +81,13 @@ func GetConsByTag(t string, cns ...string) (string, string, string) {
 
 }
 
-func GetSelectName(fname string, cns ...string) (string, string) {
+func GetSelectName(fname string, cns ...string) (string, string, string) {
 
-	lst := GetConstraintByReg(cns, `sl\((\w+)[,]?([\w]*)\)`)
-	if len(lst) > 1 && lst[1] != "" {
-		return lst[0], lst[1]
+	tp, pid, group := GetConsByTagIgnorecase("sl", cns...)
+	if strings.EqualFold(tp, "sl") {
+		return fname, "", ""
 	}
-	if len(lst) > 0 {
-		return lst[0], ""
-	}
-	if HasConstraint(cns, "sl") {
-		return fname, ""
-	}
-	return "", ""
+	return tp, pid, group
 }
 func GetRanges(cns ...string) (string, string) {
 	lst := GetConstraintByReg(cns, `range\((\w+)[,]?([\w]*)\)`)

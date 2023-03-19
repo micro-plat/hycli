@@ -1,6 +1,7 @@
 package data
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/micro-plat/hycli/data/internal/md"
@@ -13,6 +14,7 @@ type BaseColumn struct {
 	UNQ       string //字段唯一标
 	RawConsts []string
 	rawRow    *md.Row
+	index     int //顺序编号
 }
 type fieldType struct {
 	Name              string //字段原名称
@@ -177,18 +179,23 @@ func createStyle(r *md.Row) displayStyle {
 }
 
 type enumType struct {
-	IsEnum     bool   //是否是枚举类型
-	EnumType   string //枚举名
-	JoinName   string //关联字段名
+	IsEnum   bool   //是否是枚举类型
+	EnumType string //枚举名
+	PID      string //父级编号
+	Group    string //分组
+	// JoinName   string //关联字段名
 	IsDEColumn bool
 }
 
 func createEnumType(r *md.Row) enumType {
-	sl, fname := md.GetSelectName(r.Name, r.Constraints...)
+	tp, pid, group := md.GetSelectName(r.Name, r.Constraints...)
+
 	return enumType{
-		IsEnum:     sl != "",
-		EnumType:   sl,
-		JoinName:   fname,
+		IsEnum:   md.HasConstraint(r.Constraints, "sl", "SL"),
+		EnumType: tp,
+		PID:      pid,
+		Group:    group,
+		// JoinName:   fname,
 		IsDEColumn: md.HasConstraint(r.Constraints, "DE", "de"),
 	}
 }
@@ -210,6 +217,12 @@ type Column struct { //字段基础息
 	Ext     ext
 }
 
+type Columns []*Column
+
+func (s Columns) Len() int           { return len(s) }
+func (s Columns) Less(i, j int) bool { return s[i].index < s[j].index }
+func (s Columns) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
+
 func newColum(r *md.Row) *Column {
 	cmpts := newLstCMPT(r)
 	return &Column{
@@ -219,6 +232,7 @@ func newColum(r *md.Row) *Column {
 			UNQ:       defFids.Next(),
 			RawConsts: r.Constraints,
 			rawRow:    r,
+			index:     99,
 		},
 		allCMPT: cmpts,
 		QCMPT:   cmpts.getCmpt(r, "q"),
@@ -236,4 +250,34 @@ func newColum(r *md.Row) *Column {
 }
 func (c *Column) ResetExtCMPT(t string) {
 	c.ExCMPT = c.allCMPT.getCmpt(c.rawRow, t)
+}
+func (c *Column) QIndex(i int) *Column {
+	return c.resetIndex("q", i)
+}
+func (c *Column) LIndex(i int) *Column {
+	return c.resetIndex("l", i)
+}
+func (c *Column) LeIndex(i int) *Column {
+	return c.resetIndex("le", i)
+}
+func (c *Column) VIndex(i int) *Column {
+	return c.resetIndex("v", i)
+}
+func (c *Column) CIndex(i int) *Column {
+	return c.resetIndex("c", i)
+}
+func (c *Column) UIndex(i int) *Column {
+	return c.resetIndex("u", i)
+}
+func (c *Column) DIndex(i int) *Column {
+	return c.resetIndex("d", i)
+}
+func (c *Column) ExtIndex(t string, i int) *Column {
+	return c.resetIndex(t, i)
+}
+func (c *Column) resetIndex(x string, i int) *Column {
+	ncol := *c
+	fc, _, _ := md.GetConsByTagIgnorecase(fmt.Sprintf("%sidx", x), c.RawConsts...)
+	ncol.index = types.GetInt(fc, i+100+2)
+	return &ncol
 }

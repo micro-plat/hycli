@@ -33,19 +33,28 @@ func TestTP(t *testing.T) {
 
 }
 func TestSelect(t *testing.T) {
-	s, f := GetSelectName("status", "sl")
+	s, f, group := GetSelectName("status", "sl")
 	assert.Equal(t, "status", s)
 	assert.Equal(t, "", f)
+	assert.Equal(t, "", group)
 }
 func TestSelect2(t *testing.T) {
-	s, f := GetSelectName("status", "sl(bool)")
+	s, f, group := GetSelectName("status", "sl(bool)")
 	assert.Equal(t, "bool", s)
 	assert.Equal(t, "", f)
+	assert.Equal(t, "", group)
 }
 func TestSelect3(t *testing.T) {
-	s, f := GetSelectName("status", "sl(bool,fabc)")
+	s, f, group := GetSelectName("status", "sl(bool,fabc)")
 	assert.Equal(t, "bool", s)
 	assert.Equal(t, "fabc", f)
+	assert.Equal(t, "", group)
+}
+func TestSelect4(t *testing.T) {
+	s, f, group := GetSelectName("status", "sl(bool,fabc,*)")
+	assert.Equal(t, "bool", s)
+	assert.Equal(t, "fabc", f)
+	assert.Equal(t, "*", group)
 }
 func TestHasConstraint(t *testing.T) {
 	b := HasConstraint([]string{"f"}, "f")

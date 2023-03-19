@@ -45,6 +45,23 @@
 
     let that = this
     that.conf.loading = true
+    
+    //构建统计查询
+    {{- range $i,$v:= $table.LStatOpts}}
+      this.$theia.http.get("{{$v.URL|lower}}",this.form_{{$table.UNQ}}).then(res=>{
+        let item = res||{}
+        {{$uxcols := fltrColums $table $v.RwName -}}
+        {{- range $i,$c := $uxcols -}}
+        {{- if and (ne "" $c.ExCMPT.Format) (eq true $c.Field.IsNumber) -}}
+          that.stat_{{$v.UNQ}}.{{$c.Name}} = that.$theia.str.numberFormat(item.{{$c.Name}},'{{$c.ExCMPT.Format}}')
+       {{- else -}}
+         that.stat_{{$v.UNQ}}.{{$c.Name}} = item.{{$c.Name}}
+        {{- end}}
+        {{end}}
+      });
+    {{end}}
+    
+    //数据查询
     this.$theia.http.get("/{{$table.Name.MainPath|lower}}/query",this.form_{{$table.UNQ}}).then(res=>{
         that.conf.loading = false
         that.dataList_{{$table.UNQ}} = res.items||[]
@@ -84,3 +101,4 @@
     this.onQuery()
   },
 {{- end }}{{ end }}
+

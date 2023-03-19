@@ -3,11 +3,13 @@
 package {{.Name.Main}}
 
 {{- $table := . -}}
-{{ $clen := (len $table.CColums)|minus}}
-{{ $ulen := (len $table.UColums)|minus}}
+{{ $CColums:= fltrColumsExcludeExt $table.CColums}}
+{{ $UColums:= fltrColumsExcludeExt $table.UColums}}
+{{ $clen := (len $CColums)|minus}}
+{{ $ulen := (len $UColums)|minus}}
 
-{{ $sigleQueryCols:= $table.LLEColums}}
-{{ $totalQCols:= $table.BQColums}}
+{{ $sigleQueryCols:= fltrColumsExcludeExt $table.LLEColums}}
+{{ $totalQCols:= fltrColumsExcludeExt $table.BQColums}}
 {{ $vlen := (len $sigleQueryCols)|minus}}
 
 //get{{.Name.CName}}ListCount 获取{{.Desc}}列表条数
@@ -42,6 +44,7 @@ select
 from {{.Name.Raw}} t
 where
 	{{- range $i,$v := $totalQCols -}}
+	
 	{{- if eq "daterange" $v.QCMPT.Type}}
 	and t.{{$v.Name}} >=  if(@start_{{$v.Name}}='', t.{{$v.Name}},@start_{{$v.Name}})
 	and t.{{$v.Name}} <  date_add(if(@end_{{$v.Name}}='',t.{{$v.Name}},@end_{{$v.Name}}), interval 1 day)
@@ -54,7 +57,7 @@ where
 	&t.{{$v.Name}}
 	{{- end -}}
 	{{- end}}
-order by {{ range $i,$v := $table.PKColums}}
+order by {{ range $i,$v :=fltrColumsExcludeExt $table.PKColums}}
 	t.{{$v.Name}} desc
 {{end -}}
 limit @ps offset @offset`
@@ -63,13 +66,13 @@ limit @ps offset @offset`
 const insert{{.Name.CName}} = `
 insert into {{.Name.Raw}}
 (
-	{{range $i,$v := $table.CColums -}}
+	{{range $i,$v :=fltrColumsExcludeExt $table.CColums -}}
 	{{$v.Name}}{{if lt $i $clen }},{{end}}
 	{{end -}}
 )
 values
 (
-	{{range $i,$v :=  $table.CColums -}}
+	{{range $i,$v := fltrColumsExcludeExt $table.CColums -}}
 	@{{$v.Name}}{{if lt $i $clen }},{{end}}
 	{{end -}}
 )`
@@ -77,11 +80,11 @@ values
 //update{{.Name.CName}} 修改{{.Desc}}数据
 const update{{.Name.CName}} = `
 update {{.Name.Raw}} t set 
-{{- range $i,$v := $table.UColums}}
+{{- range $i,$v :=fltrColumsExcludeExt $table.UColums}}
 	t.{{$v.Name}} = @{{$v.Name}}{{if lt $i $ulen }},{{end}}
 {{- end}}
 where 
-{{- range $i,$v := $table.PKColums}}
+{{- range $i,$v :=fltrColumsExcludeExt $table.PKColums}}
 	&{{$v.Name}}
 {{- end}}`
 
@@ -93,7 +96,7 @@ select
 {{- end}}
 from {{.Name.Raw}} t
 where 
-{{- range $i,$v := $table.PKColums}}
+{{- range $i,$v :=fltrColumsExcludeExt $table.PKColums}}
 	&{{$v.Name}}
 {{- end}}`
 
@@ -102,6 +105,6 @@ where
 const delete{{.Name.CName}} = `
 delete from {{.Name.Raw}}
 where 
-{{- range $i,$v := $table.PKColums}}
+{{- range $i,$v :=fltrColumsExcludeExt $table.PKColums}}
 	&{{$v.Name}}
 {{- end}}`

@@ -32,9 +32,6 @@
         <el-date-picker style="width: 100%" v-model="{{$c.Ext.FormName}}.{{$c.Name}}" clearable type="date"
           placeholder="请选择{{.Label}}" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
       </el-form-item>
-
-    
-
       {{ else if eq "multiselect" $c.ExCMPT.Type}}
       <!--{{$c.Label}} 多选控件 -->
       <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
@@ -43,7 +40,15 @@
           <el-option v-for="item in {{.Name}}List" :key="item.value" :label="item.name" :value="item.value" />
         </el-select>
       </el-form-item>
-
+      {{ else if eq "checkbox" $c.ExCMPT.Type}}
+      <!--{{$c.Label}} chckbox-group -->
+      <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
+        <el-checkbox-group v-model="{{$c.Ext.FormName}}.{{.Name}}" size="small">
+          <el-checkbox-button v-for="item in {{.Name}}List" :key="item.value" :label="item.name">
+            {{bleft}}item.name{{bright}}
+          </el-checkbox-button>
+        </el-checkbox-group>
+      </el-form-item>
       {{else if eq "number" $c.ExCMPT.Type}}
       <!--{{$c.Label}} 数字控件 -->
       <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
@@ -63,7 +68,7 @@
       </el-form-item>
       {{else if  (eq "radio" $c.ExCMPT.Type)}}
      <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
-      <el-radio-group v-model="{{$c.Name}}" size="small">
+      <el-radio-group v-model="{{$c.Ext.FormName}}.{{$c.Name}}" size="small">
         <el-radio-button v-for="item in {{$c.Name}}List" :key="item.value" :label="item.value">
             {{bleft}}item.name{{bright}}
         </el-radio-button>
@@ -85,6 +90,10 @@
       {{else if  (eq "label" $c.ExCMPT.Type)}}
       <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
         <span v-text="{{$c.Ext.FormName}}.{{$c.Name}}"></span>
+      </el-form-item>
+      {{else if (eq "color-picker" $c.ExCMPT.Type )}}
+      <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
+        <el-color-picker v-model="{{$c.Ext.FormName}}.{{$c.Name}}" />
       </el-form-item>
       {{else}}
       <!--{{$c.Label}} 输入控件 -->

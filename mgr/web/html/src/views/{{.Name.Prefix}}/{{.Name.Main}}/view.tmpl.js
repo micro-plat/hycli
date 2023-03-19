@@ -52,7 +52,7 @@
     show_view_{{$m.UNQ}}(){
       let that = this;
       let query={}
-      {{- $rows:= fltrUICols $table $m.RwName -}}
+      {{- $rows:= fltrColums $table $m.RwName -}}
       {{range $i,$c:=$rows}} 
         query.{{$c.Name}} = that.view.{{$c.Name}}
       {{- end}}

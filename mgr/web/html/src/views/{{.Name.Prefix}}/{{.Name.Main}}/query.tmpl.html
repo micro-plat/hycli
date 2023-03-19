@@ -2,6 +2,7 @@
 {{- $qcols :=$table.QColums -}}
 {{- $crow :=$table.CColums -}}
 {{- $clen := len $crow -}}
+{{- $blen :=len $table.BatchOpts -}}
 <div class="query">
     <div class="tabs">
         {{ range $i,$c:= $qcols }}
@@ -117,12 +118,22 @@
             {{- end }}{{ end }}
         </span>
         <el-form-item>
+            <el-space wrap>
             <el-button type="primary" icon="Search" @click="onQuery">查询</el-button>
             {{if gt $clen 0}}
             <el-button type="success" icon="Plus" @click="showAdd">添加</el-button>
             {{end}}
+            {{if gt $blen 0}}
+            <el-button-group>
+                {{ range $i,$c:= $table.BatchOpts }}
+                <el-button type="primary" >{{$c.Label}}</el-button>
+                {{end}}
+            </el-button-group>
+            {{end}}
+            </el-space>
+
         </el-form-item>
-        <div class="blist">
+        <div class="blist"> 
             {{ range $i,$c:= $qcols }}
             {{- if eq "blist" $c.QCMPT.Type -}}
             <el-radio-group v-model="form_{{$table.UNQ}}.{{.Name}}" size="small" @change="onQuery">
@@ -133,9 +144,6 @@
             </el-radio-group>
             {{- end }}{{ end }}
         </div>
-       
-       
-       
     </el-form>
   
 </div>
