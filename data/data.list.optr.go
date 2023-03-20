@@ -20,18 +20,18 @@ type optrs struct {
 type lstOptrs []*optrs
 type viewOptrs []*optrs
 type lstatOptrs []*optrs
-type batchOptrs []*optrs
+type barOptrs []*optrs
 
-var batchSelect = []string{"bcheck"}
-var batchOptrCmd = []string{"export", "import", "bcheck"}
+var batchCheck = []string{"bcheck"}
+var barOptrCmd = []string{"export", "import", "bcheck"}
 
 var detailOpts = &optrs{Name: "VIEW", Label: "详情", RwName: "V"}
 var updateOpts = &optrs{Name: "UPDATE", Label: "修改", RwName: "U"}
 var delOpts = &optrs{Name: "DEL", Label: "删除", RwName: "D"}
 
-func (b batchOptrs) NeedCheck(t string) bool {
+func (b barOptrs) NeedCheck(t string) bool {
 	for _, v := range b {
-		if types.StringContains(batchSelect, v.Tag) {
+		if types.StringContains(batchCheck, v.Tag) {
 			return true
 		}
 	}
@@ -56,9 +56,9 @@ func createLStatOptrs(t string) lstatOptrs {
 	optrs = append(optrs, createOptrs(t, "LSTAT")...)
 	return optrs
 }
-func createBatchOptrs(t string) batchOptrs {
+func createBarOptrs(t string) barOptrs {
 	optrs := make([]*optrs, 0, 1)
-	for _, v := range batchOptrCmd {
+	for _, v := range barOptrCmd {
 		optrs = append(optrs, createOptrs(t, strings.ToLower(v))...)
 		optrs = append(optrs, createOptrs(t, strings.ToUpper(v))...)
 	}

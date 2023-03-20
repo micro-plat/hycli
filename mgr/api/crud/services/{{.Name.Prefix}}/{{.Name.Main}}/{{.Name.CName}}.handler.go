@@ -10,9 +10,10 @@ import (
 	"github.com/micro-plat/lib4go/types"
 )
 {{- $table := . -}}
-{{- $ccols := fltrNotNullCols  $table.CColums -}}
+
+{{- $ccols := fltrNotNullCols (fltrColums $table "c") -}}
 {{- $clen := (len $ccols)|minus}}
-{{- $ucols := fltrNotNullCols  $table.UColums -}}
+{{- $ucols := fltrNotNullCols  (fltrColums $table "u") -}}
 {{- $ulen := (len $ucols)|minus -}}
 {{ $pklen := (len $table.PKColums)|minus}}
 //AuditInfoHandler 获取{{.Desc}}处理服务

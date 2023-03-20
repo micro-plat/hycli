@@ -1,4 +1,4 @@
-{{- $qcols := .QColums}}
+{{- $qcols := fltrColums . "q"}}
     form_{{.UNQ}}: {
         pi: 1,
         ps: 10,
@@ -7,7 +7,7 @@
         {{- end}}
         },
     {{- range $i,$c := $qcols -}}
-    {{- if or (eq true $c.Enum.IsEnum) (eq "multiselect" $c.QCMPT.Type)}}
+    {{- if or (eq true $c.Enum.IsEnum) (eq "multiselect" $c.Cmpnt.Type)}}
     {{.Name}}List:this.$theia.enum.get("{{$c.Enum.EnumType}}","{{$c.Enum.PID}}","{{$c.Enum.Group}}"),
     {{.Name}}Exts:this.$theia.enum.getExts("{{$c.Enum.EnumType}}"),
     {{- end}}

@@ -19,9 +19,9 @@ func fltrColums(tx interface{}, tp string, formName ...string) []*Column {
 	tps := getTPS(tp)
 	for _, r := range t.Colums {
 		if md.HasConstraint(r.RawConsts, tps...) {
-			r.ResetExtCMPT(tp) //重置扩展组件
+			r.ResetCmpnt(tps...) //重置扩展组件
 			r.Ext.FormName = types.GetStringByIndex(formName, 0, "form")
-			cols = append(cols, r.ExtIndex(tp, len(cols)))
+			cols = append(cols, r.Index(types.GetStringByIndex(tps, 0), len(cols)))
 		}
 	}
 	sort.Sort(cols)

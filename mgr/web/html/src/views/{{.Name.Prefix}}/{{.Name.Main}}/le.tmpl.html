@@ -4,9 +4,9 @@
             {{- $lecols := .}}
             {{- range $i,$c:=$lecols}}
             <el-col :span="5" class="text-right" style="height: 26px">{{ $c.Label }}:</el-col>
-            {{- if eq "img" $c.ExCMPT.Type}}
+            {{- if eq "img" $c.Cmpnt.Type}}
             <el-col :span="7" style="height: 26px">
-                <el-image style="width:48px" :src="view.row.{{$c.Name}}" :fit="contain">
+                <el-image style="width:48px" :src="view.row.le_{{$c.Name}}" :fit="contain">
                     <template #error>
                         <div class="image-slot">
                           <el-icon><icon-picture /></el-icon>
@@ -17,13 +17,15 @@
             {{- else if eq true $c.Enum.IsEnum}}
             <el-col :span="7" v-text="view.row.{{$c.Name}}_label" style="height: 26px"
                 :class="'{{$c.Style.CLR.BgColor}}'==''?'':{{$c.Style.CLR.BgColor}}(view.row.{{$c.Name}},'{{$c.Name}}')"></el-col>
-            {{- else if eq "link" $c.ExCMPT.Type}}
+            {{- else if eq "link" $c.Cmpnt.Type}}
             <el-col :span="7" style="height: 26px"
-                :class="'{{$c.Style.CLR.BgColor}}'==''?'':{{$c.Style.CLR.BgColor}}(view.row.{{$c.Name}},'{{$c.Name}}')">
-                <el-link type="primary" :href="view.row.{{$c.Name}}" :title="view.row.{{$c.Name}}">查看</el-link>
+                :class="'{{$c.Style.CLR.BgColor}}'==''?'':{{$c.Style.CLR.BgColor}}(view.row.le_{{$c.Name}},'{{$c.Name}}')">
+                <el-link type="primary" :href="view.row.le_{{$c.Name}}" :title="view.row.le_{{$c.Name}}">查看</el-link>
             </el-col>
+            {{- else if eq "cut" $c.Cmpnt.Type}}
+            <el-col :span="7" v-text="view.row.le_{{$c.Name}}" style="height: 26px"></el-col>
             {{- else}}
-            <el-col :span="7" v-text="view.row.{{$c.Name}}" style="height: 26px"></el-col>
+            <el-col :span="7" v-text="view.row.le_{{$c.Name}}" style="height: 26px"></el-col>
             {{- end -}}
             {{- end }}
         </el-row>

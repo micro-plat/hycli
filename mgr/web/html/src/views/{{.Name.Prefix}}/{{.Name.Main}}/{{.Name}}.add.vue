@@ -38,7 +38,7 @@ export default {
     },
     save(){
        {{range $i,$c:= $ccolums -}}
-         {{- if eq "switch" $c.ExCMPT.Type  -}}
+         {{- if eq "switch" $c.Cmpnt.Type  -}}
         this.form.{{$c.Name}} = this.form.{{$c.Name}}_switch?0:1;
          {{- end -}}
           {{end}}
@@ -53,7 +53,7 @@ export default {
         let that = this
         let postForm=this.form
         {{range $i,$c:= $ccolums -}}
-         {{- if eq "password" $c.ExCMPT.Type  -}}
+         {{- if eq "password" $c.Cmpnt.Type  -}}
         postForm.{{$c.Name}} = this.$theia.crypto.md5(this.form.{{$c.Name}})
          {{- end -}}
           {{end}}
@@ -74,7 +74,7 @@ export default {
     },
     onUploadSuccess(response){
       {{range $i,$c:= $ccolums -}}
-      {{- if eq "file" $c.ExCMPT.Type  -}}
+      {{- if eq "file" $c.Cmpnt.Type  -}}
       this.form.{{$c.Name}} = response.path
       {{- end -}}
       {{- end}}

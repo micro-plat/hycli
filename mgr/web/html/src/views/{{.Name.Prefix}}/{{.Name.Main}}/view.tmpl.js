@@ -1,5 +1,5 @@
 {{- $table :=. -}}
-{{- $vcols := $table.VColums -}}
+{{- $vcols := fltrColums $table "v" -}}
 {{- $viewOpts :=$table.ViewOpts}}
  show(form) {
     this.conf.visible = true
@@ -24,20 +24,20 @@
             {{- if eq true $c.Enum.IsEnum}}
                 item.{{$c.Name}}_label = that.$theia.enum.getNames("{{$c.Enum.EnumType}}",item.{{$c.Name}})
               {{- end -}}
-              {{- if eq "switch" $c.VCMPT.Type}}
+              {{- if eq "switch" $c.Cmpnt.Type}}
                 item.{{$c.Name}}_switch = item.{{$c.Name}} == 0
               {{- end}}
             {{- end}}
             
             {{- range $i,$c := $vcols}}
-                {{- if and (ne "" $c.VCMPT.Format) (eq true $c.Field.IsDate)}}
-                item.{{$c.Name}} = that.$theia.str.dateFormat(item.{{$c.Name}},'{{$c.VCMPT.Format}}')
-              {{- else if and (ne "" $c.VCMPT.Format) (eq true $c.Field.IsNumber)}}
-                item.{{$c.Name}} = that.$theia.str.numberFormat(item.{{$c.Name}},'{{$c.VCMPT.Format}}')
-              {{- else if eq "mobile" $c.VCMPT.Type}}
+                {{- if and (ne "" $c.Cmpnt.Format) (eq true $c.Field.IsDate)}}
+                item.{{$c.Name}} = that.$theia.str.dateFormat(item.{{$c.Name}},'{{$c.Cmpnt.Format}}')
+              {{- else if and (ne "" $c.Cmpnt.Format) (eq true $c.Field.IsNumber)}}
+                item.{{$c.Name}} = that.$theia.str.numberFormat(item.{{$c.Name}},'{{$c.Cmpnt.Format}}')
+              {{- else if eq "mobile" $c.Cmpnt.Type}}
                 item.{{$c.Name}} = that.$theia.str.phoneFormat(item.{{$c.Name}})
-              {{- else if eq "cut" $c.VCMPT.Type}}
-                item.{{$c.Name}} = that.$theia.str.cut(item.{{$c.Name}},{{$c.VCMPT.Format}})
+              {{- else if eq "cut" $c.Cmpnt.Type}}
+                item.{{$c.Name}} = that.$theia.str.cut(item.{{$c.Name}},{{$c.Cmpnt.Format}})
               {{- end}}
               {{- end }}
       })

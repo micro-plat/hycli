@@ -3,13 +3,13 @@
 package {{.Name.Main}}
 
 {{- $table := . -}}
-{{ $CColums:= fltrColumsExcludeExt $table.CColums}}
-{{ $UColums:= fltrColumsExcludeExt $table.UColums}}
+{{ $CColums:= fltrColumsExcludeExt (fltrColums $table "c")}}
+{{ $UColums:= fltrColumsExcludeExt (fltrColums $table "u")}}
 {{ $clen := (len $CColums)|minus}}
 {{ $ulen := (len $UColums)|minus}}
 
-{{ $sigleQueryCols:= fltrColumsExcludeExt $table.LLEColums}}
-{{ $totalQCols:= fltrColumsExcludeExt $table.BQColums}}
+{{ $sigleQueryCols:= fltrColumsExcludeExt (fltrColums $table "l-le")}}
+{{ $totalQCols:= fltrColumsExcludeExt (fltrColums $table "q-bq")}}
 {{ $vlen := (len $sigleQueryCols)|minus}}
 
 //get{{.Name.CName}}ListCount 获取{{.Desc}}列表条数
@@ -19,13 +19,13 @@ select
 from {{.Name.Raw}} t
 where
 {{- range $i,$v := $totalQCols}}
-{{- if eq "daterange" $v.QCMPT.Type}}
+{{- if eq "daterange" $v.Cmpnt.Type}}
 	and t.{{$v.Name}} >=  if(@start_{{$v.Name}}='', t.{{$v.Name}},@start_{{$v.Name}})
 	and t.{{$v.Name}} <  date_add(if(@end_{{$v.Name}}='',t.{{$v.Name}},@end_{{$v.Name}}), interval 1 day)
-{{- else if eq "date" $v.QCMPT.Type}}
+{{- else if eq "date" $v.Cmpnt.Type}}
 	and t.{{$v.Name}} >=  if(@{{$v.Name}}='',t.{{$v.Name}},@{{$v.Name}})
 	and t.{{$v.Name}} <  date_add(if(@{{$v.Name}}='',t.{{$v.Name}},@{{$v.Name}}),interval 1 day)	
-{{- else if eq "input" $v.QCMPT.Type}}
+{{- else if eq "input" $v.Cmpnt.Type}}
 	?t.{{$v.Name}}
 {{- else}}
 	&t.{{$v.Name}}
@@ -45,13 +45,13 @@ from {{.Name.Raw}} t
 where
 	{{- range $i,$v := $totalQCols -}}
 	
-	{{- if eq "daterange" $v.QCMPT.Type}}
+	{{- if eq "daterange" $v.Cmpnt.Type}}
 	and t.{{$v.Name}} >=  if(@start_{{$v.Name}}='', t.{{$v.Name}},@start_{{$v.Name}})
 	and t.{{$v.Name}} <  date_add(if(@end_{{$v.Name}}='',t.{{$v.Name}},@end_{{$v.Name}}), interval 1 day)
-	{{- else if eq "date" $v.QCMPT.Type}}
+	{{- else if eq "date" $v.Cmpnt.Type}}
 	and t.{{$v.Name}} >=  if(@{{$v.Name}}='',t.{{$v.Name}},@{{$v.Name}})
 	and t.{{$v.Name}} <  date_add(if(@{{$v.Name}}='',t.{{$v.Name}},@{{$v.Name}}),interval 1 day)	
-	{{- else if eq "input" $v.QCMPT.Type}}
+	{{- else if eq "input" $v.Cmpnt.Type}}
 	?t.{{$v.Name}}
 	{{- else}}
 	&t.{{$v.Name}}
@@ -66,13 +66,13 @@ limit @ps offset @offset`
 const insert{{.Name.CName}} = `
 insert into {{.Name.Raw}}
 (
-	{{range $i,$v :=fltrColumsExcludeExt $table.CColums -}}
+	{{range $i,$v :=fltrColumsExcludeExt (fltrColums $table "c") -}}
 	{{$v.Name}}{{if lt $i $clen }},{{end}}
 	{{end -}}
 )
 values
 (
-	{{range $i,$v := fltrColumsExcludeExt $table.CColums -}}
+	{{range $i,$v := fltrColumsExcludeExt (fltrColums $table "c") -}}
 	@{{$v.Name}}{{if lt $i $clen }},{{end}}
 	{{end -}}
 )`
@@ -80,7 +80,7 @@ values
 //update{{.Name.CName}} 修改{{.Desc}}数据
 const update{{.Name.CName}} = `
 update {{.Name.Raw}} t set 
-{{- range $i,$v :=fltrColumsExcludeExt $table.UColums}}
+{{- range $i,$v :=fltrColumsExcludeExt (fltrColums $table "u")}}
 	t.{{$v.Name}} = @{{$v.Name}}{{if lt $i $ulen }},{{end}}
 {{- end}}
 where 

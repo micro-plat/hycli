@@ -41,7 +41,7 @@ export default {
         let that = this
         this.$theia.http.get("/{{.Name.MainPath|lower}}",form).then(res=>{
         {{- range $i,$c := $ucols -}}
-        {{- if eq "switch" $c.ExCMPT.Type}}
+        {{- if eq "switch" $c.Cmpnt.Type}}
           res.{{$c.Name}}_switch = res.{{$c.Name}} == 0
         {{- end}}
         {{- end}}
@@ -54,7 +54,7 @@ export default {
     },
     save(){
        {{range $i,$c:= $ucols -}}
-         {{- if eq "switch" $c.ExCMPT.Type  -}}
+         {{- if eq "switch" $c.Cmpnt.Type  -}}
         this.form.{{$c.Name}} = this.form.{{$c.Name}}_switch?0:1;
          {{- end -}}
           {{end}}
@@ -84,7 +84,7 @@ export default {
     },
      onUploadSuccess(response){
       {{range $i,$c:= $ucols -}}
-      {{- if eq "file" $c.ExCMPT.Type  -}}
+      {{- if eq "file" $c.Cmpnt.Type  -}}
       this.form.{{$c.Name}} = response.path
       {{- end -}}
       {{- end}}

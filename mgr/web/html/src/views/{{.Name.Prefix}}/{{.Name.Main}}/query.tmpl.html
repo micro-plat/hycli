@@ -1,12 +1,12 @@
 {{$table :=.}}
-{{- $qcols :=$table.QColums -}}
-{{- $crow :=$table.CColums -}}
+{{- $qcols := fltrColums $table "q" -}}
+{{- $crow :=fltrColums $table "c" -}}
 {{- $clen := len $crow -}}
-{{- $blen :=len $table.BatchOpts -}}
+{{- $blen :=len $table.BarOpts -}}
 <div class="query">
     <div class="tabs">
         {{ range $i,$c:= $qcols }}
-        {{- if eq "tabs" $c.QCMPT.Type -}}
+        {{- if eq "tabs" $c.Cmpnt.Type -}}
         <el-tabs v-model="form_{{$table.UNQ}}.{{.Name}}"  @tab-change="onQuery">
             <el-tab-pane label="全部" name="" ></el-tab-pane>
             <el-tab-pane v-for="item in {{.Name}}List" :name="item.value" :key="item.value" :label="item.name" 
@@ -16,7 +16,7 @@
     </div>
     <el-form :model="form_{{$table.UNQ}}" inline size="small">
         {{- range $i,$c:= $qcols -}}
-        {{- if eq "year" $c.QCMPT.Type -}}
+        {{- if eq "year" $c.Cmpnt.Type -}}
         <!--{{$c.Label}} 年控件 -->
         <el-form-item>
             <el-date-picker style="width: 120px" v-model="form_{{$table.UNQ}}.{{$c.Name}}" clearable type="year"
@@ -25,7 +25,7 @@
         {{- end -}}{{- end }}
 
         {{- range $i,$c:= $qcols -}}
-        {{- if eq "month" $c.QCMPT.Type -}}
+        {{- if eq "month" $c.Cmpnt.Type -}}
         <!--{{$c.Label}} 月控件 -->
         <el-form-item>
             <el-date-picker style="width: 120px" v-model="form_{{$table.UNQ}}.{{$c.Name}}" clearable type="month"
@@ -35,7 +35,7 @@
 
 
         {{- range $i,$c:= $qcols -}}
-        {{- if eq "monthrange" $c.QCMPT.Type -}}
+        {{- if eq "monthrange" $c.Cmpnt.Type -}}
         <!--{{$c.Label}} 月份控件 -->
         <el-form-item>
             <el-date-picker style="width: 150px" v-model="form_{{$table.UNQ}}.{{$c.Name}}" clearable type="monthrange"
@@ -45,7 +45,7 @@
 
 
         {{- range $i,$c:= $qcols -}}
-        {{- if eq "daterange" $c.QCMPT.Type -}}
+        {{- if eq "daterange" $c.Cmpnt.Type -}}
         <!--{{$c.Label}} 日期范围控件 -->
         <el-form-item>
             <el-date-picker style="width: 200px" v-model="form_{{$table.UNQ}}.{{$c.Name}}" type="daterange" start-placeholder="开始日期"
@@ -54,7 +54,7 @@
         {{- end -}}{{ end }}
 
         {{ range $i,$c:= $qcols }}
-        {{- if eq "date" $c.QCMPT.Type -}}
+        {{- if eq "date" $c.Cmpnt.Type -}}
         <!--{{$c.Label}} 日期控件 -->
         <el-form-item>
             <el-date-picker style="width: 120px" v-model="form_{{$table.UNQ}}.{{$c.Name}}" clearable type="date"
@@ -63,7 +63,7 @@
         {{- end -}}{{ end }}
 
         {{- range $i,$c:= $qcols -}}
-        {{- if eq "select" $c.QCMPT.Type -}}
+        {{- if eq "select" $c.Cmpnt.Type -}}
         <!--{{$c.Label}} 下拉控件 -->
         <el-form-item>
             <el-select v-model="form_{{$table.UNQ}}.{{.Name}}" style="width: 120px" clearable placeholder="{{$c.Label}}">
@@ -73,7 +73,7 @@
         {{- end -}}{{ end }}
 
         {{- range $i,$c:= $qcols -}}
-        {{- if eq "multiselect" $c.QCMPT.Type -}}
+        {{- if eq "multiselect" $c.Cmpnt.Type -}}
         <!--{{$c.Label}} 下拉控件多选 -->
         <el-form-item>
             <el-select v-model="form_{{$table.UNQ}}.{{.Name}}" filterable clearable multiple collapse-tags placeholder="{{$c.Label}}">
@@ -83,7 +83,7 @@
         {{- end -}}{{ end }}
 
         {{- range $i,$c:= $qcols -}}
-        {{- if eq "number" $c.QCMPT.Type -}}
+        {{- if eq "number" $c.Cmpnt.Type -}}
         <!--{{$c.Label}}  数字控件 -->
         <el-form-item label="{{$c.Label}}">
             <el-input-number  controls-position="right" v-model="form_{{$table.UNQ}}.{{ $c.Name }}" {{ if ne "" $c.Style.Min}}
@@ -94,7 +94,7 @@
         {{- end -}} {{ end }}
 
         {{- range $i,$c:= $qcols -}}
-        {{- if or ( eq "input" $c.QCMPT.Type) ( eq "text" $c.QCMPT.Type) -}}
+        {{- if or ( eq "input" $c.Cmpnt.Type) ( eq "text" $c.Cmpnt.Type) -}}
         <!--{{$c.Label}} 输入控件 -->
         <el-form-item>
             <el-input clearable style="width: 120px" v-model="form_{{$table.UNQ}}.{{$c.Name}}" maxlength="{{$c.Field.Len}}"
@@ -103,7 +103,7 @@
         {{- end -}} {{ end }}
         <span class="ddl">
             {{ range $i,$c:= $qcols }}
-            {{- if eq "ddl" $c.QCMPT.Type -}}
+            {{- if eq "ddl" $c.Cmpnt.Type -}}
             <el-dropdown >
                 <el-button plain >{{$c.Label}}
                   {{bleft}}form_{{$table.UNQ}}.{{.Name}}_label{{bright}}<el-icon class="el-icon--right"><arrow-down /></el-icon>
@@ -125,7 +125,7 @@
             {{end}}
             {{if gt $blen 0}}
             <el-button-group>
-                {{ range $i,$c:= $table.BatchOpts }}
+                {{ range $i,$c:= $table.BarOpts }}
                 <el-button type="primary" >{{$c.Label}}</el-button>
                 {{end}}
             </el-button-group>
@@ -135,7 +135,7 @@
         </el-form-item>
         <div class="blist"> 
             {{ range $i,$c:= $qcols }}
-            {{- if eq "blist" $c.QCMPT.Type -}}
+            {{- if eq "blist" $c.Cmpnt.Type -}}
             <el-radio-group v-model="form_{{$table.UNQ}}.{{.Name}}" size="small" @change="onQuery">
                 <el-radio-button>{{$c.Label}}</el-radio-button>
                 <el-radio-button v-for="item in {{.Name}}List" :key="item.value" :label="item.value">

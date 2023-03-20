@@ -1,16 +1,16 @@
 {{- $xtable := . -}}
 {{- $table := $xtable.Current -}}
 {{- $mtable := $xtable.Main -}}
-{{- $qrow := $table.QColums -}}
-{{- $lstRow := $table.LColums -}}
-{{- $leRow := $table.LEColums -}}
-{{- $LLERows:= $table.LLEColums }}
-{{- $MLLERows:= $mtable.LLEColums }}
+{{- $qrow := fltrColums $table "q" -}}
+{{- $lstRow := fltrColums $table "l" -}}
+{{- $leRow := fltrColums $table "le" -}}
+{{- $LLERows:= fltrColums $table "l-le" }}
+{{- $MLLERows:= fltrColums $mtable "l-le" }}
 
     queryData_{{$table.UNQ}}(mform = {}){
     //构建查询参数
      {{- range $i,$c:= $qrow -}}
-      {{- if eq "daterange" $c.LCMPT.Type -}}
+      {{- if eq "daterange" $c.Cmpnt.Type -}}
     this.form_{{$table.UNQ}}.start_{{$c.Name}} = null
     this.form_{{$table.UNQ}}.end_{{$c.Name}} = null
     if(this.form_{{$table.UNQ}}.{{- $c.Name}} && this.form_{{$table.UNQ}}.{{$c.Name}}.length > 1){
@@ -52,8 +52,8 @@
         let item = res||{}
         {{$uxcols := fltrColums $table $v.RwName -}}
         {{- range $i,$c := $uxcols -}}
-        {{- if and (ne "" $c.ExCMPT.Format) (eq true $c.Field.IsNumber) -}}
-          that.stat_{{$v.UNQ}}.{{$c.Name}} = that.$theia.str.numberFormat(item.{{$c.Name}},'{{$c.ExCMPT.Format}}')
+        {{- if and (ne "" $c.Cmpnt.Format) (eq true $c.Field.IsNumber) -}}
+          that.stat_{{$v.UNQ}}.{{$c.Name}} = that.$theia.str.numberFormat(item.{{$c.Name}},'{{$c.Cmpnt.Format}}')
        {{- else -}}
          that.stat_{{$v.UNQ}}.{{$c.Name}} = item.{{$c.Name}}
         {{- end}}
@@ -70,22 +70,36 @@
             
           {{- range $i,$c := $LLERows -}}
         {{- if eq true $c.Enum.IsEnum}}
-            item.{{$c.Name}}_label = that.$theia.enum.getNames("{{$c.Enum.EnumType}}",item.{{$c.Name}})
+        item.{{$c.Name}}_label = that.$theia.enum.getNames("{{$c.Enum.EnumType}}",item.{{$c.Name}})
           {{- end -}}
-          {{- if eq "switch" $c.LCMPT.Type}}
-            item.{{$c.Name}}_switch = item.{{$c.Name}} == 0
+          {{- if eq "switch" $c.Cmpnt.Type}}
+        item.{{$c.Name}}_switch = item.{{$c.Name}} == 0
           {{- end}}
         {{- end}}
 
-        {{- range $i,$c := $LLERows}}
-            {{- if and (ne "" $c.LCMPT.Format) (eq true $c.Field.IsDate)}}
-            item.{{$c.Name}} = that.$theia.str.dateFormat(item.{{$c.Name}},'{{$c.LCMPT.Format}}')
-          {{- else if and (ne "" $c.LCMPT.Format) (eq true $c.Field.IsNumber)}}
-            item.{{$c.Name}} = that.$theia.str.numberFormat(item.{{$c.Name}},'{{$c.LCMPT.Format}}')
-          {{- else if eq "mobile" $c.LCMPT.Type}}
-            item.{{$c.Name}} = that.$theia.str.phoneFormat(item.{{$c.Name}})
-          {{- else if eq "cut" $c.LCMPT.Type }}
-            item.{{$c.Name}} = that.$theia.str.cut(item.{{$c.Name}},{{$c.LCMPT.Format}})
+        {{- range $i,$c := $leRow}}
+          {{- if and (ne "" $c.Cmpnt.Format) (eq true $c.Field.IsDate)}}
+        item.le_{{$c.Name}} = that.$theia.str.dateFormat(item.{{$c.Name}},'{{$c.Cmpnt.Format}}')
+        {{- else if and (ne "" $c.Cmpnt.Format) (eq true $c.Field.IsNumber)}}
+        item.le_{{$c.Name}} = that.$theia.str.numberFormat(item.{{$c.Name}},'{{$c.Cmpnt.Format}}')
+        {{- else if eq "mobile" $c.Cmpnt.Type}}
+        item.le_{{$c.Name}} = that.$theia.str.phoneFormat(item.{{$c.Name}})
+        {{- else if eq "cut" $c.Cmpnt.Type }}
+        item.le_{{$c.Name}} = that.$theia.str.cut(item.{{$c.Name}},{{$c.Cmpnt.Format}})
+          {{else}}
+        item.le_{{$c.Name}} = item.{{$c.Name}}
+        {{- end}}
+        {{- end }}
+
+        {{- range $i,$c := $lstRow}}
+            {{- if and (ne "" $c.Cmpnt.Format) (eq true $c.Field.IsDate)}}
+        item.{{$c.Name}} = that.$theia.str.dateFormat(item.{{$c.Name}},'{{$c.Cmpnt.Format}}')
+          {{- else if and (ne "" $c.Cmpnt.Format) (eq true $c.Field.IsNumber)}}
+        item.{{$c.Name}} = that.$theia.str.numberFormat(item.{{$c.Name}},'{{$c.Cmpnt.Format}}')
+          {{- else if eq "mobile" $c.Cmpnt.Type}}
+        item.{{$c.Name}} = that.$theia.str.phoneFormat(item.{{$c.Name}})
+          {{- else if eq "cut" $c.Cmpnt.Type }}
+        item.{{$c.Name}} = that.$theia.str.cut(item.{{$c.Name}},{{$c.Cmpnt.Format}})
           {{- end}}
           {{- end }}
       });
@@ -93,7 +107,7 @@
   },
 
   {{ range $i,$c:= $qrow }}
-  {{- if eq "ddl" $c.LCMPT.Type -}}
+  {{- if eq "ddl" $c.Cmpnt.Type -}}
   on{{.Name}}dropdownClick(f, x) {
     let mf = f || {}
     x.{{.Name}}_label = mf.name

@@ -49,7 +49,7 @@ export default {
       //{{$m.Label}} form by  {{$m.RwName}}
       {{- $rows:= fltrColums $table $m.RwName -}}
         {{range $i,$c:=$rows -}} 
-        {{- if or (eq true $c.Enum.IsEnum) (eq "multiselect" $c.ExCMPT.Type)}}
+        {{- if or (eq true $c.Enum.IsEnum) (eq "multiselect" $c.Cmpnt.Type)}}
     {{.Name}}List:this.$theia.enum.get("{{$c.Enum.EnumType}}"),
          {{- else}}
     {{$c.Name}}:"",
@@ -82,7 +82,7 @@ export default {
         {{- $tbs := contactTBS  $table $ct -}}
         {{- $ctable := $tbs.Current -}}
         {{- $mtable := $tbs.Main -}}
-        {{- $MLLERows:=  $mtable.LLEColums}}
+        {{- $MLLERows:= fltrColums $mtable "l-le"}}
           
         //处理关联表{{$m.URL}}
         let currentForm = {}
@@ -114,7 +114,7 @@ export default {
         {{- $rows:= fltrColums $table $m.RwName (sjoin "form_" $m.UNQ)}}
         {{range $i,$c:= $rows -}}
        
-         {{- if eq "password" $c.ExCMPT.Type  -}}
+         {{- if eq "password" $c.Cmpnt.Type  -}}
         post_form_{{$m.UNQ}}.{{$c.Name}} = this.$theia.crypto.md5(this.form_{{$m.UNQ}}.{{$c.Name}})
          {{- end -}}
           {{end}}
