@@ -4,7 +4,7 @@
     <el-col :span="4" class="text-right" style="height:26px">{{ $c.Label }}:</el-col>
     {{- if eq true $c.Enum.IsEnum}}
     <el-col :span="8" v-text="view.{{$c.Name}}_label" style="height:26px"></el-col>
-    {{- else if eq "img" $c.VCMPT.Type}}
+    {{- else if eq "img" $c.ExCMPT.Type}}
     <el-col :span="8" style="height:26px">
         <el-image style="width:48px" :src="view.{{$c.Name}}" :fit="contain" /></el-col>
     {{- else}}

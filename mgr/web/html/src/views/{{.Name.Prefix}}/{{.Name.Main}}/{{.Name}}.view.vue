@@ -1,5 +1,5 @@
 {{- $table := . -}}
-{{- $vcols := $table.VColums -}}
+{{- $vcols := fltrColums $table "v" -}}
 {{- $viewOpts :=$table.ViewOpts}}
 <template>
   <el-dialog
