@@ -5,7 +5,9 @@
 {{- $lstopts :=.ListOpts -}}
 {{- $optLen := len $lstopts -}}
 {{ $tmpl :=IsTmplTb .}}
+
 <div class="list">
+    {{if ne 0 (len $lcols)}}
     <el-table :data="dataList_{{.UNQ}}" v-loading="conf.loading" stripe {{if eq true $tmpl -}}
         style="width: 100%;height:300px" {{else -}} style="width: 100%;height:calc(100vh - 160px)" {{- end}}
         size="small" empty-text="无数据">le
@@ -18,7 +20,7 @@
         {{- if eq "switch" $c.Cmpnt.Type}}
         <el-table-column   {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{end}}  align="center" label="{{$c.Label}}">
             <template #default="scope">
-                <el-switch disabled v-model="scope.row.{{$c.Name}}_switch" />
+                <el-switch @change="on{{$c.Name}}SwitchChange" v-model="scope.row.{{$c.Name}}_switch" />
             </template>
         </el-table-column>
         {{- else if eq "progress" $c.Cmpnt.Type}}
@@ -81,4 +83,6 @@
     <{{$m.UNQ}} ref="cmpnt_{{$m.UNQ}}" @onsaved="onQuery"></{{$m.UNQ}}>
     {{- end -}}
     {{end}}
+    {{end}}
 </div>
+

@@ -78,6 +78,12 @@
 | tp(cut[,页面类型][,长度])    | tp(cut,le,6)   | 列表详情页进行字符截取，长度为6各字符 |
 
 
+### 图表组件
+| 指令                                          | 示例                                | 说明   |
+| --------------------------------------------- | ----------------------------------- | ------ |
+| chart([名称],[类型]:请求地址,名称字段:值字段) | chart(交易趋势,category:/a/b/c,m:y) | 折线图 |
+
+
 ![image](https://github.com/micro-plat/hycli/raw/master/zimg/1.jpeg)
 
 ![image](https://github.com/micro-plat/hycli/raw/master/zimg/2.jpg)

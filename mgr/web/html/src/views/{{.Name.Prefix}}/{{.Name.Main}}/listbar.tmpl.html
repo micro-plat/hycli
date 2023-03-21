@@ -3,6 +3,7 @@
   {{- range $i,$c:= $table.LStatOpts -}}
   {{- $ucols := fltrColums $table $c.RwName -}}
   {{$l := len $ucols}}
+  {{ if ne 0 $l}}
   {{$x := div 24 $l}}
   <el-row>
     {{range $j,$m:= $ucols}}
@@ -12,4 +13,5 @@
     {{end}}
   </el-row>
   {{end}}
+{{end}}
 </div>

@@ -13,7 +13,7 @@
     "core-js": "^3.8.3",
     "element-plus": "^2.1.8",
     "jquery": "^3.6.0",
-    "theia-ui": "^0.1.201",
+    "theia-ui": "^0.1.215",
     "vue": "^3.2.13"
   },
   "devDependencies": {

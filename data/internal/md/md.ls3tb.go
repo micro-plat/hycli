@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-//Lines2Table 表数据行变为表
+// Lines2Table 表数据行变为表
 func Lines2Table(lines Lines) (tables Tables, err error) {
 	tables = Tables{}
 	for _, tline := range lines.Lines {
@@ -28,7 +28,7 @@ func Lines2Table(lines Lines) (tables Tables, err error) {
 			if i < 3 {
 				continue
 			}
-			c, err := line2TableRow(line)
+			c, err := Line2TableRow(line)
 			if err != nil {
 				return nil, err
 			}

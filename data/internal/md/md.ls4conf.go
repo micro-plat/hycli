@@ -64,6 +64,7 @@ type RowConf struct {
 	Name        string   `json:"name"`        //字段名
 	Constraints []string `json:"constraints"` //约束
 	Desc        *RDesc   `json:"desc"`        //描述
+	hasRow      bool     //是否包含在原表中
 }
 
 // Lines2Conf 表数据行变为表

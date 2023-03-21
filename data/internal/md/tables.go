@@ -75,6 +75,20 @@ func (t Tables) resetConf(cnf TableConfs) {
 				row.Constraints = append(row.Constraints, rconf.Constraints...)
 				row.Desc = rconf.Desc
 			}
+			rconf.hasRow = true
+		}
+
+		//查找原表未包含的列
+		for _, r := range conf.Rows {
+			if !r.hasRow {
+				name := r.Name
+				if !strings.HasPrefix(name, "^") {
+					name = "^" + name
+				}
+				row, _ := Line2TableRow(NewLine(r.Index, name, r.Desc.Raw))
+				row.Constraints = append(row.Constraints, r.Constraints...)
+				tb.AddRow(row)
+			}
 
 		}
 	}

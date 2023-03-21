@@ -50,7 +50,7 @@ func (s *Row) Equal(t *Row) bool {
 	return s.Raw == t.Raw
 }
 
-func line2TableRow(line *Line) (*Row, error) {
+func Line2TableRow(line *Line) (*Row, error) {
 	if strings.Count(line.Text, "|") != 7 {
 		return nil, fmt.Errorf("数据表结构有误(行:%d)", line.LineID)
 	}

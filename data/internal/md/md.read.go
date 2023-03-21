@@ -2,6 +2,7 @@ package md
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -45,4 +46,10 @@ func readMarkdownByReader(rd *bufio.Reader) ([]*Line, error) {
 		lines = append(lines, &Line{Text: line, LineID: num})
 	}
 	return lines, nil
+}
+func NewLine(idx int, name string, label string) *Line {
+	return &Line{
+		LineID: idx,
+		Text:   fmt.Sprintf("|%s|number(20)||是||%s|", name, label),
+	}
 }

@@ -11,6 +11,7 @@ var Funcs = map[string]interface{}{
 	"getFirstTable":        getFirstTable,
 	"IsTmplTb":             IsTmplTb,
 	"fltrSearchUITable":    fltrSearchUITable,
+	"fltrOptrs":            fltrOptrs,
 	"fltrColums":           fltrColums,
 	"fltrColumsExcludeExt": fltrColumsExcludeExt,
 	"resetForm":            resetForm,
@@ -89,4 +90,13 @@ func fltrNotNullRows(rs []*Column) []*Column {
 		}
 	}
 	return r
+}
+func fltrOptrs(opts []*optrs, tp string) []*optrs {
+	nopts := make([]*optrs, 0, 1)
+	for _, v := range opts {
+		if strings.EqualFold(v.Name, tp) {
+			nopts = append(nopts, v)
+		}
+	}
+	return nopts
 }
