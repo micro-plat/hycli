@@ -1,0 +1,18 @@
+<div>
+{{ if gt (fltrColums $table "c") 0}}
+<CAdd ref="cadd" @onsaved="onQuery"></CAdd>
+{{end}}
+{{ if gt (fltrColums $table "u") 0}}
+<CEdit ref="cedit" @onsaved="onQuery"></CEdit>
+{{end}}
+{{ if gt (fltrColums $table "v") 0}}
+<CView ref="cview" @onsaved="onQuery"></CView>
+{{end}}
+{{ if gt (fltrOptrs $table.ListOpts,"dialog")  0}}
+<DLGOpts ref="dlgOpts" @onsaved="onQuery"></DLGOpts>
+{{end}}
+{{ if gt (fltrOptrs $table.ListOpts,"confirm") 0}}
+<DLGCnfrm ref="dlgCnfrm" @onsaved="onQuery"></DLGCnfrm>
+{{end}}
+  
+</div>
