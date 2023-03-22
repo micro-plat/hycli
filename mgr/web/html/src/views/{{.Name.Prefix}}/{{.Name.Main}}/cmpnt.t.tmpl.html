@@ -15,7 +15,7 @@
     {{- if gt (len (fltrOptrs $table.ListOpts "confirm")) 0}}
     <DLGCnfrm ref="dlgCnfrm" @onsaved="onQuery"></DLGCnfrm>
     {{- end}}
-    {{ if gt len(fltrOptrs $table.ChartOpts) 0}}
+    {{ if gt (len (fltrOptrs $table.ChartOpts "line")) 0 }}
     <el-row>
     {{- range $i,$c:= fltrOptrs $table.ChartOpts "line" -}}
     <el-col :span="12">

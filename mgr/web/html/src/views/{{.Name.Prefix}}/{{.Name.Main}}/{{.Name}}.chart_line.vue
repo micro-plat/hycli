@@ -1,5 +1,5 @@
 <template>
-    <div :id="unq" class="chart-line"></div>
+    <div :id="unq" class="chart-line" :style="{ height: height, width: width }"></div>
 </template>
 <script>
 import * as echarts from 'echarts';
@@ -15,6 +15,14 @@ export default {
         url: {
             type: String,
         },
+        height: {
+            type: String,
+            default: "300px"
+        },
+        width: {
+            type: String,
+            default: "100%"
+        },
     },
     data() {
         return {
@@ -26,7 +34,7 @@ export default {
                     trigger: 'axis'
                 },
                 legend: {
-                    data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine']
+                    data: ['Email', 'Union Ads', 'Video Ads', 'Direct']
                 },
                 grid: {
                     left: '3%',
@@ -139,8 +147,6 @@ export default {
 </script>
 <style>
 .chart-line {
-    margin-top: 32px;
-    width: 100%;
-    height: 400px;
+    margin-top: 48px;
 }
 </style>
