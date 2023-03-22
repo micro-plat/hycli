@@ -15,8 +15,8 @@ import DLGOpts from "./{{.Name}}.dialog.vue"
 {{- if gt (len (fltrOptrs $table.ListOpts "confirm")) 0}}
 import DLGCnfrm from "./{{.Name}}.cnfrm.vue"
 {{- end}}
-{{- if gt (len (fltrOptrs $table.ChartOpts "line")) 0}}
-import ChartLine from "./{{.Name}}.chart_line.vue"
+{{- if gt (len (fltrOptrs $table.ChartOpts "line-bar-pie")) 0}}
+import ChartBase from "@/views/cmpnts/chart.base.vue"
 {{- end}}
 {{- range $x,$m:=$table.ListOpts -}}
  {{- if eq "CMPNT" $m.Name  -}}

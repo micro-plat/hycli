@@ -105,3 +105,11 @@ func TestV(t *testing.T) {
 	v = getTableExtInfo(ln)
 	assert.Equal(t, "view(货架,tab:ots_merchant_shelf)", v)
 }
+func TestStyle(t *testing.T) {
+	ln := &Line{Text: "系统信息[sso_system_info]<lst(权限,link:/right/info,style:{width:20px;height:100%})>"}
+	v := getTableExtInfo(ln)
+	opts := GetExtOpt(v, "lst")
+	assert.Equal(t, "style", opts[0][3])
+	assert.Equal(t, "{width:20px;height:100%}", opts[0][4])
+
+}

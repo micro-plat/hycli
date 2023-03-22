@@ -2,6 +2,8 @@ package data
 
 import (
 	"strings"
+
+	"github.com/micro-plat/lib4go/types"
 )
 
 var Funcs = map[string]interface{}{
@@ -14,6 +16,7 @@ var Funcs = map[string]interface{}{
 	"fltrOptrs":            fltrOptrs,
 	"fltrColums":           fltrColums,
 	"fltrColumsExcludeExt": fltrColumsExcludeExt,
+	"fltrOptrPara":         fltrOptrPara,
 	"resetForm":            resetForm,
 	"multiply":             multiply,
 	"sjoin":                sjoin,
@@ -23,6 +26,7 @@ var Funcs = map[string]interface{}{
 	"div":                  divide,
 	"bright":               bright,
 	"contactTBS":           contactTables,
+	"fltr2Num":             fltr2Num,
 }
 
 func divide(x, y int) int {
@@ -91,12 +95,25 @@ func fltrNotNullRows(rs []*Column) []*Column {
 	}
 	return r
 }
-func fltrOptrs(opts []*optrs, tp string) []*optrs {
+func fltrOptrs(opts []*optrs, tps string) []*optrs {
 	nopts := make([]*optrs, 0, 1)
+	tpn := strings.Split(tps, "-")
 	for _, v := range opts {
-		if strings.EqualFold(v.Name, tp) {
-			nopts = append(nopts, v)
+		for _, tp := range tpn {
+			if strings.EqualFold(v.Name, tp) {
+				nopts = append(nopts, v)
+			}
 		}
+
 	}
 	return nopts
+}
+func fltr2Num(t string, def int) int {
+	return types.GetInt(t, def)
+}
+func fltrOptrPara(opt *optrs, name string, def string) string {
+	if v, ok := opt.Params[name]; ok {
+		return v
+	}
+	return def
 }

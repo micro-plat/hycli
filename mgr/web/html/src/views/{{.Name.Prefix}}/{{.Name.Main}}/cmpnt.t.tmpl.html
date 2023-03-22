@@ -17,11 +17,14 @@
     {{- end}}
     {{ if gt (len (fltrOptrs $table.ChartOpts "line")) 0 }}
     <el-row>
-    {{- range $i,$c:= fltrOptrs $table.ChartOpts "line" -}}
-    <el-col :span="12">
-    <ChartLine ref="chart_{{$c.UNQ}}" title="{{$c.Label}}" unq="{{$c.UNQ}}" url="{{$c.URL}}" ></ChartLine>
-    </el-col>
-    {{- end}}
+        {{- range $i,$c:= fltrOptrs $table.ChartOpts "line-bar-pie" -}}
+        <el-col :span='{{fltrOptrPara $c "span" "24"}}'>
+            <ChartBase ref="chart_{{$c.UNQ}}" height='{{fltrOptrPara $c "height" "200px"}}' title="{{$c.Label}}"
+                unq="{{$c.UNQ}}" url="{{$c.URL}}" type="{{$c.Name}}" stack='{{fltrOptrPara $c "stack" ""}}'
+                rType='{{fltrOptrPara $c "rType" ""}}' margin='{{fltrOptrPara $c "margin" "32px 0px 16px 0px"}}'
+                ></ChartBase>
+        </el-col>
+        {{- end}}
     </el-row>
     {{- end}}
 </div>

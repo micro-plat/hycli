@@ -15,6 +15,7 @@ type optrs struct {
 	URL    string
 	RwName string
 	FwName string
+	Params map[string]string
 	UNQ    string
 }
 type lstOptrs []*optrs
@@ -86,6 +87,12 @@ func createOptrs(t string, tag string) []*optrs {
 			RwName: types.GetStringByIndex(lst, 3),
 			FwName: types.GetStringByIndex(lst, 4),
 			UNQ:    defFids.Next(),
+			Params: make(map[string]string),
+		}
+		ps := strings.Split(opt.FwName, ";")
+		for _, p := range ps {
+			vs := strings.Split(p, ":")
+			opt.Params[types.GetStringByIndex(vs, 0)] = types.GetStringByIndex(vs, 1)
 		}
 		opts = append(opts, opt)
 	}

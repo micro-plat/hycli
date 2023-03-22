@@ -27,8 +27,11 @@ export default {
        {{- template "listbar.tmpl.js" $table -}}
     };
   },
-    created() {
+  mounted() {
       this.queryData_{{$table.UNQ}}()
+      {{- range $i,$c:= fltrOptrs $table.ChartOpts "line-bar-pie"}}
+      this.$refs.chart_{{$c.UNQ}}.show(this.form_{{$table.UNQ}})
+      {{- end}}
     },
   methods:{
     {{- $tbs := contactTBS  $table $table -}}
