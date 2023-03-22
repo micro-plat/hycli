@@ -64,7 +64,7 @@ export default {
                     left: 'center'
                 },
                 tooltip: {
-                    trigger: 'axis'
+                    trigger: 'item'
                 },
                 legend: {
                     data: ['Email', 'Union Ads', 'Video Ads', 'Direct'],
@@ -155,14 +155,12 @@ export default {
                 that.$notify.error({ title: '失败', message: msg, duration: 5000 })
                 return false
             }
-            that.option.xAxis.data = item.xAxis || []
+            that.option.xAxis.data = that.type.toLowerCase() != "pie" ? item.xAxis || [] : []
             that.option.series = []
-            that.option.xAxis.data = item.xAxis || []
-            that.option.series = []
-            that.setYAxisData(that, item.yAxis)
+            that.setYAxisData(that,item.xAxis, item.yAxis)
             return true
         },
-        setYAxisData(that, yAxis) {
+        setYAxisData(that,xAxis, yAxis) {
 
             //处理饼图的名称问题https://echarts.apache.org/examples/zh/editor.html?c=pie-simple
             //[{"name":"2023-3","value":100},{"name":"2023-4","value":400},{"name":"2023-5","value":600}]}
@@ -172,7 +170,7 @@ export default {
                     stack: that.stack,
                     barWidth: "8%",//柱子宽度
                     barGap: "0%",
-                    labelLine: { show: yAxis["name"] != null },
+                    labelLine: { show: true },
                     roseType: that.roseType[that.rType] || "",
                     itemStyle: that.styles[that.rType] || {},
                     data: yAxis
@@ -185,22 +183,35 @@ export default {
             }
             //[[320,332,301,334,390,330,320]]}
             yAxis.forEach((y, i) => {
-                let s={
+                let s = {
                     name: that.option.legend.data[i],
                     type: that.type.toLowerCase(),
                     stack: that.stack,
                     barWidth: "8%",//柱子宽度
                     barGap: "0%",
-                    labelLine: { show: y["name"] != null },
+                    labelLine: { show: true },
                     roseType: that.roseType[that.rType] || "",
                     itemStyle: that.styles[that.rType] || {},
-                    data: y
+                    data: that.fullYAxis(xAxis,y),
                 }
                 if (that.radius[that.rType]) {
                     s.radius = that.radius[that.rType]
                 }
                 that.option.series.push(s)
             });
+        },
+        fullYAxis(xAxis, yAxis) {
+            if (xAxis.length == 0 || xAxis.length != yAxis.length) {
+                return yAxis
+            }
+            let lst = []
+            yAxis.forEach((y, i) => {
+                lst.push({
+                    name:xAxis[i],
+                    value:y,
+                })
+            })
+            return lst
         },
     },
 }
