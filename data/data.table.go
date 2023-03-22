@@ -27,6 +27,8 @@ type Table struct {
 	//LStatOpts 统计操作
 	LStatOpts lstatOptrs
 
+	ChartOpts chartOptrs
+
 	//BarOpts 工具栏操作
 	BarOpts barOptrs
 
@@ -60,6 +62,7 @@ func NewTable(t *md.Table) *Table {
 		ListOpts:       createLstOptrs(t.ExtInfo),
 		ViewOpts:       createViewOptrs(t.ExtInfo),
 		LStatOpts:      createLStatOptrs(t.ExtInfo),
+		ChartOpts:      createChartOptrs(t.ExtInfo),
 		BarOpts:        barOpts,
 		NeedBatchCheck: barOpts.NeedCheck(t.Name.Raw),
 		Colums:         colums,

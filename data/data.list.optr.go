@@ -20,10 +20,12 @@ type optrs struct {
 type lstOptrs []*optrs
 type viewOptrs []*optrs
 type lstatOptrs []*optrs
+type chartOptrs []*optrs
 type barOptrs []*optrs
 
 var batchCheck = []string{"bcheck"}
 var barOptrCmd = []string{"export", "import", "bcheck"}
+var charOptrCmd = []string{"chart"}
 
 var detailOpts = &optrs{Name: "VIEW", Label: "详情", RwName: "V"}
 var updateOpts = &optrs{Name: "UPDATE", Label: "修改", RwName: "U"}
@@ -54,6 +56,14 @@ func createLStatOptrs(t string) lstatOptrs {
 	optrs := make([]*optrs, 0, 1)
 	optrs = append(optrs, createOptrs(t, "lstat")...)
 	optrs = append(optrs, createOptrs(t, "LSTAT")...)
+	return optrs
+}
+func createChartOptrs(t string) chartOptrs {
+	optrs := make([]*optrs, 0, 1)
+	for _, v := range charOptrCmd {
+		optrs = append(optrs, createOptrs(t, strings.ToLower(v))...)
+		optrs = append(optrs, createOptrs(t, strings.ToUpper(v))...)
+	}
 	return optrs
 }
 func createBarOptrs(t string) barOptrs {

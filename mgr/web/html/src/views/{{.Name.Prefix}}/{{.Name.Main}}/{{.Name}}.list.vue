@@ -3,43 +3,20 @@
   {{- $opts :=$table.ListOpts -}}
   <div style="height: 100%">
     <!-- 查询条件 -->
-    {{template "query.tmpl.html" $table -}}
-
+    {{- template "query.tmpl.html" $table -}}
     <!-- 列表栏 -->
-    {{template "listbar.tmpl.html" $table -}}
+    {{- template "listbar.tmpl.html" $table -}}
     <!-- 列表 -->
-    {{template "list.tmpl.html" $table}}
-    <CAdd ref="cadd" @onsaved="onQuery"></CAdd>
-    <CEdit ref="cedit" @onsaved="onQuery"></CEdit>
-    <CView ref="cview" @onsaved="onQuery"></CView>
-    <DLGOpts ref="dlgOpts" @onsaved="onQuery"></DLGOpts>
-    <DLGCnfrm ref="dlgCnfrm" @onsaved="onQuery"></DLGCnfrm>
+    {{- template "list.tmpl.html" $table -}}
+     <!-- 组件 -->
+    {{- template "cmpnt.t.tmpl.html" $table -}}
+    
   </div>
 </template>
 <script>
-import CAdd from "./{{.Name}}.add"
-import CEdit from "./{{.Name}}.edit"
-import CView from "./{{.Name}}.view"
-import DLGOpts from "./{{.Name}}.dialog.vue"
-import DLGCnfrm from "./{{.Name}}.cnfrm.vue"
-{{range $x,$m:=$opts -}}
- {{- if eq "CMPNT" $m.Name  -}}
-import {{$m.UNQ}} from "{{$m.URL}}"
-{{- end}}
-{{- end}}
+ {{template "cmpnt.i.tmpl.js" $table}}
 export default {
-   components: {
-		CAdd,
-    CEdit,
-    CView,
-    DLGOpts,
-    DLGCnfrm,
-    {{ range $x,$m:=$opts -}}
-     {{- if eq "CMPNT" $m.Name -}}
-    {{$m.UNQ}},
-    {{- end -}}
-    {{end}}
-  },
+  {{template "cmpnt.c.tmpl.js" $table}}
   data() {
     return {
       conf:{
