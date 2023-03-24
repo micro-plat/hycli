@@ -23,7 +23,7 @@ type viewOptrs []*optrs
 type lstatOptrs []*optrs
 type chartOptrs []*optrs
 type barOptrs []*optrs
-type extCmptOpts []*optrs
+type ViewExtCmptOpts []*optrs
 
 var batchCheck = []string{"bcheck"}
 var barOptrCmd = []string{"export", "import", "bcheck"}
@@ -70,8 +70,8 @@ func createChartOptrs(t string) chartOptrs {
 	}
 	return optrs
 }
-func creatExtCmptOpts(opts ...[]*optrs) extCmptOpts {
-	nopts := make(extCmptOpts, 0, 1)
+func creatExtCmptOpts(opts ...[]*optrs) []*optrs {
+	nopts := make([]*optrs, 0, 1)
 	for _, opt := range opts {
 		for _, view := range opt {
 			for _, cmd := range extCmptParam {

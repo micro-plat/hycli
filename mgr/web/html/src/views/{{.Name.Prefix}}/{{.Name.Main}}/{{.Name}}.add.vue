@@ -33,8 +33,9 @@ export default {
     {{- template "add.tmpl.js" $ccolums -}}
   },
   methods: {
-    show() {
+    show(fm={}) {
       this.conf.visible = true;
+      this.form = fm
     },
     save(){
        {{range $i,$c:= $ccolums -}}

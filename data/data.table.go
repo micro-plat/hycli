@@ -1,7 +1,6 @@
 package data
 
 import (
-	"fmt"
 	"sort"
 
 	"github.com/micro-plat/hycli/data/internal/md"
@@ -33,7 +32,7 @@ type Table struct {
 	//BarOpts 工具栏操作
 	BarOpts barOptrs
 
-	ExtCmptOpts extCmptOpts
+	ViewExtCmptOpts ViewExtCmptOpts
 
 	//NeedBatchCheck 是否需要批量选择
 	NeedBatchCheck bool
@@ -59,19 +58,19 @@ func NewTable(t *md.Table) *Table {
 	enum.DEColums = colums.GetEnumDelColumns()
 	barOpts := createBarOptrs(t.ExtInfo)
 	table := &Table{
-		Table:          t,
-		UNQ:            defFids.Next(),
-		Enum:           enum,
-		ListOpts:       createLstOptrs(t.ExtInfo),
-		ViewOpts:       createViewOptrs(t.ExtInfo),
-		LStatOpts:      createLStatOptrs(t.ExtInfo),
-		ChartOpts:      createChartOptrs(t.ExtInfo),
-		ExtCmptOpts:    make(extCmptOpts, 0, 1),
-		BarOpts:        barOpts,
-		NeedBatchCheck: barOpts.NeedCheck(t.Name.Raw),
-		Colums:         colums,
-		PKColums:       colums.GetPKColumns(),
-		EnumColums:     colums.GetEnumColumns(),
+		Table:           t,
+		UNQ:             defFids.Next(),
+		Enum:            enum,
+		ListOpts:        createLstOptrs(t.ExtInfo),
+		ViewOpts:        createViewOptrs(t.ExtInfo),
+		LStatOpts:       createLStatOptrs(t.ExtInfo),
+		ChartOpts:       createChartOptrs(t.ExtInfo),
+		ViewExtCmptOpts: make(ViewExtCmptOpts, 0, 1),
+		BarOpts:         barOpts,
+		NeedBatchCheck:  barOpts.NeedCheck(t.Name.Raw),
+		Colums:          colums,
+		PKColums:        colums.GetPKColumns(),
+		EnumColums:      colums.GetEnumColumns(),
 	}
 	t.Cache = table
 
@@ -86,11 +85,7 @@ func NewTable(t *md.Table) *Table {
 		table.ListOpts = append(table.ListOpts, delOpts)
 	}
 
-	table.ExtCmptOpts = creatExtCmptOpts(table.ViewOpts)
-	if len(table.ExtCmptOpts) > 0 {
-		fmt.Println("ext.cmpt.opts:", table.Name, table.ExtCmptOpts[0].URL)
-	}
-
+	table.ViewExtCmptOpts = creatExtCmptOpts(table.ViewOpts)
 	table.Sort()
 	return table
 }

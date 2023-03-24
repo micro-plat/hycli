@@ -24,7 +24,12 @@
         <el-tab-pane label="{{$c.Label}}" name="{{$c.Label}}"  @tab-click="show_view_{{$c.UNQ}}">
          {{$ct:= fltrSearchUITable $c}}
          {{- if eq "true" (fltrOptrPara $c "add" "false")}}
-         <el-button type="success" icon="Plus" size="small" @click="show{{$c.UNQ}}">添加</el-button>
+        <el-row>
+          <el-col :span="23" class="text-right">
+            <el-button type="success" icon="Plus" round size="small" @click="show{{$c.UNQ}}">添加</el-button>
+          </el-col>
+        </el-row>
+        
          {{- end }}
         {{- template "list.tmpl.html" $ct}}
          </el-tab-pane>
@@ -34,7 +39,7 @@
     <template #footer>
       <span style="height: 60px"> </span>
     </template>
-    {{- range $x,$m:= $table.ExtCmptOpts}}
+    {{- range $x,$m:= $table.ViewExtCmptOpts}}
     {{- if eq "CMPNT" $m.Name  }}
     <{{$m.UNQ}} ref="{{$m.UNQ}}" @onsaved="show(form)"></{{$m.UNQ}}>
     {{- end}}
@@ -49,10 +54,10 @@
    import {{$m.UNQ}} from "{{$m.URL}}"
     {{- end -}}
     {{- end}}
-{{- range $x,$m:= $table.ExtCmptOpts}}
+{{- range $x,$m:= $table.ViewExtCmptOpts}}
  {{- if eq "CMPNT" $m.Name  -}}
  {{- $tb:=fltrSearchTable $m.URL}}
-import {{$m.UNQ}} from "@/views/{{$tb.Name.Prefix}}/{{$tb.Name.Main}}/{{$tb.Name}}.add.vue"
+import {{$m.UNQ}} from "@/views/{{$tb.Name.Prefix}}/{{$tb.Name.Main}}/{{$tb.Name}}.{{$m.Tag}}.vue"
 {{- end}}
 {{- end}}
 
@@ -63,7 +68,7 @@ export default {
     {{$m.UNQ}},
     {{- end -}}
     {{end}}
-    {{- range $x,$m:= $table.ExtCmptOpts}}
+    {{- range $x,$m:= $table.ViewExtCmptOpts}}
     {{- if eq "CMPNT" $m.Name  }}
     {{$m.UNQ}},
     {{- end}}
@@ -90,10 +95,10 @@ export default {
       }
   },
   methods: {
-    {{range $x,$m:= $table.ExtCmptOpts}}
+    {{range $x,$m:= $table.ViewExtCmptOpts}}
  {{- if eq "CMPNT" $m.Name  -}}
   show{{$m.UNQ}}(){
-    this.$refs.{{$m.UNQ}}.show()
+    this.$refs.{{$m.UNQ}}.show(this.form)
   },
 {{- end}}
 {{- end}}
