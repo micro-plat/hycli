@@ -38,8 +38,8 @@ func bleft() string {
 func bright() string {
 	return `}}`
 }
-func fltrAdd(x int, y int) int {
-	return x + y
+func fltrAdd(x, y interface{}) int {
+	return types.GetInt(x) + types.GetInt(y)
 }
 
 func IsTmplTb(o interface{}) bool {

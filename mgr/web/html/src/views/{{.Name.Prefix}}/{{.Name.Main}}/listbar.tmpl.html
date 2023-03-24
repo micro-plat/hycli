@@ -4,21 +4,26 @@
     {{- range $i,$c:= $table.LStatOpts -}}
     {{- $ucols := fltrColums $table $c.RwName -}}
     {{- $span := fltrOptrPara $c "span" "24" -}}
-    {{$l := len $ucols}}
-    {{ if ne 0 $l}}
-    {{$x := div $span $l}}
-    {{range $j,$m:= $ucols}}
+    {{- $l := len $ucols}}
+    {{- if ne 0 $l}}
+    {{- if eq "true" ( fltrOptrPara $c "showLabel" "true")}}
+    {{ $span = add  $span -2}}
+    <el-col :span="2" style="font-size: 0.9rem;font-weight:600">
+      {{$c.Label}}
+    </el-col>
+    {{- end}}
+    {{- $x := div $span $l}}
+    {{- range $j,$m:= $ucols}}
     <el-col :span="{{$x}}">
       <el-statistic title="{{$m.Label}}" :value="stat_{{$c.UNQ}}.{{$m.Name}}" />
     </el-col>
-    {{end}}  {{end}} {{end}}
+    {{end}} {{end}} {{end}}
     {{- range $i,$c:= fltrOptrs $table.ChartOpts "line-bar-pie" -}}
     <el-col :span='{{fltrOptrPara $c "span" "24"}}'>
       <ChartBase ref="chart_{{$c.UNQ}}" height='{{fltrOptrPara $c "height" "200px"}}' title="{{$c.Label}}"
         unq="{{$c.UNQ}}" url="{{$c.URL}}" type="{{$c.Name}}" stack='{{fltrOptrPara $c "stack" ""}}'
         rType='{{fltrOptrPara $c "rType" ""}}' margin='{{fltrOptrPara $c "margin" "32px 0px 16px 0px"}}'
-        showLabel='{{fltrOptrPara $c "showLabel" "true"}}' 
-        theme='{{fltrOptrPara $c "theme" ""}}'></ChartBase>
+        showLabel='{{fltrOptrPara $c "showLabel" "true"}}' theme='{{fltrOptrPara $c "theme" ""}}'></ChartBase>
     </el-col>
     {{- end}}
   </el-row>

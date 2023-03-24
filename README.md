@@ -79,9 +79,29 @@
 
 
 ### 组件
-| 指令                                          | 示例                            | 说明   |
-| --------------------------------------------- | ------------------------------- | ------ |
-| chart([名称],[类型]:请求地址,名称字段:值字段) | chart(交易趋势,line:/a/b/c,style:{width:20px}) | 折线图 |
+chart(交易统计,line:/ots/merchant/info/chart,style:{height:250px;span:12})
+![image](https://github.com/micro-plat/hycli/raw/master/zimg/line.jpeg)
+
+chart(订单统计,bar:/ots/merchant/info/chart,style:{height:250px;span:12})
+![image](https://github.com/micro-plat/hycli/raw/master/zimg/bar.jpeg)
+
+
+chart(订单图表1,pie:/ots/merchant/info/chart2,style:{height:250px;span:12;showLabel:false})
+![image](https://github.com/micro-plat/hycli/raw/master/zimg/pie.jpeg)
+
+
+
+chart(订单图表2,pie:/ots/merchant/info/chart2,style:{height:250px;span:12;rType:radius})
+![image](https://github.com/micro-plat/hycli/raw/master/zimg/pie-1.jpeg)
+
+
+chart(订单图3,pie:/ots/merchant/info/chart3,style:{height:250px;span:12})
+![image](https://github.com/micro-plat/hycli/raw/master/zimg/pie-2.jpeg)
+
+
+chart(订图4,pie:/ots/merchant/info/chart3,style:{height:250px;span:12;rType:rose;showLabel:false})
+![image](https://github.com/micro-plat/hycli/raw/master/zimg/pie-3.jpeg)
+
 
 
 ![image](https://github.com/micro-plat/hycli/raw/master/zimg/1.jpeg)
