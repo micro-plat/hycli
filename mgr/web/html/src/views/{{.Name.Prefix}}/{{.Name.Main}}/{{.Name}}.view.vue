@@ -25,7 +25,7 @@
          {{$ct:= fltrSearchUITable $c}}
          {{- if eq "true" (fltrOptrPara $c "add" "false")}}
         <el-row>
-          <el-col :span="23" class="text-right">
+          <el-col :span="24" class="text-right">
             <el-button type="success" icon="Plus" round size="small" @click="show{{$c.UNQ}}">添加</el-button>
           </el-col>
         </el-row>
