@@ -46,7 +46,7 @@ func TestTBConf(t *testing.T) {
 	assert.Equal(t, err, nil)
 
 	//重置配置
-	tbs.resetConf(ctbs)
+	tbs = tbs.resetConf(ctbs)
 	assert.Equal(t, 1, len(tbs[0].Rows[0].Constraints))
 	assert.Equal(t, "DI", tbs[0].Rows[0].Constraints[0])
 

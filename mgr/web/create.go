@@ -29,10 +29,9 @@ func CreatePage(mdpath string, tbs string, outpath string, cover bool) error {
 		return err
 	}
 	//过滤表格
-	tbls := otbls.Filter(tbs, true)
+	tbls := otbls.Filter(tbs, false)
 	ntbs := data.NewTables(tbls)
 	data.Caches(ntbs)
-	// data.ResetSelectRelation(ntbs)
 
 	//创建页面文件
 	for _, tb := range ntbs {
@@ -43,7 +42,6 @@ func CreatePage(mdpath string, tbs string, outpath string, cover bool) error {
 	}
 
 	// //创建路由文件
-
 	if err = createRouter(outpath, tbls, cover); err != nil {
 		return err
 	}

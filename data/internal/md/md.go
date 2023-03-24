@@ -61,7 +61,7 @@ func mds2Tables(filePath string) (Tables, error) {
 	}
 
 	// 按表名合并配置信息
-	tbs.resetConf(cnfs)
+	tbs = tbs.resetConf(cnfs)
 
 	return tbs, nil
 }

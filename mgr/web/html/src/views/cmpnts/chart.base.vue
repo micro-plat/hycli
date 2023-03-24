@@ -4,7 +4,7 @@
 <script>
 import * as echarts from 'echarts';
 export default {
-    name: "ChartBase",
+    name: "ChartBase",//line-bar-pie
     props: {
         title: {
             type: String,
@@ -29,19 +29,28 @@ export default {
         },
         type: {
             type: String,
-            default: "line",
+            default: "line",//line,pie,bar
         },
         stack: {
             type: String,
-            default: "",
+            default: "", //Total
         },
         rType: {
-            type: String,
+            type: String, //rose
             default: "false",
+        },
+        showLabel: {
+            type: String,
+            default: "true"
+        },
+        theme: {
+            type: String,
+            default: "vintage",//dark
         }
     },
     data() {
         return {
+            lowerType: this.type.toLowerCase(),
             roseType: {
                 "rose": "radius",
             },
@@ -57,6 +66,11 @@ export default {
                     borderColor: '#fff',
                     borderWidth: 2,
                 },
+
+            },
+            formatter: {
+                "pie": '{b} : {c} ({d}%)',
+                "line_bar": '{b} : {c} ',
             },
             option: {
                 title: {
@@ -64,10 +78,9 @@ export default {
                     left: 'center'
                 },
                 tooltip: {
-                    trigger: 'item'
+                    trigger: 'item',
                 },
                 legend: {
-                    data: ['Email', 'Union Ads', 'Video Ads', 'Direct'],
                     orient: 'vertical',
                     left: 'right',
                 },
@@ -91,30 +104,6 @@ export default {
                         type: 'line',
                         stack: 'Total',
                         data: [120, 132, 101, 134, 90, 230, 210]
-                    },
-                    {
-                        name: 'Union Ads',
-                        type: 'line',
-                        stack: 'Total',
-                        data: [220, 182, 191, 234, 290, 330, 310]
-                    },
-                    {
-                        name: 'Video Ads',
-                        type: 'line',
-                        stack: 'Total',
-                        data: [150, 232, 201, 154, 190, 330, 410]
-                    },
-                    {
-                        name: 'Direct',
-                        type: 'line',
-                        stack: 'Total',
-                        data: [320, 332, 301, 334, 390, 330, 320]
-                    },
-                    {
-                        name: 'Search Engine',
-                        type: 'line',
-                        stack: 'Total',
-                        data: [820, 932, 901, 934, 1290, 1330, 1320]
                     }
                 ]
             }
@@ -124,7 +113,7 @@ export default {
         showChart() {
             // 基于准备好的dom，初始化echarts实例
             var chartDom = document.getElementById(this.unq);
-            var myChart = echarts.init(chartDom);
+            var myChart = echarts.init(chartDom, this.theme);
             this.option && myChart.setOption(this.option);
         },
         show(form) {
@@ -133,86 +122,150 @@ export default {
             }
             let that = this
             this.$theia.http.get(this.url, form).then(res => {
-                if (this.resetData(res || {}, that)) {
-                    this.showChart()
+                if (that.resetData(res || {}, that)) {
+                    that.showChart()
                 }
             });
         },
-        resetData(item, that) {
+        resetData(r, that) {
+            if (that.IsPIE()) {
+                return that.resetPIE(r, that)
+            }
+            return that.resetLineBar(r, that)
+        },
+        resetPIE(item, that) {
+
             let url = that.url
-            //处理多个图表
-            that.option.legend.data = [this.title]
+            that.option.tooltip.formatter = that.formatter.pie
+            that.option.legend.data = []
             if (item.legend && Array.isArray(item.legend)) {
                 that.option.legend.data = item.legend
             }
-            if ((that.type.toLowerCase() != "pie") && (!item.xAxis || !Array.isArray(item.xAxis))) {
-                let msg = `请求(${url})返回数据中未包含xAxis`
-                that.$notify.error({ title: '失败', message: msg, duration: 5000 })
-                return false
-            }
-            if (!item.yAxis || !Array.isArray(item.yAxis)) {
-                let msg = `请求(${url})返回数据中未包含yAxis`
-                that.$notify.error({ title: '失败', message: msg, duration: 5000 })
-                return false
-            }
-            that.option.xAxis.data = that.type.toLowerCase() != "pie" ? item.xAxis || [] : []
-            that.option.series = []
-            that.setYAxisData(that,item.xAxis, item.yAxis)
-            return true
-        },
-        setYAxisData(that,xAxis, yAxis) {
 
+            //将x坐标兼容为legend
+            that.option.xAxis.data = []
+            if (item.xAxis && Array.isArray(item.xAxis)) {
+                that.option.legend.data = item.xAxis
+            }
+            that.option.yAxis.data = []
+            if (item.yAxis && Array.isArray(item.yAxis)) {
+                that.option.yAxis.data = item.yAxis
+            }
+            if (item.data && Array.isArray(item.data)) {
+                that.option.yAxis.data = item.data
+            }
+            //检查输入参数
+            if (that.option.legend.data.length == 0) {
+                let msg = `请求(${url})返回数据中未包含lengend或xAxis`
+                that.$notify.error({ title: '失败', message: msg, duration: 5000 })
+                return false
+            }
+            if (that.option.yAxis.data.length == 0) {
+                let msg = `请求(${url})返回数据中未包含data或yAxis`
+                that.$notify.error({ title: '失败', message: msg, duration: 5000 })
+                return false
+            }
+
+            //[[320,332,301,334,390,330,320]] [[{"name":"2023-3","value":100}]]
+            //[320,332,301,334,390,330,320],[{"name":"2023-3","value":100}]
+            //[{"name":"2023-3","value":100}]
             //处理饼图的名称问题https://echarts.apache.org/examples/zh/editor.html?c=pie-simple
-            //[{"name":"2023-3","value":100},{"name":"2023-4","value":400},{"name":"2023-5","value":600}]}
-            if ((yAxis || []).length > 0 && !Array.isArray(yAxis[0])) {
-                let s = {
-                    type: that.type.toLowerCase(),
-                    stack: that.stack,
-                    barWidth: "8%",//柱子宽度
-                    barGap: "0%",
-                    labelLine: { show: true },
-                    roseType: that.roseType[that.rType] || "",
-                    itemStyle: that.styles[that.rType] || {},
-                    data: yAxis
-                }
-                if (that.radius[that.rType]) {
-                    s.radius = that.radius[that.rType]
-                }
-                that.option.series.push(s)
+            let currentYAxis = Array.isArray(that.option.yAxis.data[0]) ? that.option.yAxis.data[0] : that.option.yAxis.data
+            if (currentYAxis.length == 0) {
+                let msg = `请求(${url})返回数据(data或yAxis)数据为空`
+                that.$notify.error({ title: '失败', message: msg, duration: 5000 })
                 return
             }
-            //[[320,332,301,334,390,330,320]]}
-            yAxis.forEach((y, i) => {
-                let s = {
-                    name: that.option.legend.data[i],
-                    type: that.type.toLowerCase(),
+            //将 [320,332,301,334,390,330,320] 转为：[{"name":"2023-3","value":100}]
+            if (!currentYAxis[0]["name"]) {
+                currentYAxis = that.fullYAxis(that.option.legend.data, currentYAxis)
+            }
+
+            //[{"name":"2023-3","value":100}]
+            let s = {
+                type: that.lowerType,
+                stack: that.stack,
+                barWidth: "8%",//柱子宽度
+                barGap: "0%",
+                label: { show: that.showLabel == "true" },
+                labelLine: { show: that.showLabel == "true" },
+                roseType: that.roseType[that.rType] || "",
+                itemStyle: that.styles[that.rType] || {},
+                data: currentYAxis
+            }
+            if (that.radius[that.rType]) { //处理空心
+                s.radius = that.radius[that.rType]
+            }
+            that.option.series = []
+            that.option.series.push(s)
+            return true
+        },
+        resetLineBar(item, that) {
+
+            let url = that.url
+            that.option.legend.data = []
+            that.option.tooltip.formatter = that.formatter.line_bar
+            if (item.legend && Array.isArray(item.legend)) {
+                that.option.legend.data = item.legend
+            }
+            if (!item.xAxis || !Array.isArray(item.xAxis) || item.xAxis.length == 0) {
+                let msg = `请求(${url})返回数据中未包含xAxis或不是数组`
+                that.$notify.error({ title: '失败', message: msg, duration: 5000 })
+                return false
+            }
+            if (!item.yAxis || !Array.isArray(item.yAxis) || item.yAxis.length == 0) {
+                let msg = `请求(${url})返回数据中未包含yAxis或不是数组`
+                that.$notify.error({ title: '失败', message: msg, duration: 5000 })
+                return false
+
+            }
+            that.option.series = []
+            that.option.xAxis.data = item.xAxis
+
+            //yAxis 为单个元素
+            if (!Array.isArray(item.yAxis[0] || {})) {
+                that.option.series.push({
+                    type: that.lowerType,
                     stack: that.stack,
-                    barWidth: "8%",//柱子宽度
+                    barWidth: "10%",//柱子宽度
+                    barGap: "0%",
+                    labelLine: { show: that.showLabel == "true" },
+                    data: item.yAxi
+                })
+                return true
+
+            }
+            //yAxis 为多元素
+            item.yAxis.forEach((y, i) => {
+                let name = that.option.legend.data.length > i ? that.option.legend.data[i] : ""
+                that.option.series.push({
+                    name: name,
+                    type: that.lowerType,
+                    stack: that.stack,
+                    barWidth: "10%",//柱子宽度
                     barGap: "0%",
                     labelLine: { show: true },
-                    roseType: that.roseType[that.rType] || "",
-                    itemStyle: that.styles[that.rType] || {},
-                    data: that.fullYAxis(xAxis,y),
-                }
-                if (that.radius[that.rType]) {
-                    s.radius = that.radius[that.rType]
-                }
-                that.option.series.push(s)
-            });
+                    data: y
+                })
+            })
+            return true
         },
-        fullYAxis(xAxis, yAxis) {
+        fullYAxis(xAxis, yAxis) { //转为[{"name":"2023-3","value":100}]格式
             if (xAxis.length == 0 || xAxis.length != yAxis.length) {
                 return yAxis
             }
             let lst = []
             yAxis.forEach((y, i) => {
                 lst.push({
-                    name:xAxis[i],
-                    value:y,
+                    name: xAxis[i],
+                    value: y,
                 })
             })
             return lst
         },
+        IsPIE() {
+            return this.lowerType == "pie"
+        }
     },
 }
 </script>

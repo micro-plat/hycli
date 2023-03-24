@@ -48,14 +48,15 @@ func (t Tables) Filter(n string, exclude bool) Tables {
 	return ntables
 }
 
-func (t Tables) resetConf(cnf TableConfs) {
+func (t Tables) resetConf(cnf TableConfs) Tables {
 
 	cnfs := cnf.Map()
 	if len(cnfs) == 0 {
-		return
+		return t
 	}
+	tmpTable := make(map[string]bool)
 	for _, tb := range t {
-
+		tmpTable[tb.Name.Raw] = true
 		//获取表的配置信息
 		conf, ok := cnfs[tb.Name.RealName]
 		if !ok {
@@ -74,22 +75,39 @@ func (t Tables) resetConf(cnf TableConfs) {
 			if ok {
 				row.Constraints = append(row.Constraints, rconf.Constraints...)
 				row.Desc = rconf.Desc
+				rconf.hasRow = true
 			}
-			rconf.hasRow = true
+
 		}
 
 		//查找原表未包含的列
 		for _, r := range conf.Rows {
 			if !r.hasRow {
-				name := r.Name
-				if !strings.HasPrefix(name, "^") {
-					name = "^" + name
-				}
-				row, _ := Line2TableRow(NewLine(r.Index, name, r.Desc.Raw))
+				name := types.DecodeString(strings.HasPrefix(r.Name, "^"), true, r.Name, "^"+r.Name)
+				row, _ := Line2TableRow(NewLine(r.Index, name, "number(20)", r.Desc.Raw))
 				row.Constraints = append(row.Constraints, r.Constraints...)
 				tb.AddRow(row)
 			}
 
 		}
 	}
+
+	//添加扩展表
+	for _, c := range cnf {
+		if _, ok := tmpTable[c.Name]; ok {
+			continue
+		}
+		tb := NewTable(types.DecodeString(strings.HasPrefix(c.Name, "^"), true, c.Name, "^"+c.Name), c.Desc, c.ExtInfo)
+		//查找原表未包含的列
+		for _, r := range c.Rows {
+			name := types.DecodeString(strings.HasPrefix(r.Name, "^"), true, r.Name, "^"+r.Name)
+			row, _ := Line2TableRow(NewLine(r.Index, name, "number(20)", r.Desc.Raw))
+			row.Constraints = append(row.Constraints, r.Constraints...)
+			tb.AddRow(row)
+
+		}
+		t = append(t, tb)
+	}
+	return t
+
 }

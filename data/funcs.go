@@ -29,8 +29,8 @@ var Funcs = map[string]interface{}{
 	"fltr2Num":             fltr2Num,
 }
 
-func divide(x, y int) int {
-	return x / y
+func divide(x, y interface{}) int {
+	return types.GetInt(x, 0) / types.GetInt(y, 1)
 }
 func bleft() string {
 	return `{{`

@@ -47,9 +47,9 @@ func readMarkdownByReader(rd *bufio.Reader) ([]*Line, error) {
 	}
 	return lines, nil
 }
-func NewLine(idx int, name string, label string) *Line {
+func NewLine(idx int, name string, tp string, label string) *Line {
 	return &Line{
 		LineID: idx,
-		Text:   fmt.Sprintf("|%s|number(20)||是||%s|", name, label),
+		Text:   fmt.Sprintf("|%s|%s||是||%s|", name, tp, label),
 	}
 }

@@ -119,7 +119,9 @@
         </span>
         <el-form-item>
             <el-space wrap>
+            {{if gt (len $qcols) 0 }}
             <el-button type="primary" icon="Search" @click="onQuery">查询</el-button>
+            {{end}}
             {{if gt $clen 0}}
             <el-button type="success" icon="Plus" @click="showAdd">添加</el-button>
             {{end}}

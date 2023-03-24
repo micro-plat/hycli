@@ -53,7 +53,7 @@ func NewTable(name, desc, extinfo string) *Table {
 			MainPath: strings.Join(names, "/"),              //以斜杠分隔的路径
 		},
 
-		Exclude: strings.HasPrefix(fname, "^"),
+		Exclude: strings.HasPrefix(name, "^"),
 		PkgName: GetPkgName(),
 		Desc:    desc,
 		Rows:    make([]*Row, 0, 1),

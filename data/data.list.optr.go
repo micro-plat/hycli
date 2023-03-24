@@ -89,11 +89,21 @@ func createOptrs(t string, tag string) []*optrs {
 			UNQ:    defFids.Next(),
 			Params: make(map[string]string),
 		}
-		ps := strings.Split(opt.FwName, ";")
-		for _, p := range ps {
-			vs := strings.Split(p, ":")
-			opt.Params[types.GetStringByIndex(vs, 0)] = types.GetStringByIndex(vs, 1)
+		if strings.HasPrefix(opt.FwName, "{") && strings.HasSuffix(opt.FwName, "}") {
+			content := strings.TrimRight(strings.TrimLeft(opt.FwName, "{"), "}")
+			ps := strings.Split(content, ";")
+			for _, p := range ps {
+				vs := strings.Split(p, ":")
+				if types.GetStringByIndex(vs, 1) != "" {
+					opt.Params[types.GetStringByIndex(vs, 0)] = types.GetStringByIndex(vs, 1)
+				}
+			}
+			if strings.Contains(opt.FwName, ":") {
+				opt.RwName = opt.Params["rwName"]
+				opt.FwName = opt.Params["fwName"]
+			}
 		}
+
 		opts = append(opts, opt)
 	}
 	return opts

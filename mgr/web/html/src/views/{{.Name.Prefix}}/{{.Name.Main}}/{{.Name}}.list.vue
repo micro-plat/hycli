@@ -6,10 +6,12 @@
     {{- template "query.tmpl.html" $table -}}
     <!-- 列表栏 -->
     {{- template "listbar.tmpl.html" $table -}}
-    <!-- 列表 -->
-    {{- template "list.tmpl.html" $table -}}
+  
      <!-- 组件 -->
     {{- template "cmpnt.t.tmpl.html" $table -}}
+
+      <!-- 列表 -->
+   {{- template "list.tmpl.html" $table -}}
     
   </div>
 </template>
