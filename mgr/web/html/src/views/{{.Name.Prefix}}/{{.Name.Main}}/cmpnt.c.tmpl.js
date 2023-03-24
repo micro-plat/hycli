@@ -18,9 +18,9 @@ components: {
     {{- if gt (len (fltrOptrs $table.ChartOpts "line-bar-pie")) 0}}
     ChartBase,
     {{- end}}
-{{- range $x,$m:=$table.ListOpts -}}
- {{- if eq "CMPNT" $m.Name -}}
-{{$m.UNQ}},
-{{- end}}
-{{- end}}
+    {{- range $x,$m:=$table.ListOpts -}}
+    {{- if eq "CMPNT" $m.Name -}}
+    {{$m.UNQ}},
+    {{- end}}
+    {{- end}}
 },

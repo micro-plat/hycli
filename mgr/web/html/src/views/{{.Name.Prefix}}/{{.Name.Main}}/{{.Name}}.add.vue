@@ -63,9 +63,11 @@ export default {
            that.$emit("onsaved")
             that.hide()
         }).catch(res=>{
-          let code = res.response.status
+          let code = ((res||{}).response||{}).status||0
           let msg= `{{.Desc}}保存失败(${code})`
           that.$notify.error({title: '失败',message:msg,duration:5000})
+          that.$emit("onsaved")
+            that.hide()
         })
     },
     hide() {

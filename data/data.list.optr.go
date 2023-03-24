@@ -23,11 +23,14 @@ type viewOptrs []*optrs
 type lstatOptrs []*optrs
 type chartOptrs []*optrs
 type barOptrs []*optrs
+type extCmptOpts []*optrs
 
 var batchCheck = []string{"bcheck"}
 var barOptrCmd = []string{"export", "import", "bcheck"}
 var charOptrCmd = []string{"chart"}
+var extCmptParam = []string{"add"}
 
+var addOpts = &optrs{Name: "ADD", Label: "添加", RwName: "C"}
 var detailOpts = &optrs{Name: "VIEW", Label: "详情", RwName: "V"}
 var updateOpts = &optrs{Name: "UPDATE", Label: "修改", RwName: "U"}
 var delOpts = &optrs{Name: "DEL", Label: "删除", RwName: "D"}
@@ -66,6 +69,24 @@ func createChartOptrs(t string) chartOptrs {
 		optrs = append(optrs, createOptrs(t, strings.ToUpper(v))...)
 	}
 	return optrs
+}
+func creatExtCmptOpts(opts ...[]*optrs) extCmptOpts {
+	nopts := make(extCmptOpts, 0, 1)
+	for _, opt := range opts {
+		for _, view := range opt {
+			for _, cmd := range extCmptParam {
+				if v, ok := view.Params[cmd]; ok && types.GetBool(v) {
+					xview := *view
+					xview.Name = "CMPNT"
+					xview.Tag = cmd
+					xview.Label = view.Params["label"]
+					nopts = append(nopts, &xview)
+				}
+			}
+		}
+	}
+	return nopts
+
 }
 func createBarOptrs(t string) barOptrs {
 	optrs := make([]*optrs, 0, 1)

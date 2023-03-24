@@ -1,6 +1,7 @@
 package data
 
 import (
+	"fmt"
 	"sort"
 
 	"github.com/micro-plat/hycli/data/internal/md"
@@ -31,6 +32,8 @@ type Table struct {
 
 	//BarOpts 工具栏操作
 	BarOpts barOptrs
+
+	ExtCmptOpts extCmptOpts
 
 	//NeedBatchCheck 是否需要批量选择
 	NeedBatchCheck bool
@@ -63,6 +66,7 @@ func NewTable(t *md.Table) *Table {
 		ViewOpts:       createViewOptrs(t.ExtInfo),
 		LStatOpts:      createLStatOptrs(t.ExtInfo),
 		ChartOpts:      createChartOptrs(t.ExtInfo),
+		ExtCmptOpts:    make(extCmptOpts, 0, 1),
 		BarOpts:        barOpts,
 		NeedBatchCheck: barOpts.NeedCheck(t.Name.Raw),
 		Colums:         colums,
@@ -81,6 +85,12 @@ func NewTable(t *md.Table) *Table {
 	if len(fltrColums(table, DELETE_COLUMN)) > 0 {
 		table.ListOpts = append(table.ListOpts, delOpts)
 	}
+
+	table.ExtCmptOpts = creatExtCmptOpts(table.ViewOpts)
+	if len(table.ExtCmptOpts) > 0 {
+		fmt.Println("ext.cmpt.opts:", table.Name, table.ExtCmptOpts[0].URL)
+	}
+
 	table.Sort()
 	return table
 }

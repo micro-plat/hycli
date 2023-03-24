@@ -3,6 +3,7 @@
 {{- $viewOpts :=$table.ViewOpts}}
  show(form) {
     this.conf.visible = true
+    this.form = form
     {{- range $i,$c:= $viewOpts}}
       {{- if eq "TAB" $c.Name}}
       //{{ $c.Label}}查询

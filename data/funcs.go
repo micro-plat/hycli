@@ -13,6 +13,7 @@ var Funcs = map[string]interface{}{
 	"getFirstTable":        getFirstTable,
 	"IsTmplTb":             IsTmplTb,
 	"fltrSearchUITable":    fltrSearchUITable,
+	"fltrSearchTable":      fltrSearchTable,
 	"fltrOptrs":            fltrOptrs,
 	"fltrColums":           fltrColums,
 	"fltrColumsExcludeExt": fltrColumsExcludeExt,

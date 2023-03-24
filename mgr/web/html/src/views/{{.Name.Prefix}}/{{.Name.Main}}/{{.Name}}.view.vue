@@ -2,6 +2,7 @@
 {{- $vcols := fltrColums $table "v" -}}
 {{- $viewOpts :=$table.ViewOpts}}
 <template>
+  <div>
   <el-dialog
     v-model="conf.visible"
     title="{{.Desc}}详情"
@@ -22,6 +23,9 @@
        {{else if eq "TAB" $c.Name}}
         <el-tab-pane label="{{$c.Label}}" name="{{$c.Label}}"  @tab-click="show_view_{{$c.UNQ}}">
          {{$ct:= fltrSearchUITable $c}}
+         {{- if eq "true" (fltrOptrPara $c "add" "false")}}
+         <el-button type="success" icon="Plus" size="small" @click="show{{$c.UNQ}}">添加</el-button>
+         {{- end }}
         {{- template "list.tmpl.html" $ct}}
          </el-tab-pane>
       {{end}}
@@ -30,14 +34,28 @@
     <template #footer>
       <span style="height: 60px"> </span>
     </template>
+    {{- range $x,$m:= $table.ExtCmptOpts}}
+    {{- if eq "CMPNT" $m.Name  }}
+    <{{$m.UNQ}} ref="{{$m.UNQ}}" @onsaved="show(form)"></{{$m.UNQ}}>
+    {{- end}}
+    {{- end}}
+ 
   </el-dialog>
+</div>
 </template>
 <script>
- {{ range $x,$m:=$viewOpts -}}
-    {{- if eq "CMPNT" $m.Name  -}}
+ {{- range $x,$m:=$viewOpts}}
+    {{- if eq "CMPNT" $m.Name}}
    import {{$m.UNQ}} from "{{$m.URL}}"
     {{- end -}}
-    {{end}}
+    {{- end}}
+{{- range $x,$m:= $table.ExtCmptOpts}}
+ {{- if eq "CMPNT" $m.Name  -}}
+ {{- $tb:=fltrSearchTable $m.URL}}
+import {{$m.UNQ}} from "@/views/{{$tb.Name.Prefix}}/{{$tb.Name.Main}}/{{$tb.Name}}.add.vue"
+{{- end}}
+{{- end}}
+
 export default {
    components: {
     {{ range $x,$m:=$viewOpts -}}
@@ -45,6 +63,11 @@ export default {
     {{$m.UNQ}},
     {{- end -}}
     {{end}}
+    {{- range $x,$m:= $table.ExtCmptOpts}}
+    {{- if eq "CMPNT" $m.Name  }}
+    {{$m.UNQ}},
+    {{- end}}
+    {{- end}}
   },
   data() {
     return {
@@ -52,6 +75,7 @@ export default {
         visible:false,
         selected:"first"
       },
+      form:{},
        {{- range $i,$c:= $viewOpts -}}
        {{ if eq "TAB" $c.Name}}
           {{$ct:= fltrSearchUITable  $c}}
@@ -66,7 +90,14 @@ export default {
       }
   },
   methods: {
-    {{template "view.tmpl.js" $table}}
+    {{range $x,$m:= $table.ExtCmptOpts}}
+ {{- if eq "CMPNT" $m.Name  -}}
+  show{{$m.UNQ}}(){
+    this.$refs.{{$m.UNQ}}.show()
+  },
+{{- end}}
+{{- end}}
+    {{- template "view.tmpl.js" $table}}
      {{- range $i,$c:= $viewOpts -}}
        {{- if eq "TAB" $c.Name -}}
           {{- $ct:= fltrSearchUITable  $c -}}
