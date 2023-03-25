@@ -119,11 +119,11 @@
 
 {{ range $i,$c:= $lstRow }}
 {{- if eq "switch" $c.Cmpnt.Type -}}
-on{{$c.Name}}SwitchChange(val) {
+on{{$c.Name}}SwitchChange(xfrom) {
   let form = {}
-  form.{{$c.Name}} = val==true?0:1;
+  form.{{$c.Name}} = xfrom.{{$c.Name}} == true?0:1;
   {{- range $i,$v :=  $table.PKColums}}
-	form.{{$v.Name}} = this.form_{{$table.UNQ}}.{{$v.Name}}
+	form.{{$v.Name}} = xfrom.{{$v.Name}}
   {{- end}}
   let that = this
   this.$theia.http.post("/{{$table.Name.MainPath|lower}}/switch",form).then(res=>{
