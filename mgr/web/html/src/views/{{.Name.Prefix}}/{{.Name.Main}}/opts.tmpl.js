@@ -14,7 +14,7 @@
       {{- end}}
     this.$refs.cmpnt_{{$m.UNQ}}.show(query)
   },
- {{- else if or (eq "CNFRM" $m.Name) (eq "DEL" $m.Name)}}
+ {{- else if or (eq "CNFRM" $m.Name) (eq "DEL" $m.Tag)}}
   show_confirm_{{$m.UNQ}}(fm){
     this.$refs.dlgCnfrm.show_{{$m.UNQ}}(fm)
   },

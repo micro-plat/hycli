@@ -12,7 +12,7 @@ import CView from "./{{.Name}}.view"
 {{- if gt (len (fltrOptrs $table.ListOpts "dialog"))  0}}
 import DLGOpts from "./{{.Name}}.dialog.vue"
 {{- end}}
-{{- if gt (len (fltrOptrs $table.ListOpts "confirm")) 0}}
+{{- if gt (len (fltrOptrs $table.ListOpts "CNFRM")) 0}}
 import DLGCnfrm from "./{{.Name}}.cnfrm.vue"
 {{- end}}
 {{- if gt (len (fltrOptrs $table.ChartOpts "line-bar-pie")) 0}}

@@ -30,10 +30,10 @@ var barOptrCmd = []string{"export", "import", "bcheck"}
 var charOptrCmd = []string{"chart"}
 var extCmptParam = []string{"add"}
 
-var addOpts = &optrs{Name: "ADD", Label: "添加", RwName: "C"}
-var detailOpts = &optrs{Name: "VIEW", Label: "详情", RwName: "V"}
-var updateOpts = &optrs{Name: "UPDATE", Label: "修改", RwName: "U"}
-var delOpts = &optrs{Name: "DEL", Label: "删除", RwName: "D"}
+var addOpts = &optrs{Tag: "ADD", Name: "ADD", Label: "添加", RwName: "C", UNQ: defFids.Next()}
+var detailOpts = &optrs{Tag: "VIEW", Name: "VIEW", Label: "详情", RwName: "V", UNQ: defFids.Next()}
+var updateOpts = &optrs{Tag: "UPDATE", Name: "UPDATE", Label: "修改", RwName: "U", UNQ: defFids.Next()}
+var delOpts = &optrs{Tag: "DEL", Name: "CNFRM", Label: "删除", RwName: "D", UNQ: defFids.Next()}
 
 func (b barOptrs) NeedCheck(t string) bool {
 	for _, v := range b {

@@ -8,15 +8,15 @@
     <template #default="scope">
         <div class="opts">
         {{- range $x,$m:=$optRow -}}
-        {{- if eq "UPDATE" $m.Name}}
+        {{- if eq "UPDATE" $m.Tag}}
         <el-button size="small" type="text" @click="showEdit(scope.row)">{{
             $m.Label
             }}</el-button>
-        {{- else if eq "VIEW" $m.Name}}
+        {{- else if eq "VIEW" $m.Tag}}
         <el-button size="small" type="text" @click="showView(scope.row)">{{
             $m.Label
             }}</el-button>
-        {{- else if eq "DEL" $m.Name}}
+        {{- else if eq "DEL" $m.Tag}}
         <el-button size="small" type="text" @click="show_confirm_{{$m.UNQ}}(scope.row)">{{
             $m.Label
             }}</el-button>

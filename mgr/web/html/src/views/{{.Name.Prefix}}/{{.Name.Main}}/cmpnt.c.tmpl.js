@@ -12,7 +12,7 @@ components: {
     {{- if gt (len (fltrOptrs $table.ListOpts "dialog"))  0}}
     DLGOpts,
     {{- end}}
-    {{- if gt (len (fltrOptrs $table.ListOpts "confirm")) 0}}
+    {{- if gt (len (fltrOptrs $table.ListOpts "CNFRM")) 0}}
     DLGCnfrm,
     {{- end}}
     {{- if gt (len (fltrOptrs $table.ChartOpts "line-bar-pie")) 0}}

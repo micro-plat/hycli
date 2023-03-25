@@ -3,7 +3,7 @@
 <template>
   <div>
     {{ range $x,$m:=$opts -}}
-    {{- if or (eq "CNFRM" $m.Name) (eq "DEL" $m.Name) -}}
+    {{- if or (eq "CNFRM" $m.Name) (eq "DEL" $m.Tag) -}}
     <el-dialog
       v-model="conf.{{$m.UNQ}}_visible"
       title="{{$m.Label}}"
@@ -37,13 +37,13 @@ export default {
     return{
       conf:{
         {{ range $x,$m:=$opts -}}
-        {{- if or (eq "CNFRM" $m.Name) (eq "DEL" $m.Name) -}}
+        {{- if or (eq "CNFRM" $m.Name) (eq "DEL" $m.Tag) -}}
         {{$m.UNQ}}_visible:false,
         {{- end}}
         {{- end}}
       },
   {{ range $x,$m:=$opts -}}
-     {{- if or (eq "CNFRM" $m.Name) (eq "DEL" $m.Name) -}}
+     {{- if or (eq "CNFRM" $m.Name) (eq "DEL" $m.Tag) -}}
       //{{$m.Label}} form by  [{{$m.RwName}}]
       form_{{$m.UNQ}}:{
        {{- $cols:= fltrColums $table $m.RwName -}}
@@ -57,7 +57,7 @@ export default {
   },
   methods:{
      {{- range $x,$m:=$opts -}}
-     {{- if or (eq "CNFRM" $m.Name) (eq "DEL" $m.Name) -}}
+     {{- if or (eq "CNFRM" $m.Name) (eq "DEL" $m.Tag) -}}
      //--------------------{{$m.Label}}---------------------------------
       //显示 {{$m.Label}} 弹出框
       show_{{$m.UNQ}}(fm){
@@ -72,7 +72,7 @@ export default {
       //保存 {{$m.Label}} 弹出框数据
       save_{{$m.UNQ}}(){
         let that = this
-        {{ if eq "DEL" $m.Name -}}
+        {{ if eq "DEL" $m.Tag -}}
         this.$theia.http.del("/{{$table.Name.MainPath|lower}}",this.form_{{$m.UNQ}}).then(res=>{
           that.conf.confirmVisible = false 
           that.$notify.success({title: '成功',message: '{{$m.Label}}成功',duration:5000})
