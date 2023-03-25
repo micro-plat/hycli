@@ -126,7 +126,7 @@ on{{$c.Name}}SwitchChange(val) {
 	form.{{$v.Name}} = this.form_{{$table.UNQ}}.{{$v.Name}}
   {{- end}}
   let that = this
-  this.$theia.http.post("/{{$table.Name.MainPath|lower}}/{{$c.Name}}Switch",form).then(res=>{
+  this.$theia.http.post("/{{$table.Name.MainPath|lower}}/switch",form).then(res=>{
     that.$notify.success({title: '成功',message: '修改{{$c.Label}}成功',duration:5000})
   }).catch(res=>{
     let code = ((res||{}).response||{}).status||0

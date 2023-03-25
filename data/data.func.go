@@ -27,6 +27,22 @@ func fltrColums(tx interface{}, tp string, formName ...string) []*Column {
 	sort.Sort(cols)
 	return cols
 }
+func fltrCmpnt(tx interface{}, cmpnt string, tps ...string) []*Column {
+	t, ok := tx.(*Table)
+	if !ok {
+		t = tx.(*TTable).Table
+	}
+	cols := make(Columns, 0, 1)
+	for _, r := range t.Colums {
+		if r.allCmpnt.getCmpnt(r.rawRow, tps...).Type == cmpnt {
+			r.ResetCmpnt(tps...)
+			cols = append(cols, r)
+		}
+	}
+	sort.Sort(cols)
+	return cols
+}
+
 func resetForm(t *Table) *Table {
 	for _, c := range t.Colums {
 		c.Ext.FormName = "form"

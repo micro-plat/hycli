@@ -16,6 +16,7 @@ var Funcs = map[string]interface{}{
 	"fltrSearchTable":      fltrSearchTable,
 	"fltrOptrs":            fltrOptrs,
 	"fltrColums":           fltrColums,
+	"fltrCmpnt":            fltrCmpnt,
 	"fltrColumsExcludeExt": fltrColumsExcludeExt,
 	"fltrOptrPara":         fltrOptrPara,
 	"resetForm":            resetForm,

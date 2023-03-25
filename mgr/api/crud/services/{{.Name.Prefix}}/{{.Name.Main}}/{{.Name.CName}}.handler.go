@@ -16,11 +16,14 @@ import (
 {{- $ucols := fltrNotNullCols  (fltrColums $table "u") -}}
 {{- $ulen := (len $ucols)|minus -}}
 {{ $pklen := (len $table.PKColums)|minus}}
+{{- $switchs := fltrCmpnt $table "switch" "l"}}
+{{- $slen := (len $switchs)|minus -}}
 //AuditInfoHandler 获取{{.Desc}}处理服务
 type {{.Name.CName}}Handler struct {
 	insertRequiredFields []string
 	updateRequiredFields []string
 	pkRequiredFields []string
+	switchRequiredFields []string
 }
 
 func New{{.Name.CName}}Handler() *{{.Name.CName}}Handler {
@@ -31,6 +34,8 @@ func New{{.Name.CName}}Handler() *{{.Name.CName}}Handler {
 			"{{$v.Name}}"{{if lt $i $ulen }},{{end}}{{- end -}}},
 		pkRequiredFields:[]string{ {{- range $i,$v :=  $table.PKColums -}}
 			"{{$v.Name}}"{{if lt $i $pklen }},{{end}}{{- end -}}},
+		switchRequiredFields:[]string{ {{- range $i,$v :=  $switchs  -}}
+			"{{$v.Name}}"{{if lt $i $slen }},{{end}}{{- end -}}},
 	}
 }
 
@@ -142,3 +147,27 @@ func (u *{{.Name.CName}}Handler) QueryHandle(ctx hydra.IContext) (r interface{})
 		"count":rcount,
 	}
 }
+
+
+{{- if gt (len $switchs) 0}}
+//SwitchHandle  切换状态{{.Desc}}数据
+func (u *{{.Name.CName}}Handler) SwitchHandle(ctx hydra.IContext) (r interface{}) {
+
+	ctx.Log().Info("--------切换状态{{.Desc}}数据--------")
+
+	ctx.Log().Info("1.检查必须字段")
+	reqFields := u.pkRequiredFields
+	reqFields = append(reqFields,u.switchRequiredFields...)
+	if err := ctx.Request().Check(reqFields...); err != nil {
+		return err
+	}
+	
+	ctx.Log().Info("2.切换状态新数据")
+	rx, err := hydra.C.DB().GetRegularDB().Execute(switch{{.Name.CName}}, ctx.Request().GetMap())
+	if err != nil || rx == 0 {
+		return errs.NewErrorf(http.StatusNotExtended, "数据出错:%+v,row:%d", err,rx)
+	}
+	return
+}
+{{- end}}
+

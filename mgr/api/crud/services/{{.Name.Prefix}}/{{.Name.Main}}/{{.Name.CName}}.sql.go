@@ -5,8 +5,10 @@ package {{.Name.Main}}
 {{- $table := . -}}
 {{ $CColums:= fltrColumsExcludeExt (fltrColums $table "c")}}
 {{ $UColums:= fltrColumsExcludeExt (fltrColums $table "u")}}
+{{- $switchs := fltrCmpnt $table "switch" "l"}}
 {{ $clen := (len $CColums)|minus}}
 {{ $ulen := (len $UColums)|minus}}
+{{- $slen := (len $switchs)|minus -}}
 
 {{ $sigleQueryCols:= fltrColumsExcludeExt (fltrColums $table "l-le")}}
 {{ $totalQCols:= fltrColumsExcludeExt (fltrColums $table "q-bq")}}
@@ -108,3 +110,20 @@ where
 {{- range $i,$v :=fltrColumsExcludeExt $table.PKColums}}
 	&{{$v.Name}}
 {{- end}}`
+
+
+
+{{- if gt (len $switchs) 0}}
+
+
+//switch{{.Name.CName}} 删除单条{{.Desc}}数据
+const switch{{.Name.CName}} = `
+update {{.Name.Raw}} t set 
+{{- range $i,$v := $switchs}}
+	t.{{$v.Name}} = @{{$v.Name}}{{if lt $i $slen }},{{end}}
+{{- end}}
+where 
+{{- range $i,$v :=fltrColumsExcludeExt $table.PKColums}}
+	&{{$v.Name}}
+{{- end}}`
+{{- end}}
