@@ -5,5 +5,5 @@ stat_{{$c.UNQ}}:{
     {{range $j,$m:= $ucols -}}
     {{$m.Name}}:0,
     {{- end}}
-}
+},
 {{end}}

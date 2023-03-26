@@ -50,6 +50,12 @@ func TestSelect3(t *testing.T) {
 	assert.Equal(t, "fabc", f)
 	assert.Equal(t, "", group)
 }
+func TestSelect3x(t *testing.T) {
+	s, f, group := GetSelectName("status", "sl(bool,#fabc)")
+	assert.Equal(t, "bool", s)
+	assert.Equal(t, "#fabc", f)
+	assert.Equal(t, "", group)
+}
 func TestSelect4(t *testing.T) {
 	s, f, group := GetSelectName("status", "sl(bool,fabc,*)")
 	assert.Equal(t, "bool", s)

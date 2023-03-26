@@ -168,22 +168,24 @@ func createStyle(r *md.Row) displayStyle {
 }
 
 type enumType struct {
-	IsEnum     bool   //是否是枚举类型
-	EnumType   string //枚举名
-	PID        string //父级编号
-	Group      string //分组
-	IsDEColumn bool
+	IsEnum      bool   //是否是枚举类型
+	EnumType    string //枚举名
+	AssctColumn string //关联列
+	PID         string //父级编号
+	Group       string //分组
+	IsDEColumn  bool
 }
 
 func createEnumType(r *md.Row) enumType {
 	tp, pid, group := md.GetSelectName(r.Name, r.Constraints...)
 
 	return enumType{
-		IsEnum:     md.HasConstraint(r.Constraints, "sl", "SL"),
-		EnumType:   tp,
-		PID:        pid,
-		Group:      group,
-		IsDEColumn: md.HasConstraint(r.Constraints, "DE", "de"),
+		IsEnum:      md.HasConstraint(r.Constraints, "sl", "SL"),
+		EnumType:    tp,
+		AssctColumn: types.DecodeString(strings.HasPrefix(pid, "#"), true, strings.Trim(pid, "#"), ""),
+		PID:         types.DecodeString(strings.HasPrefix(pid, "#"), false, pid, ""),
+		Group:       group,
+		IsDEColumn:  md.HasConstraint(r.Constraints, "DE", "de"),
 	}
 }
 

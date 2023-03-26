@@ -19,7 +19,7 @@
         },
         {{- range $i,$c := $ccols -}}
         {{- if or (eq true $c.Enum.IsEnum) (eq "multiselect" $c.Cmpnt.Type)}}
-        {{.Name}}List:this.$theia.enum.get("{{$c.Enum.EnumType}}"),
+        {{.Name}}List:this.$theia.enum.get("{{$c.Enum.EnumType}}","{{$c.Enum.PID}}","{{$c.Enum.Group}}"),
         {{- end}}
         {{- end}}
       }

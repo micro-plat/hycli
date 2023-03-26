@@ -1,23 +1,25 @@
 {{$table :=.}}
 <div class="listbar">
-  <el-row>
+ 
     {{- range $i,$c:= $table.LStatOpts -}}
     {{- $ucols := fltrColums $table $c.RwName -}}
     {{- $span := fltrOptrPara $c "span" "24" -}}
     {{- $l := len $ucols}}
     {{- if ne 0 $l}}
+    <el-row>
     {{- if eq "true" ( fltrOptrPara $c "showLabel" "true")}}
     {{ $span = add  $span -2}}
-    <el-col :span="2" style="font-size: 0.9rem;font-weight:600">
+    <el-col :span="2" style="font-size: 0.9rem;font-weight:600;margin-bottom: 16px;">
       {{$c.Label}}
     </el-col>
     {{- end}}
     {{- $x := div $span $l}}
     {{- range $j,$m:= $ucols}}
-    <el-col :span="{{$x}}">
+    <el-col :span="{{$x}}" style="margin-bottom: 16px;">
       <el-statistic title="{{$m.Label}}" :value="stat_{{$c.UNQ}}.{{$m.Name}}" />
     </el-col>
-    {{end}} {{end}} {{end}}
+    {{end}} {{end}} </el-row> {{end}}
+    <el-row>
     {{- range $i,$c:= fltrOptrs $table.ChartOpts "line-bar-pie" -}}
     <el-col :span='{{fltrOptrPara $c "span" "24"}}'>
       <ChartBase ref="chart_{{$c.UNQ}}" height='{{fltrOptrPara $c "height" "200px"}}' title="{{$c.Label}}"

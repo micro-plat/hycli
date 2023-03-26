@@ -13,7 +13,7 @@ import (
 	{{- end}}
 	{{- end}}
 	"{{$ft.PkgName}}/services/enums"
-	_ "{{$ft.PkgName}}/modules/const/db/mysql"
+	// _ "{{$ft.PkgName}}/modules/const/db/mysql"
 )
 
 func init() {

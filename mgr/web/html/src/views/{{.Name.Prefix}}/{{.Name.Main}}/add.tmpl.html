@@ -85,8 +85,8 @@
      {{else if eq true $c.Enum.IsEnum}}
      <!--{{$c.Label}} 下拉控件 -->
      <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
-       <el-select v-model="{{$c.Ext.FormName}}.{{.Name}}" style="width: 100%" filterable clearable
-         placeholder="请选择{{.Label}}"  @change="change{{$c.Name}}({{$c.Ext.FormName}}.{{.Name}})" >
+       <el-select  {{if gt (len (fltrAssctColums $ucols $c.Name)) 0}} @change="onChange_{{$c.Name}}"  {{end}} v-model="{{$c.Ext.FormName}}.{{.Name}}" style="width: 100%" filterable clearable
+         placeholder="请选择{{.Label}}" >
          <el-option v-for="item in {{.Name}}List" :key="item.value" :label="item.name" :value="item.value" />
        </el-select>
      </el-form-item>

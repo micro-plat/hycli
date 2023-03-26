@@ -16,6 +16,7 @@ var Funcs = map[string]interface{}{
 	"fltrSearchTable":      fltrSearchTable,
 	"fltrOptrs":            fltrOptrs,
 	"fltrColums":           fltrColums,
+	"fltrAssctColums":      fltrAssctColums,
 	"fltrCmpnt":            fltrCmpnt,
 	"fltrColumsExcludeExt": fltrColumsExcludeExt,
 	"fltrOptrPara":         fltrOptrPara,
@@ -106,7 +107,6 @@ func fltrOptrs(opts []*optrs, tps string) []*optrs {
 				nopts = append(nopts, v)
 			}
 		}
-
 	}
 	return nopts
 }

@@ -90,10 +90,16 @@ export default {
       {{- end}}
     },
 
- {{range $i,$c:= $enumColums -}}
-    change{{$c.Name}}(value){
-      this.{{$c.Name}}List =  this.$theia.enum.get("{{$c.Enum.EnumType}}",value)
+    {{- range $i,$c:= $ucols -}}
+    {{- $acolums := fltrAssctColums $ucols $c.Name }}
+    {{- if gt (len $acolums) 0}} 
+    onChange_{{$c.Name}}(val){
+      {{- range $j,$x:= $acolums  }}
+      this.{{$x.Name}}List = this.$theia.enum.get("{{$x.Enum.EnumType}}",val)
+      this.form.{{$x.Name}} = null
+      {{- end}}
     },
+    {{- end}}
     {{- end}}
   },
 };

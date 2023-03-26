@@ -1,6 +1,7 @@
 package data
 
 import (
+	"fmt"
 	"sort"
 	"strings"
 
@@ -57,4 +58,31 @@ func getTPS(tp string) []string {
 		lst = append(lst, strings.ToUpper(v))
 	}
 	return lst
+}
+func fltrAssctColums(tx interface{}, colName string) []*Column {
+	colums := getColums(tx)
+	cols := make(Columns, 0, 1)
+	for _, r := range colums {
+		if r.Enum.AssctColumn == "" {
+			continue
+		}
+		fmt.Println("r.Enum.AssctColumn", colName)
+		if strings.EqualFold(r.Enum.AssctColumn, colName) {
+			cols = append(cols, r)
+		}
+	}
+	return cols
+}
+func getColums(tx interface{}) []*Column {
+	if t, ok := tx.(*Table); ok {
+		return t.Colums
+	}
+	if t, ok := tx.(*TTable); ok {
+		return t.Colums
+	}
+	if t, ok := tx.([]*Column); ok {
+		return t
+	}
+	return nil
+
 }

@@ -1,5 +1,5 @@
 <template>
-  <te-frame-plus :system="system" :menus="menus" :dropdowns="dropdowns"></te-frame-plus>
+  <te-frame :system="system" :menus="menus" :dropdowns="dropdowns"></te-frame>
 </template>
 <script>
 export default {
