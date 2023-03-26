@@ -49,14 +49,22 @@
           </el-checkbox-button>
         </el-checkbox-group>
       </el-form-item>
+      {{else if eq "slider" $c.Cmpnt.Type}}
+      <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
+        <el-slider size="small" show-input
+        placement="right" style="width: 100%" v-model="{{$c.Ext.FormName}}.{{ $c.Name }}" 
+        {{- if ne 0 $c.Style.Min}}
+         :min="{{ $c.Style.Min }}" {{- end -}} 
+         {{- if ne 0 $c.Style.Max }}  :max="{{ $c.Style.Max }}" {{- end -}} />
+      </el-form-item>
       {{else if eq "number" $c.Cmpnt.Type}}
       <!--{{$c.Label}} 数字控件 -->
       <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
         <el-input-number
         {{if le 0 $c.Field.DLen }} :precision="{{$c.Field.DLen}}" {{end}} 
          controls-position="right" style="width: 100%" v-model="{{$c.Ext.FormName}}.{{ $c.Name }}" 
-        {{- if ne "" $c.Style.Min}}
-         :min="{{ $c.Style.Min }}" {{- end -}} {{- if ne "" $c.Style.Max}}  :max="{{ $c.Style.Max }}" {{- end -}} />
+        {{- if ne 0 $c.Style.Min}}
+         :min="{{ $c.Style.Min }}" {{- end -}} {{- if ne 0 $c.Style.Max}}  :max="{{ $c.Style.Max }}" {{- end -}} />
       </el-form-item>
 
       {{else if or (eq "file" $c.Cmpnt.Type) (eq "img" $c.Cmpnt.Type)}}

@@ -86,10 +86,10 @@
         {{- if eq "number" $c.Cmpnt.Type -}}
         <!--{{$c.Label}}  数字控件 -->
         <el-form-item label="{{$c.Label}}">
-            <el-input-number  controls-position="right" v-model="form_{{$table.UNQ}}.{{ $c.Name }}" {{ if ne "" $c.Style.Min}}
+            <el-input-number  controls-position="right" v-model="form_{{$table.UNQ}}.{{ $c.Name }}" {{ if ne 0 $c.Style.Min}}
               :min="{{ $c.Style.Min }}" {{ end }}
             {{if le 0 $c.Field.DLen }} :precision="{{$c.Field.DLen}}" {{end}}   
-            {{ if ne "" $c.Style.Max}} :max="{{ $c.Style.Max }}" {{ end }} />
+            {{ if ne 0 $c.Style.Max}} :max="{{ $c.Style.Max }}" {{ end }} />
         </el-form-item>
         {{- end -}} {{ end }}
 

@@ -3,11 +3,11 @@
 {{- $viewOpts :=$table.ViewOpts}}
 <template>
   <div>
-  <el-dialog
+  <el-drawer
     v-model="conf.visible"
     title="{{.Desc}}详情"
     draggable
-    width="76%"
+    size="800"
     :close-on-click-modal="false"
     :before-close="hide"
   >
@@ -45,7 +45,7 @@
     {{- end}}
     {{- end}}
  
-  </el-dialog>
+  </el-drawer>
 </div>
 </template>
 <script>
