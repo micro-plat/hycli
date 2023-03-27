@@ -10,6 +10,7 @@ import (
 
 const (
 	VIEW_COLUMN   = "V"
+	ADD_COLUMN    = "V"
 	UPDATE_COLUMN = "U"
 	DELETE_COLUMN = "D"
 )

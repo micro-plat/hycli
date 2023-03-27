@@ -1,6 +1,7 @@
 package output
 
 import (
+	"bytes"
 	"embed"
 	"fmt"
 	"io/fs"
@@ -43,6 +44,10 @@ func CreateFiles(tmpls embed.FS, rootDir, prefix string, name string, input inte
 		npathBytes, err := TranslateContent(npath, npath, input)
 		if err != nil {
 			return err
+		}
+		//路径中包含~符合则忽略此文件
+		if bytes.Contains(npathBytes, []byte("~")) {
+			continue
 		}
 
 		//创建文件

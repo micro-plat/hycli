@@ -42,6 +42,8 @@ type Table struct {
 
 	//UNQ 唯一标识
 	UNQ string
+
+	Tag *Tag
 }
 
 func (t *Table) Sort() {
@@ -84,6 +86,7 @@ func NewTable(t *md.Table) *Table {
 	if len(fltrColums(table, DELETE_COLUMN)) > 0 {
 		table.ListOpts = append(table.ListOpts, delOpts)
 	}
+	table.Tag = newTag(len(fltrColums(table, VIEW_COLUMN)) > 0, len(fltrColums(table, ADD_COLUMN)) > 0, len(fltrColums(table, UPDATE_COLUMN)) > 0)
 
 	table.ViewExtCmptOpts = creatExtCmptOpts(table.ViewOpts)
 	table.Sort()
