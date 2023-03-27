@@ -67,7 +67,7 @@ export default {
       //隐藏 {{$m.Label}} 弹出框
       hide_{{$m.UNQ}}(){
         this.conf.{{$m.UNQ}}_visible = false;
-        this.$refs.fm_{{$m.UNQ}}.resetFields();
+        // this.$refs.fm_{{$m.UNQ}}.resetFields();
       },
       //保存 {{$m.Label}} 弹出框数据
       save_{{$m.UNQ}}(){

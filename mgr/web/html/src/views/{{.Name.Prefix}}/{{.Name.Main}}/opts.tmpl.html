@@ -8,30 +8,14 @@
     <template #default="scope">
         <div class="opts">
         {{- range $x,$m:=$optRow -}}
-        {{- if eq "UPDATE" $m.Tag}}
-        <el-button size="small" type="text" @click="showEdit(scope.row)">{{
-            $m.Label
-            }}</el-button>
-        {{- else if eq "VIEW" $m.Tag}}
-        <el-button size="small" type="text" @click="showView(scope.row)">{{
-            $m.Label
-            }}</el-button>
-        {{- else if eq "DEL" $m.Tag}}
-        <el-button size="small" type="text" @click="show_confirm_{{$m.UNQ}}(scope.row)">{{
-            $m.Label
-            }}</el-button>
-        {{- else if eq "CNFRM" $m.Name}}
-        <el-button size="small" type="text" @click="show_confirm_{{$m.UNQ}}(scope.row)">{{
-            $m.Label
-            }}</el-button>
-        {{- else if eq "LINK" $m.Name}}
+        {{- if eq "LINK" $m.Name}}
         <el-button size="small" type="text" @click="goto_{{$m.UNQ}}(scope.row)">{{$m.Label}}</el-button>
         {{- else if eq "DIALOG" $m.Name}}
         <el-button size="small" type="text" @click="show_dialog_{{$m.UNQ}}(scope.row)">{{$m.Label}}</el-button>
-        {{- else if eq "CMPNT" $m.Name -}}
+        {{- else if eq "CMPNT" $m.Name}}
         <el-button size="small" type="text" @click="show_cmpnt_{{$m.UNQ}}(scope.row)">{{$m.Label}}</el-button>
-        {{- end -}}
-        {{end -}}
+        {{- end}}
+        {{- end}}
     </div>
     </template>
 </el-table-column>

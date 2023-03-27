@@ -50,15 +50,6 @@ export default {
       this.form_{{$table.UNQ}}.pi = 1
       this.queryData_{{$table.UNQ}}()
     },
-    showAdd(){
-       this.$refs.cadd.show()
-    },
-     showView(q){ 
-       this.$refs.cview.show(q)
-    },
-    showEdit(q){
-        this.$refs.cedit.show(q)
-      },
     colorful(r,name){
       if(this.$theia.env.conf.colorful[name]){
             return this.$theia.env.conf.colorful[name][r]||""

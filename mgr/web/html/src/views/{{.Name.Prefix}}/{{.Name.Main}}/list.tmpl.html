@@ -78,11 +78,6 @@
         style="position: absolute; right: 30px;bottom:10px;" :page-sizes="[10, 20, 50, 100]" :background="false" small
         layout="total,sizes,prev, pager, next, jumper" :total="total_{{$table.UNQ}}" @size-change="handleSizeChange"
         @current-change="handleCurrentChange" />
-    {{ range $x,$m:=$lstopts -}}
-    {{- if eq "CMPNT" $m.Name -}}
-    <{{$m.UNQ}} ref="cmpnt_{{$m.UNQ}}" @onsaved="onQuery"></{{$m.UNQ}}>
-    {{- end -}}
-    {{end}}
     {{end}}
 </div>
 

@@ -15,8 +15,11 @@ var Funcs = map[string]interface{}{
 	"fltrSearchUITable":    fltrSearchUITable,
 	"fltrSearchTable":      fltrSearchTable,
 	"fltrOptrs":            fltrOptrs,
+	"fltrOptrsByTag":       fltrOptrsByTag,
 	"fltrColums":           fltrColums,
+	"fltrMergeOptrs":       fltrMergeOptrs,
 	"fltrAssctColums":      fltrAssctColums,
+	"fltrTranslate":        fltrTranslate,
 	"fltrCmpnt":            fltrCmpnt,
 	"fltrColumsExcludeExt": fltrColumsExcludeExt,
 	"fltrOptrPara":         fltrOptrPara,
@@ -104,6 +107,25 @@ func fltrOptrs(opts []*optrs, tps string) []*optrs {
 	for _, v := range opts {
 		for _, tp := range tpn {
 			if strings.EqualFold(v.Name, tp) {
+				nopts = append(nopts, v)
+			}
+		}
+	}
+	return nopts
+}
+func fltrMergeOptrs(opts ...[]*optrs) []*optrs {
+	lst := make([]*optrs, 0, 1)
+	for _, opt := range opts {
+		lst = append(lst, opt...)
+	}
+	return lst
+}
+func fltrOptrsByTag(opts []*optrs, tag string) []*optrs {
+	nopts := make([]*optrs, 0, 1)
+	tags := strings.Split(tag, "-")
+	for _, v := range opts {
+		for _, tp := range tags {
+			if strings.EqualFold(v.Tag, tp) {
 				nopts = append(nopts, v)
 			}
 		}

@@ -12,6 +12,7 @@ type optrs struct {
 	Tag    string
 	Name   string //link,dialog,cmpnt,tab,cnfrm
 	Label  string //修改,预览，删除
+	ICON   string //图标
 	URL    string
 	RwName string
 	FwName string
@@ -30,10 +31,10 @@ var barOptrCmd = []string{"export", "import", "bcheck"}
 var charOptrCmd = []string{"chart"}
 var extCmptParam = []string{"add"}
 
-var addOpts = &optrs{Tag: "ADD", Name: "ADD", Label: "添加", RwName: "C", UNQ: defFids.Next()}
-var detailOpts = &optrs{Tag: "VIEW", Name: "VIEW", Label: "详情", RwName: "V", UNQ: defFids.Next()}
-var updateOpts = &optrs{Tag: "UPDATE", Name: "UPDATE", Label: "修改", RwName: "U", UNQ: defFids.Next()}
-var delOpts = &optrs{Tag: "DEL", Name: "CNFRM", Label: "删除", RwName: "D", UNQ: defFids.Next()}
+var addOpts = &optrs{Tag: "ADD", URL: "./{@name}.add", Name: "CMPNT", ICON: "Plus", Label: "添加", RwName: "C", UNQ: defFids.Next()}
+var detailOpts = &optrs{Tag: "VIEW", URL: "./{@name}.view", Name: "CMPNT", Label: "详情", RwName: "V", UNQ: defFids.Next()}
+var updateOpts = &optrs{Tag: "UPDATE", URL: "./{@name}.edit", Name: "CMPNT", Label: "修改", RwName: "U", UNQ: defFids.Next()}
+var delOpts = &optrs{Tag: "DEL", URL: "./{@name}.cnfrm", Name: "CMPNT", Label: "删除", RwName: "D", UNQ: defFids.Next()}
 
 func (b barOptrs) NeedCheck(t string) bool {
 	for _, v := range b {

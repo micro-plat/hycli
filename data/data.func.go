@@ -73,6 +73,20 @@ func fltrAssctColums(tx interface{}, colName string) []*Column {
 	}
 	return cols
 }
+func fltrTranslate(f string, t interface{}) string {
+	tb := getTable(t)
+	return types.Translate(f, "name", tb.Name)
+}
+func getTable(tx interface{}) *Table {
+	if t, ok := tx.(*Table); ok {
+		return t
+	}
+	if t, ok := tx.(*TTable); ok {
+		return t.Table
+	}
+	return &Table{}
+}
+
 func getColums(tx interface{}) []*Column {
 	if t, ok := tx.(*Table); ok {
 		return t.Colums
