@@ -1,5 +1,5 @@
 <template>
-  <te-frame :system="system" :menus="menus" :dropdowns="dropdowns"></te-frame>
+  <te-frame :system="system" :menus="menus" :dropdowns="dropdowns" @menuItemChanged="menuItemChanged"></te-frame>
 </template>
 <script>
 export default {
@@ -20,6 +20,12 @@ export default {
   },
 
   methods: {
+    menuItemChanged(mi) {
+      if(!mi.name){
+        return
+      }
+      document.title = mi.name+" - " + this.system.name;
+    },
     getUserInfo() {
       let that = this;
       this.$theia.http

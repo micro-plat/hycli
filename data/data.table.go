@@ -9,17 +9,26 @@ import (
 type Table struct {
 	*md.Table
 
-	//Colums 所有列
-	Colums Columns
+	//Columns 所有列
+	Columns Columns
 
-	//PKColums 主键列
-	PKColums Columns
+	//PKColumns 主键列
+	PKColumns Columns
 
-	//EnumColums 枚举列
-	EnumColums Columns
+	//UNQIndex 唯一索引
+	UNQIndex dbIdxs
+
+	//NormalIdx 普通索引
+	NormalIdx dbIdxs
+
+	//EnumColumns 枚举列
+	EnumColumns Columns
 
 	//ViewOpts 预览操作
 	ViewOpts viewOptrs
+
+	//ViewExtCmptOpts 预览页扩展组件
+	ViewExtCmptOpts viewExtCmptOpts
 
 	//ListOpts 列表操作
 	ListOpts lstOptrs
@@ -27,12 +36,11 @@ type Table struct {
 	//LStatOpts 统计操作
 	LStatOpts lstatOptrs
 
+	//ChartOpts 图表组件
 	ChartOpts chartOptrs
 
 	//BarOpts 工具栏操作
 	BarOpts barOptrs
-
-	ViewExtCmptOpts ViewExtCmptOpts
 
 	//NeedBatchCheck 是否需要批量选择
 	NeedBatchCheck bool
@@ -43,11 +51,12 @@ type Table struct {
 	//UNQ 唯一标识
 	UNQ string
 
+	//Tag 系统功能标签
 	Tag *Tag
 }
 
 func (t *Table) Sort() {
-	sort.Sort(t.Colums)
+	sort.Sort(t.Columns)
 }
 func NewTable(t *md.Table) *Table {
 	if t.Cache != nil {
@@ -55,43 +64,23 @@ func NewTable(t *md.Table) *Table {
 	}
 
 	//构建列
-	colums := newColums(t.Rows)
-	enum := newEnumType(t.Name.Short, t.Rows)
-	enum.DEColums = colums.GetEnumDelColumns()
-	barOpts := createBarOptrs(t.ExtInfo)
+	columns := newColumns(t.Rows)
 	table := &Table{
-		Table:           t,
-		UNQ:             defFids.Next(),
-		Enum:            enum,
-		ListOpts:        createLstOptrs(t.ExtInfo),
-		ViewOpts:        createViewOptrs(t.ExtInfo),
-		LStatOpts:       createLStatOptrs(t.ExtInfo),
-		ChartOpts:       createChartOptrs(t.ExtInfo),
-		ViewExtCmptOpts: make(ViewExtCmptOpts, 0, 1),
-		BarOpts:         barOpts,
-		NeedBatchCheck:  barOpts.NeedCheck(t.Name.Raw),
-		Colums:          colums,
-		PKColums:        colums.GetPKColumns(),
-		EnumColums:      colums.GetEnumColumns(),
+		Table:       t,
+		UNQ:         defFids.Next(),
+		Columns:     columns,
+		PKColumns:   columns.GetPKColumns(),
+		EnumColumns: columns.GetEnumColumns(),
+		Enum:        newEnumType(t.Name.Short, t.Rows, columns.GetEnumDelColumns()),
 	}
 	t.Cache = table
-
-	//构建操作
-	if len(fltrColums(table, VIEW_COLUMN)) > 0 {
-		table.ListOpts = append(table.ListOpts, detailOpts)
-	}
-	if len(fltrColums(table, UPDATE_COLUMN)) > 0 {
-		table.ListOpts = append(table.ListOpts, updateOpts)
-	}
-	if len(fltrColums(table, DELETE_COLUMN)) > 0 {
-		table.ListOpts = append(table.ListOpts, delOpts)
-	}
-	if len(fltrColums(table, ADD_COLUMN)) > 0 {
-		table.BarOpts = append(table.BarOpts, addOpts)
-	}
-	table.Tag = newTag(len(fltrColums(table, VIEW_COLUMN)) > 0, len(fltrColums(table, ADD_COLUMN)) > 0, len(fltrColums(table, UPDATE_COLUMN)) > 0)
-
-	table.ViewExtCmptOpts = creatExtCmptOpts(table.ViewOpts)
+	table.ListOpts = createLstOptrs(table, t.ExtInfo)
+	table.BarOpts, table.NeedBatchCheck = createBarOptrs(table, t.ExtInfo)
+	table.ViewOpts, table.ViewExtCmptOpts = createViewOptrs(t.ExtInfo)
+	table.LStatOpts, table.ChartOpts = createLStatChartOptrs(t.ExtInfo)
+	table.NormalIdx = createNormalIdx(table)
+	table.UNQIndex = createUNQIdx(table)
+	table.Tag = newTag(table)
 	table.Sort()
 	return table
 }

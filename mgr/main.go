@@ -11,6 +11,21 @@ import (
 func init() {
 	cmds.Register(
 		cli.Command{
+			Name:  "sql",
+			Usage: "SQL语句",
+			Subcommands: cli.Commands{
+				{
+					Name:   "create",
+					Usage:  "创建表结构",
+					Action: api.CreateSQLScriptByCtx,
+					Flags: []cli.Flag{
+						cli.StringFlag{Name: "table,t", Usage: `-表名称`},
+						cli.BoolFlag{Name: "cover,v", Usage: `-文件已存在时自动覆盖`},
+					},
+				},
+			},
+		},
+		cli.Command{
 			Name:  "mgr",
 			Usage: "创建vue前端项目",
 			Subcommands: cli.Commands{

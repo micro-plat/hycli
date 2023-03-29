@@ -1,22 +1,22 @@
 {{- $table := .}}
-{{- $lcols :=fltrColums $table "l" -}}
-{{- $lecols :=fltrColums $table "le" -}}
-{{- $leLen := len $lecols -}}
-{{- $lstopts :=.ListOpts -}}
-{{- $optLen := len $lstopts -}}
-{{ $tmpl :=IsTmplTb .}}
+{{- $lcols :=fltrColumns $table "l"}}
+{{- $lecols :=fltrColumns $table "le"}}
+{{- $leLen := len $lecols}}
+{{- $lstopts :=.ListOpts}}
+{{- $optLen := len $lstopts}}
+{{- $tmpl :=IsTmplTb .}}
 
+{{- if gt (len $lcols) 0 }}
 <div class="list">
-    {{if ne 0 (len $lcols)}}
-    <el-table :data="dataList_{{.UNQ}}" v-loading="conf.loading" stripe {{if eq true $tmpl -}}
-        style="width: 100%;height:300px" {{else -}} style="width: 100%;height:calc(100vh - 160px)" {{- end}}
+    <el-table :data="dataList_{{.UNQ}}" v-loading="conf.loading" stripe {{if eq true $tmpl }}
+        style="width: 100%;height:300px" {{else }} style="width: 100%;height:calc(100vh - 160px)" {{- end}}
         size="small" empty-text="无数据">le
-        {{- if gt $leLen 0 -}}
-        {{- template "le.tmpl.html" $lecols -}}
+        {{- if gt $leLen 0 }}
+        {{- template "le.tmpl.html" $lecols }}
         {{- end}}
         {{ if and (eq $table.NeedBatchCheck true) (eq false $tmpl)}}  <el-table-column type="selection" width="55" /> {{end}}
        
-        {{- range $i,$c:=$lcols -}}
+        {{- range $i,$c:=$lcols }}
         {{- if eq "switch" $c.Cmpnt.Type}}
         <el-table-column   {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{end}}  align="center" label="{{$c.Label}}">
             <template #default="scope">
@@ -68,16 +68,15 @@
         </el-table-column>
         {{- else}}
         <el-table-column  {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{end}} {{if eq true $c.Style.HideOverflow}} :show-overflow-tooltip="true"  {{end}} prop="{{$c.Name}}" align="center" label="{{$c.Label}}" />
-        {{- end -}}
+        {{- end }}
         {{- end }}
         {{if gt $optLen 0}}
         {{- template "opts.tmpl.html" .}}
-        {{- end -}}
+        {{- end }}
     </el-table>
     <el-pagination :currentPage="form_{{$table.UNQ}}.pi" :page-size="form_{{$table.UNQ}}.ps"
         style="position: absolute; right: 30px;bottom:10px;" :page-sizes="[10, 20, 50, 100]" :background="false" small
         layout="total,sizes,prev, pager, next, jumper" :total="total_{{$table.UNQ}}" @size-change="handleSizeChange"
         @current-change="handleCurrentChange" />
-    {{end}}
 </div>
-
+{{- end}}

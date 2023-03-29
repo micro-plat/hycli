@@ -141,9 +141,16 @@ func TestGetNameFor(t *testing.T) {
 func TestGetExtOpt(t *testing.T) { //>/right/info,x
 	lst := GetExtOpt("lst(权限,link:/right/info,x:y),lst(启用,dialog:/right/save,m),pnl(启用,dialog:/right/save,m)", "lst")
 	assert.Equal(t, 2, len(lst))
-	assert.Equal(t, "lst(权限,link:/right/info,x:y)", lst[0])
-	assert.Equal(t, "lst(启用,dialog:/right/save,m)", lst[1])
+	assert.Equal(t, []string{"权限", "link", "/right/info", "x", "y"}, lst[0])
+	assert.Equal(t, []string{"启用", "dialog", "/right/save", "m", ""}, lst[1])
 }
+func TestGetExtOptx(t *testing.T) { //>/right/info,x
+	lst := GetExtOpt("lst(账户加款,dialog:/beanpay/account/info/balance,x),lst(授信,dialog:/beanpay/account/info/credit,y)", "lst")
+	assert.Equal(t, 2, len(lst))
+	assert.Equal(t, []string{"账户加款", "dialog", "/beanpay/account/info/balance", "x", ""}, lst[0])
+	assert.Equal(t, []string{"授信", "dialog", "/beanpay/account/info/credit", "y", ""}, lst[1])
+}
+
 func TestGetFormat(t *testing.T) {
 	f := GetFormat("   le,f(MM/dd HH:mm:ss),v")
 	assert.Equal(t, "MM/dd HH:mm:ss", f)
@@ -153,4 +160,39 @@ func TestMergeConstraint(t *testing.T) {
 	f := getNames("   le,f(MM/dd HH:mm:ss),v")
 	fmt.Println("f:", f)
 	assert.Equal(t, "MM/dd HH:mm:ss", f[1])
+}
+func TestExpr(t *testing.T) {
+	p := GetExpr("age<20")
+	assert.Equal(t, 3, len(p))
+	assert.Equal(t, "age", p[0])
+	assert.Equal(t, "<", p[1])
+	assert.Equal(t, "20", p[2])
+
+	p = GetExpr("age=20")
+	assert.Equal(t, 3, len(p))
+	assert.Equal(t, "age", p[0])
+	assert.Equal(t, "=", p[1])
+	assert.Equal(t, "20", p[2])
+
+	p = GetExpr("age<=20")
+	assert.Equal(t, 3, len(p))
+	assert.Equal(t, "age", p[0])
+	assert.Equal(t, "<=", p[1])
+	assert.Equal(t, "20", p[2])
+
+	p = GetExpr("age>=20")
+	assert.Equal(t, 3, len(p))
+	assert.Equal(t, "age", p[0])
+	assert.Equal(t, ">=", p[1])
+	assert.Equal(t, "20", p[2])
+
+	p = GetExpr("age!=20")
+	assert.Equal(t, 3, len(p))
+	assert.Equal(t, "age", p[0])
+	assert.Equal(t, "!=", p[1])
+	assert.Equal(t, "20", p[2])
+
+	p = GetExpr("age")
+	assert.Equal(t, 0, len(p))
+
 }

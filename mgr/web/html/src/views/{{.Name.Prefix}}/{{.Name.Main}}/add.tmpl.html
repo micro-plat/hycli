@@ -1,18 +1,18 @@
-{{- $ucols := .  -}}
+{{- $ucols := .  }}
 {{- $m := 0}}
   <el-row>
-  {{range $i,$c:= $ucols -}}
-  {{- if le 33 $c.Field.Len -}}
+  {{- range $i,$c:= $ucols }}
+  {{- if le 33 $c.Field.Len }}
     {{$m =  0}}
         <el-col :span="24">
   {{- else if and (eq "newline" $c.Style.Position) (ne 0 (spare $m 24))}}
       <el-col :span="12"></el-col>
       <el-col :span="12">
-      {{$m = add $m 24 -}}
-      {{- else -}}
+      {{$m = add $m 24 }}
+      {{- else }}
       <el-col :span="12">
         {{$m = add $m 12}}
-  {{- end -}}
+  {{- end }}
       {{- if eq "password" $c.Cmpnt.Type}}
       <!--{{$c.Label}} 密码控件 -->
       <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
@@ -20,19 +20,19 @@
           maxlength="{{$c.Field.Len}}" placeholder="请输入{{$c.Label}}" />
       </el-form-item>
 
-      {{else if eq "switch" $c.Cmpnt.Type}}
+      {{- else if eq "switch" $c.Cmpnt.Type}}
       <!--{{$c.Label}} switch控件 -->
       <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
         <el-switch v-model="{{$c.Ext.FormName}}.{{$c.Name}}_switch" />
       </el-form-item>
 
-      {{else if or (eq "date" $c.Cmpnt.Type) (eq "daterange" $c.Cmpnt.Type)}}
+      {{- else if or (eq "date" $c.Cmpnt.Type) (eq "daterange" $c.Cmpnt.Type)}}
       <!--{{$c.Label}} 日期控件 -->
       <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
         <el-date-picker style="width: 100%" v-model="{{$c.Ext.FormName}}.{{$c.Name}}" clearable type="date"
           placeholder="请选择{{.Label}}" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
       </el-form-item>
-      {{ else if eq "multiselect" $c.Cmpnt.Type}}
+      {{- else if eq "multiselect" $c.Cmpnt.Type}}
       <!--{{$c.Label}} 多选控件 -->
       <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
         <el-select style="width: 100%" v-model="{{$c.Ext.FormName}}.{{.Name}}" clearable multiple collapse-tags
@@ -40,7 +40,7 @@
           <el-option v-for="item in {{.Name}}List" :key="item.value" :label="item.name" :value="item.value" />
         </el-select>
       </el-form-item>
-      {{ else if eq "checkbox" $c.Cmpnt.Type}}
+      {{- else if eq "checkbox" $c.Cmpnt.Type}}
       <!--{{$c.Label}} chckbox-group -->
       <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
         <el-checkbox-group v-model="{{$c.Ext.FormName}}.{{.Name}}" size="small">
@@ -49,32 +49,32 @@
           </el-checkbox-button>
         </el-checkbox-group>
       </el-form-item>
-      {{else if eq "slider" $c.Cmpnt.Type}}
+      {{- else if eq "slider" $c.Cmpnt.Type}}
       <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
         <el-slider size="small" show-input
         placement="right" style="width: 100%" v-model="{{$c.Ext.FormName}}.{{ $c.Name }}" 
         {{- if ne 0 $c.Style.Min}}
-         :min="{{ $c.Style.Min }}" {{- end -}} 
-         {{- if ne 0 $c.Style.Max }}  :max="{{ $c.Style.Max }}" {{- end -}} />
+         :min="{{ $c.Style.Min }}" {{- end }} 
+         {{- if ne 0 $c.Style.Max }}  :max="{{ $c.Style.Max }}" {{- end }} />
       </el-form-item>
-      {{else if eq "number" $c.Cmpnt.Type}}
+      {{- else if eq "number" $c.Cmpnt.Type}}
       <!--{{$c.Label}} 数字控件 -->
       <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
         <el-input-number
         {{if le 0 $c.Field.DLen }} :precision="{{$c.Field.DLen}}" {{end}} 
          controls-position="right" style="width: 100%" v-model="{{$c.Ext.FormName}}.{{ $c.Name }}" 
         {{- if ne 0 $c.Style.Min}}
-         :min="{{ $c.Style.Min }}" {{- end -}} {{- if ne 0 $c.Style.Max}}  :max="{{ $c.Style.Max }}" {{- end -}} />
+         :min="{{ $c.Style.Min }}" {{- end }} {{- if ne 0 $c.Style.Max}}  :max="{{ $c.Style.Max }}" {{- end }} />
       </el-form-item>
 
-      {{else if or (eq "file" $c.Cmpnt.Type) (eq "img" $c.Cmpnt.Type)}}
+      {{- else if or (eq "file" $c.Cmpnt.Type) (eq "img" $c.Cmpnt.Type)}}
       <!--{{$c.Label}} 文件控件 -->
       <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
         <el-upload :action="conf.uploadPath" :limit="1" :on-success="onUploadSuccess">
           <el-button type="primary">上传文件</el-button>
         </el-upload>
       </el-form-item>
-      {{else if  (eq "radio" $c.Cmpnt.Type)}}
+      {{- else if  (eq "radio" $c.Cmpnt.Type)}}
      <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
       <el-radio-group v-model="{{$c.Ext.FormName}}.{{$c.Name}}" size="small">
         <el-radio-button v-for="item in {{$c.Name}}List" :key="item.value" :label="item.value">
@@ -82,35 +82,35 @@
         </el-radio-button>
     </el-radio-group>
      </el-form-item>
-     {{else if eq true $c.Enum.IsEnum}}
+     {{- else if eq true $c.Enum.IsEnum}}
      <!--{{$c.Label}} 下拉控件 -->
      <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
-       <el-select  {{if gt (len (fltrAssctColums $ucols $c.Name)) 0}} @change="onChange_{{$c.Name}}"  {{end}} v-model="{{$c.Ext.FormName}}.{{.Name}}" style="width: 100%" filterable clearable
+       <el-select  {{if gt (len (fltrAssctColumns $ucols $c.Name)) 0}} @change="onChange_{{$c.Name}}"  {{end}} v-model="{{$c.Ext.FormName}}.{{.Name}}" style="width: 100%" filterable clearable
          placeholder="请选择{{.Label}}" >
          <el-option v-for="item in {{.Name}}List" :key="item.value" :label="item.name" :value="item.value" />
        </el-select>
      </el-form-item>
-      {{else if  (eq "readonly" $c.Cmpnt.Type)}}
+      {{- else if  (eq "readonly" $c.Cmpnt.Type)}}
       <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
         <el-input disabled  style="width: 100%" v-model="{{$c.Ext.FormName}}.{{$c.Name}}"
           :rows="{{$c.Style.Rows}}" {{if gt $c.Field.Len 33}} type="textarea" show-word-limit {{end}} />
       </el-form-item>
-      {{else if  (eq "label" $c.Cmpnt.Type)}}
+      {{- else if  (eq "label" $c.Cmpnt.Type)}}
       <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
         <span v-text="{{$c.Ext.FormName}}.{{$c.Name}}"></span>
       </el-form-item>
-      {{else if (eq "color-picker" $c.Cmpnt.Type )}}
+      {{- else if (eq "color-picker" $c.Cmpnt.Type )}}
       <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
         <el-color-picker v-model="{{$c.Ext.FormName}}.{{$c.Name}}" />
       </el-form-item>
-      {{else}}
+      {{- else}}
       <!--{{$c.Label}} 输入控件 -->
       <el-form-item prop="{{$c.Name}}" label="{{$c.Label}}" label-width="100px" label-position="right">
         <el-input clearable style="width: 100%" v-model="{{$c.Ext.FormName}}.{{$c.Name}}" maxlength="{{$c.Field.Len}}"
           :rows="{{$c.Style.Rows}}" {{if gt $c.Field.Len 33}} type="textarea" show-word-limit {{end}}
           placeholder="请输入{{$c.Label}}" />
       </el-form-item>
-      {{end -}}
+      {{- end }}
     </el-col>
-    {{end}}
+    {{- end}}
 </el-row>

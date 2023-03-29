@@ -10,14 +10,14 @@
     },
     form:{
         {{- range $i,$c := $ccols}}
-        {{if eq "switch" $c.Cmpnt.Type  -}}
+        {{- if eq "switch" $c.Cmpnt.Type}}
         {{$c.Name}}_switch:false,
-        {{- else -}}
+        {{- else}}
         {{$c.Name}}:"",
         {{- end}}
         {{- end}}
         },
-        {{- range $i,$c := $ccols -}}
+        {{- range $i,$c := $ccols}}
         {{- if or (eq true $c.Enum.IsEnum) (eq "multiselect" $c.Cmpnt.Type)}}
         {{.Name}}List:this.$theia.enum.get("{{$c.Enum.EnumType}}","{{$c.Enum.PID}}","{{$c.Enum.Group}}"),
         {{- end}}

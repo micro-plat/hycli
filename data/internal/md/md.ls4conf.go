@@ -107,18 +107,18 @@ func line2TableRowConf(line *Line) (*RowConf, error) {
 	if strings.Count(line.Text, "|") != 4 {
 		return nil, fmt.Errorf("配置表结构有误(行:%d)", line.LineID)
 	}
-	colums := strings.Split(strings.Trim(strings.TrimSpace(line.Text), "|"), "|")
-	if colums[0] == "" {
+	Columns := strings.Split(strings.Trim(strings.TrimSpace(line.Text), "|"), "|")
+	if Columns[0] == "" {
 		return nil, fmt.Errorf("字段名称不能为空 %s(行:%d)", line.Text, line.LineID)
 	}
-	desc := strings.TrimSpace(strings.Replace(colums[2], "&#124;", "|", -1))
+	desc := strings.TrimSpace(strings.Replace(Columns[2], "&#124;", "|", -1))
 	c := &RowConf{
 		Index:       line.LineID,
-		Name:        strings.TrimSpace(strings.Replace(colums[0], "&#124;", "|", -1)),
-		Constraints: mergeConstraint(getNames(strings.TrimSpace(colums[1]))),
+		Name:        strings.TrimSpace(strings.Replace(Columns[0], "&#124;", "|", -1)),
+		Constraints: mergeConstraint(getNames(strings.TrimSpace(Columns[1]))),
 		Desc:        &RDesc{Raw: desc, Name: getShortDesc(desc)},
 	}
-	// fmt.Println("---toconf:", colums[0], ":", getNames(colums[1]))
+	// fmt.Println("---toconf:", Columns[0], ":", getNames(Columns[1]))
 
 	return c, nil
 }

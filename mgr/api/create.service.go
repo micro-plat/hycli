@@ -44,6 +44,9 @@ func CreateService(mdpath string, tbs string, outpath string, cover bool) error 
 		if err = createService(outpath, tb, cover); err != nil {
 			return err
 		}
+		if err = createModules(outpath, tb, cover); err != nil {
+			return err
+		}
 	}
 	return nil
 }

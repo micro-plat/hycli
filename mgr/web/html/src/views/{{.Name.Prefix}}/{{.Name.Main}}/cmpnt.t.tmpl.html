@@ -1,9 +1,11 @@
-{{ $table := .}}
-{{ $opts:= fltrMergeOptrs $table.ListOpts $table.BarOpts}}
+{{- $table := .}}
+{{- $opts:= mergeOptrs $table.ListOpts $table.BarOpts}}
+{{- if gt (len $opts) 0}}
 <div>
-    {{- range $x,$m:=$opts}}
+    {{- range $x,$m:= $opts}}
     {{- if eq "CMPNT" $m.Name}}
    <{{$m.UNQ}} ref="cmpnt_{{$m.UNQ}}" @onsaved="onQuery"></{{$m.UNQ}}>
    {{- end}}
    {{- end}}
 </div>
+{{- end}}

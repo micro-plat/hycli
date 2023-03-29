@@ -11,9 +11,10 @@
   "dependencies": {
     "bootstrap": "^5.1.3",
     "core-js": "^3.8.3",
+    "echarts": "^5.4.2",
     "element-plus": "^2.1.8",
     "jquery": "^3.6.0",
-    "theia-ui": "^0.1.229",
+    "theia-ui": "^0.1.230",
     "vue": "^3.2.13"
   },
   "devDependencies": {

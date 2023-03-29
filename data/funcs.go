@@ -1,38 +1,42 @@
 package data
 
 import (
+	"sort"
 	"strings"
 
+	"github.com/micro-plat/hycli/data/internal/md"
 	"github.com/micro-plat/lib4go/types"
 )
 
 var Funcs = map[string]interface{}{
-
-	"flterMainTable":       flterMainTable,
-	"fltrNotNullCols":      fltrNotNullRows,
-	"getFirstTable":        getFirstTable,
-	"IsTmplTb":             IsTmplTb,
-	"fltrSearchUITable":    fltrSearchUITable,
-	"fltrSearchTable":      fltrSearchTable,
-	"fltrOptrs":            fltrOptrs,
-	"fltrOptrsByTag":       fltrOptrsByTag,
-	"fltrColums":           fltrColums,
-	"fltrMergeOptrs":       fltrMergeOptrs,
-	"fltrAssctColums":      fltrAssctColums,
-	"fltrTranslate":        fltrTranslate,
-	"fltrCmpnt":            fltrCmpnt,
-	"fltrColumsExcludeExt": fltrColumsExcludeExt,
-	"fltrOptrPara":         fltrOptrPara,
-	"resetForm":            resetForm,
-	"multiply":             multiply,
-	"sjoin":                sjoin,
-	"add":                  fltrAdd,
-	"spare":                spare,
-	"bleft":                bleft,
-	"div":                  divide,
-	"bright":               bright,
-	"contactTBS":           contactTables,
-	"fltr2Num":             fltr2Num,
+	"flterMainTable":        flterMainTable,
+	"fltrNotNullCols":       fltrNotNullRows,
+	"getFirstTable":         getFirstTable,
+	"IsTmplTb":              IsTmplTb,
+	"fltrSearchUITable":     fltrSearchUITable,
+	"fltrSearchTable":       fltrSearchTable,
+	"fltrMYSQLType":         fltrMYSQLType,
+	"fltrMYSQLDef":          mySQLDefValue,
+	"fltrOptrs":             fltrOptrs,
+	"fltrOptrsByTag":        fltrOptrsByTag,
+	"fltrColumns":           fltrColumns,
+	"mergeOptrs":            mergeOptrs,
+	"fltrAssctColumns":      fltrAssctColumns,
+	"fltrTranslate":         fltrTranslate,
+	"fltrCmpnt":             fltrCmpnt,
+	"fltrColumnsExcludeExt": fltrColumnsExcludeExt,
+	"fltrOptrPara":          fltrOptrPara,
+	"fltr2Expr":             fltr2Expr,
+	"resetForm":             resetForm,
+	"multiply":              multiply,
+	"sjoin":                 sjoin,
+	"add":                   fltrAdd,
+	"spare":                 spare,
+	"bleft":                 bleft,
+	"div":                   divide,
+	"bright":                bright,
+	"contactTBS":            contactTables,
+	"fltr2Num":              fltr2Num,
 }
 
 func divide(x, y interface{}) int {
@@ -72,7 +76,7 @@ func flterMainTable(tbs []*Table) []*Table {
 	}
 	return ntbs
 }
-func fltrColumsExcludeExt(cols []*Column) []*Column {
+func fltrColumnsExcludeExt(cols []*Column) []*Column {
 	vc := make([]*Column, 0, 1)
 	for _, v := range cols {
 		if !v.Field.IsExtFuncField {
@@ -113,10 +117,16 @@ func fltrOptrs(opts []*optrs, tps string) []*optrs {
 	}
 	return nopts
 }
-func fltrMergeOptrs(opts ...[]*optrs) []*optrs {
+func mergeOptrs(opts ...[]*optrs) []*optrs {
 	lst := make([]*optrs, 0, 1)
-	for _, opt := range opts {
-		lst = append(lst, opt...)
+	v := map[string]bool{}
+	for _, fopts := range opts {
+		for _, opt := range fopts {
+			if _, ok := v[opt.UNQ]; !ok {
+				lst = append(lst, opt)
+				v[opt.UNQ] = true
+			}
+		}
 	}
 	return lst
 }
@@ -140,4 +150,123 @@ func fltrOptrPara(opt *optrs, name string, def string) string {
 		return v
 	}
 	return def
+}
+
+type expr struct {
+	Name   string
+	Symbol string
+	Value  string
+}
+
+func fltr2Expr(f string) *expr {
+	pr := md.GetExpr(f)
+	if len(pr) != 3 {
+		return &expr{}
+	}
+	return &expr{
+		Name:   pr[0],
+		Symbol: pr[1],
+		Value:  pr[2],
+	}
+}
+
+// fltrColumns 过滤用户自定义类型对应的行，自定义行对应的控件按新增模式处理
+func fltrColumns(tx interface{}, tp string, formName ...string) []*Column {
+	t, ok := tx.(*Table)
+	if !ok {
+		t = tx.(*TTable).Table
+	}
+
+	cols := make(Columns, 0, 1)
+	tps := getTPS(tp)
+	for _, r := range t.Columns {
+		if md.HasConstraint(r.RawConsts, tps...) {
+			r.ResetCmpnt(tps...) //重置扩展组件
+			r.Ext.FormName = types.GetStringByIndex(formName, 0, "form")
+			cols = append(cols, r.Index(types.GetStringByIndex(tps, 0), len(cols)))
+		}
+	}
+	sort.Sort(cols)
+	return cols
+}
+func fltrCmpnt(tx interface{}, cmpnt string, tps ...string) []*Column {
+	colums := getColumns(tx)
+	cols := make(Columns, 0, 1)
+	for _, r := range colums {
+		if r.allCmpnt.getCmpnt(r.Row, tps...).Type == cmpnt {
+			r.ResetCmpnt(tps...)
+			cols = append(cols, r)
+		}
+	}
+	sort.Sort(cols)
+	return cols
+}
+
+func resetForm(t *Table) *Table {
+	for _, c := range t.Columns {
+		c.Ext.FormName = "form"
+	}
+	return t
+}
+func getTPS(tp string) []string {
+	is := strings.Split(tp, "-")
+	lst := make([]string, 0, 1)
+	for _, v := range is {
+		lst = append(lst, strings.ToLower(v))
+		lst = append(lst, strings.ToUpper(v))
+	}
+	return lst
+}
+func fltrAssctColumns(tx interface{}, colName string) []*Column {
+	columns := getColumns(tx)
+	cols := make(Columns, 0, 1)
+	for _, r := range columns {
+		if r.Enum.AssctColumn == "" {
+			continue
+		}
+		if strings.EqualFold(r.Enum.AssctColumn, colName) {
+			cols = append(cols, r)
+		}
+	}
+	return cols
+}
+func fltrTranslate(f string, t interface{}) string {
+	tb := getTable(t)
+	return types.Translate(f, "name", tb.Name, "mainPath", strings.ToLower(tb.Name.MainPath))
+}
+func getTable(tx interface{}) *Table {
+	if t, ok := tx.(*Table); ok {
+		return t
+	}
+	if t, ok := tx.(*TTable); ok {
+		return t.Table
+	}
+	return &Table{}
+}
+func fltrDisOptrs(ors []*optrs) []*optrs {
+	lst := make([]*optrs, 0, 1)
+	vlst := map[string]bool{}
+	for _, v := range ors {
+		if _, ok := vlst[v.UNQ+v.URL]; !ok {
+			lst = append(lst, v)
+			vlst[v.UNQ+v.URL] = true
+		}
+	}
+	return lst
+}
+
+func getColumns(tx interface{}) []*Column {
+	if t, ok := tx.(*Table); ok {
+		return t.Columns
+	}
+	if t, ok := tx.(*TTable); ok {
+		return t.Columns
+	}
+	if t, ok := tx.([]*Column); ok {
+		return t
+	}
+	return nil
+}
+func fltrMYSQLType(c *md.Row) string {
+	return mySQLType(c.Type.Name, c.Type.Len, c.Type.DLen)
 }

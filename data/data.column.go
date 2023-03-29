@@ -16,11 +16,11 @@ const (
 )
 
 type BaseColumn struct {
+	*md.Row
 	Name      string //字段英文名
 	Label     string //字段中文名
 	UNQ       string //字段唯一标
 	RawConsts []string
-	rawRow    *md.Row
 	index     int //顺序编号
 }
 type fieldType struct {
@@ -28,16 +28,16 @@ type fieldType struct {
 	Type           string //strin,um,decimal,date
 	Desc           string
 	Required       bool
-	SLen           string //字段原长度
 	Len            int    //字段原长度
-	DLen           int    //？
+	DLen           int    //字段第二长度
 	DefaultValue   string //默认值
 	IsDate         bool
 	IsNumber       bool
-	IsPK           bool  //是否是主键
-	IsSEQ          bool  //是否自增字段
-	IsExtFuncField bool  //扩展功能字段
-	Idxs           []idx //字段索引
+	IsPK           bool   //是否是主键
+	IsSEQ          bool   //是否自增字段
+	IsExtFuncField bool   //扩展功能字段
+	TMYSQL         string //mysql 数据库类型
+	VMYSQL         string //mysql 默认值
 }
 
 func createFieldType(r *md.Row) fieldType {
@@ -54,6 +54,8 @@ func createFieldType(r *md.Row) fieldType {
 		IsPK:           md.HasConstraint(r.Constraints, "PK", "pk"),   //是否是主键
 		IsSEQ:          md.HasConstraint(r.Constraints, "SEQ", "seq"), //是否自增字段
 		IsExtFuncField: strings.HasPrefix(r.Raw, "^"),                 //扩展字段
+		TMYSQL:         mySQLType(r.Type.Name, r.Type.Len, r.Type.DLen),
+		VMYSQL:         mySQLDefValue(r.DefValue),
 	}
 }
 
@@ -61,12 +63,6 @@ type color struct {
 	Name      string
 	FontColor string
 	BgColor   string
-}
-
-type idx struct {
-	Type  string
-	Name  string
-	Index int
 }
 
 // 显示组件
@@ -114,17 +110,6 @@ func (d displayCmpnts) getCmpnt(r *md.Row, tps ...string) displayCmpnt {
 	return cmpnt
 }
 
-// 显示样式
-type displayStyle struct {
-	ListWidth    string //列表宽度
-	Rows         int    //显示的行数，如textArea行数
-	Position     string //位置 default,默认，换行newline
-	HideOverflow bool   //超出隐藏
-	CLR          color  //颜色信息
-	Min          int    //最小值
-	Max          int    //最大值
-}
-
 // 解析列表组件
 func newLstCmpnt(r *md.Row) displayCmpnts {
 	cmpnts := make(map[string]displayCmpnt)
@@ -143,6 +128,17 @@ func newLstCmpnt(r *md.Row) displayCmpnts {
 
 	}
 	return cmpnts
+}
+
+// 显示样式
+type displayStyle struct {
+	ListWidth    string //列表宽度
+	Rows         int    //显示的行数，如textArea行数
+	Position     string //位置 default,默认，换行newline
+	HideOverflow bool   //超出隐藏
+	CLR          color  //颜色信息
+	Min          int    //最小值
+	Max          int    //最大值
 }
 
 // 解析列表样式
@@ -206,7 +202,7 @@ func (s Columns) Len() int           { return len(s) }
 func (s Columns) Less(i, j int) bool { return s[i].index < s[j].index }
 func (s Columns) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
 
-func newColums(r []*md.Row) Columns {
+func newColumns(r []*md.Row) Columns {
 	cs := make([]*Column, 0, 1)
 	for _, v := range r {
 		cs = append(cs, newColum(v))
@@ -222,7 +218,7 @@ func newColum(r *md.Row) *Column {
 			Label:     r.Desc.Name,
 			UNQ:       defFids.Next(),
 			RawConsts: r.Constraints,
-			rawRow:    r,
+			Row:       r,
 			index:     99,
 		},
 		allCmpnt: cmpnts,
@@ -234,12 +230,17 @@ func newColum(r *md.Row) *Column {
 }
 
 func (c *Column) ResetCmpnt(t ...string) {
-	c.Cmpnt = c.allCmpnt.getCmpnt(c.rawRow, t...)
+	c.Cmpnt = c.allCmpnt.getCmpnt(c.Row, t...)
 }
 func (c *Column) Index(t string, i int) *Column {
 	ncol := *c
 	fc, _, _ := md.GetConsByTagIgnorecase(fmt.Sprintf("%sidx", t), c.RawConsts...)
 	ncol.index = types.GetInt(fc, i+100+2)
+	return &ncol
+}
+func (c *Column) NIndex(i int) *Column {
+	ncol := *c
+	ncol.index = i
 	return &ncol
 }
 func (c Columns) GetPKColumns() Columns {

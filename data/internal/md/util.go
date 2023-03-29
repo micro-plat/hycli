@@ -68,7 +68,18 @@ func GetConsNameByTag(t string, cns ...string) string {
 	}
 	return ""
 }
-
+func GetExpr(v string) []string {
+	f := `(\w+)([><!]?[=]?)(\w*)`
+	reg := regexp.MustCompile(f)
+	names := reg.FindAllStringSubmatch(v, -1)
+	if len(names) > 0 &&
+		names[0][1] != "" &&
+		names[0][2] != "" &&
+		names[0][3] != "" {
+		return names[0][1:]
+	}
+	return nil
+}
 func GetConsByTag(t string, cns ...string) (string, string, string) {
 	cons := GetConstraintByReg(cns, fmt.Sprintf(`^(%s)$|^%s\(([^\(^\)^,]+)[,]?([^\(^\)^,]*)[,]?([^\(^\)]*)\)$`, t, t))
 	if len(cons) == 0 {
@@ -126,6 +137,24 @@ func GetConstraintByReg(cns []string, f string) []string {
 	}
 	return nil
 }
+func GetConstraintByRegs(cns []string, f string) [][]string {
+	reg := regexp.MustCompile(f)
+	lst := make([][]string, 0, 1)
+	for _, c := range cns {
+		names := reg.FindAllStringSubmatch(c, -1)
+		if len(names) > 0 {
+			lst = append(lst, names[0][1:])
+		}
+	}
+	return lst
+}
+func GetIdx(tag string, cns ...string) [][]string {
+	lst := make([][]string, 0, 1)
+	lst = append(lst, GetConstraintByRegs(cns, fmt.Sprintf(`^%s\((\w+)[,]?([\d]*)\)`, strings.ToLower(tag)))...)
+	lst = append(lst, GetConstraintByRegs(cns, fmt.Sprintf(`^%s\((\w+)[,]?([\d]*)\)`, strings.ToUpper(tag)))...)
+	return lst
+}
+
 func GetExtOpt(t string, tag string) [][]string {
 	reg := regexp.MustCompile(fmt.Sprintf(`%s\([^(^)]+\)`, tag))
 	lst := reg.FindAllString(t, -1)

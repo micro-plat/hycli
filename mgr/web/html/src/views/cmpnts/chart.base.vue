@@ -134,7 +134,6 @@ export default {
             return that.resetLineBar(r, that)
         },
         resetPIE(item, that) {
-
             let url = that.url
             that.option.tooltip.formatter = that.formatter.pie
             that.option.legend.data = []
@@ -177,7 +176,7 @@ export default {
                 return
             }
             //将 [320,332,301,334,390,330,320] 转为：[{"name":"2023-3","value":100}]
-            if (!currentYAxis[0]["name"]) {
+            if (!(currentYAxis[0]||{}).hasOwnProperty("name")) {
                 currentYAxis = that.fullYAxis(that.option.legend.data, currentYAxis)
             }
 
@@ -201,7 +200,6 @@ export default {
             return true
         },
         resetLineBar(item, that) {
-
             let url = that.url
             that.option.legend.data = []
             that.option.tooltip.formatter = that.formatter.line_bar

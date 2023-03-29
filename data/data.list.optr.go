@@ -1,9 +1,11 @@
 package data
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/micro-plat/hycli/data/internal/md"
+	"github.com/micro-plat/lib4go/jsons"
 	"github.com/micro-plat/lib4go/types"
 )
 
@@ -13,19 +15,27 @@ type optrs struct {
 	Name   string //link,dialog,cmpnt,tab,cnfrm
 	Label  string //修改,预览，删除
 	ICON   string //图标
-	URL    string
-	RwName string
-	FwName string
-	Params map[string]string
-	UNQ    string
+	URL    string //组件URL
+	RwName string //当前表字段标记
+	FwName string //外部表字段标记
+	ReqURL string //服务请求URL
+	IsMux  bool   //是否是复用组件
+
+	ExtTable string
+	Params   map[string]string
+	UNQ      string
 }
+type formatOptrs []*optrs
 type lstOptrs []*optrs
 type viewOptrs []*optrs
 type lstatOptrs []*optrs
 type chartOptrs []*optrs
 type barOptrs []*optrs
-type ViewExtCmptOpts []*optrs
+type viewExtCmptOpts []*optrs
 
+var viewOptCmd = []string{"view"}
+var lstatOptCmd = []string{"lstat"}
+var lstOptCmd = []string{"lst"}
 var batchCheck = []string{"bcheck"}
 var barOptrCmd = []string{"export", "import", "bcheck"}
 var charOptrCmd = []string{"chart"}
@@ -34,7 +44,22 @@ var extCmptParam = []string{"add"}
 var addOpts = &optrs{Tag: "ADD", URL: "./{@name}.add", Name: "CMPNT", ICON: "Plus", Label: "添加", RwName: "C", UNQ: defFids.Next()}
 var detailOpts = &optrs{Tag: "VIEW", URL: "./{@name}.view", Name: "CMPNT", Label: "详情", RwName: "V", UNQ: defFids.Next()}
 var updateOpts = &optrs{Tag: "UPDATE", URL: "./{@name}.edit", Name: "CMPNT", Label: "修改", RwName: "U", UNQ: defFids.Next()}
-var delOpts = &optrs{Tag: "DEL", URL: "./{@name}.cnfrm", Name: "CMPNT", Label: "删除", RwName: "D", UNQ: defFids.Next()}
+var delOpts = &optrs{Tag: "CNFRM", URL: "./{@name}.cnfrm", ReqURL: "/{@mainPath}/del", Name: "CMPNT", Label: "删除", RwName: "D", UNQ: defFids.Next(), IsMux: true}
+var dialogOpts = &optrs{Tag: "DIALOG", URL: "./{@name}.dialog", Name: "CMPNT", IsMux: true}
+var cnfrmOpts = &optrs{Tag: "CNFRM", URL: "./{@name}.cnfrm", Name: "CMPNT", IsMux: true}
+var chartLinePieBarOpts = &optrs{Tag: "CHART", URL: "@/views/cmpnts/chart.base.vue", Name: "CMPNT"}
+
+var extCmptOpts = map[string]*optrs{
+	"add": addOpts,
+}
+
+func (f formatOptrs) String() string {
+	buff, err := jsons.Marshal(f)
+	if err != nil {
+		return fmt.Sprintf("err:%s", err.Error())
+	}
+	return string(buff)
+}
 
 func (b barOptrs) NeedCheck(t string) bool {
 	for _, v := range b {
@@ -45,72 +70,101 @@ func (b barOptrs) NeedCheck(t string) bool {
 	return false
 }
 
-func createLstOptrs(t string) lstOptrs {
-	optrs := make([]*optrs, 0, 1)
-	optrs = append(optrs, createOptrs(t, "lst")...)
-	optrs = append(optrs, createOptrs(t, "LST")...)
+func createLstOptrs(table *Table, t string) lstOptrs {
+	optrs := createCmdsOptrs(t, lstOptCmd)
+	//构建操作
+	if len(fltrColumns(table, VIEW_COLUMN)) > 0 {
+		optrs = append(optrs, detailOpts)
+	}
+	if len(fltrColumns(table, UPDATE_COLUMN)) > 0 {
+		optrs = append(optrs, updateOpts)
+	}
+	if len(fltrColumns(table, DELETE_COLUMN)) > 0 {
+		optrs = append(optrs, delOpts)
+	}
 	return optrs
 }
-func createViewOptrs(t string) viewOptrs {
-	optrs := make([]*optrs, 0, 1)
-	optrs = append(optrs, createOptrs(t, "view")...)
-	optrs = append(optrs, createOptrs(t, "VIEW")...)
-	return optrs
+func createViewOptrs(t string) (viewOptrs, viewExtCmptOpts) {
+	viewOpts := createCmdsOptrs(t, viewOptCmd)
+	extOpts := creatExtCmptOpts(viewOpts)
+	return viewOpts, extOpts
 }
-func createLStatOptrs(t string) lstatOptrs {
-	optrs := make([]*optrs, 0, 1)
-	optrs = append(optrs, createOptrs(t, "lstat")...)
-	optrs = append(optrs, createOptrs(t, "LSTAT")...)
-	return optrs
+func createLStatChartOptrs(t string) (lstatOptrs, chartOptrs) {
+	optrs := createCmdsOptrs(t, lstatOptCmd)
+	copts := createChartOptrs(t)
+	return optrs, copts
 }
 func createChartOptrs(t string) chartOptrs {
+	return createCmdsOptrs(t, charOptrCmd)
+}
+func createBarOptrs(table *Table, t string) (barOptrs, bool) {
+	opts := createCmdsOptrs(t, barOptrCmd)
+	if len(fltrColumns(table, ADD_COLUMN)) > 0 {
+		opts = append(opts, addOpts)
+	}
+	return opts, barOptrs(opts).NeedCheck(table.Name.Raw)
+}
+func createCmdsOptrs(t string, cmds []string) []*optrs {
 	optrs := make([]*optrs, 0, 1)
-	for _, v := range charOptrCmd {
+	for _, v := range cmds {
 		optrs = append(optrs, createOptrs(t, strings.ToLower(v))...)
 		optrs = append(optrs, createOptrs(t, strings.ToUpper(v))...)
 	}
 	return optrs
 }
+
 func creatExtCmptOpts(opts ...[]*optrs) []*optrs {
 	nopts := make([]*optrs, 0, 1)
 	for _, opt := range opts {
 		for _, view := range opt {
 			for _, cmd := range extCmptParam {
 				if v, ok := view.Params[cmd]; ok && types.GetBool(v) {
-					xview := *view
-					xview.Name = "CMPNT"
-					xview.Tag = cmd
-					xview.Label = view.Params["label"]
-					nopts = append(nopts, &xview)
+					if opts, ok := extCmptOpts[cmd]; ok {
+						xview := *opts
+						xview.UNQ = view.UNQ
+						xview.Params = map[string]string{
+							"table": view.URL,
+						}
+						nopts = append(nopts, &xview)
+					}
 				}
 			}
 		}
 	}
 	return nopts
+}
 
-}
-func createBarOptrs(t string) barOptrs {
-	optrs := make([]*optrs, 0, 1)
-	for _, v := range barOptrCmd {
-		optrs = append(optrs, createOptrs(t, strings.ToLower(v))...)
-		optrs = append(optrs, createOptrs(t, strings.ToUpper(v))...)
-	}
-	return optrs
-}
 func createOptrs(t string, tag string) []*optrs {
 	list := md.GetExtOpt(t, tag)
 	opts := make([]*optrs, 0, len(list))
+	if len(list) == 0 {
+		return opts
+	}
 	for _, lst := range list {
-		opt := &optrs{
-			Tag:    tag,
-			Name:   strings.ToUpper(types.GetStringByIndex(lst, 1)),
-			Label:  lst[0],
-			URL:    types.GetStringByIndex(lst, 2),
-			RwName: types.GetStringByIndex(lst, 3),
-			FwName: types.GetStringByIndex(lst, 4),
-			UNQ:    defFids.Next(),
-			Params: make(map[string]string),
+		opt := optrs{}
+		name := strings.ToUpper(types.GetStringByIndex(lst, 1))
+		switch name {
+		case "DIALOG":
+			opt = *dialogOpts
+			opt.ReqURL = types.GetStringByIndex(lst, 2)
+		case "CNFRM":
+			opt = *cnfrmOpts
+			opt.ReqURL = types.GetStringByIndex(lst, 2)
+		case "LINE", "PIE", "BAR":
+			opt = *chartLinePieBarOpts
+			opt.Tag = name
+			opt.ReqURL = types.GetStringByIndex(lst, 2)
+		default:
+			opt = optrs{Tag: tag, Name: name, URL: types.GetStringByIndex(lst, 2)}
 		}
+
+		opt.Label = types.GetStringByIndex(lst, 0)
+		opt.RwName = types.GetStringByIndex(lst, 3)
+		opt.FwName = types.GetStringByIndex(lst, 4)
+		opt.UNQ = defFids.Next()
+		opt.Params = make(map[string]string)
+
+		//解析组件参数
 		if strings.HasPrefix(opt.FwName, "{") && strings.HasSuffix(opt.FwName, "}") {
 			content := strings.TrimRight(strings.TrimLeft(opt.FwName, "{"), "}")
 			ps := strings.Split(content, ";")
@@ -124,9 +178,10 @@ func createOptrs(t string, tag string) []*optrs {
 				opt.RwName = opt.Params["rwName"]
 				opt.FwName = opt.Params["fwName"]
 			}
+			opt.ExtTable = opt.Params["table"]
+			opt.ICON = types.GetString(opt.Params["icon"], opt.ICON)
 		}
-
-		opts = append(opts, opt)
+		opts = append(opts, &opt)
 	}
 	return opts
 }

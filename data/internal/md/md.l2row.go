@@ -54,24 +54,24 @@ func Line2TableRow(line *Line) (*Row, error) {
 	if strings.Count(line.Text, "|") != 7 {
 		return nil, fmt.Errorf("数据表结构有误(行:%d)", line.LineID)
 	}
-	colums := strings.Split(strings.Trim(strings.TrimSpace(line.Text), "|"), "|")
-	if colums[0] == "" {
+	Columns := strings.Split(strings.Trim(strings.TrimSpace(line.Text), "|"), "|")
+	if Columns[0] == "" {
 		return nil, fmt.Errorf("字段名称不能为空 %s(行:%d)", line.Text, line.LineID)
 	}
-	rtp, err := getRType(strings.TrimSpace(colums[1]), line.LineID)
+	rtp, err := getRType(strings.TrimSpace(Columns[1]), line.LineID)
 	if err != nil {
 		return nil, err
 	}
-	desc := strings.TrimSpace(strings.Replace(colums[5], "&#124;", "|", -1))
+	desc := strings.TrimSpace(strings.Replace(Columns[5], "&#124;", "|", -1))
 	c := &Row{
 		Index:       line.LineID,
-		Raw:         strings.TrimSpace(strings.Replace(colums[0], "&#124;", "|", -1)),
-		Name:        strings.Trim(strings.TrimSpace(strings.Replace(colums[0], "&#124;", "|", -1)), "^"),
-		CName:       ToCName(strings.Trim(strings.TrimSpace(strings.Replace(colums[0], "&#124;", "|", -1)), "^")),
+		Raw:         strings.TrimSpace(strings.Replace(Columns[0], "&#124;", "|", -1)),
+		Name:        strings.Trim(strings.TrimSpace(strings.Replace(Columns[0], "&#124;", "|", -1)), "^"),
+		CName:       ToCName(strings.Trim(strings.TrimSpace(strings.Replace(Columns[0], "&#124;", "|", -1)), "^")),
 		Type:        rtp,
-		DefValue:    strings.TrimSpace(strings.Replace(colums[2], "&#124;", "|", -1)),
-		AllowNull:   strings.TrimSpace(colums[3]) != "否",
-		Constraints: mergeConstraint(getNames(strings.TrimSpace(colums[4]))),
+		DefValue:    strings.TrimSpace(strings.Replace(Columns[2], "&#124;", "|", -1)),
+		AllowNull:   strings.TrimSpace(Columns[3]) != "否",
+		Constraints: mergeConstraint(getNames(strings.TrimSpace(Columns[4]))),
 		Desc:        &RDesc{Raw: desc, Name: getShortDesc(desc)},
 	}
 

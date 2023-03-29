@@ -77,7 +77,7 @@ export(导出,url:/a/b),export(导入,url:/a/b),bcheck(修改,url:/a/b)
 | tp(tabs[,页面类型])          | tp(tabs)       | 以tab栏显示到查询栏                   |
 | tp(readonly[,页面类型])      | tp(readonly)   | 显示为只读                            |
 | tp(cut[,页面类型][,长度])    | tp(cut,le,6)   | 列表详情页进行字符截取，长度为6各字符 |
-
+| tp(ddl[,页面类型])           | tp(ddl,q)      | 搜索页面显示为下拉菜单                |
 
 ### 组件
 chart(交易统计,line:/ots/merchant/info/chart,style:{height:250px;span:12})

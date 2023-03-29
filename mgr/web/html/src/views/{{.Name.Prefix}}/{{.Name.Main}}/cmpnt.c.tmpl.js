@@ -1,10 +1,7 @@
-{{ $table := .}}
-{{ $opts:=fltrMergeOptrs $table.ListOpts $table.BarOpts}}
+{{- $table := .}}
+{{- $opts:=mergeOptrs $table.ListOpts $table.BarOpts $table.ChartOpts}}
 components: {
-    {{- if gt (len (fltrOptrs $table.ChartOpts "line-bar-pie")) 0}}
-    ChartBase,
-    {{- end}}
-    {{- range $x,$m:= $opts}}
+    {{- range $x,$m:=  $opts}}
     {{- if eq "CMPNT" $m.Name}}
     {{$m.UNQ}},
     {{- end}}

@@ -1,5 +1,5 @@
-{{- $table :=. -}}
-{{- $vcols := fltrColums $table "v" -}}
+{{- $table :=. }}
+{{- $vcols := fltrColumns $table "v"}}
 {{- $viewOpts :=$table.ViewOpts}}
  show(form) {
     this.conf.visible = true
@@ -21,10 +21,10 @@
       .then((res) => {
             Object.assign(that.view, res)
             let item = that.view
-            {{- range $i,$c := $vcols -}}
+            {{- range $i,$c := $vcols }}
             {{- if eq true $c.Enum.IsEnum}}
                 item.{{$c.Name}}_label = that.$theia.enum.getNames("{{$c.Enum.EnumType}}",item.{{$c.Name}})
-              {{- end -}}
+              {{- end }}
               {{- if eq "switch" $c.Cmpnt.Type}}
                 item.{{$c.Name}}_switch = item.{{$c.Name}} == 0
               {{- end}}
@@ -48,13 +48,13 @@
         that.$notify.error({ title: "失败", message: msg, duration: 5000 });
       });
   },
-  {{ range $x,$m:=$viewOpts -}}
-    {{- if eq "CMPNT" $m.Name -}}
+  {{- range $x,$m:=$viewOpts }}
+    {{- if eq "CMPNT" $m.Name }}
     show_view_{{$m.UNQ}}(){
       let that = this;
       let query={}
-      {{- $rows:= fltrColums $table $m.RwName -}}
-      {{range $i,$c:=$rows}} 
+      {{- $rows:= fltrColumns $table $m.RwName }}
+      {{- range $i,$c:=$rows}} 
         query.{{$c.Name}} = that.view.{{$c.Name}}
       {{- end}}
       that.$refs.view_{{$m.UNQ}}.show(query)

@@ -6,19 +6,20 @@ import (
 )
 
 type EnumType struct {
-	EnumType string
-	Id       string
-	Name     string
-	Type     string
-	PID      string
-	Status   string //枚举状态字段
-	Expire   string //日期过期字段
-	Multiple bool
-	DEColums []*Column
+	EnumType  string
+	Id        string
+	Name      string
+	Type      string
+	PID       string
+	Status    string //枚举状态字段
+	Expire    string //日期过期字段
+	SortName  string //排序字段
+	Multiple  bool
+	DEColumns []*Column
 }
 
-func newEnumType(enumType string, rs []*md.Row) *EnumType {
-	tp := &EnumType{EnumType: enumType, DEColums: make([]*Column, 0, 1)}
+func newEnumType(enumType string, rs []*md.Row, delColumn Columns) *EnumType {
+	tp := &EnumType{EnumType: enumType, DEColumns: delColumn}
 	for _, r := range rs {
 		if md.HasConstraint(r.Constraints, "DI") {
 			tp.Id = types.GetString(md.GetConsNameByTagIgnorecase("DI", r.Constraints...), r.Name)
@@ -35,6 +36,9 @@ func newEnumType(enumType string, rs []*md.Row) *EnumType {
 		}
 		if md.HasConstraint(r.Constraints, "DP", "dp") {
 			tp.PID = r.Name
+		}
+		if md.HasConstraint(r.Constraints, "DSN", "dsn") {
+			tp.SortName = r.Name
 		}
 		if md.HasConstraint(r.Constraints, "expire") {
 			tp.Expire = r.Name

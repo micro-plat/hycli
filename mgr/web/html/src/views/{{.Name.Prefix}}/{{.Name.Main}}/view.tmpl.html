@@ -1,4 +1,4 @@
-{{- $vcols := . -}}
+{{- $vcols := . }}
 <el-row :gutter="24" style="font-size: 0.7rem;">
     {{- range $i,$c:=$vcols}}
     <el-col :span="4" class="text-right" style="height:26px">{{ $c.Label }}:</el-col>

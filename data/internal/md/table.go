@@ -3,6 +3,7 @@ package md
 import (
 	"strings"
 
+	"github.com/micro-plat/hycli/output"
 	"github.com/micro-plat/lib4go/types"
 )
 
@@ -31,8 +32,8 @@ type Table struct {
 	Exclude bool        `json:'exclude'`
 	PkgName string      `json:'pkg_name'`
 	Cache   interface{} `json:'cache'`
-
-	Tbs Tables `json:'tbs'`
+	Marker  string
+	Tbs     Tables `json:'tbs'`
 }
 
 // NewTable 创建表
@@ -51,6 +52,7 @@ func NewTable(name, desc, extinfo string) *Table {
 			Main:     strings.Join(names[1:2], "_"),         //第二段字符
 			OName:    fname,                                 //原始名称
 			MainPath: strings.Join(names, "/"),              //以斜杠分隔的路径
+
 		},
 
 		Exclude: strings.HasPrefix(name, "^"),
@@ -59,6 +61,7 @@ func NewTable(name, desc, extinfo string) *Table {
 		Rows:    make([]*Row, 0, 1),
 		ExtInfo: extinfo,
 		Tbs:     Tables{},
+		Marker:  output.MARKER,
 	}
 }
 
