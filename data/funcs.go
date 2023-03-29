@@ -27,6 +27,7 @@ var Funcs = map[string]interface{}{
 	"fltrColumnsExcludeExt": fltrColumnsExcludeExt,
 	"fltrOptrPara":          fltrOptrPara,
 	"fltr2Expr":             fltr2Expr,
+	"fltrOptrParaExpr":      fltrOptrParaExpr,
 	"resetForm":             resetForm,
 	"multiply":              multiply,
 	"sjoin":                 sjoin,
@@ -156,6 +157,11 @@ type expr struct {
 	Name   string
 	Symbol string
 	Value  string
+}
+
+func fltrOptrParaExpr(opt *optrs, name string, def string) *expr {
+	p := fltrOptrPara(opt, name, def)
+	return fltr2Expr(p)
 }
 
 func fltr2Expr(f string) *expr {
