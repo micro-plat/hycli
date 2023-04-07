@@ -155,6 +155,7 @@ func fltrOptrPara(opt *optrs, name string, def string) string {
 
 type expr struct {
 	Name   string
+	Field  string
 	Symbol string
 	Value  string
 }
@@ -170,7 +171,8 @@ func fltr2Expr(f string) *expr {
 		return &expr{}
 	}
 	return &expr{
-		Name:   pr[0],
+		Name:   types.DecodeString(strings.HasPrefix(pr[0], "@"), true, "", pr[0]),
+		Field:  types.DecodeString(strings.HasPrefix(pr[0], "@"), true, strings.Trim(pr[0], "@"), ""),
 		Symbol: pr[1],
 		Value:  pr[2],
 	}

@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --mode dev",
+    "dev": "vue-cli-service serve --mode dev",
     "fat": "vue-cli-service build --mode fat",
     "build": "vue-cli-service build  --mode prod",
     "lint": "vue-cli-service lint"
@@ -15,7 +15,7 @@
     "core-js": "^3.8.3",
     "jquery": "^3.6.0",
     "style-loader": "^3.3.1",
-    "theia-js": "^1.0.12",
+    "theia-js": "^1.0.18",
     "theia-mob": "^0.1.2",
     "vant": "^3.4.9",
     "vue": "^3.2.13"

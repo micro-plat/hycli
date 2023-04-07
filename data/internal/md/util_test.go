@@ -168,10 +168,22 @@ func TestExpr(t *testing.T) {
 	assert.Equal(t, "<", p[1])
 	assert.Equal(t, "20", p[2])
 
+	p = GetExpr("@age<20")
+	assert.Equal(t, 3, len(p))
+	assert.Equal(t, "@age", p[0])
+	assert.Equal(t, "<", p[1])
+	assert.Equal(t, "20", p[2])
+
 	p = GetExpr("age=20")
 	assert.Equal(t, 3, len(p))
 	assert.Equal(t, "age", p[0])
 	assert.Equal(t, "=", p[1])
+	assert.Equal(t, "20", p[2])
+
+	p = GetExpr("age==20")
+	assert.Equal(t, 3, len(p))
+	assert.Equal(t, "age", p[0])
+	assert.Equal(t, "==", p[1])
 	assert.Equal(t, "20", p[2])
 
 	p = GetExpr("age<=20")
@@ -195,4 +207,17 @@ func TestExpr(t *testing.T) {
 	p = GetExpr("age")
 	assert.Equal(t, 0, len(p))
 
+}
+func TestKDNO(t *testing.T) {
+	reg := regexp.MustCompile(`^(\w+)[，,]?(\w*)[，,]?(\w*)$`)
+	names := reg.FindAllStringSubmatch("SR000123122,09777343333", -1)
+	assert.Equal(t, 1, len(names))
+	assert.Equal(t, "SR000123122", names[0][1:][0])
+	assert.Equal(t, "09777343333", names[0][1:][1])
+	fmt.Println(names)
+
+	names = reg.FindAllStringSubmatch("SR000123122", -1)
+	assert.Equal(t, 1, len(names))
+	assert.Equal(t, "SR000123122", names[0][1:][0])
+	fmt.Println(names)
 }

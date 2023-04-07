@@ -58,3 +58,16 @@ func TestMYSQLType(t *testing.T) {
 	assert.Equal(t, "idx_order_info2", plst[1][0])
 	assert.Equal(t, "2", plst[1][1])
 }
+func TestExpr(t *testing.T) {
+	expr := fltr2Expr("@age>20")
+	assert.Equal(t, "", expr.Name)
+	assert.Equal(t, "age", expr.Field)
+	assert.Equal(t, ">", expr.Symbol)
+	assert.Equal(t, "20", expr.Value)
+
+	expr = fltr2Expr("age>20")
+	assert.Equal(t, "age", expr.Name)
+	assert.Equal(t, "", expr.Field)
+	assert.Equal(t, ">", expr.Symbol)
+	assert.Equal(t, "20", expr.Value)
+}

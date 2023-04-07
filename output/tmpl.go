@@ -12,7 +12,7 @@ import (
 	"github.com/micro-plat/lib4go/types"
 )
 
-//Translate 翻译模板
+// Translate 翻译模板
 func TranslateFs(fs fs.FS, indexTmplName string, hasParseFs bool, input interface{}, xfuncs ...map[string]interface{}) (t []byte, err error) {
 	if isImage(indexTmplName) {
 		f, err := fs.Open(indexTmplName)
@@ -32,7 +32,7 @@ func TranslateFs(fs fs.FS, indexTmplName string, hasParseFs bool, input interfac
 	if len(xfuncs) > 0 {
 		nfuncs.MergeMap(xfuncs[0])
 	}
-	var tmpl = template.New(indexTmplName).Funcs(nfuncs.ToMap())
+	var tmpl = template.New(indexTmplName).Delims("{-{", "}-}").Funcs(nfuncs.ToMap())
 	if hasParseFs {
 		partten := strings.Replace(filepath.Join(filepath.Dir(indexTmplName), "*.tmpl.*"),
 			"\\", "/", -1)
@@ -56,7 +56,7 @@ func TranslateFs(fs fs.FS, indexTmplName string, hasParseFs bool, input interfac
 
 }
 
-//Translate 翻译模板
+// Translate 翻译模板
 func TranslateContent(name string, content string, input interface{}, xfuncs ...map[string]interface{}) ([]byte, error) {
 
 	nfuncs := types.NewXMap()
