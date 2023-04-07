@@ -1,0 +1,47 @@
+:root {
+    --hy-c-white: #ffffff;
+    --hy-c-white-soft: #f8f8f8;
+    --hy-c-white-mute: #f2f2f2;
+  
+    --hy-c-black: #181818;
+    --hy-c-black-soft: #222222;
+    --hy-c-black-mute: #282828;
+  
+    --hy-c-indigo: #2c3e50;
+  
+    --hy-c-divider-light-1: rgba(60, 60, 60, 0.29);
+    --hy-c-divider-light-2: rgba(60, 60, 60, 0.12);
+    --hy-c-divider-dark-1: rgba(84, 84, 84, 0.65);
+    --hy-c-divider-dark-2: rgba(84, 84, 84, 0.48);
+  
+    --hy-c-text-light-1: var(--hy-c-indigo);
+    --hy-c-text-light-2: rgba(60, 60, 60, 0.66);
+    --hy-c-text-dark-1: var(--hy-c-white);
+    --hy-c-text-dark-2: rgba(235, 235, 235, 0.64);
+  }
+
+:root {
+    --color-background: var(--hy-c-white);
+    --color-background-soft: var(--hy-c-white-soft);
+    --color-background-mute: var(--hy-c-white-mute);
+  
+    --color-border: var(--hy-c-divider-light-2);
+    --color-border-hover: var(--hy-c-divider-light-1);
+  
+    --color-heading: var(--hy-c-text-light-1);
+    --color-text: var(--hy-c-text-light-1);
+  
+  }
+body {
+    min-height: 100vh;
+    color: var(--color-text);
+    background: var(--color-background-soft);
+    transition: color 0.5s, background-color 0.5s;
+    line-height: 1.6;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+      Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    font-size: 15px;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
