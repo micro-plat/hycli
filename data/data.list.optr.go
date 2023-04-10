@@ -41,7 +41,7 @@ var barOptrCmd = []string{"export", "import", "bcheck"}
 var charOptrCmd = []string{"chart"}
 var extCmptParam = []string{"add"}
 
-var addOpts = &optrs{Tag: "ADD", URL: "./{@name}.add", Name: "CMPNT", ICON: "Plus", Label: "添加", RwName: "C", UNQ: defFids.Next()}
+var addOpts = &optrs{Tag: "ADD", URL: "@/views/{@prefix}/{@main}/{@name}.add", Name: "CMPNT", ICON: "Plus", Label: "添加", RwName: "C", UNQ: defFids.Next()}
 var detailOpts = &optrs{Tag: "VIEW", URL: "./{@name}.view", Name: "CMPNT", Label: "详情", RwName: "V", UNQ: defFids.Next()}
 var updateOpts = &optrs{Tag: "UPDATE", URL: "./{@name}.edit", Name: "CMPNT", Label: "修改", RwName: "U", UNQ: defFids.Next()}
 var delOpts = &optrs{Tag: "CNFRM", URL: "./{@name}.cnfrm", ReqURL: "/{@mainPath}/del", Name: "CMPNT", Label: "删除", RwName: "D", UNQ: defFids.Next(), IsMux: true}
@@ -118,13 +118,13 @@ func creatExtCmptOpts(opts ...[]*optrs) []*optrs {
 	for _, opt := range opts {
 		for _, view := range opt {
 			for _, cmd := range extCmptParam {
-				if v, ok := view.Params[cmd]; ok && types.GetBool(v) {
+				if v, ok := view.Params[cmd]; ok {
 					if opts, ok := extCmptOpts[cmd]; ok {
 						xview := *opts
 						xview.UNQ = view.UNQ
-						xview.Params = map[string]string{
-							"table": view.URL,
-						}
+						xview.Label = types.DecodeString(types.GetBool(v), true, view.Label, v)
+						xview.Params = view.Params
+						xview.Params["table"] = view.URL
 						nopts = append(nopts, &xview)
 					}
 				}

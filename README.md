@@ -44,15 +44,17 @@
 | lstat(名称,url:接口地址[，样式设置])  | lstat(今日交易,url:/ots/trade/order/lstat1day,style:{span:24})        | 字典类型     |
 | chart(名称,类型:接口地址[，样式设置]) | chart(支付情况,bar:/ots/trade/order/as7d,style:{height:300px})        | 图表         |
 
-| 样式      | 示例                               | 适用范围    | 说明               |
-| --------- | ---------------------------------- | ----------- | ------------------ |
-| rwName    |                                    | 所有        | 本表字段名或标记   |
-| fwName    |                                    | 所有        | 外部表字段名或标记 |
-| showExpr  | showExpr:@status==0 showExpr:age>0 | lst         | 显示表达式         |
-| span      | span:24                            | lstat chart | 分份数量           |
-| height    | height:300px                       | lstat chart | 高度               |
-| rType     | rType:rose rType:radius            | chart       | pie图表类型        |
-| showLabel | showLabel:false                    | chart       | 显示文字标签       |
+| 样式      | 示例                               | 适用范围    | 说明                 |
+| --------- | ---------------------------------- | ----------- | -------------------- |
+| rwName    |                                    | 所有        | 本表字段名或标记     |
+| fwName    |                                    | 所有        | 外部表字段名或标记   |
+| showExpr  | showExpr:@status==0 showExpr:age>0 | lst         | 显示表达式           |
+| span      | span:24                            | lstat chart | 分份数量             |
+| height    | height:300px                       | lstat chart | 高度                 |
+| rType     | rType:rose rType:radius            | chart       | pie图表类型          |
+| showLabel | showLabel:false                    | chart       | 显示文字标签         |
+| add       | add:true,add:分配                  | view        | 允许添加列表         |
+| @字段名   | @pid:2                             | view        | 用于设置字段的固定值 |
 
 
 ### 数据库

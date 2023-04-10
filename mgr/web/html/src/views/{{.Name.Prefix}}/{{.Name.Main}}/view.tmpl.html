@@ -1,15 +1,15 @@
-{{- $vcols := . }}
+{-{- $vcols := . }-}
 <el-row :gutter="24" style="font-size: 0.7rem;">
-    {{- range $i,$c:=$vcols}}
-    <el-col :span="4" class="text-right" style="height:26px">{{ $c.Label }}:</el-col>
-    {{- if eq true $c.Enum.IsEnum}}
-    <el-col :span="8" v-text="view.{{$c.Name}}_label" style="height:26px" :class="'{{$c.Style.CLR.BgColor}}'==''?'':{{$c.Style.CLR.BgColor}}(view.{{$c.Name}},'{{$c.Name}}')"></el-col>
-    {{- else if eq "img" $c.Cmpnt.Type}}
+    {-{- range $i,$c:=$vcols}-}
+    <el-col :span="4" class="text-right" style="height:26px">{-{ $c.Label }-}:</el-col>
+    {-{- if eq true $c.Enum.IsEnum}-}
+    <el-col :span="8" v-text="view.{-{$c.Name}-}_label" style="height:26px" :class="'{-{$c.Style.CLR.BgColor}-}'==''?'':{-{$c.Style.CLR.BgColor}-}(view.{-{$c.Name}-},'{-{$c.Name}-}')"></el-col>
+    {-{- else if eq "img" $c.Cmpnt.Type}-}
     <el-col :span="8" style="height:26px">
-        <el-image style="width:48px" :src="view.{{$c.Name}}" :fit="contain" /></el-col>
-    {{- else}}
-    <el-col :span="8" v-text="view.{{$c.Name}}"  style="height:26px" :class="'{{$c.Style.CLR.BgColor}}'==''?'':{{$c.Style.CLR.BgColor}}(view.{{$c.Name}},'{{$c.Name}}')"></el-col>
+        <el-image style="width:48px" :src="view.{-{$c.Name}-}" :fit="contain" /></el-col>
+    {-{- else}-}
+    <el-col :span="8" v-text="view.{-{$c.Name}-}"  style="height:26px" :class="'{-{$c.Style.CLR.BgColor}-}'==''?'':{-{$c.Style.CLR.BgColor}-}(view.{-{$c.Name}-},'{-{$c.Name}-}')"></el-col>
    
-    {{- end}}
-    {{- end}}
+    {-{- end}-}
+    {-{- end}-}
 </el-row>

@@ -1,9 +1,9 @@
-{{- $table :=.}}
-{{- range $i,$c:= $table.LStatOpts }}
-{{- $ucols := fltrColumns $table $c.RwName}}
-stat_{{$c.UNQ}}:{
-    {{- range $j,$m:= $ucols}}
-    {{$m.Name}}:0,
-    {{- end}}
+{-{- $table :=.}-}
+{-{- range $i,$c:= $table.LStatOpts }-}
+{-{- $ucols := fltrColumns $table $c.RwName}-}
+stat_{-{$c.UNQ}-}:{
+    {-{- range $j,$m:= $ucols}-}
+    {-{$m.Name}-}:0,
+    {-{- end}-}
 },
-{{- end}}
+{-{- end}-}

@@ -33,15 +33,15 @@ func CreateFiles(tmpls embed.FS, rootDir, prefix string, name string, input inte
 			continue
 		}
 
-		//翻译内容
+		//翻译内容{-{ }-}
 		result, err := TranslateFs(tmpls, fpath, hasTmplFile, input, xfuncs...)
 		if err != nil {
 			return err
 		}
 
-		//构建路径
+		//构建路径{{}}
 		npath := filepath.Join(".", rootDir, strings.TrimPrefix(fpath, prefix))
-		npathBytes, err := TranslateContent(npath, npath, input)
+		npathBytes, err := TranslatePath(npath, npath, input)
 		if err != nil {
 			return err
 		}

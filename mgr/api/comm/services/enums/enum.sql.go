@@ -2,21 +2,21 @@
 
 package enums
 
-{{- $etable := .}}
+{-{- $etable := .}-}
 var enumSQL = map[string]string{
-	{{- range $i,$v:=$etable}}
-	{{- if and (ne "" $v.Enum.EnumType) (eq false $v.Enum.Multiple)}}
-	"{{$v.Enum.EnumType}}":"select {{$v.Enum.Id}} value,{{if ne "" $v.Enum.PID}} {{$v.Enum.PID}} pid, {{end}}{{$v.Enum.Name}} name,{{- range $j,$v:=$v.Enum.DEColumns}}{{$v.Name}} {{$v.Desc}},{{end}}'{{$v.Enum.Type}}' type from {{$v.Name.Raw}} where 1=1  {{if ne "" $v.Enum.Status}} and {{$v.Enum.Status}} = 0{{end}} {{if ne "" $v.Enum.Expire}} and {{$v.Enum.Expire}} >= DATE_FORMAT(now(),'%Y-%m-%d'){{end}}{{if ne "" $v.Enum.SortName}} order by {{$v.Enum.SortName}} asc {{end}}",
-	{{- end}}
-	{{- end}}
+	{-{- range $i,$v:=$etable}-}
+	{-{- if and (ne "" $v.Enum.EnumType) (eq false $v.Enum.Multiple)}-}
+	"{-{$v.Enum.EnumType}-}":"select {-{$v.Enum.Id}-} value,{-{if ne "" $v.Enum.PID}-} {-{$v.Enum.PID}-} pid, {-{end}-}{-{$v.Enum.Name}-} name,{-{- range $j,$v:=$v.Enum.DEColumns}-}{-{$v.Name}-} {-{$v.Desc}-},{-{end}-}'{-{$v.Enum.Type}-}' type from {-{$v.Name.Raw}-} where 1=1  {-{if ne "" $v.Enum.Status}-} and {-{$v.Enum.Status}-} = 0{-{end}-} {-{if ne "" $v.Enum.Expire}-} and {-{$v.Enum.Expire}-} >= DATE_FORMAT(now(),'%Y-%m-%d'){-{end}-}{-{if ne "" $v.Enum.SortName}-} order by {-{$v.Enum.SortName}-} asc {-{end}-}",
+	{-{- end}-}
+	{-{- end}-}
 }
 
 var unspecifiedEnum = []string{
-	{{- range $i,$v:=$etable}}
-	{{- if and (ne "" $v.Enum.EnumType) (eq true $v.Enum.Multiple)}}
-	"select {{$v.Enum.Id}} value,{{$v.Enum.Name}} name,{{- range $j,$v:=$v.Enum.DEColumns}}{{$v.Name}} {{$v.Desc}},{{end}}{{$v.Enum.Type}} type from {{$v.Name.Raw}} where {{$v.Enum.Type}}=if(@type='',{{$v.Enum.Type}},@type) {{if ne "" $v.Enum.Status}} and {{$v.Enum.Status}} = 0{{end}}  {{if ne "" $v.Enum.Expire}} and {{$v.Enum.Expire}} >= DATE_FORMAT(now(),'%Y-%m-%d'){{end}}{{if ne "" $v.Enum.SortName}} order by {{$v.Enum.SortName}} asc {{end}}",
-	{{- end}}
-	{{- end}}
+	{-{- range $i,$v:=$etable}-}
+	{-{- if and (ne "" $v.Enum.EnumType) (eq true $v.Enum.Multiple)}-}
+	"select {-{$v.Enum.Id}-} value,{-{$v.Enum.Name}-} name,{-{- range $j,$v:=$v.Enum.DEColumns}-}{-{$v.Name}-} {-{$v.Desc}-},{-{end}-}{-{$v.Enum.Type}-} type from {-{$v.Name.Raw}-} where {-{$v.Enum.Type}-}=if(@type='',{-{$v.Enum.Type}-},@type) {-{if ne "" $v.Enum.Status}-} and {-{$v.Enum.Status}-} = 0{-{end}-}  {-{if ne "" $v.Enum.Expire}-} and {-{$v.Enum.Expire}-} >= DATE_FORMAT(now(),'%Y-%m-%d'){-{end}-}{-{if ne "" $v.Enum.SortName}-} order by {-{$v.Enum.SortName}-} asc {-{end}-}",
+	{-{- end}-}
+	{-{- end}-}
 }
 var sqls = make([]string, 0, 1)
 

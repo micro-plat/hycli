@@ -1,17 +1,17 @@
-{{- $table := .}}
-{{- $ucols := fltrColumns $table "U"}}
-{{- $enumColumns :=$table.EnumColumns}}
-<template tag="{{.Marker}}">
+{-{- $table := .}-}
+{-{- $ucols := fltrColumns $table "U"}-}
+{-{- $enumColumns :=$table.EnumColumns}-}
+<template tag="{-{.Marker}-}">
   <el-dialog
     v-model="conf.visible"
-    title="修改 {{.Desc}}"
+    title="修改 {-{.Desc}-}"
     width="60%"
     draggable
     :close-on-click-modal="false"
     :before-close="hide"
   >
 <el-form :model="form" size="small" ref="form" :rules="rules">
-{{- template "add.tmpl.html" $ucols}}
+{-{- template "add.tmpl.html" $ucols}-}
 </el-form>
     <template #footer>
       <span class="dialog-footer">
@@ -30,7 +30,7 @@ export default {
         visible: false,
         uploadPath:this.$theia.env.join("/file/upload"),
       },
-      {{- template "add.tmpl.js" $ucols}}
+      {-{- template "add.tmpl.js" $ucols}-}
   },
   methods: {
     show(form) {
@@ -39,25 +39,25 @@ export default {
     },
       get(form){
         let that = this
-        this.$theia.http.get("/{{.Name.MainPath|lower}}",form).then(res=>{
-        {{- range $i,$c := $ucols}}
-        {{- if eq "switch" $c.Cmpnt.Type}}
-          res.{{$c.Name}}_switch = res.{{$c.Name}} == 0
-        {{- end}}
-        {{- end}}
+        this.$theia.http.get("/{-{.Name.MainPath|lower}-}",form).then(res=>{
+        {-{- range $i,$c := $ucols}-}
+        {-{- if eq "switch" $c.Cmpnt.Type}-}
+          res.{-{$c.Name}-}_switch = res.{-{$c.Name}-} == 0
+        {-{- end}-}
+        {-{- end}-}
         Object.assign(that.form, res)
         }).catch(res=>{
           let code = res.response.status
-          let msg = `{{.Desc}}查询失败(${code})`
+          let msg = `{-{.Desc}-}查询失败(${code})`
           that.$notify.error({title: '失败',message:msg ,duration:5000})
         })
     },
     save(){
-       {{- range $i,$c:= $ucols}}
-         {{- if eq "switch" $c.Cmpnt.Type }}
-        this.form.{{$c.Name}} = this.form.{{$c.Name}}_switch?0:1;
-         {{- end}}
-        {{- end}}
+       {-{- range $i,$c:= $ucols}-}
+         {-{- if eq "switch" $c.Cmpnt.Type }-}
+        this.form.{-{$c.Name}-} = this.form.{-{$c.Name}-}_switch?0:1;
+         {-{- end}-}
+        {-{- end}-}
         this.$refs.form.validate((v=>{
             if(v){
                 this.onSave()
@@ -66,17 +66,17 @@ export default {
     },
     onSave(){
         let that = this
-        this.$theia.http.put("/{{.Name.MainPath|lower}}",this.form).then(res=>{
-            that.$notify.success({title: '成功',message: '{{.Desc}}保存成功',duration:5000})
-            {{- if ne "" $table.Enum.EnumType}}
-            that.$theia.enum.clear("{{$table.Enum.EnumType}}")
-            that.$theia.enum.get("{{$table.Enum.EnumType}}")
-            {{- end}}
+        this.$theia.http.put("/{-{.Name.MainPath|lower}-}",this.form).then(res=>{
+            that.$notify.success({title: '成功',message: '{-{.Desc}-}保存成功',duration:5000})
+            {-{- if ne "" $table.Enum.EnumType}-}
+            that.$theia.enum.clear("{-{$table.Enum.EnumType}-}")
+            that.$theia.enum.get("{-{$table.Enum.EnumType}-}")
+            {-{- end}-}
             that.hide()
             that.$emit("onsaved")
         }).catch(res=>{
           let code = res.response.status
-          let msg = `{{.Desc}}修改失败(${code})`
+          let msg = `{-{.Desc}-}修改失败(${code})`
           that.$notify.error({title: '失败',message: msg,duration:5000})
         })
     },
@@ -85,24 +85,24 @@ export default {
       this.$refs.form.resetFields();
     },
      onUploadSuccess(response){
-      {{- range $i,$c:= $ucols}}
-      {{- if eq "file" $c.Cmpnt.Type }}
-      this.form.{{$c.Name}} = response.path
-      {{- end}}
-      {{- end}}
+      {-{- range $i,$c:= $ucols}-}
+      {-{- if eq "file" $c.Cmpnt.Type }-}
+      this.form.{-{$c.Name}-} = response.path
+      {-{- end}-}
+      {-{- end}-}
     },
 
-    {{- range $i,$c:= $ucols}}
-    {{- $aColumns := fltrAssctColumns $ucols $c.Name}}
-    {{- if gt (len $aColumns) 0}} 
-    onChange_{{$c.Name}}(val){
-      {{- range $j,$x:= $aColumns }}
-      this.{{$x.Name}}List = this.$theia.enum.get("{{$x.Enum.EnumType}}",val)
-      this.form.{{$x.Name}} = null
-      {{- end}}
+    {-{- range $i,$c:= $ucols}-}
+    {-{- $aColumns := fltrAssctColumns $ucols $c.Name}-}
+    {-{- if gt (len $aColumns) 0}-} 
+    onChange_{-{$c.Name}-}(val){
+      {-{- range $j,$x:= $aColumns }-}
+      this.{-{$x.Name}-}List = this.$theia.enum.get("{-{$x.Enum.EnumType}-}",val)
+      this.form.{-{$x.Name}-} = null
+      {-{- end}-}
     },
-    {{- end}}
-    {{- end}}
+    {-{- end}-}
+    {-{- end}-}
   },
 };
 </script>

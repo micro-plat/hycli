@@ -6,7 +6,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/micro-plat/hydra/components"
 	"github.com/micro-plat/hydra/conf/app"
-	_ "{{.PkgName}}/services"
+	_ "{-{.PkgName}-}/services"
 )
 
 // init 检查应用程序配置文件，并根据配置初始化服务

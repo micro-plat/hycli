@@ -1,47 +1,47 @@
-<template tag="{{.Marker}}">
-  {{- $table := .}}
-  {{- $opts :=$table.ListOpts }}
+<template tag="{-{.Marker}-}">
+  {-{- $table := .}-}
+  {-{- $opts :=$table.ListOpts }-}
   <div style="height: 100%">
-    {{- template "query.tmpl.html" $table }}
-    {{- template "listbar.tmpl.html" $table }}
-    {{- template "cmpnt.t.tmpl.html" $table }}
-    {{- template "list.tmpl.html" $table }}
+    {-{- template "query.tmpl.html" $table }-}
+    {-{- template "listbar.tmpl.html" $table }-}
+    {-{- template "cmpnt.t.tmpl.html" $table }-}
+    {-{- template "list.tmpl.html" $table }-}
   </div>
 </template>
 <script>
-{{- template "cmpnt.i.tmpl.js" $table }}
+{-{- template "cmpnt.i.tmpl.js" $table }-}
 export default {
-  {{- template "cmpnt.c.tmpl.js" $table }}
+  {-{- template "cmpnt.c.tmpl.js" $table }-}
 data() {
   return {
     conf: {
       loading: false,
       progressColor: this.$theia.env.conf.progress || []
     },
-      {{- template "queryform.tmpl.js" $table }}
-  {{- template "listbar.tmpl.js" $table }}
+      {-{- template "queryform.tmpl.js" $table }-}
+  {-{- template "listbar.tmpl.js" $table }-}
 };
   },
 mounted() {
-  this.queryData_{{ $table.UNQ }} ()
-      {{- range $i, $c:=  $table.ChartOpts }}
-  this.$refs.chart_{{ $c.UNQ }}.show(this.form_{{ $table.UNQ }})
-{{- end }}
+  this.queryData_{-{ $table.UNQ }-} ()
+      {-{- range $i, $c:=  $table.ChartOpts }-}
+  this.$refs.chart_{-{ $c.UNQ }-}.show(this.form_{-{ $table.UNQ }-})
+{-{- end }-}
     },
 methods: {
-  {{- $tbs := contactTBS  $table $table }}
-  {{- template "list.tmpl.js" $tbs }}
+  {-{- $tbs := contactTBS  $table $table }-}
+  {-{- template "list.tmpl.js" $tbs }-}
   handleSizeChange(ps){
-    this.form_{{ $table.UNQ }}.ps = ps
-    this.queryData_{{ $table.UNQ }} ()
+    this.form_{-{ $table.UNQ }-}.ps = ps
+    this.queryData_{-{ $table.UNQ }-} ()
   },
   handleCurrentChange(pi){
-    this.form_{{ $table.UNQ }}.pi = pi
-    this.queryData_{{ $table.UNQ }} ()
+    this.form_{-{ $table.UNQ }-}.pi = pi
+    this.queryData_{-{ $table.UNQ }-} ()
   },
   onQuery(){
-    this.form_{{ $table.UNQ }}.pi = 1
-    this.queryData_{{ $table.UNQ }} ()
+    this.form_{-{ $table.UNQ }-}.pi = 1
+    this.queryData_{-{ $table.UNQ }-} ()
   },
   colorful(r, name){
     if (this.$theia.env.conf.colorful[name]) {
@@ -66,7 +66,7 @@ methods: {
     let p = this.$theia.url.encode(param)
     window.location = `${url}?${p}`
   },
-  {{- template "opts.tmpl.js" $table }}
+  {-{- template "opts.tmpl.js" $table }-}
 },
 };
 </script>

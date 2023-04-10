@@ -39,6 +39,9 @@ func CreateEnums(mdpath string, tbs string, outpath string, cover bool) error {
 	tbls.JoinPkgName(outpath)
 
 	ntbs := data.NewTables(tbls)
+	if len(ntbs) == 0 {
+		return nil
+	}
 	return createEnums(outpath, ntbs, cover)
 }
 

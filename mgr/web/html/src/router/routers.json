@@ -1,5 +1,5 @@
-{{- $clen := (len .)|minus}}
-[{{- range $i,$c:=. }}
-{"name":"{{$c.Desc}}","path": "/{{$c.Name.MainPath}}"} {{if lt $i $clen }},{{end}}
-{{- end }}
+{-{- $clen := (len .)|minus}-}
+[{-{- range $i,$c:=. }-}
+{"name":"{-{$c.Desc}-}","path": "/{-{$c.Name.MainPath}-}"} {-{if lt $i $clen }-},{-{end}-}
+{-{- end }-}
 ]

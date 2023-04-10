@@ -3,14 +3,14 @@
 package main
 
 import (
-	"github.com/micro-plat/hydra/hydra/servers/http"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/micro-plat/hydra/components"
 	"github.com/micro-plat/hydra/conf/app"
-	_ "{{.PkgName}}/api/services"
+	"github.com/micro-plat/hydra/hydra/servers/http"
+	_ "{-{.PkgName}-}/api/services"
 )
 
-//init 检查应用程序配置文件，并根据配置初始化服务
+// init 检查应用程序配置文件，并根据配置初始化服务
 func init() {
 	//启动时参数配置检查
 	App.OnStarting(func(conf app.IAPPConf) error {

@@ -1,34 +1,34 @@
-{{- $table :=.}}
+{-{- $table :=.}-}
 
-{{- if or (gt (len $table.LStatOpts) 0) (gt (len $table.ChartOpts) 0)}}
+{-{- if or (gt (len $table.LStatOpts) 0) (gt (len $table.ChartOpts) 0)}-}
 <div class="listbar">
-    {{- range $i,$c:= $table.LStatOpts }}
-    {{- $ucols := fltrColumns $table $c.RwName }}
-    {{- $span := fltrOptrPara $c "span" "24" }}
-    {{- $l := len $ucols}}
-    {{- if ne 0 $l}}
+    {-{- range $i,$c:= $table.LStatOpts }-}
+    {-{- $ucols := fltrColumns $table $c.RwName }-}
+    {-{- $span := fltrOptrPara $c "span" "24" }-}
+    {-{- $l := len $ucols}-}
+    {-{- if ne 0 $l}-}
     <el-row>
-    {{- if eq "true" ( fltrOptrPara $c "showLabel" "true")}}
-    {{- $span = add  $span -2}}
+    {-{- if eq "true" ( fltrOptrPara $c "showLabel" "true")}-}
+    {-{- $span = add  $span -2}-}
     <el-col :span="2" style="font-size: 0.9rem;font-weight:600;margin-bottom: 16px;">
-      {{$c.Label}}
+      {-{$c.Label}-}
     </el-col>
-    {{- end}}
-    {{- $x := div $span $l}}
-    {{- range $j,$m:= $ucols}}
-    <el-col :span="{{$x}}" style="margin-bottom: 16px;">
-      <el-statistic title="{{$m.Label}}" :value="stat_{{$c.UNQ}}.{{$m.Name}}" />
+    {-{- end}-}
+    {-{- $x := div $span $l}-}
+    {-{- range $j,$m:= $ucols}-}
+    <el-col :span="{-{$x}-}" style="margin-bottom: 16px;">
+      <el-statistic title="{-{$m.Label}-}" :value="stat_{-{$c.UNQ}-}.{-{$m.Name}-}" />
     </el-col>
-    {{end}} {{end}} </el-row> {{end}}
+    {-{end}-} {-{end}-} </el-row> {-{end}-}
     <el-row>
-    {{- range $i,$c:=  $table.ChartOpts }}
-    <el-col :span='{{fltrOptrPara $c "span" "24"}}'>
-      <{{$c.UNQ}} ref="chart_{{$c.UNQ}}" height='{{fltrOptrPara $c "height" "200px"}}' title="{{$c.Label}}"
-        unq="{{$c.UNQ}}" url="{{$c.ReqURL}}" type="{{$c.Tag}}" stack='{{fltrOptrPara $c "stack" ""}}'
-        rType='{{fltrOptrPara $c "rType" ""}}' margin='{{fltrOptrPara $c "margin" "32px 0px 16px 0px"}}'
-        showLabel='{{fltrOptrPara $c "showLabel" "true"}}' theme='{{fltrOptrPara $c "theme" ""}}'></{{$c.UNQ}}>
+    {-{- range $i,$c:=  $table.ChartOpts }-}
+    <el-col :span='{-{fltrOptrPara $c "span" "24"}-}'>
+      <{-{$c.UNQ}-} ref="chart_{-{$c.UNQ}-}" height='{-{fltrOptrPara $c "height" "200px"}-}' title="{-{$c.Label}-}"
+        unq="{-{$c.UNQ}-}" url="{-{$c.ReqURL}-}" type="{-{$c.Tag}-}" stack='{-{fltrOptrPara $c "stack" ""}-}'
+        rType='{-{fltrOptrPara $c "rType" ""}-}' margin='{-{fltrOptrPara $c "margin" "32px 0px 16px 0px"}-}'
+        showLabel='{-{fltrOptrPara $c "showLabel" "true"}-}' theme='{-{fltrOptrPara $c "theme" ""}-}'></{-{$c.UNQ}-}>
     </el-col>
-    {{- end}}
+    {-{- end}-}
   </el-row>
 </div>
-{{- end}}
+{-{- end}-}

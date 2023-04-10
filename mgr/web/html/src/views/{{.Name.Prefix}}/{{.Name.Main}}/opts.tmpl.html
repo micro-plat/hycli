@@ -1,24 +1,24 @@
-{{- $optRow :=.ListOpts}}
-{{- $len :=len $optRow}}
-{{- $width :=multiply $len 60}}
-{{- $tmpl :=IsTmplTb .}}
-{{- if eq false $tmpl}}
-<el-table-column fixed="right" label="操作" width="{{$width}}">
+{-{- $optRow :=.ListOpts}-}
+{-{- $len :=len $optRow}-}
+{-{- $width :=multiply $len 60}-}
+{-{- $tmpl :=IsTmplTb .}-}
+{-{- if eq false $tmpl}-}
+<el-table-column fixed="right" label="操作" width="{-{$width}-}">
     <template #default="scope">
         <div class="opts">
-            {{- range $x,$m:=$optRow }}
-            {{- if eq "LINK" $m.Name}}
-            <el-button size="small" type="text" @click="goto_{{$m.UNQ}}(scope.row)">{{$m.Label}}</el-button>
-            {{- else if eq "CMPNT" $m.Name}}
-            {{- $expr :=fltrOptrParaExpr $m "showExpr" ""}}
+            {-{- range $x,$m:=$optRow }-}
+            {-{- if eq "LINK" $m.Name}-}
+            <el-button size="small" type="text" @click="goto_{-{$m.UNQ}-}(scope.row)">{-{$m.Label}-}</el-button>
+            {-{- else if eq "CMPNT" $m.Name}-}
+            {-{- $expr :=fltrOptrParaExpr $m "showExpr" ""}-}
             <el-button 
-            {{- if ne "" $expr.Name}} v-if="{{$expr.Name}}{{$expr.Symbol}}{{$expr.Value}}" 
-            {{- end}} size="small" 
-            {{- if ne "" $expr.Field}} v-if="scope.row.{{$expr.Field}}{{$expr.Symbol}}{{$expr.Value}}" 
-            {{- end}} type="text" @click="show_cmpnt_{{$m.UNQ}}(scope.row)">{{$m.Label}}</el-button>
-            {{- end}}
-            {{- end}}
+            {-{- if ne "" $expr.Name}-} v-if="{-{$expr.Name}-}{-{$expr.Symbol}-}{-{$expr.Value}-}" 
+            {-{- end}-} size="small" 
+            {-{- if ne "" $expr.Field}-} v-if="scope.row.{-{$expr.Field}-}{-{$expr.Symbol}-}{-{$expr.Value}-}" 
+            {-{- end}-} type="text" @click="show_cmpnt_{-{$m.UNQ}-}(scope.row)">{-{$m.Label}-}</el-button>
+            {-{- end}-}
+            {-{- end}-}
         </div>
     </template>
 </el-table-column>
-{{- end}}
+{-{- end}-}

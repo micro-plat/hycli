@@ -57,7 +57,7 @@ func TranslateFs(fs fs.FS, indexTmplName string, hasParseFs bool, input interfac
 }
 
 // Translate 翻译模板
-func TranslateContent(name string, content string, input interface{}, xfuncs ...map[string]interface{}) ([]byte, error) {
+func TranslatePath(name string, content string, input interface{}, xfuncs ...map[string]interface{}) ([]byte, error) {
 
 	nfuncs := types.NewXMap()
 	nfuncs.MergeMap(funcs)

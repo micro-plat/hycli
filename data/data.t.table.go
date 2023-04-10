@@ -18,6 +18,12 @@ func NewTables(tbs md.Tables) Tables {
 func fltrSearchUITable(name *optrs) *TTable {
 	return fltrSearchTable(name.URL)
 }
+func fltrSearchUITableAndResetUNQ(name *optrs) *TTable {
+	t := fltrSearchTable(name.URL)
+	t.UNQ = name.UNQ
+	return t
+}
+
 func fltrSearchTable(uname string) *TTable {
 	if strings.Contains(uname, "/") {
 		uname = strings.Replace(strings.Trim(uname, "/"), "/", "_", -1)

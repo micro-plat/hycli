@@ -1,38 +1,38 @@
-{{- $table := .}}
-{{- $lcols :=fltrColumns $table "l"}}
-{{- $lecols :=fltrColumns $table "le"}}
-{{- $leLen := len $lecols}}
-{{- $lstopts :=.ListOpts}}
-{{- $optLen := len $lstopts}}
-{{- $tmpl :=IsTmplTb .}}
+{-{- $table := .}-}
+{-{- $lcols :=fltrColumns $table "l"}-}
+{-{- $lecols :=fltrColumns $table "le"}-}
+{-{- $leLen := len $lecols}-}
+{-{- $lstopts :=.ListOpts}-}
+{-{- $optLen := len $lstopts}-}
+{-{- $tmpl :=IsTmplTb .}-}
 
-{{- if gt (len $lcols) 0 }}
+{-{- if gt (len $lcols) 0 }-}
 <div class="list">
-    <el-table :data="dataList_{{.UNQ}}" v-loading="conf.loading" stripe {{if eq true $tmpl }}
-        style="width: 100%;height:300px" {{else }} style="width: 100%;height:calc(100vh - 160px)" {{- end}}
+    <el-table :data="dataList_{-{.UNQ}-}" v-loading="conf.loading" stripe {-{if eq true $tmpl }-}
+        style="width: 100%;height:300px" {-{else }-} style="width: 100%;height:calc(100vh - 160px)" {-{- end}-}
         size="small" empty-text="无数据">le
-        {{- if gt $leLen 0 }}
-        {{- template "le.tmpl.html" $lecols }}
-        {{- end}}
-        {{ if and (eq $table.NeedBatchCheck true) (eq false $tmpl)}}  <el-table-column type="selection" width="55" /> {{end}}
+        {-{- if gt $leLen 0 }-}
+        {-{- template "le.tmpl.html" $lecols }-}
+        {-{- end}-}
+        {-{ if and (eq $table.NeedBatchCheck true) (eq false $tmpl)}-}  <el-table-column type="selection" width="55" /> {-{end}-}
        
-        {{- range $i,$c:=$lcols }}
-        {{- if eq "switch" $c.Cmpnt.Type}}
-        <el-table-column   {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{end}}  align="center" label="{{$c.Label}}">
+        {-{- range $i,$c:=$lcols }-}
+        {-{- if eq "switch" $c.Cmpnt.Type}-}
+        <el-table-column   {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-}  align="center" label="{-{$c.Label}-}">
             <template #default="scope">
-                <el-switch {{if ne true $tmpl}} @change="on{{$c.Name}}SwitchChange(scope.row)" {{else}} disabled  {{end}} v-model="scope.row.{{$c.Name}}_switch" />
+                <el-switch {-{if ne true $tmpl}-} @change="on{-{$c.Name}-}SwitchChange(scope.row)" {-{else}-} disabled  {-{end}-} v-model="scope.row.{-{$c.Name}-}_switch" />
             </template>
         </el-table-column>
-        {{- else if eq "progress" $c.Cmpnt.Type}}
-        <el-table-column  {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{else}} width="120" {{end}} align="center" label="{{$c.Label}}">
+        {-{- else if eq "progress" $c.Cmpnt.Type}-}
+        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{else}-} width="120" {-{end}-} align="center" label="{-{$c.Label}-}">
             <template #default="scope">
-                <el-progress  :percentage="scope.row.{{$c.Name}}" :color="conf.progressColor" />
+                <el-progress  :percentage="scope.row.{-{$c.Name}-}" :color="conf.progressColor" />
             </template>
         </el-table-column>
-        {{- else if eq "img" $c.Cmpnt.Type}}
-        <el-table-column  {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{end}} align="center" label="{{$c.Label}}">
+        {-{- else if eq "img" $c.Cmpnt.Type}-}
+        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} align="center" label="{-{$c.Label}-}">
             <template #default="scope">
-                <el-image style="width:48px" :src="scope.row.{{$c.Name}}" :fit="contain">
+                <el-image style="width:48px" :src="scope.row.{-{$c.Name}-}" :fit="contain">
                     <template #error>
                         <div class="image-slot">
                             <el-icon>
@@ -43,40 +43,40 @@
                 </el-image>
             </template>
         </el-table-column>
-        {{- else if eq "link" $c.Cmpnt.Type}}
-        <el-table-column  {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{end}} {{if eq true $c.Style.HideOverflow}} :show-overflow-tooltip="true" {{end}}  align="center" label="{{$c.Label}}">
+        {-{- else if eq "link" $c.Cmpnt.Type}-}
+        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} {-{if eq true $c.Style.HideOverflow}-} :show-overflow-tooltip="true" {-{end}-}  align="center" label="{-{$c.Label}-}">
             <template #default="scope">
-                <el-link type="primary" :href="scope.row.{{$c.Name}}" :title="scope.row.{{$c.Name}}">查看</el-link>
+                <el-link type="primary" :href="scope.row.{-{$c.Name}-}" :title="scope.row.{-{$c.Name}-}">查看</el-link>
             </template>
         </el-table-column>
-        {{- else if eq true $c.Enum.IsEnum}}
-        <el-table-column  {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{end}} {{if eq true $c.Style.HideOverflow}} :show-overflow-tooltip="true" {{end}} prop="{{$c.Name}}_label" align="center" label="{{$c.Label}}">
+        {-{- else if eq true $c.Enum.IsEnum}-}
+        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} {-{if eq true $c.Style.HideOverflow}-} :show-overflow-tooltip="true" {-{end}-} prop="{-{$c.Name}-}_label" align="center" label="{-{$c.Label}-}">
             <template #default="scope">
-                {{- if eq "tag" $c.Cmpnt.Type}}
-                <el-tag :type="tagColor(scope.row.{{$c.Name}},'{{$c.Name}}')"  effect="plain" round v-text="scope.row.{{$c.Name}}_label"></el-tag>
-                {{else}}
-                <span :class="'{{$c.Style.CLR.BgColor}}'==''?'':{{$c.Style.CLR.BgColor}}(scope.row.{{$c.Name}},'{{$c.Name}}')"
-                    v-text="scope.row.{{$c.Name}}_label"></span>
-                {{- end}}
+                {-{- if eq "tag" $c.Cmpnt.Type}-}
+                <el-tag :type="tagColor(scope.row.{-{$c.Name}-},'{-{$c.Name}-}')"  effect="plain" round v-text="scope.row.{-{$c.Name}-}_label"></el-tag>
+                {-{else}-}
+                <span :class="'{-{$c.Style.CLR.BgColor}-}'==''?'':{-{$c.Style.CLR.BgColor}-}(scope.row.{-{$c.Name}-},'{-{$c.Name}-}')"
+                    v-text="scope.row.{-{$c.Name}-}_label"></span>
+                {-{- end}-}
             </template>
         </el-table-column>
-        {{- else if eq "tag" $c.Cmpnt.Type}}
-        <el-table-column  {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{end}} prop="{{$c.Name}}_label" align="center" label="{{$c.Label}}">
+        {-{- else if eq "tag" $c.Cmpnt.Type}-}
+        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} prop="{-{$c.Name}-}_label" align="center" label="{-{$c.Label}-}">
             <template #default="scope">
-                <el-tag type="tagColor(scope.row.{{$c.Name}},'{{$c.Name}}')" round  effect="plain" v-text="scope.row.{{$c.Name}}"></el-tag>
+                <el-tag type="tagColor(scope.row.{-{$c.Name}-},'{-{$c.Name}-}')" round  effect="plain" v-text="scope.row.{-{$c.Name}-}"></el-tag>
             </template>
         </el-table-column>
-        {{- else}}
-        <el-table-column  {{if ne "" $c.Style.ListWidth}} width="{{$c.Style.ListWidth}}" {{end}} {{if eq true $c.Style.HideOverflow}} :show-overflow-tooltip="true"  {{end}} prop="{{$c.Name}}" align="center" label="{{$c.Label}}" />
-        {{- end }}
-        {{- end }}
-        {{if gt $optLen 0}}
-        {{- template "opts.tmpl.html" .}}
-        {{- end }}
+        {-{- else}-}
+        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} {-{if eq true $c.Style.HideOverflow}-} :show-overflow-tooltip="true"  {-{end}-} prop="{-{$c.Name}-}" align="center" label="{-{$c.Label}-}" />
+        {-{- end }-}
+        {-{- end }-}
+        {-{if gt $optLen 0}-}
+        {-{- template "opts.tmpl.html" .}-}
+        {-{- end }-}
     </el-table>
-    <el-pagination :currentPage="form_{{$table.UNQ}}.pi" :page-size="form_{{$table.UNQ}}.ps"
+    <el-pagination :currentPage="form_{-{$table.UNQ}-}.pi" :page-size="form_{-{$table.UNQ}-}.ps"
         style="position: absolute; right: 30px;bottom:10px;" :page-sizes="[10, 20, 50, 100]" :background="false" small
-        layout="total,sizes,prev, pager, next, jumper" :total="total_{{$table.UNQ}}" @size-change="handleSizeChange"
+        layout="total,sizes,prev, pager, next, jumper" :total="total_{-{$table.UNQ}-}" @size-change="handleSizeChange"
         @current-change="handleCurrentChange" />
 </div>
-{{- end}}
+{-{- end}-}

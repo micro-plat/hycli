@@ -1,6 +1,7 @@
 package data
 
 import (
+	"fmt"
 	"sort"
 	"strings"
 
@@ -9,45 +10,47 @@ import (
 )
 
 var Funcs = map[string]interface{}{
-	"flterMainTable":        flterMainTable,
-	"fltrNotNullCols":       fltrNotNullRows,
-	"getFirstTable":         getFirstTable,
-	"IsTmplTb":              IsTmplTb,
-	"fltrSearchUITable":     fltrSearchUITable,
-	"fltrSearchTable":       fltrSearchTable,
-	"fltrMYSQLType":         fltrMYSQLType,
-	"fltrMYSQLDef":          mySQLDefValue,
-	"fltrOptrs":             fltrOptrs,
-	"fltrOptrsByTag":        fltrOptrsByTag,
-	"fltrColumns":           fltrColumns,
-	"mergeOptrs":            mergeOptrs,
-	"fltrAssctColumns":      fltrAssctColumns,
-	"fltrTranslate":         fltrTranslate,
-	"fltrCmpnt":             fltrCmpnt,
-	"fltrColumnsExcludeExt": fltrColumnsExcludeExt,
-	"fltrOptrPara":          fltrOptrPara,
-	"fltr2Expr":             fltr2Expr,
-	"fltrOptrParaExpr":      fltrOptrParaExpr,
-	"resetForm":             resetForm,
-	"multiply":              multiply,
-	"sjoin":                 sjoin,
-	"add":                   fltrAdd,
-	"spare":                 spare,
-	"bleft":                 bleft,
-	"div":                   divide,
-	"bright":                bright,
-	"contactTBS":            contactTables,
-	"fltr2Num":              fltr2Num,
+	"flterMainTable":               flterMainTable,
+	"fltrNotNullCols":              fltrNotNullRows,
+	"getFirstTable":                getFirstTable,
+	"IsTmplTb":                     IsTmplTb,
+	"fltrSearchUITable":            fltrSearchUITable,
+	"fltrSearchUITableAndResetUNQ": fltrSearchUITableAndResetUNQ,
+	"fltrSearchTable":              fltrSearchTable,
+	"fltrMYSQLType":                fltrMYSQLType,
+	"fltrMYSQLDef":                 mySQLDefValue,
+	"fltrOptrs":                    fltrOptrs,
+	"fltrOptrsByStatic":            fltrOptrsByStatic,
+	"fltrOptrsByTag":               fltrOptrsByTag,
+	"fltrColumns":                  fltrColumns,
+	"mergeOptrs":                   mergeOptrs,
+	"fltrAssctColumns":             fltrAssctColumns,
+	"fltrTranslate":                fltrTranslate,
+	"fltrCmpnt":                    fltrCmpnt,
+	"fltrColumnsExcludeExt":        fltrColumnsExcludeExt,
+	"fltrOptrPara":                 fltrOptrPara,
+	"fltr2Expr":                    fltr2Expr,
+	"fltrOptrParaExpr":             fltrOptrParaExpr,
+	"resetForm":                    resetForm,
+	"multiply":                     multiply,
+	"sjoin":                        sjoin,
+	"add":                          fltrAdd,
+	"spare":                        spare,
+	"bleft":                        bleft,
+	"div":                          divide,
+	"bright":                       bright,
+	"contactTBS":                   contactTables,
+	"fltr2Num":                     fltr2Num,
 }
 
 func divide(x, y interface{}) int {
 	return types.GetInt(x, 0) / types.GetInt(y, 1)
 }
 func bleft() string {
-	return `{{`
+	return `{-{`
 }
 func bright() string {
-	return `}}`
+	return `}-}`
 }
 func fltrAdd(x, y interface{}) int {
 	return types.GetInt(x) + types.GetInt(y)
@@ -142,6 +145,17 @@ func fltrOptrsByTag(opts []*optrs, tag string) []*optrs {
 		}
 	}
 	return nopts
+}
+func fltrOptrsByStatic(opts *optrs) map[string]string {
+	outs := make(map[string]string)
+	for k, v := range opts.Params {
+		fmt.Println("fltrOptrsByStatic:", opts.Label, k, v)
+		if strings.HasPrefix(k, "@") {
+			outs[strings.Trim(k, "@")] = v
+		}
+	}
+
+	return outs
 }
 func fltr2Num(t string, def int) int {
 	return types.GetInt(t, def)
@@ -240,7 +254,11 @@ func fltrAssctColumns(tx interface{}, colName string) []*Column {
 }
 func fltrTranslate(f string, t interface{}) string {
 	tb := getTable(t)
-	return types.Translate(f, "name", tb.Name, "mainPath", strings.ToLower(tb.Name.MainPath))
+	return types.Translate(f,
+		"name", tb.Name,
+		"prefix", tb.Name.Prefix,
+		"main", tb.Name.Main,
+		"mainPath", strings.ToLower(tb.Name.MainPath))
 }
 func getTable(tx interface{}) *Table {
 	if t, ok := tx.(*Table); ok {
