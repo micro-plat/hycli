@@ -92,7 +92,7 @@ values
 const update{-{.Name.CName}-} = `
 update {-{.Name.Raw}-} t set 
 {-{- range $i,$v :=fltrColumnsExcludeExt (fltrColumns $table "u")}-}
-	t.{-{$v.Name}-} = @{-{$v.Name}-}{-{if lt $i $ulen}-},{-{end}-}
+	t.{-{$v.Name}-} = if(@{-{$v.Name}-}='',{-{if ne "" $v.Field.DefaultValue}-} {-{$v.Field.DefaultValue}-} {-{else}-}NULL{-{end}-},@{-{$v.Name}-}){-{if lt $i $ulen}-},{-{end}-}
 {-{- end}-}
 where 
 {-{- range $i,$v :=fltrColumnsExcludeExt $table.PKColumns}-}

@@ -35,6 +35,7 @@ export default {
   methods: {
     show(fm = {}) {
       this.conf.visible = true;
+      this.form = Object.assign(fm,this.$route.params)
       this.form = fm
     },
     save(){

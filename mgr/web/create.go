@@ -42,7 +42,7 @@ func CreatePage(mdpath string, tbs string, outpath string, cover bool) error {
 	}
 
 	// //创建路由文件
-	if err = createRouter(outpath, tbls, cover); err != nil {
+	if err = createRouter(outpath, ntbs, cover); err != nil {
 		return err
 	}
 	return nil

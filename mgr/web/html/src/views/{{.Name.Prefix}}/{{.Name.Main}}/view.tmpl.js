@@ -15,7 +15,7 @@
       {-{- end}-}
       {-{- $os := fltrOptrsByStatic $c }-}
       {-{- range $k,$v := $os}-}
-      nform_{-{$c.UNQ}-}.{-{$k}-} = "{-{$v}-}"
+      nform_{-{$c.UNQ}-}.{-{$k}-} =this.$route.params["{-{$k}-}"]|| "{-{$v}-}"
       {-{- end}-}
       this.queryData_{-{$ct.UNQ}-}(this.form_{-{$ct.UNQ}-},nform_{-{$c.UNQ}-})
       {-{- end}-}

@@ -23,6 +23,7 @@ var Funcs = map[string]interface{}{
 	"fltrOptrsByStatic":            fltrOptrsByStatic,
 	"fltrOptrsByTag":               fltrOptrsByTag,
 	"fltrColumns":                  fltrColumns,
+	"flterJoinColumnNames":         flterJoinColumnNames,
 	"mergeOptrs":                   mergeOptrs,
 	"fltrAssctColumns":             fltrAssctColumns,
 	"fltrTranslate":                fltrTranslate,
@@ -210,6 +211,17 @@ func fltrColumns(tx interface{}, tp string, formName ...string) []*Column {
 	}
 	sort.Sort(cols)
 	return cols
+}
+func flterJoinColumnNames(tx interface{}, tp string, j string) string {
+	colums := fltrColumns(tx, tp)
+	names := make([]string, 0, 1)
+	for _, v := range colums {
+		names = append(names, v.Name)
+	}
+	if len(names) == 0 {
+		return ""
+	}
+	return j + strings.Join(names, j)
 }
 func fltrCmpnt(tx interface{}, cmpnt string, tps ...string) []*Column {
 	colums := getColumns(tx)

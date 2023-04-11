@@ -28,6 +28,13 @@ mounted() {
   this.$refs.chart_{-{ $c.UNQ }-}.show(this.form_{-{ $table.UNQ }-})
 {-{- end }-}
     },
+  {-{- if ne "" (flterJoinColumnNames $table "rp" "")}-}
+ watch: {
+    '$route' () {
+      this.onQuery();//我的初始化方法
+    }
+  },
+  {-{- end}-}
 methods: {
   {-{- $tbs := contactTBS  $table $table }-}
   {-{- template "list.tmpl.js" $tbs }-}

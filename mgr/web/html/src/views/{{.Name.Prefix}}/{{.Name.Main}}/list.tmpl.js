@@ -9,6 +9,7 @@
 
     queryData_{-{$table.UNQ}-}(mform = {},nform={}){
     //构建查询参数
+    this.form_{-{$table.UNQ}-} = Object.assign(this.form_{-{$table.UNQ}-},this.$route.params)
     this.form_{-{$table.UNQ}-} = Object.assign(this.form_{-{$table.UNQ}-},nform||{})
      {-{- range $i,$c:= $qrow}-}
       {-{- if eq "daterange" $c.Cmpnt.Type}-}
