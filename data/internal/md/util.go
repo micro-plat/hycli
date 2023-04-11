@@ -68,17 +68,20 @@ func GetConsNameByTag(t string, cns ...string) string {
 	}
 	return ""
 }
-func GetExpr(v string) []string {
-	f := `^([@]?\w+)([><!=][=]?)(\w*)$`
+func GetExprs(v string) [][]string {
+	f := `([@]?\w+)([><!=][=]?)(\w*)`
 	reg := regexp.MustCompile(f)
 	names := reg.FindAllStringSubmatch(v, -1)
-	if len(names) > 0 &&
-		names[0][1] != "" &&
-		names[0][2] != "" &&
-		names[0][3] != "" {
-		return names[0][1:]
+	lst := make([][]string, 0, 1)
+	for i := range names {
+		if names[i][1] != "" &&
+			names[i][2] != "" &&
+			names[i][3] != "" {
+			lst = append(lst, names[i][1:])
+		}
 	}
-	return nil
+
+	return lst
 }
 func GetConsByTag(t string, cns ...string) (string, string, string) {
 	cons := GetConstraintByReg(cns, fmt.Sprintf(`^(%s)$|^%s\(([^\(^\)^,]+)[,]?([^\(^\)^,]*)[,]?([^\(^\)]*)\)$`, t, t))

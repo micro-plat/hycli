@@ -105,6 +105,7 @@ export(导出,url:/a/b),export(导入,url:/a/b),bcheck(修改,url:/a/b)
 | tp(progress[,页面类型])      | tp(progress)       | 显示为进度条(列表/详情)               |
 | tp(tag[,页面类型])           | tp(tag)            | 显示为图章(列表/详情)                 |
 | tp(date[,页面类型])          | tp(date)           | 显示日期控件类型(查询/新增/修改)      |
+| tp(datetime[,页面类型])      | tp(datetime)       | 显示日期控件类型(查询/新增/修改)      |
 | tp(daterange[,页面类型])     | tp(daterange)      | 显示为日期范围(查询)                  |
 | tp(year[,页面类型])          | tp(year)           | 显示为年(所有)                        |
 | tp(month[,页面类型])         | tp(month)          | 显示为月(所有)                        |

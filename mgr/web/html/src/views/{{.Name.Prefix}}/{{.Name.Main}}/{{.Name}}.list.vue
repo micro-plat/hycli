@@ -23,6 +23,7 @@ data() {
 };
   },
 mounted() {
+  this.form_{-{$table.UNQ}-} = Object.assign(this.form_{-{$table.UNQ}-},this.$route.params)
   this.queryData_{-{ $table.UNQ }-} ()
       {-{- range $i, $c:=  $table.ChartOpts }-}
   this.$refs.chart_{-{ $c.UNQ }-}.show(this.form_{-{ $table.UNQ }-})
@@ -31,6 +32,7 @@ mounted() {
   {-{- if ne "" (flterJoinColumnNames $table "rp" "")}-}
  watch: {
     '$route' () {
+      this.form_{-{$table.UNQ}-} = Object.assign(this.form_{-{$table.UNQ}-},this.$route.params)
       this.onQuery();//我的初始化方法
     }
   },

@@ -31,7 +31,7 @@ var Funcs = map[string]interface{}{
 	"fltrColumnsExcludeExt":        fltrColumnsExcludeExt,
 	"fltrOptrPara":                 fltrOptrPara,
 	"fltr2Expr":                    fltr2Expr,
-	"fltrOptrParaExpr":             fltrOptrParaExpr,
+	"fltrOptrParaExprs":            fltrOptrParaExprs,
 	"resetForm":                    resetForm,
 	"multiply":                     multiply,
 	"sjoin":                        sjoin,
@@ -175,22 +175,23 @@ type expr struct {
 	Value  string
 }
 
-func fltrOptrParaExpr(opt *optrs, name string, def string) *expr {
+func fltrOptrParaExprs(opt *optrs, name string, def string) []*expr {
 	p := fltrOptrPara(opt, name, def)
 	return fltr2Expr(p)
 }
 
-func fltr2Expr(f string) *expr {
-	pr := md.GetExpr(f)
-	if len(pr) != 3 {
-		return &expr{}
+func fltr2Expr(f string) []*expr {
+	prs := md.GetExprs(f)
+	lst := make([]*expr, 0, 1)
+	for _, pr := range prs {
+		lst = append(lst, &expr{
+			Name:   types.DecodeString(strings.HasPrefix(pr[0], "@"), true, "", pr[0]),
+			Field:  types.DecodeString(strings.HasPrefix(pr[0], "@"), true, strings.Trim(pr[0], "@"), ""),
+			Symbol: pr[1],
+			Value:  pr[2],
+		})
 	}
-	return &expr{
-		Name:   types.DecodeString(strings.HasPrefix(pr[0], "@"), true, "", pr[0]),
-		Field:  types.DecodeString(strings.HasPrefix(pr[0], "@"), true, strings.Trim(pr[0], "@"), ""),
-		Symbol: pr[1],
-		Value:  pr[2],
-	}
+	return lst
 }
 
 // fltrColumns 过滤用户自定义类型对应的行，自定义行对应的控件按新增模式处理

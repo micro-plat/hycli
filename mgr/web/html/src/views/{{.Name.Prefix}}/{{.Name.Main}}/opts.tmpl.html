@@ -10,12 +10,15 @@
             {-{- if eq "LINK" $m.Name}-}
             <el-button size="small" type="text" @click="goto_{-{$m.UNQ}-}(scope.row)">{-{$m.Label}-}</el-button>
             {-{- else if eq "CMPNT" $m.Name}-}
-            {-{- $expr :=fltrOptrParaExpr $m "showExpr" ""}-}
-            <el-button 
-            {-{- if ne "" $expr.Name}-} v-if="{-{$expr.Name}-}{-{$expr.Symbol}-}{-{$expr.Value}-}" 
-            {-{- end}-} size="small" 
-            {-{- if ne "" $expr.Field}-} v-if="scope.row.{-{$expr.Field}-}{-{$expr.Symbol}-}{-{$expr.Value}-}" 
-            {-{- end}-} type="text" @click="show_cmpnt_{-{$m.UNQ}-}(scope.row)">{-{$m.Label}-}</el-button>
+            {-{- $exprs :=fltrOptrParaExprs $m "showExpr" ""}-}
+            <el-button  size="small" type="text" @click="show_cmpnt_{-{$m.UNQ}-}(scope.row)" {-{if gt (len $exprs)  0}-} v-if='
+            {-{- range $i,$expr := $exprs}-}
+            {-{- if ne "" $expr.Name}-}{-{$expr.Name}-}{-{$expr.Symbol}-}{-{$expr.Value}-} 
+            {-{- else if ne "" $expr.Field}-}
+            scope.row.{-{$expr.Field}-}{-{$expr.Symbol}-}{-{$expr.Value}-}
+            {-{- end}-}
+            {-{- if lt $i (minus (len $exprs))}-}&&{-{- end -}-}
+            {-{- end -}-}'{-{- end}-}>{-{$m.Label}-} </el-button>
             {-{- end}-}
             {-{- end}-}
         </div>

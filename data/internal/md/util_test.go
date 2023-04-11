@@ -162,50 +162,80 @@ func TestMergeConstraint(t *testing.T) {
 	assert.Equal(t, "MM/dd HH:mm:ss", f[1])
 }
 func TestExpr(t *testing.T) {
-	p := GetExpr("age<20")
+	px := GetExprs("age<20")
+	assert.Equal(t, 1, len(px))
+	p := px[0]
 	assert.Equal(t, 3, len(p))
 	assert.Equal(t, "age", p[0])
 	assert.Equal(t, "<", p[1])
 	assert.Equal(t, "20", p[2])
 
-	p = GetExpr("@age<20")
+	px = GetExprs("@age<20")
+	assert.Equal(t, 1, len(px))
+	p = px[0]
 	assert.Equal(t, 3, len(p))
 	assert.Equal(t, "@age", p[0])
 	assert.Equal(t, "<", p[1])
 	assert.Equal(t, "20", p[2])
 
-	p = GetExpr("age=20")
+	px = GetExprs("age=20")
+	assert.Equal(t, 1, len(px))
+	p = px[0]
 	assert.Equal(t, 3, len(p))
 	assert.Equal(t, "age", p[0])
 	assert.Equal(t, "=", p[1])
 	assert.Equal(t, "20", p[2])
 
-	p = GetExpr("age==20")
+	px = GetExprs("age==20")
+	assert.Equal(t, 1, len(px))
+	p = px[0]
 	assert.Equal(t, 3, len(p))
 	assert.Equal(t, "age", p[0])
 	assert.Equal(t, "==", p[1])
 	assert.Equal(t, "20", p[2])
 
-	p = GetExpr("age<=20")
+	px = GetExprs("age<=20")
+	assert.Equal(t, 1, len(px))
+	p = px[0]
 	assert.Equal(t, 3, len(p))
 	assert.Equal(t, "age", p[0])
 	assert.Equal(t, "<=", p[1])
 	assert.Equal(t, "20", p[2])
 
-	p = GetExpr("age>=20")
+	px = GetExprs("age>=20")
+	assert.Equal(t, 1, len(px))
+	p = px[0]
 	assert.Equal(t, 3, len(p))
 	assert.Equal(t, "age", p[0])
 	assert.Equal(t, ">=", p[1])
 	assert.Equal(t, "20", p[2])
 
-	p = GetExpr("age!=20")
+	px = GetExprs("age!=20")
+	assert.Equal(t, 1, len(px))
+	p = px[0]
 	assert.Equal(t, 3, len(p))
 	assert.Equal(t, "age", p[0])
 	assert.Equal(t, "!=", p[1])
 	assert.Equal(t, "20", p[2])
 
-	p = GetExpr("age")
-	assert.Equal(t, 0, len(p))
+	px = GetExprs("age")
+	assert.Equal(t, 0, len(px))
+
+}
+func TestExprs(t *testing.T) {
+	px := GetExprs("age!=20&name==3")
+	assert.Equal(t, 2, len(px))
+	p := px[0]
+	assert.Equal(t, 3, len(p))
+	assert.Equal(t, "age", p[0])
+	assert.Equal(t, "!=", p[1])
+	assert.Equal(t, "20", p[2])
+
+	p = px[1]
+	assert.Equal(t, 3, len(p))
+	assert.Equal(t, "name", p[0])
+	assert.Equal(t, "==", p[1])
+	assert.Equal(t, "3", p[2])
 
 }
 func TestKDNO(t *testing.T) {
