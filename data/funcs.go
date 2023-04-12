@@ -12,6 +12,7 @@ var Funcs = map[string]interface{}{
 	"flterMainTable":               flterMainTable,
 	"fltrNotNullCols":              fltrNotNullRows,
 	"getFirstTable":                getFirstTable,
+	"getColumn":                    getColumn,
 	"IsTmplTb":                     IsTmplTb,
 	"fltrSearchUITable":            fltrSearchUITable,
 	"fltrSearchUITableAndResetUNQ": fltrSearchUITableAndResetUNQ,
@@ -69,6 +70,12 @@ func getFirstTable(ts []*Table) *Table {
 		return ts[0]
 	}
 	return &Table{}
+}
+func getColumn(ts []*Column, i int, d *Column) *Column {
+	if len(ts) > i {
+		return ts[i]
+	}
+	return d
 }
 func flterMainTable(tbs []*Table) []*Table {
 	cache := map[string]bool{}

@@ -26,7 +26,7 @@
         {-{- else if eq "progress" $c.Cmpnt.Type}-}
         <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{else}-} width="120" {-{end}-} align="center" label="{-{$c.Label}-}">
             <template #default="scope">
-                <el-progress  :percentage="scope.row.{-{$c.Name}-}" :color="conf.progressColor" />
+                <el-progress  :percentage="scope.row.{-{$c.Name}-}_progress" :color="conf.progressColor" />
             </template>
         </el-table-column>
         {-{- else if eq "img" $c.Cmpnt.Type}-}
@@ -69,8 +69,7 @@
         {-{- else}-}
         <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} {-{if eq true $c.Style.HideOverflow}-} :show-overflow-tooltip="true"  {-{end}-}  align="center" label="{-{$c.Label}-}" >
             <template #default="scope">
-                  <span v-if="scope.row.{-{$c.Name}-}">{{ scope.row.{-{$c.Name}-} }}</span>
-                  <span v-if="!scope.row.{-{$c.Name}-}">-</span>
+                  <span>{{ scope.row.{-{$c.Name}-}||'-' }}</span>
               </template>
         </el-table-column>
         {-{- end }-}

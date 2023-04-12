@@ -78,6 +78,16 @@
           {-{- end}-}
           {-{- if eq "switch" $c.Cmpnt.Type}-}
         item.{-{$c.Name}-}_switch = item.{-{$c.Name}-} == 0
+        {-{- else if eq "progress" $c.Cmpnt.Type}-}
+          {-{- $qrow := fltrColumns $table $c.Cmpnt.Format}-}
+          {-{- if gt (len $qrow) 0}-}
+          {-{- $frow := getColumn $qrow 0 $c}-}
+          {-{- $srow := getColumn $qrow 1 $c}-}
+          // 计算日期占比
+          item.{-{$c.Name}-}_progress = that.getDaysProgress(item.{-{$frow.Name}-},item.{-{$srow.Name}-})
+          {-{- end}-}
+          {-{- else}-}
+        item.{-{$c.Name}-}_progress = item.{-{$c.Name}-}
           {-{- end}-}
         {-{- end}-}
 
@@ -152,3 +162,17 @@
     },
     {-{- end}-}
     {-{- end}-}
+    getDaysProgress(s,e){
+      if(!s || !e){
+        return 0
+      }
+      if(new Date(s) > new Date()){
+        return 0
+      }
+      let t1 = new Date() - new Date(s)
+      let t2 = new Date(e) - new Date(s)
+      if(t1 <= 0 || t2 <= 0 || t2 < t1){
+        return 0
+      }
+      return this.$theia.str.numberFormat(t1 / t2,2)*100
+    },

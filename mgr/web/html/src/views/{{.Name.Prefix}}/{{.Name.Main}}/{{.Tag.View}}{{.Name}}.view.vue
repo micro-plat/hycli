@@ -12,7 +12,7 @@
     :before-close="hide"
   >
   {-{- range $i,$c:=fltrOptrs $viewOpts "step"}-}
-  <el-steps :active="conf.stepActive" align-center size="small" finish-status="success">
+  <el-steps class="steps" :active="conf.stepActive" align-center size="small" finish-status="success">
     {-{ range $j,$s:= fltrColumns $table $c.RwName}-}
     <el-step title="{-{$s.Label}-}" :description="view.{-{$s.Name}-}||'未设置'" />
     {-{- end }-}
@@ -127,3 +127,12 @@ export default {
   },
 };
 </script>
+<style scoped>
+/deep/.el-step__title{
+    font-size: 0.8rem;
+}
+.steps{
+  margin-top:8px;
+  margin-bottom:  16px;
+}
+</style>
