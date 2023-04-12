@@ -87,7 +87,8 @@
         {-{- if eq "multiselect" $c.Cmpnt.Type}-}
         <!--{-{$c.Label}-} 下拉控件多选 -->
         <el-form-item>
-            <el-select v-model="form_{-{$table.UNQ}-}.{-{.Name}-}" filterable clearable multiple collapse-tags placeholder="{-{$c.Label}-}">
+            <el-select v-model="form_{-{$table.UNQ}-}.{-{.Name}-}" filterable clearable multiple collapse-tags  style="width: 140px"
+            collapse-tags-tooltip placeholder="{-{$c.Label}-}">
                 <el-option v-for="item in {-{.Name}-}List" :key="item.value" :label="item.name" :value="item.value" />
             </el-select>
         </el-form-item>

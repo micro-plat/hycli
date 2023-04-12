@@ -1,7 +1,15 @@
 {-{- $table := . }-}
 {-{- $optRow:= mergeOptrs $table.ListOpts $table.BarOpts}-}
-{-{- range $x,$m:= $optRow}-}
-{-{- if eq "CMPNT" $m.Name}-}
+
+{-{- $cmpnts:= fltrOptrs $optRow "CMPNT"}-}
+{-{- if gt (len $cmpnts) 0}-}
+show_cmpnt(cmd,row){
+  if(this.cmpnt_funcs[cmd]){
+    this.cmpnt_funcs[cmd](row)
+  }
+},
+{-{- end}-}
+{-{- range $x,$m:= $cmpnts}-}
   show_cmpnt_{-{$m.UNQ}-}(fm = {}){
     let query = {}
     {-{- $rows:= fltrColumns $table $m.RwName}-}
@@ -19,9 +27,8 @@
     {-{- end}-}
   },
 {-{- end}-}
-{-{- end}-}
-{-{- range $x,$m:=$optRow}-}
-{-{- if eq "LINK" $m.Name}-}
+{-{- $linkcmpnts:= fltrOptrs $optRow "LINK"}-}
+{-{- range $x,$m:=$linkcmpnts}-}
   goto_{-{$m.UNQ}-}(fm = {}){
     let query = {}
     {-{- $rows:= fltrColumns $table $m.RwName}-}
@@ -29,6 +36,5 @@
     query.{-{$c.Name}-} = fm.{-{$c.Name}-}
       {-{- end}-}
     this.goto('{-{$m.URL}-}',query)
-  }
-{-{- end}-}
+  },
 {-{- end}-}

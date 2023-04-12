@@ -10,7 +10,7 @@ import (
 	"github.com/micro-plat/lib4go/types"
 )
 {-{- $table := .}-}
-{-{- $ccols := fltrNotNullCols (fltrColumns $table "c")}-}
+{-{- $ccols := fltrNotNullCols (fltrColumns $table "c-bc")}-}
 {-{- $clen := (len $ccols)|minus}-}
 {-{- $ucols := fltrNotNullCols  (fltrColumns $table "u")}-}
 {-{- $ulen := (len $ucols)|minus}-}
@@ -79,7 +79,7 @@ func (u *{-{.Name.CName}-}Handler) PutHandle(ctx hydra.IContext) (r interface{})
 }
 {-{- end}-}
 
-{-{- if gt (len (fltrColumns $table "c")) 0}-}
+{-{- if gt (len (fltrColumns $table "c-bc")) 0}-}
 
 //PostHandle  保存{-{.Desc}-}数据
 func (u *{-{.Name.CName}-}Handler) PostHandle(ctx hydra.IContext) (r interface{}) {

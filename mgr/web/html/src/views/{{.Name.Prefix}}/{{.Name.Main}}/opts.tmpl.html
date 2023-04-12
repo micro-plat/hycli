@@ -1,16 +1,24 @@
 {-{- $optRow :=.ListOpts}-}
 {-{- $len :=len $optRow}-}
-{-{- $width :=multiply $len 60}-}
+<!-- {-{- $width :=multiply $len 60}-} -->
+{-{- $width := 180}-}
+{-{- if lt $len 5}-}
+{-{- $width = multiply $len 60}-}
+{-{- end}-}
 {-{- $tmpl :=IsTmplTb .}-}
 {-{- if eq false $tmpl}-}
 <el-table-column fixed="right" label="操作" width="{-{$width}-}">
     <template #default="scope">
         <div class="opts">
-            {-{- range $x,$m:=$optRow }-}
-            {-{- if eq "LINK" $m.Name}-}
+            {-{- $cmpnts:= fltrOptrs $optRow "LINK"}-}
+            {-{- range $x,$m:=$cmpnts }-}
             <el-button size="small" type="text" @click="goto_{-{$m.UNQ}-}(scope.row)">{-{$m.Label}-}</el-button>
-            {-{- else if eq "CMPNT" $m.Name}-}
+            {-{- end}-}
+            {-{- $cmpnts:= fltrOptrs $optRow "CMPNT"}-}
+            {-{- $cmpnt_count:= len $cmpnts}-}
+            {-{- range $x,$m:=$cmpnts }-}
             {-{- $exprs :=fltrOptrParaExprs $m "showExpr" ""}-}
+            {-{- if lt $x 3}-}
             <el-button  size="small" type="text" @click="show_cmpnt_{-{$m.UNQ}-}(scope.row)" {-{if gt (len $exprs)  0}-} v-if='
             {-{- range $i,$expr := $exprs}-}
             {-{- if ne "" $expr.Name}-}{-{$expr.Name}-}{-{$expr.Symbol}-}{-{$expr.Value}-} 
@@ -19,6 +27,30 @@
             {-{- end}-}
             {-{- if lt $i (minus (len $exprs))}-}&&{-{- end -}-}
             {-{- end -}-}'{-{- end}-}>{-{$m.Label}-} </el-button>
+            {-{- end }-}
+
+            {-{- if gt $x 2}-}
+            {-{- if eq $x 3}-}
+            <el-dropdown size="small" @command="(command) => show_cmpnt(command, scope.row)">
+                <span class="el-dropdown-link">
+                 ...<el-icon class="el-icon--right"><arrow-down /></el-icon>
+                </span>
+                <template #dropdown>
+                  <el-dropdown-menu>
+            {-{- end}-}
+            <el-dropdown-item command="{-{$m.UNQ}-}" {-{if gt (len $exprs)  0}-} v-if='
+            {-{- range $i,$expr := $exprs}-}
+            {-{- if ne "" $expr.Name}-}{-{$expr.Name}-}{-{$expr.Symbol}-}{-{$expr.Value}-} 
+            {-{- else if ne "" $expr.Field}-}
+            scope.row.{-{$expr.Field}-}{-{$expr.Symbol}-}{-{$expr.Value}-}
+            {-{- end}-}
+            {-{- if lt $i (minus (len $exprs))}-}&&{-{- end -}-}
+            {-{- end -}-}'{-{- end}-}>{-{$m.Label}-} </el-dropdown-item>
+            {-{- end}-}
+          {-{- if and (gt $x 2) (eq $x (minus $cmpnt_count))}-}
+                </el-dropdown-menu>
+            </template>
+            </el-dropdown>
             {-{- end}-}
             {-{- end}-}
         </div>

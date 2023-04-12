@@ -10,14 +10,11 @@
       //{-{ $c.Label}-}查询
       let nform_{-{$c.UNQ}-} = {}
       {-{- $ct:= fltrSearchUITableAndResetUNQ $c}-}
-       {-{- if and (ne "" $c.RwName) (ne "" $c.FwName)}-}
-      this.form_{-{$ct.UNQ}-}.{-{ $c.FwName}-} = form.{-{$c.RwName}-}
-      {-{- end}-}
       {-{- $os := fltrOptrsByStatic $c }-}
       {-{- range $k,$v := $os}-}
       nform_{-{$c.UNQ}-}.{-{$k}-} =this.$route.params["{-{$k}-}"]|| "{-{$v}-}"
       {-{- end}-}
-      this.queryData_{-{$ct.UNQ}-}(this.form_{-{$ct.UNQ}-},nform_{-{$c.UNQ}-})
+      this.queryData_{-{$ct.UNQ}-}(form,nform_{-{$c.UNQ}-})
       {-{- end}-}
      {-{- end}-}
   
@@ -25,8 +22,7 @@
     this.$theia.http
       .get("/{-{.Name.MainPath|lower}-}",form)
       .then((res) => {
-            Object.assign(that.view, res)
-            let item = that.view
+                let item = Object.assign({}, res)
             {-{- range $i,$c := $vcols }-}
             {-{- if eq true $c.Enum.IsEnum}-}
                 item.{-{$c.Name}-}_label = that.$theia.enum.getNames("{-{$c.Enum.EnumType}-}",item.{-{$c.Name}-})
@@ -47,6 +43,11 @@
                 item.{-{$c.Name}-} = that.$theia.str.cut(item.{-{$c.Name}-},{-{$c.Cmpnt.Format}-})
               {-{- end}-}
               {-{- end }-}
+              {-{- if gt (len (fltrOptrs $viewOpts "step")) 0}-}
+                that.conf.stepActive = that.getStepActive(res)
+              {-{- end}-}
+                that.view = item
+            
       })
       .catch((res) => {
         let code = res.response.status;
@@ -66,6 +67,26 @@
       that.$refs.view_{-{$m.UNQ}-}.show(query)
     },
     {-{- end}-}
+ {-{- end}-}
+
+ {-{- $stepOpts:=fltrOptrs $viewOpts "step"}-}
+ {-{- if gt (len $stepOpts) 0}-}
+ getStepActive(view){
+  {-{- range $i,$c:= $stepOpts}-}
+  {-{- range $j,$s:= fltrColumns $table $c.RwName}-}
+      {-{- if and (ne "" $s.Cmpnt.Format) (eq true $s.Field.IsDate)}-}
+        if(!view["{-{$s.Name}-}"]|| new Date(view["{-{$s.Name}-}"]) > new Date()){
+          return {-{$j}-}
+        }
+      {-{- else}-}
+      if(!view["{-{$s.Name}-}"]){
+         return {-{$j}-}
+      }
+      {-{- end}-}
+  {-{- end }-}
+ {-{- end}-}
+     return {-{(len $stepOpts)|minus}-}
+ },
  {-{- end}-}
    colorful(r){
      return this.$theia.env.conf.colorful[r]

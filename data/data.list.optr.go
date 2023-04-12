@@ -11,27 +11,28 @@ import (
 
 // 操作信息
 type optrs struct {
-	Tag    string
-	Name   string //link,dialog,cmpnt,tab,cnfrm
-	Label  string //修改,预览，删除
-	ICON   string //图标
-	URL    string //组件URL
-	RwName string //当前表字段标记
-	FwName string //外部表字段标记
-	ReqURL string //服务请求URL
-	IsMux  bool   //是否是复用组件
-
+	Tag      string
+	Name     string //link,dialog,cmpnt,tab,cnfrm
+	Label    string //修改,预览，删除
+	ICON     string //图标
+	URL      string //组件URL
+	RwName   string //当前表字段标记
+	FwName   string //外部表字段标记
+	ReqURL   string //服务请求URL
+	IsMux    bool   //是否是复用组件
+	index    int    //顺序编号
 	ExtTable string
 	Params   map[string]string
 	UNQ      string
 }
-type formatOptrs []*optrs
-type lstOptrs []*optrs
-type viewOptrs []*optrs
-type lstatOptrs []*optrs
-type chartOptrs []*optrs
-type barOptrs []*optrs
-type viewExtCmptOpts []*optrs
+type optrslst []*optrs
+type formatOptrs optrslst
+type lstOptrs optrslst
+type viewOptrs optrslst
+type lstatOptrs optrslst
+type chartOptrs optrslst
+type barOptrs optrslst
+type viewExtCmptOpts optrslst
 
 var viewOptCmd = []string{"view"}
 var lstatOptCmd = []string{"lstat"}
@@ -41,13 +42,17 @@ var barOptrCmd = []string{"export", "import", "bcheck"}
 var charOptrCmd = []string{"chart"}
 var extCmptParam = []string{"add"}
 
-var addOpts = &optrs{Tag: "ADD", URL: "@/views/{@prefix}/{@main}/{@name}.add", Name: "CMPNT", ICON: "Plus", Label: "添加", RwName: "C", UNQ: defFids.Next()}
-var detailOpts = &optrs{Tag: "VIEW", URL: "./{@name}.view", Name: "CMPNT", Label: "详情", RwName: "V", UNQ: defFids.Next()}
-var updateOpts = &optrs{Tag: "UPDATE", URL: "./{@name}.edit", Name: "CMPNT", Label: "修改", RwName: "U", UNQ: defFids.Next()}
-var delOpts = &optrs{Tag: "CNFRM", URL: "./{@name}.cnfrm", ReqURL: "/{@mainPath}/del", Name: "CMPNT", Label: "删除", RwName: "D", UNQ: defFids.Next(), IsMux: true}
-var dialogOpts = &optrs{Tag: "DIALOG", URL: "./{@name}.dialog", Name: "CMPNT", IsMux: true}
-var cnfrmOpts = &optrs{Tag: "CNFRM", URL: "./{@name}.cnfrm", Name: "CMPNT", IsMux: true}
+var addOpts = &optrs{Tag: "ADD", URL: "@/views/{@prefix}/{@main}/{@name}.add", Name: "CMPNT", ICON: "Plus", Label: "添加", RwName: "C", UNQ: defFids.Next(), index: 1}
+var detailOpts = &optrs{Tag: "VIEW", URL: "./{@name}.view", Name: "CMPNT", Label: "详情", RwName: "V", UNQ: defFids.Next(), index: 1}
+var updateOpts = &optrs{Tag: "UPDATE", URL: "./{@name}.edit", Name: "CMPNT", Label: "修改", RwName: "U", UNQ: defFids.Next(), index: 2}
+var delOpts = &optrs{Tag: "CNFRM", URL: "./{@name}.cnfrm", ReqURL: "/{@mainPath}/del", Name: "CMPNT", Label: "删除", RwName: "D", UNQ: defFids.Next(), IsMux: true, index: 99}
+var dialogOpts = &optrs{Tag: "DIALOG", URL: "./{@name}.dialog", Name: "CMPNT", IsMux: true, index: 99}
+var cnfrmOpts = &optrs{Tag: "CNFRM", URL: "./{@name}.cnfrm", Name: "CMPNT", IsMux: true, index: 99}
 var chartLinePieBarOpts = &optrs{Tag: "CHART", URL: "@/views/cmpnts/chart.base.vue", Name: "CMPNT"}
+
+func (s optrslst) Len() int           { return len(s) }
+func (s optrslst) Less(i, j int) bool { return s[i].index < s[j].index }
+func (s optrslst) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
 
 var extCmptOpts = map[string]*optrs{
 	"add": addOpts,
@@ -155,7 +160,7 @@ func createOptrs(t string, tag string) []*optrs {
 			opt.Tag = name
 			opt.ReqURL = types.GetStringByIndex(lst, 2)
 		default:
-			opt = optrs{Tag: tag, Name: name, URL: types.GetStringByIndex(lst, 2)}
+			opt = optrs{Tag: tag, Name: name, URL: types.GetStringByIndex(lst, 2), index: 99}
 		}
 
 		opt.Label = types.GetStringByIndex(lst, 0)

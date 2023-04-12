@@ -8,6 +8,31 @@ import (
 	"github.com/micro-plat/lib4go/assert"
 )
 
+func TestTB2(t *testing.T) {
+	row := `
+	###  1. 员工信息[ws_staff_info]
+
+| 字段名      | 类型         | 默认值  | 为空  |        约束        | 描述     |
+| ----------- | ------------ | :-----: | :---: | :----------------: | :------- |
+| staff_id    | number(10)   |  10000  |  否   | PK,SEQ, l,le,bq,DI | 编号     |
+| name        | varchar2(32) |         |  否   |   c,u,l,le,q,DN    | 名称     |
+| position    | varchar2(32) |         |  否   |   c,u,l,le,sl,DT   | 岗位     |
+| title       | varchar2(32) |         |  否   |   c,u,l,le,sl,DP   | 职位     |
+| mobile      | varchar2(32) |         |  否   |      c,u,l,le      | 手机     |
+| email       | varchar2(32) |         |  否   |      c,u,l,le      | 邮箱     |
+| status      | number(2)    |         |  否   | c,u,l,le,sl,color  | 状态     |
+| create_time | date         | sysdate |  否   | l,le,f(yyyy-MM-dd) | 创建时间 |`
+
+	reader, err := readMarkdownByReader(bufio.NewReader(strings.NewReader(row)))
+	assert.Equal(t, err, nil)
+	tbs, err := Lines2Table(line2TbLines(reader))
+	assert.Equal(t, nil, err)
+	assert.Equal(t, 1, len(tbs))
+	assert.Equal(t, 8, len(tbs[0].Rows))
+	assert.Equal(t, 6, len(tbs[0].Rows[2].Constraints))
+	assert.Equal(t, true, HasConstraint(tbs[0].Rows[2].Constraints, "DT"))
+	assert.Equal(t, true, HasConstraint(tbs[0].Rows[3].Constraints, "DP"))
+}
 func TestTB(t *testing.T) {
 	row := `
 	### 4. 角色表[^sso_role_info]
@@ -26,7 +51,7 @@ func TestTB(t *testing.T) {
 	assert.Equal(t, nil, err)
 	assert.Equal(t, 1, len(tbs))
 	assert.Equal(t, "sso_role_info", tbs[0].Name.Raw)
-	assert.Equal(t, strings.HasPrefix(tbs[0].Name.OName, "^"), tbs[0].Exclude)
+	assert.Equal(t, true, tbs[0].Exclude)
 	assert.Equal(t, "角色表", tbs[0].Desc)
 	assert.Equal(t, 5, len(tbs[0].Rows))
 
@@ -43,7 +68,7 @@ func TestTB(t *testing.T) {
 	assert.Equal(t, "角色id", tbs[0].Rows[0].Desc.Raw)
 	assert.Equal(t, "角色id", tbs[0].Rows[0].Desc.Name)
 
-	assert.Equal(t, "^name", tbs[0].Rows[1].Name)
+	assert.Equal(t, "name", tbs[0].Rows[1].Name)
 	assert.Equal(t, "varchar(64)", tbs[0].Rows[1].Type.Raw)
 	assert.Equal(t, "varchar", tbs[0].Rows[1].Type.Name)
 	assert.Equal(t, 64, tbs[0].Rows[1].Type.Len)

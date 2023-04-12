@@ -14,6 +14,7 @@ export default {
   {-{- template "cmpnt.c.tmpl.js" $table }-}
 data() {
   return {
+    cmpnt_funcs:{},
     conf: {
       loading: false,
       progressColor: this.$theia.env.conf.progress || []
@@ -23,6 +24,12 @@ data() {
 };
   },
 mounted() {
+  {-{- $optRow:= mergeOptrs $table.ListOpts $table.BarOpts}-}
+  {-{- $cmpnts:= fltrOptrs $optRow "CMPNT"}-}
+  {-{- range $x,$m:= $cmpnts}-}
+    this.cmpnt_funcs["{-{$m.UNQ}-}"] = this.show_cmpnt_{-{$m.UNQ}-}
+  {-{- end}-}
+
   this.form_{-{$table.UNQ}-} = Object.assign(this.form_{-{$table.UNQ}-},this.$route.params)
   this.queryData_{-{ $table.UNQ }-} ()
       {-{- range $i, $c:=  $table.ChartOpts }-}
@@ -79,7 +86,7 @@ methods: {
 },
 };
 </script>
-<style>
+<style scoped>
 .el-form-item {
   margin-right: 10px !important;
 }
@@ -112,4 +119,13 @@ methods: {
 .listbar {
   margin-bottom: 8px;
   text-align: center;
-}</style>
+}
+ .el-dropdown-link {
+  cursor: pointer;
+  color: var(--el-color-primary);
+  display: flex;
+  align-items: center;
+  font-size: 0.65rem;
+  margin-top: 7px;
+}
+</style>

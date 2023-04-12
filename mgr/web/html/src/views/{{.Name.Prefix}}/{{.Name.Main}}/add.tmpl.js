@@ -12,6 +12,8 @@
         {-{- range $i,$c := $ccols}-}
         {-{- if eq "switch" $c.Cmpnt.Type}-}
         {-{$c.Name}-}_switch:false,
+        {-{- else if eq "multiselect" $c.Cmpnt.Type}-}
+        {-{$c.Name}-}:[],
         {-{- else}-}
         {-{$c.Name}-}:"",
         {-{- end}-}

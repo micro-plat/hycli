@@ -43,6 +43,8 @@ export default {
         {-{- range $i,$c := $ucols}-}
         {-{- if eq "switch" $c.Cmpnt.Type}-}
           res.{-{$c.Name}-}_switch = res.{-{$c.Name}-} == 0
+        {-{- else if eq "multiselect" $c.Cmpnt.Type}-}
+          res.{-{$c.Name}-} = (res.{-{$c.Name}-}+"").split(",")
         {-{- end}-}
         {-{- end}-}
         Object.assign(that.form, res)
@@ -65,8 +67,16 @@ export default {
         }))
     },
     onSave(){
-        let that = this
-        this.$theia.http.put("/{-{.Name.MainPath|lower}-}",this.form).then(res=>{
+      let that = this
+        let postForm = Object.assign({},this.form)
+        {-{- range $i,$c:= $ucols }-}
+        {-{- if eq "password" $c.Cmpnt.Type  }-}
+        postForm.{-{$c.Name}-} = this.$theia.crypto.md5(this.form.{-{$c.Name}-})
+        {-{- else if eq "multiselect" $c.Cmpnt.Type}-}
+        postForm.{-{$c.Name}-} = (postForm.{-{$c.Name}-}||[]).join(",")
+        {-{- end }-}
+        {-{- end}-}
+        this.$theia.http.put("/{-{.Name.MainPath|lower}-}",postForm).then(res=>{
             that.$notify.success({title: '成功',message: '{-{.Desc}-}保存成功',duration:5000})
             {-{- if ne "" $table.Enum.EnumType}-}
             that.$theia.enum.clear("{-{$table.Enum.EnumType}-}")

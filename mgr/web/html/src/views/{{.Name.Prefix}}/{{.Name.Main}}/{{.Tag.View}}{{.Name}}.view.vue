@@ -11,6 +11,14 @@
     :close-on-click-modal="false"
     :before-close="hide"
   >
+  {-{- range $i,$c:=fltrOptrs $viewOpts "step"}-}
+  <el-steps :active="conf.stepActive" align-center size="small" finish-status="success">
+    {-{ range $j,$s:= fltrColumns $table $c.RwName}-}
+    <el-step title="{-{$s.Label}-}" :description="view.{-{$s.Name}-}||'未设置'" />
+    {-{- end }-}
+  </el-steps>
+  {-{- end}-}
+
     <el-tabs v-model="conf.selected">
       <el-tab-pane label="详情" name="first">
         {-{- template "view.tmpl.html" $vcols}-}
@@ -78,7 +86,8 @@ export default {
     return {
         conf:{
         visible:false,
-        selected:"first"
+        selected:"first",
+        stepActive:0,
       },
       form:{},
        {-{- range $i,$c:=  $viewOpts }-}

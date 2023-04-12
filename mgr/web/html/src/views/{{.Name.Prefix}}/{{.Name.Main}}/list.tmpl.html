@@ -67,7 +67,12 @@
             </template>
         </el-table-column>
         {-{- else}-}
-        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} {-{if eq true $c.Style.HideOverflow}-} :show-overflow-tooltip="true"  {-{end}-} prop="{-{$c.Name}-}" align="center" label="{-{$c.Label}-}" />
+        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} {-{if eq true $c.Style.HideOverflow}-} :show-overflow-tooltip="true"  {-{end}-}  align="center" label="{-{$c.Label}-}" >
+            <template #default="scope">
+                  <span v-if="scope.row.{-{$c.Name}-}">{{ scope.row.{-{$c.Name}-} }}</span>
+                  <span v-if="!scope.row.{-{$c.Name}-}">-</span>
+              </template>
+        </el-table-column>
         {-{- end }-}
         {-{- end }-}
         {-{if gt $optLen 0}-}

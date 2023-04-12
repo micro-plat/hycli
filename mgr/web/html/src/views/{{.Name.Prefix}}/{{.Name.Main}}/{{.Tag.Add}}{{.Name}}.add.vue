@@ -37,6 +37,11 @@ export default {
       this.conf.visible = true;
       this.form = Object.assign(fm,this.$route.params)
       this.form = fm
+      {-{- range $i,$c:= $cColumns }-}
+      {-{- if and (gt (len (fltrAssctColumns $cColumns $c.Name)) 0) (eq true (fltrHasConst $c "rp"))}-} 
+      this.onChange_{-{$c.Name}-}(this.$route.params["{-{$c.Name}-}"]||(fm||{})["{-{$c.Name}-}"])
+      {-{- end}-} 
+      {-{- end}-}
     },
     save(){
        {-{- range $i,$c:= $cColumns }-}
@@ -52,12 +57,14 @@ export default {
     },
     onSave(){
         let that = this
-        let postForm=this.form
+        let postForm = Object.assign({},this.form)
         {-{- range $i,$c:= $cColumns }-}
-         {-{- if eq "password" $c.Cmpnt.Type  }-}
+        {-{- if eq "password" $c.Cmpnt.Type  }-}
         postForm.{-{$c.Name}-} = this.$theia.crypto.md5(this.form.{-{$c.Name}-})
-         {-{- end }-}
-          {-{- end}-}
+        {-{- else if eq "multiselect" $c.Cmpnt.Type}-}
+        postForm.{-{$c.Name}-} = (postForm.{-{$c.Name}-}||[]).join(",")
+        {-{- end }-}
+        {-{- end}-}
         this.$theia.http.post("/{-{.Name.MainPath|lower}-}",postForm).then(res=>{
             that.$notify.success({title: '成功',message: '{-{.Desc}-}保存成功',duration:5000})
             that.hide()

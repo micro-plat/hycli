@@ -9,17 +9,20 @@
 
     queryData_{-{$table.UNQ}-}(mform = {},nform={}){
     //构建查询参数
-    this.form_{-{$table.UNQ}-} = Object.assign(this.form_{-{$table.UNQ}-},nform||{})
-     {-{- range $i,$c:= $qrow}-}
-      {-{- if eq "daterange" $c.Cmpnt.Type}-}
-    this.form_{-{$table.UNQ}-}.start_{-{$c.Name}-} = null
-    this.form_{-{$table.UNQ}-}.end_{-{$c.Name}-} = null
-    if(this.form_{-{$table.UNQ}-}.{-{- $c.Name}-} && this.form_{-{$table.UNQ}-}.{-{$c.Name}-}.length > 1){
-        this.form_{-{$table.UNQ}-}.start_{-{$c.Name}-} = this.form_{-{$table.UNQ}-}.{-{$c.Name}-}[0]
-        this.form_{-{$table.UNQ}-}.end_{-{$c.Name}-} = this.form_{-{$table.UNQ}-}.{-{$c.Name}-}[1]
+    let queryForm = Object.assign({},this.form_{-{$table.UNQ}-})
+    queryForm = Object.assign(queryForm,nform||{})
+    {-{- range $i,$c:= $qrow}-}
+    {-{- if eq "daterange" $c.Cmpnt.Type}-}
+      queryForm.start_{-{$c.Name}-} = null
+      queryForm.end_{-{$c.Name}-} = null
+    if(queryForm.{-{- $c.Name}-} && queryForm.{-{$c.Name}-}.length > 1){
+      queryForm.start_{-{$c.Name}-} = queryForm.{-{$c.Name}-}[0]
+      queryForm.end_{-{$c.Name}-} = queryForm.{-{$c.Name}-}[1]
     }
-      {-{- end}-}
-      {-{- end}-}
+    {-{- else if eq "multiselect" $c.Cmpnt.Type}-}
+      queryForm.{-{$c.Name}-} = (queryForm.{-{$c.Name}-}||[]).join(",")
+    {-{- end}-}
+    {-{- end}-}
  
     //处理关联表{-{$table.Name}-} {-{$xtable.Main.Name}-} {-{$table.Enum.EnumType}-}
     {-{- $exit := false}-}
@@ -27,7 +30,7 @@
     {-{- if eq $v.URL $table.Name.Raw}-}
     {-{- if and (ne "" $v.RwName) (ne "" $v.FwName)}-}
     {-{- $exit = true}-}
-   this.form_{-{$table.UNQ}-}.{-{$v.FwName}-} = mform.{-{$v.RwName}-}   
+    queryForm.{-{$v.FwName}-} = mform.{-{$v.RwName}-}   
   {-{- end}-}
     {-{- end}-}
 {-{- end}-}
@@ -36,7 +39,7 @@
     {-{- range $i,$c := $MLLERows}-}
       {-{- if eq true $c.Enum.IsEnum}-}
         {-{- if eq $table.Enum.EnumType $c.Enum.EnumType}-}
-    this.form_{-{$table.UNQ}-}.{-{$table.Enum.Id}-} = mform.{-{$c.Name}-}
+        queryForm.{-{$table.Enum.Id}-} = mform.{-{$c.Name}-}
         {-{- end}-}
     {-{- end}-}
     {-{- end}-}
@@ -48,7 +51,7 @@
     
     //构建统计查询
     {-{- range $i,$v:= $table.LStatOpts}-}
-      this.$theia.http.get("{-{$v.URL|lower}-}",this.form_{-{$table.UNQ}-}).then(res=>{
+      this.$theia.http.get("{-{$v.URL|lower}-}",queryForm).then(res=>{
         let item = res||{}
         {-{- $uxcols := fltrColumns $table $v.RwName}-}
         {-{- range $i,$c := $uxcols}-}
@@ -63,7 +66,7 @@
     
     {-{- if gt (len $lstRow) 0}-}
     //数据查询
-    this.$theia.http.get("/{-{$table.Name.MainPath|lower}-}/query",this.form_{-{$table.UNQ}-}).then(res=>{
+    this.$theia.http.get("/{-{$table.Name.MainPath|lower}-}/query",queryForm).then(res=>{
         that.conf.loading = false
         that.dataList_{-{$table.UNQ}-} = res.items||[]
         that.total_{-{$table.UNQ}-} = res.count

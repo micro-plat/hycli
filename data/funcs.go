@@ -1,7 +1,6 @@
 package data
 
 import (
-	"fmt"
 	"sort"
 	"strings"
 
@@ -17,6 +16,7 @@ var Funcs = map[string]interface{}{
 	"fltrSearchUITable":            fltrSearchUITable,
 	"fltrSearchUITableAndResetUNQ": fltrSearchUITableAndResetUNQ,
 	"fltrSearchTable":              fltrSearchTable,
+	"fltrHasConst":                 fltrHasConst,
 	"fltrMYSQLType":                fltrMYSQLType,
 	"fltrMYSQLDef":                 mySQLDefValue,
 	"fltrOptrs":                    fltrOptrs,
@@ -90,6 +90,9 @@ func fltrColumnsExcludeExt(cols []*Column) []*Column {
 	}
 	return vc
 }
+func fltrHasConst(c *Column, p string) bool {
+	return md.HasConstraint(c.Constraints, strings.ToLower(p), strings.ToUpper(p))
+}
 func spare(x int, y int) int {
 	return x % y
 }
@@ -110,8 +113,8 @@ func fltrNotNullRows(rs []*Column) []*Column {
 	}
 	return r
 }
-func fltrOptrs(opts []*optrs, tps string) []*optrs {
-	nopts := make([]*optrs, 0, 1)
+func fltrOptrs(opts []*optrs, tps string) optrslst {
+	nopts := make(optrslst, 0, 1)
 	tpn := strings.Split(tps, "-")
 	for _, v := range opts {
 		for _, tp := range tpn {
@@ -120,10 +123,11 @@ func fltrOptrs(opts []*optrs, tps string) []*optrs {
 			}
 		}
 	}
+	sort.Sort(nopts)
 	return nopts
 }
-func mergeOptrs(opts ...[]*optrs) []*optrs {
-	lst := make([]*optrs, 0, 1)
+func mergeOptrs(opts ...[]*optrs) optrslst {
+	lst := make(optrslst, 0, 1)
 	v := map[string]bool{}
 	for _, fopts := range opts {
 		for _, opt := range fopts {
@@ -133,10 +137,11 @@ func mergeOptrs(opts ...[]*optrs) []*optrs {
 			}
 		}
 	}
+	sort.Sort(lst)
 	return lst
 }
-func fltrOptrsByTag(opts []*optrs, tag string) []*optrs {
-	nopts := make([]*optrs, 0, 1)
+func fltrOptrsByTag(opts []*optrs, tag string) optrslst {
+	nopts := make(optrslst, 0, 1)
 	tags := strings.Split(tag, "-")
 	for _, v := range opts {
 		for _, tp := range tags {
@@ -145,12 +150,12 @@ func fltrOptrsByTag(opts []*optrs, tag string) []*optrs {
 			}
 		}
 	}
+	sort.Sort(nopts)
 	return nopts
 }
 func fltrOptrsByStatic(opts *optrs) map[string]string {
 	outs := make(map[string]string)
 	for k, v := range opts.Params {
-		fmt.Println("fltrOptrsByStatic:", opts.Label, k, v)
 		if strings.HasPrefix(k, "@") {
 			outs[strings.Trim(k, "@")] = v
 		}

@@ -82,6 +82,10 @@ func TestHasConstraint(t *testing.T) {
 	assert.Equal(t, true, b)
 
 }
+func TestHasConstraint2(t *testing.T) {
+	b := HasConstraint([]string{"c", "u", "l", "le", "sl", "DT"}, "DT")
+	assert.Equal(t, true, b)
+}
 func TestRangeReg(t *testing.T) {
 	reg := regexp.MustCompile(`range\((\w+)[-]?([\w]*)\)`)
 	names := reg.FindAllStringSubmatch("range(100)", -1)

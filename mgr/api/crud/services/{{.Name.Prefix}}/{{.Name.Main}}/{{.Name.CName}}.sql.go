@@ -3,7 +3,7 @@
 package {-{.Name.Main}-}
 
 {-{- $table := .}-}
-{-{- $CColumns:= fltrColumnsExcludeExt (fltrColumns $table "c")}-}
+{-{- $CColumns:= fltrColumnsExcludeExt (fltrColumns $table "c-bc")}-}
 {-{- $UColumns:= fltrColumnsExcludeExt (fltrColumns $table "u")}-}
 {-{- $switchs := fltrCmpnt $table "switch" "l"}-}
 {-{- $clen := (len $CColumns)|minus}-}
@@ -30,6 +30,8 @@ where
 	and t.{-{$v.Name}-} <  date_add(if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-}),interval 1 day)	
 {-{- else if eq "input" $v.Cmpnt.Type}-}
 	?t.{-{$v.Name}-}
+{-{- else if eq "multiselect" $v.Cmpnt.Type}-}
+	and (if(@{-{$v.Name}-} = '',NULL,@{-{$v.Name}-}) is null or  FIND_IN_SET(t.{-{$v.Name}-},@{-{$v.Name}-}))
 {-{- else}-}
 	&t.{-{$v.Name}-}
 {-{- end}-}
@@ -54,6 +56,8 @@ where
 	and t.{-{$v.Name}-} <  date_add(if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-}),interval 1 day)	
 	{-{- else if eq "input" $v.Cmpnt.Type}-}
 	?t.{-{$v.Name}-}
+	{-{- else if eq "multiselect" $v.Cmpnt.Type}-}
+	and (if(@{-{$v.Name}-} = '',NULL,@{-{$v.Name}-}) is null or  FIND_IN_SET(t.{-{$v.Name}-},@{-{$v.Name}-}))
 	{-{- else}-}
 	&t.{-{$v.Name}-}
 	{-{- end}-}
@@ -64,19 +68,19 @@ order by {-{range $i,$v :=fltrColumnsExcludeExt $table.PKColumns}-}
 limit @ps offset @offset`
 {-{- end}-}
 
-{-{- if gt (len (fltrColumns $table "c")) 0}-}
+{-{- if gt (len (fltrColumns $table "c-bc")) 0}-}
 
 // insert{-{.Name.CName}-} 保存{-{.Desc}-}数据
 const insert{-{.Name.CName}-} = `
 insert into {-{.Name.Raw}-}
 (
-	{-{- range $i,$v :=fltrColumnsExcludeExt (fltrColumns $table "c")}-}
+	{-{- range $i,$v :=fltrColumnsExcludeExt (fltrColumns $table "c-bc")}-}
 	{-{$v.Name}-}{-{if lt $i $clen}-},{-{end}-}
 	{-{- end}-}
 )
 values
 (
-	{-{- range $i,$v := fltrColumnsExcludeExt (fltrColumns $table "c")}-}
+	{-{- range $i,$v := fltrColumnsExcludeExt (fltrColumns $table "c-bc")}-}
 	{-{- if eq false $v.Field.Required}-}
 	if(@{-{$v.Name}-}='',{-{if ne "" $v.Field.DefaultValue}-} {-{$v.Field.DefaultValue}-} {-{else}-}NULL{-{end}-},@{-{$v.Name}-}){-{if lt $i $clen}-},{-{end}-}
 	{-{- else}-}
