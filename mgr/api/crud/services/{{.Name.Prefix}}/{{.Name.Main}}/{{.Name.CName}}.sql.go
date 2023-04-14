@@ -12,6 +12,7 @@ package {-{.Name.Main}-}
 {-{- $sigleQueryCols:= fltrColumnsExcludeExt (fltrColumns $table "l-le")}-}
 {-{- $totalQCols:= fltrColumnsExcludeExt (fltrColumns $table "q-bq")}-}
 {-{- $vlen := (len $sigleQueryCols)|minus}-}
+{-{- $ords := fltrColumnsExcludeExt (fltrColumns $table "ord")}-}
 
 {-{- if gt (len (fltrColumns $table "q-bq")) 0}-}
 

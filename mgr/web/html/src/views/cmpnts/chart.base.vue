@@ -66,7 +66,6 @@ export default {
                     borderColor: '#fff',
                     borderWidth: 2,
                 },
-
             },
             formatter: {
                 "pie": '{b} : {c} ({d}%)',

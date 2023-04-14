@@ -14,7 +14,7 @@
     "echarts": "^5.4.2",
     "element-plus": "^2.1.8",
     "jquery": "^3.6.0",
-    "theia-ui": "^0.1.230",
+    "theia-ui": "^0.1.235",
     "vue": "^3.2.13"
   },
   "devDependencies": {

@@ -106,7 +106,7 @@
      <!--{-{$c.Label}-} 下拉控件 -->
      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
        <el-select  {-{if gt (len (fltrAssctColumns $ucols $c.Name)) 0}-} @change="onChange_{-{$c.Name}-}"  {-{end}-} v-model="{-{$c.Ext.FormName}-}.{-{.Name}-}" style="width: 100%" filterable clearable
-         placeholder="请选择{-{.Label}-}" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}>
+         placeholder="请选择{-{.Label}-}" {-{ if eq "readonly" $c.Cmpnt.Type}-}disabled {-{end}-}>
          <el-option v-for="item in {-{.Name}-}List" :key="item.value" :label="item.name" :value="item.value" />
        </el-select>
      </el-form-item>

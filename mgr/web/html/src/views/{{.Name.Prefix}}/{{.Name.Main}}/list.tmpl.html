@@ -24,9 +24,9 @@
             </template>
         </el-table-column>
         {-{- else if eq "progress" $c.Cmpnt.Type}-}
-        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{else}-} width="120" {-{end}-} align="center" label="{-{$c.Label}-}">
+        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{else}-} width="100" {-{end}-} align="center" label="{-{$c.Label}-}">
             <template #default="scope">
-                <el-progress  :percentage="scope.row.{-{$c.Name}-}_progress" :color="conf.progressColor" />
+                <el-progress :stroke-width="4"   :percentage="scope.row.{-{$c.Name}-}_progress" :color="conf.progressColor" />
             </template>
         </el-table-column>
         {-{- else if eq "img" $c.Cmpnt.Type}-}
@@ -53,7 +53,7 @@
         <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} {-{if eq true $c.Style.HideOverflow}-} :show-overflow-tooltip="true" {-{end}-} prop="{-{$c.Name}-}_label" align="center" label="{-{$c.Label}-}">
             <template #default="scope">
                 {-{- if eq "tag" $c.Cmpnt.Type}-}
-                <el-tag :type="tagColor(scope.row.{-{$c.Name}-},'{-{$c.Name}-}')"  effect="plain" round v-text="scope.row.{-{$c.Name}-}_label"></el-tag>
+                <el-tag :type="tagColor(scope.row.{-{$c.Name}-},'{-{$c.Name}-}')"   round v-text="scope.row.{-{$c.Name}-}_label"></el-tag>
                 {-{else}-}
                 <span :class="'{-{$c.Style.CLR.BgColor}-}'==''?'':{-{$c.Style.CLR.BgColor}-}(scope.row.{-{$c.Name}-},'{-{$c.Name}-}')"
                     v-text="scope.row.{-{$c.Name}-}_label"></span>
@@ -63,7 +63,7 @@
         {-{- else if eq "tag" $c.Cmpnt.Type}-}
         <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} prop="{-{$c.Name}-}_label" align="center" label="{-{$c.Label}-}">
             <template #default="scope">
-                <el-tag type="tagColor(scope.row.{-{$c.Name}-},'{-{$c.Name}-}')" round  effect="plain" v-text="scope.row.{-{$c.Name}-}"></el-tag>
+                <el-tag type="tagColor(scope.row.{-{$c.Name}-},'{-{$c.Name}-}')" round  v-text="scope.row.{-{$c.Name}-}"></el-tag>
             </template>
         </el-table-column>
         {-{- else}-}
@@ -79,7 +79,7 @@
         {-{- end }-}
     </el-table>
     <el-pagination :currentPage="form_{-{$table.UNQ}-}.pi" :page-size="form_{-{$table.UNQ}-}.ps"
-        style="position: absolute; right: 30px;bottom:10px;" :page-sizes="[10, 20, 50, 100]" :background="false" small
+        style="position: absolute; right: 30px;bottom:6px;" :page-sizes="[10,15,20,30, 50, 100]" :background="false" small
         layout="total,sizes,prev, pager, next, jumper" :total="total_{-{$table.UNQ}-}" @size-change="handleSizeChange"
         @current-change="handleCurrentChange" />
 </div>

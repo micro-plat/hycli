@@ -1,7 +1,7 @@
 {-{- $qcols := fltrColumns . "q"}-}
     form_{-{.UNQ}-}: {
         pi: 1,
-        ps: 20,
+        ps: 15,
         {-{- range $i,$c := $qcols}-}
         {-{- if eq "multiselect" $c.Cmpnt.Type}-}
         {-{$c.Name}-}:[],

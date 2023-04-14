@@ -1,6 +1,6 @@
 {-{- $table :=.}-}
 
-{-{- if or (gt (len $table.LStatOpts) 0) (gt (len $table.ChartOpts) 0)}-}
+{-{- if or (or (gt (len $table.LStatOpts) 0) (gt (len $table.ChartOpts) 0)) (gt (len $table.ExtOpts) 0)}-}
 <div class="listbar">
     {-{- range $i,$c:= $table.LStatOpts }-}
     {-{- $ucols := fltrColumns $table $c.RwName }-}
@@ -27,6 +27,13 @@
         unq="{-{$c.UNQ}-}" url="{-{$c.ReqURL}-}" type="{-{$c.Tag}-}" stack='{-{fltrOptrPara $c "stack" ""}-}'
         rType='{-{fltrOptrPara $c "rType" ""}-}' margin='{-{fltrOptrPara $c "margin" "32px 0px 16px 0px"}-}'
         showLabel='{-{fltrOptrPara $c "showLabel" "true"}-}' theme='{-{fltrOptrPara $c "theme" ""}-}'></{-{$c.UNQ}-}>
+    </el-col>
+    {-{- end}-}
+    {-{- range $i,$c:= fltrOptrsByTag $table.ExtOpts "tskbar"}-}
+    <el-col :span='{-{fltrOptrPara $c "span" "24"}-}'>
+      <{-{$c.UNQ}-} ref="ext_{-{$c.UNQ}-}" height='{-{fltrOptrPara $c "height" "200px"}-}' title="{-{$c.Label}-}"
+        unq="{-{$c.UNQ}-}" count='{-{fltrOptrPara $c "count" "10"}-}' url="{-{$c.ReqURL}-}" rows='{-{fltrOptrPara $c "rows" "1"}-}'  margin='{-{fltrOptrPara $c "margin" "32px 0px 16px 0px"}-}'
+        ></{-{$c.UNQ}-}>
     </el-col>
     {-{- end}-}
   </el-row>

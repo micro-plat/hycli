@@ -33,6 +33,7 @@ type lstatOptrs optrslst
 type chartOptrs optrslst
 type barOptrs optrslst
 type viewExtCmptOpts optrslst
+type extOptrs optrslst
 
 var viewOptCmd = []string{"view"}
 var lstatOptCmd = []string{"lstat"}
@@ -41,6 +42,7 @@ var batchCheck = []string{"bcheck"}
 var barOptrCmd = []string{"export", "import", "bcheck"}
 var charOptrCmd = []string{"chart"}
 var extCmptParam = []string{"add"}
+var extOptrsCmd = []string{"tskbar"}
 
 var addOpts = &optrs{Tag: "ADD", URL: "@/views/{@prefix}/{@main}/{@name}.add", Name: "CMPNT", ICON: "Plus", Label: "添加", RwName: "C", UNQ: defFids.Next(), index: 1}
 var detailOpts = &optrs{Tag: "VIEW", URL: "./{@name}.view", Name: "CMPNT", Label: "详情", RwName: "V", UNQ: defFids.Next(), index: 1}
@@ -49,6 +51,7 @@ var delOpts = &optrs{Tag: "CNFRM", URL: "./{@name}.cnfrm", ReqURL: "/{@mainPath}
 var dialogOpts = &optrs{Tag: "DIALOG", URL: "./{@name}.dialog", Name: "CMPNT", IsMux: true, index: 99}
 var cnfrmOpts = &optrs{Tag: "CNFRM", URL: "./{@name}.cnfrm", Name: "CMPNT", IsMux: true, index: 99}
 var chartLinePieBarOpts = &optrs{Tag: "CHART", URL: "@/views/cmpnts/chart.base.vue", Name: "CMPNT"}
+var taskBarOpts = &optrs{Tag: "TSKBAR", URL: "@/views/cmpnts/task.bar.vue", Name: "CMPNT"}
 
 func (s optrslst) Len() int           { return len(s) }
 func (s optrslst) Less(i, j int) bool { return s[i].index < s[j].index }
@@ -101,6 +104,9 @@ func createLStatChartOptrs(t string) (lstatOptrs, chartOptrs) {
 }
 func createChartOptrs(t string) chartOptrs {
 	return createCmdsOptrs(t, charOptrCmd)
+}
+func createExtOptrs(t string) extOptrs {
+	return createCmdsOptrs(t, extOptrsCmd)
 }
 func createBarOptrs(table *Table, t string) (barOptrs, bool) {
 	opts := createCmdsOptrs(t, barOptrCmd)
@@ -157,6 +163,10 @@ func createOptrs(t string, tag string) []*optrs {
 			opt.ReqURL = types.GetStringByIndex(lst, 2)
 		case "LINE", "PIE", "BAR":
 			opt = *chartLinePieBarOpts
+			opt.Tag = name
+			opt.ReqURL = types.GetStringByIndex(lst, 2)
+		case "TSKBAR":
+			opt = *taskBarOpts
 			opt.Tag = name
 			opt.ReqURL = types.GetStringByIndex(lst, 2)
 		default:

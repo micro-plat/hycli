@@ -22,31 +22,33 @@
     this.$theia.http
       .get("/{-{.Name.MainPath|lower}-}",form)
       .then((res) => {
-                let item = Object.assign({}, res)
-            {-{- range $i,$c := $vcols }-}
-            {-{- if eq true $c.Enum.IsEnum}-}
-                item.{-{$c.Name}-}_label = that.$theia.enum.getNames("{-{$c.Enum.EnumType}-}",item.{-{$c.Name}-})
-              {-{- end }-}
-              {-{- if eq "switch" $c.Cmpnt.Type}-}
-                item.{-{$c.Name}-}_switch = item.{-{$c.Name}-} == 0
-              {-{- end}-}
-            {-{- end}-}
-            
-            {-{- range $i,$c := $vcols}-}
-                {-{- if and (ne "" $c.Cmpnt.Format) (eq true $c.Field.IsDate)}-}
-                item.{-{$c.Name}-} = that.$theia.str.dateFormat(item.{-{$c.Name}-},'{-{$c.Cmpnt.Format}-}')
-              {-{- else if and (ne "" $c.Cmpnt.Format) (eq true $c.Field.IsNumber)}-}
-                item.{-{$c.Name}-} = that.$theia.str.numberFormat(item.{-{$c.Name}-},'{-{$c.Cmpnt.Format}-}')
-              {-{- else if eq "mobile" $c.Cmpnt.Type}-}
-                item.{-{$c.Name}-} = that.$theia.str.phoneFormat(item.{-{$c.Name}-})
-              {-{- else if eq "cut" $c.Cmpnt.Type}-}
-                item.{-{$c.Name}-} = that.$theia.str.cut(item.{-{$c.Name}-},{-{$c.Cmpnt.Format}-})
-              {-{- end}-}
-              {-{- end }-}
-              {-{- if gt (len (fltrOptrs $viewOpts "step")) 0}-}
-                that.conf.stepActive = that.getStepActive(res)
-              {-{- end}-}
-                that.view = item
+        let item = Object.assign({}, res)
+    {-{- range $i,$c := $vcols }-}
+    {-{- if eq true $c.Enum.IsEnum}-}
+        item.{-{$c.Name}-}_label = that.$theia.enum.getNames("{-{$c.Enum.EnumType}-}",item.{-{$c.Name}-})
+      {-{- end }-}
+      {-{- if eq "switch" $c.Cmpnt.Type}-}
+        item.{-{$c.Name}-}_switch = item.{-{$c.Name}-} == 0
+      {-{- end}-}
+    {-{- end}-}
+    
+    {-{- range $i,$c := $vcols}-}
+        {-{- if and (ne "" $c.Cmpnt.Format) (eq true $c.Field.IsDate)}-}
+        item.{-{$c.Name}-} = that.$theia.str.dateFormat(item.{-{$c.Name}-},'{-{$c.Cmpnt.Format}-}')
+      {-{- else if and (ne "" $c.Cmpnt.Format) (eq true $c.Field.IsNumber)}-}
+        item.{-{$c.Name}-} = that.$theia.str.numberFormat(item.{-{$c.Name}-},'{-{$c.Cmpnt.Format}-}')
+      {-{- else if eq "mobile" $c.Cmpnt.Type}-}
+        item.{-{$c.Name}-} = that.$theia.str.phoneFormat(item.{-{$c.Name}-})
+      {-{- else if eq "cut" $c.Cmpnt.Type}-}
+        item.{-{$c.Name}-} = that.$theia.str.cut(item.{-{$c.Name}-},{-{$c.Cmpnt.Format}-})
+      {-{- else if gt $c.Field.Len 32}-}  
+        item.{-{$c.Name}-} = (item.{-{$c.Name}-}||"").replace(/\n/g,"<br/>")
+      {-{- end}-}
+      {-{- end }-}
+      {-{- if gt (len (fltrOptrs $viewOpts "step")) 0}-}
+        that.conf.stepActive = that.getStepActive(res)
+      {-{- end}-}
+        that.view = item
             
       })
       .catch((res) => {

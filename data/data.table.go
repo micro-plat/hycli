@@ -1,6 +1,7 @@
 package data
 
 import (
+	"fmt"
 	"sort"
 
 	"github.com/micro-plat/hycli/data/internal/md"
@@ -38,6 +39,8 @@ type Table struct {
 
 	//ChartOpts 图表组件
 	ChartOpts chartOptrs
+
+	ExtOpts extOptrs
 
 	//BarOpts 工具栏操作
 	BarOpts barOptrs
@@ -78,9 +81,15 @@ func NewTable(t *md.Table) *Table {
 	table.BarOpts, table.NeedBatchCheck = createBarOptrs(table, t.ExtInfo)
 	table.ViewOpts, table.ViewExtCmptOpts = createViewOptrs(t.ExtInfo)
 	table.LStatOpts, table.ChartOpts = createLStatChartOptrs(t.ExtInfo)
+	table.ExtOpts = createExtOptrs(t.ExtInfo)
 	table.NormalIdx = createNormalIdx(table)
 	table.UNQIndex = createUNQIdx(table)
 	table.Tag = newTag(table)
 	table.Sort()
+
+	if len(table.ExtOpts) > 0 {
+		fmt.Println("opts:", table.Name, table.ExtOpts[0].Name, table.ExtOpts[0].Tag, table.ExtOpts[0].URL)
+	}
+
 	return table
 }

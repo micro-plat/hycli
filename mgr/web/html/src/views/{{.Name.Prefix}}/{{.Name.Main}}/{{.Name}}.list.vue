@@ -35,6 +35,10 @@ mounted() {
       {-{- range $i, $c:=  $table.ChartOpts }-}
   this.$refs.chart_{-{ $c.UNQ }-}.show(this.form_{-{ $table.UNQ }-})
 {-{- end }-}
+{-{- range $i, $c:=  $table.ExtOpts }-}
+  this.$refs.ext_{-{ $c.UNQ }-}.show(this.form_{-{ $table.UNQ }-})
+{-{- end }-}
+
     },
   {-{- if ne "" (flterJoinColumnNames $table "rp" "")}-}
  watch: {
