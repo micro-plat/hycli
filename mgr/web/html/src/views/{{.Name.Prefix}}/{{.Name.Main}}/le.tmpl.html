@@ -20,7 +20,7 @@
             {-{- else if eq "link" $c.Cmpnt.Type}-}
             <el-col :span="7" style="height: 26px"
                 :class="'{-{$c.Style.CLR.BgColor}-}'==''?'':{-{$c.Style.CLR.BgColor}-}(view.row.le_{-{$c.Name}-},'{-{$c.Name}-}')">
-                <el-link type="primary" :href="view.row.le_{-{$c.Name}-}" :title="view.row.le_{-{$c.Name}-}">查看</el-link>
+                <el-link target="_blank" type="primary" :href="view.row.le_{-{$c.Name}-}" :title="view.row.le_{-{$c.Name}-}">查看</el-link>
             </el-col>
             {-{- else if eq "cut" $c.Cmpnt.Type}-}
             <el-col :span="7" v-text="view.row.le_{-{$c.Name}-}" style="height: 26px"></el-col>

@@ -11,19 +11,19 @@ import (
 
 // 操作信息
 type optrs struct {
-	Tag      string
-	Name     string //link,dialog,cmpnt,tab,cnfrm
-	Label    string //修改,预览，删除
-	ICON     string //图标
-	URL      string //组件URL
-	RwName   string //当前表字段标记
-	FwName   string //外部表字段标记
-	ReqURL   string //服务请求URL
-	IsMux    bool   //是否是复用组件
-	index    int    //顺序编号
-	ExtTable string
-	Params   map[string]string
-	UNQ      string
+	Tag    string
+	Name   string //link,dialog,cmpnt,tab,cnfrm
+	Label  string //修改,预览，删除
+	ICON   string //图标
+	URL    string //组件URL
+	RwName string //当前表字段标记
+	FwName string //外部表字段标记
+	ReqURL string //服务请求URL
+	IsMux  bool   //是否是复用组件
+	index  int    //顺序编号
+	Table  string
+	Params map[string]string
+	UNQ    string
 }
 type optrslst []*optrs
 type formatOptrs optrslst
@@ -44,18 +44,35 @@ var charOptrCmd = []string{"chart"}
 var extCmptParam = []string{"add"}
 var extOptrsCmd = []string{"tskbar"}
 
-var addOpts = &optrs{Tag: "ADD", URL: "@/views/{@prefix}/{@main}/{@name}.add", Name: "CMPNT", ICON: "Plus", Label: "添加", RwName: "C", UNQ: defFids.Next(), index: 1}
-var detailOpts = &optrs{Tag: "VIEW", URL: "./{@name}.view", Name: "CMPNT", Label: "详情", RwName: "V", UNQ: defFids.Next(), index: 1}
-var updateOpts = &optrs{Tag: "UPDATE", URL: "./{@name}.edit", Name: "CMPNT", Label: "修改", RwName: "U", UNQ: defFids.Next(), index: 2}
-var delOpts = &optrs{Tag: "CNFRM", URL: "./{@name}.cnfrm", ReqURL: "/{@mainPath}/del", Name: "CMPNT", Label: "删除", RwName: "D", UNQ: defFids.Next(), IsMux: true, index: 99}
-var dialogOpts = &optrs{Tag: "DIALOG", URL: "./{@name}.dialog", Name: "CMPNT", IsMux: true, index: 99}
-var cnfrmOpts = &optrs{Tag: "CNFRM", URL: "./{@name}.cnfrm", Name: "CMPNT", IsMux: true, index: 99}
+var addOpts = &optrs{Tag: ADD_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.add", Name: "CMPNT", ICON: "Plus", Label: "添加", RwName: "C", UNQ: defFids.Next(), index: 1}
+var detailOpts = &optrs{Tag: VIEW_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.view", Name: "CMPNT", Label: "详情", RwName: "V", UNQ: defFids.Next(), index: 1}
+var updateOpts = &optrs{Tag: UPDATE_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.edit", Name: "CMPNT", Label: "修改", RwName: "U", UNQ: defFids.Next(), index: 2}
+var delOpts = &optrs{Tag: DELETE_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.cnfrm", ReqURL: "/{@mainPath}/del", Name: "CMPNT", Label: "删除", RwName: "D", UNQ: defFids.Next(), IsMux: true, index: 99}
+var dialogOpts = &optrs{Tag: "DIALOG", URL: "@/views/{@prefix}/{@main}/{@name}.dialog", Name: "CMPNT", IsMux: true, index: 99}
+var cnfrmOpts = &optrs{Tag: "CNFRM", URL: "@/views/{@prefix}/{@main}/{@name}.cnfrm", Name: "CMPNT", IsMux: true, index: 99}
 var chartLinePieBarOpts = &optrs{Tag: "CHART", URL: "@/views/cmpnts/chart.base.vue", Name: "CMPNT"}
 var taskBarOpts = &optrs{Tag: "TSKBAR", URL: "@/views/cmpnts/task.bar.vue", Name: "CMPNT"}
 
+func (s *optrs) Get(tableName string) *optrs {
+	nopts := *s
+	nopts.Table = tableName
+	return &nopts
+}
+func (s *optrs) String() string {
+	buff, _ := jsons.Marshal(s)
+	return string(buff)
+}
 func (s optrslst) Len() int           { return len(s) }
 func (s optrslst) Less(i, j int) bool { return s[i].index < s[j].index }
 func (s optrslst) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
+func (s optrslst) Find(tag string) bool {
+	for _, v := range s {
+		if v.Tag == tag {
+			return true
+		}
+	}
+	return false
+}
 
 var extCmptOpts = map[string]*optrs{
 	"add": addOpts,
@@ -79,47 +96,47 @@ func (b barOptrs) NeedCheck(t string) bool {
 }
 
 func createLstOptrs(table *Table, t string) lstOptrs {
-	optrs := createCmdsOptrs(t, lstOptCmd)
+	optrs := createCmdsOptrs(table.Name.Raw, t, lstOptCmd)
 	//构建操作
-	if len(fltrColumns(table, VIEW_COLUMN)) > 0 {
-		optrs = append(optrs, detailOpts)
+	if !optrslst(optrs).Find(VIEW_TAG) && len(fltrColumns(table, VIEW_COLUMN)) > 0 {
+		optrs = append(optrs, detailOpts.Get(table.Name.Raw))
 	}
-	if len(fltrColumns(table, UPDATE_COLUMN)) > 0 {
-		optrs = append(optrs, updateOpts)
+	if !optrslst(optrs).Find(UPDATE_TAG) && len(fltrColumns(table, UPDATE_COLUMN)) > 0 {
+		optrs = append(optrs, updateOpts.Get(table.Name.Raw))
 	}
-	if len(fltrColumns(table, DELETE_COLUMN)) > 0 {
-		optrs = append(optrs, delOpts)
+	if !optrslst(optrs).Find(DELETE_TAG) && len(fltrColumns(table, DELETE_COLUMN)) > 0 {
+		optrs = append(optrs, delOpts.Get(table.Name.Raw))
 	}
 	return optrs
 }
-func createViewOptrs(t string) (viewOptrs, viewExtCmptOpts) {
-	viewOpts := createCmdsOptrs(t, viewOptCmd)
+func createViewOptrs(tableName, t string) (viewOptrs, viewExtCmptOpts) {
+	viewOpts := createCmdsOptrs(tableName, t, viewOptCmd)
 	extOpts := creatExtCmptOpts(viewOpts)
 	return viewOpts, extOpts
 }
-func createLStatChartOptrs(t string) (lstatOptrs, chartOptrs) {
-	optrs := createCmdsOptrs(t, lstatOptCmd)
-	copts := createChartOptrs(t)
+func createLStatChartOptrs(tableName, t string) (lstatOptrs, chartOptrs) {
+	optrs := createCmdsOptrs(tableName, t, lstatOptCmd)
+	copts := createChartOptrs(tableName, t)
 	return optrs, copts
 }
-func createChartOptrs(t string) chartOptrs {
-	return createCmdsOptrs(t, charOptrCmd)
+func createChartOptrs(tableName, t string) chartOptrs {
+	return createCmdsOptrs(tableName, t, charOptrCmd)
 }
-func createExtOptrs(t string) extOptrs {
-	return createCmdsOptrs(t, extOptrsCmd)
+func createExtOptrs(tableName string, t string) extOptrs {
+	return createCmdsOptrs(tableName, t, extOptrsCmd)
 }
 func createBarOptrs(table *Table, t string) (barOptrs, bool) {
-	opts := createCmdsOptrs(t, barOptrCmd)
-	if len(fltrColumns(table, ADD_COLUMN)) > 0 {
-		opts = append(opts, addOpts)
+	opts := createCmdsOptrs(table.Name.Raw, t, barOptrCmd)
+	if !optrslst(opts).Find(ADD_TAG) && len(fltrColumns(table, ADD_COLUMN)) > 0 {
+		opts = append(opts, addOpts.Get(table.Name.Raw))
 	}
 	return opts, barOptrs(opts).NeedCheck(table.Name.Raw)
 }
-func createCmdsOptrs(t string, cmds []string) []*optrs {
+func createCmdsOptrs(tableName string, t string, cmds []string) []*optrs {
 	optrs := make([]*optrs, 0, 1)
 	for _, v := range cmds {
-		optrs = append(optrs, createOptrs(t, strings.ToLower(v))...)
-		optrs = append(optrs, createOptrs(t, strings.ToUpper(v))...)
+		optrs = append(optrs, createOptrs(tableName, t, strings.ToLower(v))...)
+		optrs = append(optrs, createOptrs(tableName, t, strings.ToUpper(v))...)
 	}
 	return optrs
 }
@@ -136,6 +153,7 @@ func creatExtCmptOpts(opts ...[]*optrs) []*optrs {
 						xview.Label = types.DecodeString(types.GetBool(v), true, view.Label, v)
 						xview.Params = view.Params
 						xview.Params["table"] = view.URL
+						xview.Table = view.URL
 						nopts = append(nopts, &xview)
 					}
 				}
@@ -145,7 +163,7 @@ func creatExtCmptOpts(opts ...[]*optrs) []*optrs {
 	return nopts
 }
 
-func createOptrs(t string, tag string) []*optrs {
+func createOptrs(tableName string, t string, tag string) []*optrs {
 	list := md.GetExtOpt(t, tag)
 	opts := make([]*optrs, 0, len(list))
 	if len(list) == 0 {
@@ -155,33 +173,48 @@ func createOptrs(t string, tag string) []*optrs {
 		opt := optrs{}
 		name := strings.ToUpper(types.GetStringByIndex(lst, 1))
 		switch name {
+		case VIEW_TAG:
+			opt = *detailOpts
+			opt.Table = types.GetStringByIndex(lst, 2, tableName)
+		case UPDATE_TAG:
+			opt = *updateOpts
+			opt.Table = types.GetStringByIndex(lst, 2, tableName)
+		case ADD_TAG:
+			opt = *addOpts
+			opt.Table = types.GetStringByIndex(lst, 2, tableName)
+		case DELETE_TAG:
+			opt = *delOpts
+			opt.Table = types.GetStringByIndex(lst, 2, tableName)
 		case "DIALOG":
 			opt = *dialogOpts
 			opt.ReqURL = types.GetStringByIndex(lst, 2)
+			opt.Table = tableName
 		case "CNFRM":
 			opt = *cnfrmOpts
 			opt.ReqURL = types.GetStringByIndex(lst, 2)
+			opt.Table = tableName
 		case "LINE", "PIE", "BAR":
 			opt = *chartLinePieBarOpts
 			opt.Tag = name
 			opt.ReqURL = types.GetStringByIndex(lst, 2)
+			opt.Table = tableName
 		case "TSKBAR":
 			opt = *taskBarOpts
 			opt.Tag = name
 			opt.ReqURL = types.GetStringByIndex(lst, 2)
+			opt.Table = tableName
 		default:
-			opt = optrs{Tag: tag, Name: name, URL: types.GetStringByIndex(lst, 2), index: 99}
+			opt = optrs{Tag: tag, Name: name, URL: types.GetStringByIndex(lst, 2), index: 99, Table: tableName}
 		}
 
 		opt.Label = types.GetStringByIndex(lst, 0)
-		opt.RwName = types.GetStringByIndex(lst, 3)
-		opt.FwName = types.GetStringByIndex(lst, 4)
 		opt.UNQ = defFids.Next()
 		opt.Params = make(map[string]string)
-
+		rwName := types.GetStringByIndex(lst, 3)
+		fwName := types.GetStringByIndex(lst, 4)
 		//解析组件参数
-		if strings.HasPrefix(opt.FwName, "{") && strings.HasSuffix(opt.FwName, "}") {
-			content := strings.TrimRight(strings.TrimLeft(opt.FwName, "{"), "}")
+		if strings.HasPrefix(fwName, "{") && strings.HasSuffix(fwName, "}") {
+			content := strings.TrimRight(strings.TrimLeft(fwName, "{"), "}")
 			ps := strings.Split(content, ";")
 			for _, p := range ps {
 				vs := strings.Split(p, ":")
@@ -189,12 +222,25 @@ func createOptrs(t string, tag string) []*optrs {
 					opt.Params[types.GetStringByIndex(vs, 0)] = types.GetStringByIndex(vs, 1)
 				}
 			}
-			if strings.Contains(opt.FwName, ":") {
+			if opt.Params["rwName"] != "" {
 				opt.RwName = opt.Params["rwName"]
+			}
+			if opt.Params["fwName"] != "" {
 				opt.FwName = opt.Params["fwName"]
 			}
-			opt.ExtTable = opt.Params["table"]
+			if tb, ok := opt.Params["table"]; ok {
+				opt.Table = tb
+			}
+
 			opt.ICON = types.GetString(opt.Params["icon"], opt.ICON)
+			opts = append(opts, &opt)
+			continue
+		}
+		if rwName != "" {
+			opt.RwName = rwName
+		}
+		if fwName != "" {
+			opt.FwName = fwName
 		}
 		opts = append(opts, &opt)
 	}

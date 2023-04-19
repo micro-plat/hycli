@@ -33,6 +33,9 @@ var Funcs = map[string]interface{}{
 	"fltrOptrPara":                 fltrOptrPara,
 	"fltr2Expr":                    fltr2Expr,
 	"fltrOptrParaExprs":            fltrOptrParaExprs,
+	"fltrStart":                    fltrStart,
+	"fltrFindTable":                findTable,
+	"fltrTrim":                     fltrTrim,
 	"resetForm":                    resetForm,
 	"multiply":                     multiply,
 	"sjoin":                        sjoin,
@@ -76,6 +79,12 @@ func getColumn(ts []*Column, i int, d *Column) *Column {
 		return ts[i]
 	}
 	return d
+}
+func fltrStart(p string, s string) bool {
+	return strings.HasPrefix(p, s)
+}
+func fltrTrim(p string, s string) string {
+	return strings.Trim(p, s)
 }
 func flterMainTable(tbs []*Table) []*Table {
 	cache := map[string]bool{}
@@ -225,7 +234,7 @@ func fltrColumns(tx interface{}, tp string, formName ...string) []*Column {
 	sort.Sort(cols)
 	return cols
 }
-func flterJoinColumnNames(tx interface{}, tp string, j string) string {
+func flterJoinColumnNames(tx interface{}, tp string, start string, end ...string) string {
 	colums := fltrColumns(tx, tp)
 	names := make([]string, 0, 1)
 	for _, v := range colums {
@@ -234,7 +243,7 @@ func flterJoinColumnNames(tx interface{}, tp string, j string) string {
 	if len(names) == 0 {
 		return ""
 	}
-	return j + strings.Join(names, j)
+	return start + strings.Join(names, types.GetStringByIndex(end, 0)+start) + types.GetStringByIndex(end, 0)
 }
 func fltrCmpnt(tx interface{}, cmpnt string, tps ...string) []*Column {
 	colums := getColumns(tx)

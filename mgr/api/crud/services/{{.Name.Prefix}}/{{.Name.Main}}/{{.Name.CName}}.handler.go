@@ -10,7 +10,7 @@ import (
 	"github.com/micro-plat/lib4go/types"
 )
 {-{- $table := .}-}
-{-{- $ccols := fltrNotNullCols (fltrColumns $table "c-bc")}-}
+{-{- $ccols := fltrNotNullCols (fltrColumns $table "c")}-}
 {-{- $clen := (len $ccols)|minus}-}
 {-{- $ucols := fltrNotNullCols  (fltrColumns $table "u")}-}
 {-{- $ulen := (len $ucols)|minus}-}
@@ -93,9 +93,6 @@ func (u *{-{.Name.CName}-}Handler) PostHandle(ctx hydra.IContext) (r interface{}
 	
 	ctx.Log().Info("2.添加新数据")
 	rx, err := hydra.C.DB().GetRegularDB().Execute(insert{-{.Name.CName}-}, ctx.Request().GetMap())
-	if err == nil && rx == 0{
-		return errs.NewResult(204, nil)
-	}
 	if err != nil || rx == 0 {
 		return errs.NewErrorf(http.StatusNotExtended, "数据出错:%+v,row:%d", err,rx)
 	}

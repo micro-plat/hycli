@@ -116,7 +116,7 @@ export default {
         post_form_{-{$m.UNQ}-}.{-{$c.Name}-} = this.$theia.crypto.md5(this.form_{-{$m.UNQ}-}.{-{$c.Name}-})
          {-{- end }-}
           {-{end}-}
-        this.$theia.http.post("{-{fltrTranslate $m.ReqURL $table}-}",post_form_{-{$m.UNQ}-}).then(res=>{
+        this.$theia.http.post("{-{fltrTranslate $m.ReqURL (fltrFindTable $m.Table)}-}",post_form_{-{$m.UNQ}-}).then(res=>{
             that.$notify.success({title: '成功',message: '提交成功',duration:5000})
             that.$emit("onsaved")
             that.hide_{-{$m.UNQ}-}()

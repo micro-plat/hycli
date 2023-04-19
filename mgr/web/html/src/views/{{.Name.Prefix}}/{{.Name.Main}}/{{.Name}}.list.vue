@@ -132,4 +132,7 @@ methods: {
   font-size: 0.65rem;
   margin-top: 7px;
 }
+/deep/.el-button--small{
+  padding: 5px 4px;
+}
 </style>

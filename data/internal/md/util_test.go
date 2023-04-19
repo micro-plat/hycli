@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/micro-plat/lib4go/assert"
+	"github.com/micro-plat/lib4go/net/http"
 )
 
 func TestRange(t *testing.T) {
@@ -254,4 +255,18 @@ func TestKDNO(t *testing.T) {
 	assert.Equal(t, 1, len(names))
 	assert.Equal(t, "SR000123122", names[0][1:][0])
 	fmt.Println(names)
+}
+func TestVx(t *testing.T) {
+	http, err := http.NewHTTPClient()
+	assert.Equal(t, nil, err)
+	content, status, err := http.Get("http://www.csdn.net")
+	assert.Equal(t, nil, err)
+	assert.Equal(t, 200, status)
+
+	reg := regexp.MustCompile(`<title>(.+)</title>`)
+	titles := reg.FindAllStringSubmatch(content, -1)
+	assert.Equal(t, 1, len(titles))
+
+	assert.Equal(t, "企业微信文档", titles[0][0])
+
 }

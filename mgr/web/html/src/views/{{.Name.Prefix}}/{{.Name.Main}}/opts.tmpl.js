@@ -20,6 +20,13 @@ show_cmpnt(cmd,row){
       {-{- range $i,$c:=$pkrows}-} 
     query.{-{$c.Name}-} = fm.{-{$c.Name}-}
       {-{- end}-}
+
+      //2023.4.18添加
+    {-{- $c := fltrOptrsByStatic $m }-}
+    {-{- range $k,$v := $c}-}
+    query.{-{$k}-}="{-{$v}-}"
+    {-{- end}-}
+
     {-{- if eq true $m.IsMux }-}
     this.$refs.cmpnt_{-{$m.UNQ}-}.show_{-{$m.UNQ}-}(query)
     {-{- else}-}

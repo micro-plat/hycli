@@ -46,7 +46,7 @@
         {-{- else if eq "link" $c.Cmpnt.Type}-}
         <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} {-{if eq true $c.Style.HideOverflow}-} :show-overflow-tooltip="true" {-{end}-}  align="center" label="{-{$c.Label}-}">
             <template #default="scope">
-                <el-link type="primary" :href="scope.row.{-{$c.Name}-}" :title="scope.row.{-{$c.Name}-}">查看</el-link>
+                <el-link target="_blank" type="success" :href="scope.row.{-{$c.Name}-}" :title="scope.row.{-{$c.Name}-}">查看</el-link>
             </template>
         </el-table-column>
         {-{- else if eq true $c.Enum.IsEnum}-}

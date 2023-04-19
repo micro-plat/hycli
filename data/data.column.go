@@ -10,9 +10,13 @@ import (
 
 const (
 	VIEW_COLUMN   = "V"
+	VIEW_TAG      = "VIEW"
 	ADD_COLUMN    = "C"
+	ADD_TAG       = "ADD"
 	UPDATE_COLUMN = "U"
+	UPDATE_TAG    = "UPDATE"
 	DELETE_COLUMN = "D"
+	DELETE_TAG    = "DEL"
 )
 
 type BaseColumn struct {

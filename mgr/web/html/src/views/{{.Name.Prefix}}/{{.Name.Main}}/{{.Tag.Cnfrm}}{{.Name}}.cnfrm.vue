@@ -72,7 +72,7 @@ export default {
       //保存 {-{$m.Label}-} 弹出框数据
       save_{-{$m.UNQ}-}(){
         let that = this
-        this.$theia.http.post("{-{fltrTranslate $m.ReqURL $table}-}",this.form_{-{$m.UNQ}-}).then(res=>{
+        this.$theia.http.post("{-{fltrTranslate $m.ReqURL (fltrFindTable $m.Table)}-}",this.form_{-{$m.UNQ}-}).then(res=>{
           that.conf.confirmVisible = false 
           that.$notify.success({title: '成功',message: '{-{$m.Label}-}成功',duration:5000})
           that.$emit("onsaved")

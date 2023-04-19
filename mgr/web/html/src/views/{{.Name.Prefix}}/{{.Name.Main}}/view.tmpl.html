@@ -11,12 +11,16 @@
     <el-col :span="8" v-text="view.{-{$c.Name}-}_label" style="min-height:26px" :class="'{-{$c.Style.CLR.BgColor}-}'==''?'':{-{$c.Style.CLR.BgColor}-}(view.{-{$c.Name}-},'{-{$c.Name}-}')"></el-col>
     {-{- else if eq "img" $c.Cmpnt.Type}-}
     <el-col :span="8" style="min-height:26px">
-        <el-image style="width:48px" :src="view.{-{$c.Name}-}" :fit="contain" /></el-col>
+    <el-image style="width:48px" :src="view.{-{$c.Name}-}" :fit="contain" /></el-col>
+    {-{- else if eq "link" $c.Cmpnt.Type}-}
+    <el-col :span="8">
+    <el-link target="_blank" type="success" :href="view.{-{$c.Name}-}" :title="view.{-{$c.Name}-}">查看</el-link> 
+    </el-col>
     {-{- else if gt $c.Field.Len 48}-}
     <el-col :span="20" v-html="view.{-{$c.Name}-}"  style="min-height:26px" :class="'{-{$c.Style.CLR.BgColor}-}'==''?'':{-{$c.Style.CLR.BgColor}-}(view.{-{$c.Name}-},'{-{$c.Name}-}')"></el-col>
     {-{- else if gt $c.Field.Len 32}-}
     <el-col :span="8" v-html="view.{-{$c.Name}-}"  style="min-height:26px" :class="'{-{$c.Style.CLR.BgColor}-}'==''?'':{-{$c.Style.CLR.BgColor}-}(view.{-{$c.Name}-},'{-{$c.Name}-}')"></el-col>
-      {-{- else}-}
+    {-{- else}-}
     <el-col :span="8" v-text="view.{-{$c.Name}-}"  style="min-height:26px" :class="'{-{$c.Style.CLR.BgColor}-}'==''?'':{-{$c.Style.CLR.BgColor}-}(view.{-{$c.Name}-},'{-{$c.Name}-}')"></el-col>
     {-{- end}-}
     {-{- end}-}

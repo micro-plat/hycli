@@ -41,14 +41,14 @@
       <!--{-{$c.Label}-} 日期控件 -->
       <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
         <el-date-picker style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" clearable type="date"
-          placeholder="请选择{-{.Label}-}" format="YYYY-MM-DD" value-format="YYYY-MM-DD" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}/>
+          placeholder="请选择{-{.Label}-}" format="YYYY-MM-DD" value-format="YYYY-MM-DD" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{else if ne "" $c.Cmpnt.Format}-} :default-value="new Date($theia.str.dateFormat(new Date(),'{-{$c.Cmpnt.Format}-}'))"{-{end}-}/>
       </el-form-item>
       {-{- else if eq "datetime" $c.Cmpnt.Type}-}
       <!--{-{$c.Label}-} 日期控件 -->
       <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
         <el-date-picker style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" clearable type="datetime"
           placeholder="请选择{-{.Label}-}" format="YYYY-MM-DD HH:mm:ss" value-format="YYYY-MM-DD HH:mm:ss" 
-          {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}/>
+          {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{else if ne "" $c.Cmpnt.Format}-} :default-value="new Date($theia.str.dateFormat(new Date(),'{-{$c.Cmpnt.Format}-}'))"{-{end}-}/>
       </el-form-item>
       {-{- else if eq "multiselect" $c.Cmpnt.Type}-}
       <!--{-{$c.Label}-} 多选控件 -->
@@ -89,8 +89,8 @@
       {-{- else if or (eq "file" $c.Cmpnt.Type) (eq "img" $c.Cmpnt.Type)}-}
       <!--{-{$c.Label}-} 文件控件 -->
       <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-        <el-upload :action="conf.uploadPath" :limit="1" :on-success="onUploadSuccess" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}>
-          <el-button type="primary">上传文件</el-button>
+        <el-upload multiple :action="conf.uploadPath" :limit="1" :on-success="onUploadSuccess" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}>
+          <el-button type="primary">选择文件</el-button>
         </el-upload>
       </el-form-item>
       {-{- else if  (eq "radio" $c.Cmpnt.Type)}-}

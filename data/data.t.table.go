@@ -23,12 +23,15 @@ func fltrSearchUITableAndResetUNQ(name *optrs) *TTable {
 	t.UNQ = name.UNQ
 	return t
 }
-
-func fltrSearchTable(uname string) *TTable {
+func findTable(uname string) *Table {
 	if strings.Contains(uname, "/") {
 		uname = strings.Replace(strings.Trim(uname, "/"), "/", "_", -1)
 	}
-	ut := Get(uname)
+	return Get(uname)
+}
+
+func fltrSearchTable(uname string) *TTable {
+	ut := findTable(uname)
 	return &TTable{Table: ut, IsTmpl: true}
 }
 

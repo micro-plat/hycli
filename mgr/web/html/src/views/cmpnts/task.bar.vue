@@ -32,7 +32,7 @@ export default {
         },
         margin: {
             type: String,
-            default: "32px 0px 16px 0px"
+            default: "8px 0px 16px 0px"
         },
         count:{
             type:String,

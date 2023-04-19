@@ -65,7 +65,7 @@
 {-{- range $x,$m:= $table.ViewExtCmptOpts}-}
  {-{- if eq "CMPNT" $m.Name  }-}
  {-{- $tb:= fltrSearchTable (fltrOptrPara $m "table" "")}-}
-import {-{$m.UNQ}-} from "{-{fltrTranslate $m.URL $tb}-}"
+import {-{$m.UNQ}-} from "{-{fltrTranslate $m.URL (fltrFindTable $m.Table)}-}"
 {-{- end}-}
 {-{- end}-}
 

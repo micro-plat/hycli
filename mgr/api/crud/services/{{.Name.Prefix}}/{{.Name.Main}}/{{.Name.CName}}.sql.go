@@ -24,11 +24,11 @@ from {-{.Name.Raw}-} t
 where
 {-{- range $i,$v := $totalQCols}-}
 {-{- if eq "daterange" $v.Cmpnt.Type}-}
-	and t.{-{$v.Name}-} >=  if(@start_{-{$v.Name}-}='', t.{-{$v.Name}-},@start_{-{$v.Name}-})
-	and t.{-{$v.Name}-} <  date_add(if(@end_{-{$v.Name}-}='',t.{-{$v.Name}-},@end_{-{$v.Name}-}), interval 1 day)
+	and (t.{-{$v.Name}-} is null or (t.{-{$v.Name}-} >=  if(@start_{-{$v.Name}-}='', t.{-{$v.Name}-},@start_{-{$v.Name}-})
+	and t.{-{$v.Name}-} <  date_add(if(@end_{-{$v.Name}-}='',t.{-{$v.Name}-},@end_{-{$v.Name}-}), interval 1 day)))
 {-{- else if eq "date" $v.Cmpnt.Type}-}
-	and t.{-{$v.Name}-} >=  if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-})
-	and t.{-{$v.Name}-} <  date_add(if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-}),interval 1 day)	
+	and (t.{-{$v.Name}-} is null or (t.{-{$v.Name}-} >=  if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-})
+	and t.{-{$v.Name}-} <  date_add(if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-}),interval 1 day)))	
 {-{- else if eq "input" $v.Cmpnt.Type}-}
 	?t.{-{$v.Name}-}
 {-{- else if eq "multiselect" $v.Cmpnt.Type}-}
@@ -50,11 +50,11 @@ where
 	{-{- range $i,$v := $totalQCols}-}
 	
 	{-{- if eq "daterange" $v.Cmpnt.Type}-}
-	and t.{-{$v.Name}-} >=  if(@start_{-{$v.Name}-}='', t.{-{$v.Name}-},@start_{-{$v.Name}-})
-	and t.{-{$v.Name}-} <  date_add(if(@end_{-{$v.Name}-}='',t.{-{$v.Name}-},@end_{-{$v.Name}-}), interval 1 day)
+	and (t.{-{$v.Name}-} is null or (t.{-{$v.Name}-} >=  if(@start_{-{$v.Name}-}='', t.{-{$v.Name}-},@start_{-{$v.Name}-})
+	and t.{-{$v.Name}-} <  date_add(if(@end_{-{$v.Name}-}='',t.{-{$v.Name}-},@end_{-{$v.Name}-}), interval 1 day)))
 	{-{- else if eq "date" $v.Cmpnt.Type}-}
-	and t.{-{$v.Name}-} >=  if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-})
-	and t.{-{$v.Name}-} <  date_add(if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-}),interval 1 day)	
+	and (t.{-{$v.Name}-} is null or (t.{-{$v.Name}-} >=  if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-})
+	and t.{-{$v.Name}-} <  date_add(if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-}),interval 1 day)))	
 	{-{- else if eq "input" $v.Cmpnt.Type}-}
 	?t.{-{$v.Name}-}
 	{-{- else if eq "multiselect" $v.Cmpnt.Type}-}

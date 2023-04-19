@@ -90,7 +90,12 @@ export default {
     onUploadSuccess(response){
       {-{- range $i,$c:= $cColumns }-}
       {-{- if eq "file" $c.Cmpnt.Type  }-}
+      {-{- if eq true (fltrStart $c.Cmpnt.Format "#")}-}
+      this.form.{-{fltrTrim $c.Cmpnt.Format "#"}-} = response.path
+      {-{- else}-}
       this.form.{-{$c.Name}-} = response.path
+      {-{- end}-}
+      
       {-{- end }-}
       {-{- end}-}
     },

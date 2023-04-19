@@ -18,7 +18,7 @@
             {-{- $cmpnt_count:= len $cmpnts}-}
             {-{- range $x,$m:=$cmpnts }-}
             {-{- $exprs :=fltrOptrParaExprs $m "showExpr" ""}-}
-            {-{- if lt $x 3}-}
+            {-{- if lt $x 2}-}
             <el-button  size="small" type="text" @click="show_cmpnt_{-{$m.UNQ}-}(scope.row)" {-{if gt (len $exprs)  0}-} v-if='
             {-{- range $i,$expr := $exprs}-}
             {-{- if ne "" $expr.Name}-}{-{$expr.Name}-}{-{$expr.Symbol}-}{-{$expr.Value}-} 
@@ -29,11 +29,11 @@
             {-{- end -}-}'{-{- end}-}>{-{$m.Label}-} </el-button>
             {-{- end }-}
 
-            {-{- if gt $x 2}-}
-            {-{- if eq $x 3}-}
+            {-{- if gt $x 1}-}
+            {-{- if eq $x 2}-}
             <el-dropdown size="small" @command="(command) => show_cmpnt(command, scope.row)">
                 <span class="el-dropdown-link">
-                 ...<el-icon class="el-icon--right"><arrow-down /></el-icon>
+                 其它<el-icon class="el-icon--right"><arrow-down /></el-icon>
                 </span>
                 <template #dropdown>
                   <el-dropdown-menu>
@@ -47,7 +47,7 @@
             {-{- if lt $i (minus (len $exprs))}-}&&{-{- end -}-}
             {-{- end -}-}'{-{- end}-}>{-{$m.Label}-} </el-dropdown-item>
             {-{- end}-}
-          {-{- if and (gt $x 2) (eq $x (minus $cmpnt_count))}-}
+          {-{- if and (gt $x 1) (eq $x (minus $cmpnt_count))}-}
                 </el-dropdown-menu>
             </template>
             </el-dropdown>
