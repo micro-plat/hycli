@@ -36,10 +36,9 @@ export default {
     show(fm = {}) {
       this.conf.visible = true;
       this.form = Object.assign(fm,this.$route.params)
-      this.form = fm
       {-{- range $i,$c:= $cColumns }-}
       {-{- if and (gt (len (fltrAssctColumns $cColumns $c.Name)) 0) (eq true (fltrHasConst $c "rp"))}-} 
-      this.onChange_{-{$c.Name}-}(this.$route.params["{-{$c.Name}-}"]||(fm||{})["{-{$c.Name}-}"])
+      this.onChange_{-{$c.Name}-}(this.$route.params["{-{$c.Name}-}"]||this.form["{-{$c.Name}-}"])
       {-{- end}-} 
       {-{- end}-}
     },

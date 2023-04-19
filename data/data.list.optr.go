@@ -11,19 +11,20 @@ import (
 
 // 操作信息
 type optrs struct {
-	Tag    string
-	Name   string //link,dialog,cmpnt,tab,cnfrm
-	Label  string //修改,预览，删除
-	ICON   string //图标
-	URL    string //组件URL
-	RwName string //当前表字段标记
-	FwName string //外部表字段标记
-	ReqURL string //服务请求URL
-	IsMux  bool   //是否是复用组件
-	index  int    //顺序编号
-	Table  string
-	Params map[string]string
-	UNQ    string
+	Tag       string
+	Name      string //link,dialog,cmpnt,tab,cnfrm
+	Label     string //修改,预览，删除
+	ICON      string //图标
+	URL       string //组件URL
+	RwName    string //当前表字段标记
+	FwName    string //外部表字段标记
+	ReqURL    string //服务请求URL
+	IsMux     bool   //是否是复用组件
+	index     int    //顺序编号
+	Table     string
+	Params    map[string]string
+	ParentUNQ string //父组件编号
+	UNQ       string
 }
 type optrslst []*optrs
 type formatOptrs optrslst
@@ -39,7 +40,7 @@ var viewOptCmd = []string{"view"}
 var lstatOptCmd = []string{"lstat"}
 var lstOptCmd = []string{"lst"}
 var batchCheck = []string{"bcheck"}
-var barOptrCmd = []string{"export", "import", "bcheck"}
+var barOptrCmd = []string{"export", "import", "bcheck", "bar"}
 var charOptrCmd = []string{"chart"}
 var extCmptParam = []string{"add"}
 var extOptrsCmd = []string{"tskbar"}
@@ -155,6 +156,7 @@ func creatExtCmptOpts(opts ...[]*optrs) []*optrs {
 						xview.Params = view.Params
 						xview.Params["table"] = view.URL
 						xview.Table = view.URL
+						xview.ParentUNQ = view.UNQ
 						nopts = append(nopts, &xview)
 					}
 				}

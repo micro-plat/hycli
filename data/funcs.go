@@ -21,7 +21,7 @@ var Funcs = map[string]interface{}{
 	"fltrMYSQLType":                fltrMYSQLType,
 	"fltrMYSQLDef":                 mySQLDefValue,
 	"fltrOptrs":                    fltrOptrs,
-	"fltrOptrsByTable":             fltrOptrsByTable,
+	"fltrOptrsByPUNQ":              fltrOptrsByPUNQ,
 	"fltrOptrsByStatic":            fltrOptrsByStatic,
 	"fltrOptrsByTag":               fltrOptrsByTag,
 	"fltrColumns":                  fltrColumns,
@@ -98,10 +98,10 @@ func flterMainTable(tbs []*Table) []*Table {
 	}
 	return ntbs
 }
-func fltrOptrsByTable(opts []*optrs, tb string) []*optrs {
+func fltrOptrsByPUNQ(opts []*optrs, punq string) []*optrs {
 	lst := make([]*optrs, 0, 1)
 	for _, p := range opts {
-		if p.Table == tb {
+		if p.ParentUNQ == punq {
 			lst = append(lst, p)
 		}
 	}

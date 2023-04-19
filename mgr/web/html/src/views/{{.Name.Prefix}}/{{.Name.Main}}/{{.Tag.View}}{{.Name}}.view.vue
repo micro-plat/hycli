@@ -31,11 +31,11 @@
        {-{- else if eq "TAB" $c.Name}-}
         <el-tab-pane label="{-{$c.Label}-}" name="{-{$c.Label}-}"  @tab-click="show_view_{-{$c.UNQ}-}">
       
-          {-{- $tlbar :=fltrOptrsByTable $table.ViewExtCmptOpts  $c.Table }-}
+          {-{- $tlbar :=fltrOptrsByPUNQ $table.ViewExtCmptOpts  $c.UNQ }-}
            <!-- {-{$c.Table  }-},{-{ len $tlbar }-}-->
           {-{- if gt (len $tlbar) 0}-}
           <el-row>
-            <el-col :span="24" class="text-right"></el-col>
+            <el-col :span="24" class="text-right">
           {-{- range $i,$x:= $tlbar}-}
           <el-button type="success" icon="Plus"
            round size="small"
