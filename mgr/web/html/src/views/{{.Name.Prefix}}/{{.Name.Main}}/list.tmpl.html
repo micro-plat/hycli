@@ -8,13 +8,16 @@
 
 {-{- if gt (len $lcols) 0 }-}
 <div class="list">
-    <el-table :data="dataList_{-{.UNQ}-}" v-loading="conf.loading" stripe {-{if eq true $tmpl }-}
+    <el-table :data="dataList_{-{.UNQ}-}" 
+    {-{ if and (eq $table.NeedBatchCheck true) (eq false $tmpl)}-}@selection-change="handleSelectionChange" {-{end}-}
+    v-loading="conf.loading" stripe {-{if eq true $tmpl }-}
         style="width: 100%;height:300px" {-{else }-} style="width: 100%;height:calc(100vh - 160px)" {-{- end}-}
         size="small" empty-text="无数据">le
         {-{- if gt $leLen 0 }-}
         {-{- template "le.tmpl.html" $lecols }-}
         {-{- end}-}
-        {-{ if and (eq $table.NeedBatchCheck true) (eq false $tmpl)}-}  <el-table-column type="selection" width="55" /> {-{end}-}
+        <!--NeedBatchCheck  {-{$table.NeedBatchCheck}-}  {-{$tmpl}-}-->
+        {-{ if and (eq $table.NeedBatchCheck true) (eq false $tmpl)}-}  <el-table-column type="selection" width="22" /> {-{end}-}
        
         {-{- range $i,$c:=$lcols }-}
         {-{- if eq "switch" $c.Cmpnt.Type}-}

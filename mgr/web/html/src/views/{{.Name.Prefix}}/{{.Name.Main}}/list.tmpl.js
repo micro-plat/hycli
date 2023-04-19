@@ -19,7 +19,7 @@
       queryForm.start_{-{$c.Name}-} = queryForm.{-{$c.Name}-}[0]
       queryForm.end_{-{$c.Name}-} = queryForm.{-{$c.Name}-}[1]
     }
-    {-{- else if eq "multiselect" $c.Cmpnt.Type}-}
+    {-{- else if eq true (fltrStart $c.Cmpnt.Type "multi")}-}
       queryForm.{-{$c.Name}-} = (queryForm.{-{$c.Name}-}||[]).join(",")
     {-{- end}-}
     {-{- end}-}
@@ -223,3 +223,14 @@
       return rd < 0 ? 0 : rd * 8; //换算为每天8小时
     },
     {-{- end }-}
+
+    {-{- if eq $table.NeedBatchCheck true}-}
+    handleSelectionChange(lst=[]){
+      this.bcheck = []
+      lst.forEach(f=>{
+        {-{- range $i,$v :=  $table.PKColumns}-}
+        this.bcheck.push(f.{-{$v.Name}-})
+        {-{- end}-}
+      })
+    },
+     {-{- end}-}

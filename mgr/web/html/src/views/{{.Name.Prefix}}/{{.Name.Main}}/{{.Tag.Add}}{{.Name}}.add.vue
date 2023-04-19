@@ -60,7 +60,7 @@ export default {
         {-{- range $i,$c:= $cColumns }-}
         {-{- if eq "password" $c.Cmpnt.Type  }-}
         postForm.{-{$c.Name}-} = this.$theia.crypto.md5(this.form.{-{$c.Name}-})
-        {-{- else if eq "multiselect" $c.Cmpnt.Type}-}
+        {-{- else if eq true (fltrStart $c.Cmpnt.Type "multi")}-}
         postForm.{-{$c.Name}-} = (postForm.{-{$c.Name}-}||[]).join(",")
         {-{- end }-}
         {-{- end}-}

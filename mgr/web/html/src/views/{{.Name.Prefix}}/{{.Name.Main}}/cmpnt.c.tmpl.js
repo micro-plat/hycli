@@ -1,9 +1,7 @@
 {-{- $table := .}-}
 {-{- $opts:=mergeOptrs $table.ListOpts $table.BarOpts $table.ChartOpts $table.ExtOpts}-}
 components: {
-    {-{- range $x,$m:=  $opts}-}
-    {-{- if eq "CMPNT" $m.Name}-}
+    {-{- range $x,$m:= fltrOptrs $opts "CMPNT"}-}
     {-{$m.UNQ}-},
-    {-{- end}-}
     {-{- end}-}
 },

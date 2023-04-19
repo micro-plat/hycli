@@ -3,7 +3,7 @@
         pi: 1,
         ps: 15,
         {-{- range $i,$c := $qcols}-}
-        {-{- if eq "multiselect" $c.Cmpnt.Type}-}
+        {-{- if eq true (fltrStart $c.Cmpnt.Type "multi")}-}
         {-{$c.Name}-}:[],
         {-{- else}-}
         {-{$c.Name}-}:"",
@@ -11,7 +11,7 @@
         {-{- end}-}
         },
     {-{- range $i,$c := $qcols }-}
-    {-{- if or (eq true $c.Enum.IsEnum) (eq "multiselect" $c.Cmpnt.Type)}-}
+    {-{- if or (eq true $c.Enum.IsEnum) (eq true (fltrStart $c.Cmpnt.Type "multi"))}-}
     {-{.Name}-}List:this.$theia.enum.get("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}","{-{$c.Enum.Group}-}"),
     {-{.Name}-}Exts:this.$theia.enum.getExts("{-{$c.Enum.EnumType}-}"),
     {-{- if and (eq "tabs" $c.Cmpnt.Type) (ne "" $c.Cmpnt.Format)}-}

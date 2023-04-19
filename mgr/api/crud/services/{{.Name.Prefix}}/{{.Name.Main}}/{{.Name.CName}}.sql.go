@@ -31,7 +31,7 @@ where
 	and t.{-{$v.Name}-} <  date_add(if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-}),interval 1 day)))	
 {-{- else if eq "input" $v.Cmpnt.Type}-}
 	?t.{-{$v.Name}-}
-{-{- else if eq "multiselect" $v.Cmpnt.Type}-}
+{-{- else if eq true (fltrStart $v.Cmpnt.Type "multi")}-}
 	and (if(@{-{$v.Name}-} = '',NULL,@{-{$v.Name}-}) is null or  FIND_IN_SET(t.{-{$v.Name}-},@{-{$v.Name}-}))
 {-{- else}-}
 	&t.{-{$v.Name}-}
@@ -57,7 +57,7 @@ where
 	and t.{-{$v.Name}-} <  date_add(if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-}),interval 1 day)))	
 	{-{- else if eq "input" $v.Cmpnt.Type}-}
 	?t.{-{$v.Name}-}
-	{-{- else if eq "multiselect" $v.Cmpnt.Type}-}
+	{-{- else if eq true (fltrStart $v.Cmpnt.Type "multi")}-}
 	and (if(@{-{$v.Name}-} = '',NULL,@{-{$v.Name}-}) is null or  FIND_IN_SET(t.{-{$v.Name}-},@{-{$v.Name}-}))
 	{-{- else}-}
 	&t.{-{$v.Name}-}

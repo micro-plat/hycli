@@ -15,6 +15,9 @@ export default {
 data() {
   return {
     cmpnt_funcs:{},
+    {-{- if eq $table.NeedBatchCheck true}-}
+    bcheck:[],
+    {-{- end}-}
     conf: {
       loading: false,
       progressColor: this.$theia.env.conf.progress || []

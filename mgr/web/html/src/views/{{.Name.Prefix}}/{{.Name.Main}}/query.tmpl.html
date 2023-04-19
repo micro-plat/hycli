@@ -84,7 +84,7 @@
         {-{- end}-}
 
         {-{- range $i,$c:= $qcols}-}
-        {-{- if eq "multiselect" $c.Cmpnt.Type}-}
+        {-{- if eq true (fltrStart $c.Cmpnt.Type "multi")}-}
         <!--{-{$c.Label}-} 下拉控件多选 -->
         <el-form-item>
             <el-select v-model="form_{-{$table.UNQ}-}.{-{.Name}-}" filterable clearable multiple collapse-tags  style="width: 140px"
@@ -139,21 +139,24 @@
                 {-{- if gt (len $qcols) 0}-}
             <el-button type="primary" icon="Search" @click="onQuery">查询</el-button>
                 {-{- end}-}
-          
-            {-{- if gt $blen 0}-}
-            <el-button-group>
-                {-{- range $i,$c:= $table.BarOpts}-}
-                {-{- if eq "CMPNT" $c.Name}-}
-                <el-button type="success" {-{if ne "" $c.ICON}-} icon="{-{$c.ICON}-}" {-{end}-} @click="show_cmpnt_{-{$c.UNQ}-}">{-{$c.Label}-}</el-button>
+            {-{- if eq $blen 1}-}
+                {-{- range $i,$c:=fltrOptrs $table.BarOpts "CMPNT" }-}
+                <el-button :type="tagColor({-{spare $i 3}-})" {-{if ne "" $c.ICON}-} icon="{-{$c.ICON}-}" {-{end}-} @click="show_cmpnt_{-{$c.UNQ}-}">{-{$c.Label}-}</el-button>
                 {-{- end}-}
-                {-{- end}-}
-            </el-button-group>
             {-{- end}-}
             </el-space>
         </el-form-item>
         {-{- end}-}
-        {-{ if gt (len $blist) 0}-}
+        {-{ if or (gt (len $blist) 0) (gt $blen 1)}-}
         <div class="blist"> 
+            {-{- if gt $blen 1}-}
+            <el-button-group>
+                {-{- range $i,$c:=fltrOptrs $table.BarOpts "CMPNT" }-}
+                <el-button :type="tagColor({-{spare $i 3}-})" {-{if ne "" $c.ICON}-} icon="{-{$c.ICON}-}" {-{end}-} @click="show_cmpnt_{-{$c.UNQ}-}">{-{$c.Label}-}</el-button>
+                {-{- end}-}
+            </el-button-group>
+            {-{- end}-}
+
             {-{- range $i,$c:= $blist}-}
             <el-radio-group v-model="form_{-{$table.UNQ}-}.{-{.Name}-}" size="small" @change="onQuery">
                 <el-radio-button>{-{$c.Label}-}</el-radio-button>

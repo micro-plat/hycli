@@ -43,7 +43,7 @@ export default {
         {-{- range $i,$c := $ucols}-}
         {-{- if eq "switch" $c.Cmpnt.Type}-}
           res.{-{$c.Name}-}_switch = res.{-{$c.Name}-} == 0
-        {-{- else if eq "multiselect" $c.Cmpnt.Type}-}
+        {-{- else if eq true (fltrStart $c.Cmpnt.Type "multi")}-}
           res.{-{$c.Name}-} = (res.{-{$c.Name}-}+"").split(",")
         {-{- end}-}
         {-{- end}-}
@@ -72,7 +72,7 @@ export default {
         {-{- range $i,$c:= $ucols }-}
         {-{- if eq "password" $c.Cmpnt.Type  }-}
         postForm.{-{$c.Name}-} = this.$theia.crypto.md5(this.form.{-{$c.Name}-})
-        {-{- else if eq "multiselect" $c.Cmpnt.Type}-}
+        {-{- else if eq true (fltrStart $c.Cmpnt.Type "multi")}-}
         postForm.{-{$c.Name}-} = (postForm.{-{$c.Name}-}||[]).join(",")
         {-{- end }-}
         {-{- end}-}

@@ -24,7 +24,11 @@ show_cmpnt(cmd,row){
       //2023.4.18添加
     {-{- $c := fltrOptrsByStatic $m }-}
     {-{- range $k,$v := $c}-}
-    query.{-{$k}-}="{-{$v}-}"
+    {-{ if eq true (fltrStart $v "@")}-}
+    query.{-{$k}-} = this.{-{fltrTrim $v "@"}-}
+    {-{- else}-}
+    query.{-{$k}-} = "{-{$v}-}"
+    {-{- end}-}
     {-{- end}-}
 
     {-{- if eq true $m.IsMux }-}

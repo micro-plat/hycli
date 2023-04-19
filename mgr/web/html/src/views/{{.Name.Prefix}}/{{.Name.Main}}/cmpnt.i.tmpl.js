@@ -1,8 +1,6 @@
 {-{- $table := .}-}
 {-{- $opts:=mergeOptrs $table.ListOpts $table.BarOpts $table.ChartOpts $table.ExtOpts}-}
-{-{- range $x,$m:= $opts}-}
+{-{- range $x,$m:= fltrOptrs $opts "CMPNT"}-}
 // {-{$m.Label}-}
- {-{- if eq "CMPNT" $m.Name}-}
 import {-{$m.UNQ}-} from "{-{fltrTranslate $m.URL (fltrFindTable $m.Table)}-}"
-{-{- end}-}
 {-{- end}-}

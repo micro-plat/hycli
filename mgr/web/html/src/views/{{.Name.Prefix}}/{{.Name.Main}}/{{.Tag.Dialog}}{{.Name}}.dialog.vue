@@ -49,7 +49,7 @@ export default {
       //{-{$m.Label}-} form by  {-{$m.RwName}-}
       {-{- $rows:= fltrColumns $table $m.RwName }-}
         {-{- range $i,$c:=$rows }-} 
-        {-{- if or (eq true $c.Enum.IsEnum) (eq "multiselect" $c.Cmpnt.Type)}-}
+        {-{- if or (eq true $c.Enum.IsEnum) (eq true (fltrStart $c.Cmpnt.Type "multi"))}-}
     {-{.Name}-}List:this.$theia.enum.get("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}","{-{$c.Enum.Group}-}"),
          {-{- else}-}
     {-{$c.Name}-}:"",

@@ -1,27 +1,33 @@
 {-{- $ucols := .  }-}
 {-{- $m := 0}-}
+{-{- $span:=24}-}
   <el-row>
   {-{- range $i,$c:= $ucols }-}
   {-{- if le 33 $c.Field.Len }-}
     {-{$m =  0}-}
         <el-col :span="24">
+          {-{- $span = 24}-}
    {-{- else if eq "full" $c.Style.Position}-}
           {-{- if ne 0 (spare $m 24)}-}
           <el-col :span="12"></el-col>
           {-{$m = add $m 12 }-}
           {-{- end}-}
           <el-col :span="24">
+          {-{- $span = 24}-}
           {-{$m = add $m 24 }-}
          
   {-{- else if eq "newline" $c.Style.Position}-}
         {-{- if ne 0 (spare $m 24)}-}
         <el-col :span="12"></el-col>
+        {-{- $span = 12}-}
         {-{$m = add $m 12 }-}
         {-{- end}-}
       <el-col :span="12">
+      {-{- $span = 12}-}
       {-{$m = add $m 12 }-}
       {-{- else }-}
         <el-col :span="12">
+        {-{- $span = 12}-}
         {-{$m = add $m 12}-}
   {-{- end }-}
       {-{- if eq "password" $c.Cmpnt.Type}-}
@@ -53,17 +59,17 @@
       {-{- else if eq "multiselect" $c.Cmpnt.Type}-}
       <!--{-{$c.Label}-} 多选控件 -->
       <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-        <el-select style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{.Name}-}" clearable multiple collapse-tags
+        <el-select style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{.Name}-}" clearable multiple {-{if ne $span 24}-} collapse-tags {-{end}-}
         collapse-tags-tooltip
           placeholder="请选择{-{.Label}-}">
           <el-option v-for="item in {-{.Name}-}List" :key="item.value" :label="item.name" :value="item.value" />
         </el-select>
       </el-form-item>
-      {-{- else if eq "checkbox" $c.Cmpnt.Type}-}
+      {-{- else if eq "multicheck" $c.Cmpnt.Type}-}
       <!--{-{$c.Label}-} chckbox-group -->
       <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
         <el-checkbox-group v-model="{-{$c.Ext.FormName}-}.{-{.Name}-}" size="small" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}>
-          <el-checkbox-button v-for="item in {-{.Name}-}List" :key="item.value" :label="item.name">
+          <el-checkbox-button v-for="item in {-{.Name}-}List" :key="item.value" :label="item.value"  :value="item.value">
             {{item.name}}
           </el-checkbox-button>
         </el-checkbox-group>

@@ -39,8 +39,8 @@ type extOptrs optrslst
 var viewOptCmd = []string{"view"}
 var lstatOptCmd = []string{"lstat"}
 var lstOptCmd = []string{"lst"}
-var batchCheck = []string{"bcheck"}
-var barOptrCmd = []string{"export", "import", "bcheck", "bar"}
+var batchCheck = []string{"bcheck", "@bcheck"}
+var barOptrCmd = []string{"export", "import", "lstbar"}
 var charOptrCmd = []string{"chart"}
 var extCmptParam = []string{"add"}
 var extOptrsCmd = []string{"tskbar"}
@@ -87,11 +87,15 @@ func (f formatOptrs) String() string {
 	return string(buff)
 }
 
-func (b barOptrs) NeedCheck(t string) bool {
+func (b barOptrs) NeedCheck(tb string) bool {
 	for _, v := range b {
-		if types.StringContains(batchCheck, v.Tag) {
-			return true
+		for p, m := range v.Params {
+			if types.StringContains(batchCheck, p) ||
+				types.StringContains(batchCheck, m) {
+				return true
+			}
 		}
+
 	}
 	return false
 }
