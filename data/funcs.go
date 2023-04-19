@@ -21,6 +21,7 @@ var Funcs = map[string]interface{}{
 	"fltrMYSQLType":                fltrMYSQLType,
 	"fltrMYSQLDef":                 mySQLDefValue,
 	"fltrOptrs":                    fltrOptrs,
+	"fltrOptrsByTable":             fltrOptrsByTable,
 	"fltrOptrsByStatic":            fltrOptrsByStatic,
 	"fltrOptrsByTag":               fltrOptrsByTag,
 	"fltrColumns":                  fltrColumns,
@@ -96,6 +97,15 @@ func flterMainTable(tbs []*Table) []*Table {
 		}
 	}
 	return ntbs
+}
+func fltrOptrsByTable(opts []*optrs, tb string) []*optrs {
+	lst := make([]*optrs, 0, 1)
+	for _, p := range opts {
+		if p.Table == tb {
+			lst = append(lst, p)
+		}
+	}
+	return lst
 }
 func fltrColumnsExcludeExt(cols []*Column) []*Column {
 	vc := make([]*Column, 0, 1)

@@ -30,15 +30,21 @@
       </el-tab-pane>
        {-{- else if eq "TAB" $c.Name}-}
         <el-tab-pane label="{-{$c.Label}-}" name="{-{$c.Label}-}"  @tab-click="show_view_{-{$c.UNQ}-}">
+      
+          {-{- $tlbar :=fltrOptrsByTable $table.ViewExtCmptOpts  $c.Table }-}
+           <!-- {-{$c.Table  }-},{-{ len $tlbar }-}-->
+          {-{- if gt (len $tlbar) 0}-}
+          <el-row>
+            <el-col :span="24" class="text-right"></el-col>
+          {-{- range $i,$x:= $tlbar}-}
+          <el-button type="success" icon="Plus"
+           round size="small"
+            @click="show_cmpnt_{-{$x.UNQ}-}">{-{ $x.Label}-}</el-button>
+         {-{- end}-}
+        </el-col>
+          </el-row>
+         {-{- end}-}
          {-{- $ct:= fltrSearchUITableAndResetUNQ $c}-}
-         {-{- $addp := fltrOptrPara $c "add" ""}-}
-         {-{- if ne "" $addp}-}
-        <el-row>
-          <el-col :span="24" class="text-right">
-            <el-button type="success" icon="Plus" round size="small" @click="show_cmpnt_{-{$c.UNQ}-}">{-{if eq "true" $addp}-}添加{-{else}-}{-{ $addp}-}{-{end}-}</el-button>
-          </el-col>
-        </el-row>
-         {-{- end }-}
         {-{- template "list.tmpl.html" $ct}-}
          </el-tab-pane>
       {-{- end}-}
@@ -57,30 +63,15 @@
 </div>
 </template>
 <script>
- {-{- range $x,$m:= $viewOpts}-}
-    {-{- if eq "CMPNT" $m.Name}-}
-   import {-{$m.UNQ}-} from "{-{$m.URL}-}"
-    {-{- end }-}
-    {-{- end}-}
-{-{- range $x,$m:= $table.ViewExtCmptOpts}-}
- {-{- if eq "CMPNT" $m.Name  }-}
- {-{- $tb:= fltrSearchTable (fltrOptrPara $m "table" "")}-}
+ {-{- range $x,$m:=fltrOptrs (mergeOptrs $viewOpts $table.ViewExtCmptOpts) "CMPNT"}-}
 import {-{$m.UNQ}-} from "{-{fltrTranslate $m.URL (fltrFindTable $m.Table)}-}"
-{-{- end}-}
 {-{- end}-}
 
 export default {
    components: {
-    {-{- range $x,$m:= $viewOpts }-}
-     {-{- if eq "CMPNT" $m.Name }-}
+    {-{- range $x,$m:=fltrOptrs (mergeOptrs $viewOpts $table.ViewExtCmptOpts) "CMPNT"}-}
     {-{$m.UNQ}-},
     {-{- end }-}
-    {-{- end}-}
-    {-{- range $x,$m:= $table.ViewExtCmptOpts}-}
-    {-{- if eq "CMPNT" $m.Name  }-}
-    {-{$m.UNQ}-},
-    {-{- end}-}
-    {-{- end}-}
   },
   data() {
     return {
@@ -104,8 +95,7 @@ export default {
       }
   },
   methods: {
-    {-{- range $x,$m:=  $table.ViewExtCmptOpts}-}
- {-{- if eq "CMPNT" $m.Name}-}
+   {-{- range $x,$m:=fltrOptrs $table.ViewExtCmptOpts "CMPNT"}-}
   show_cmpnt_{-{$m.UNQ}-}(){
     let form = Object.assign({},this.form)
     {-{- $c := fltrOptrsByStatic $m }-}
@@ -114,7 +104,6 @@ export default {
     {-{- end}-}
     this.$refs.cmpnt_{-{$m.UNQ}-}.show(form)
   },
-{-{- end}-}
 {-{- end}-}
     {-{- template "view.tmpl.js" $table}-}
      {-{- range $i,$c:= $viewOpts }-}

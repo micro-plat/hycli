@@ -149,7 +149,8 @@ func creatExtCmptOpts(opts ...[]*optrs) []*optrs {
 				if v, ok := view.Params[cmd]; ok {
 					if opts, ok := extCmptOpts[cmd]; ok {
 						xview := *opts
-						xview.UNQ = view.UNQ
+						// xview.UNQ = view.UNQ
+						xview.UNQ = defFids.Next()
 						xview.Label = types.DecodeString(types.GetBool(v), true, view.Label, v)
 						xview.Params = view.Params
 						xview.Params["table"] = view.URL
@@ -203,8 +204,22 @@ func createOptrs(tableName string, t string, tag string) []*optrs {
 			opt.Tag = name
 			opt.ReqURL = types.GetStringByIndex(lst, 2)
 			opt.Table = tableName
+		case TAB_TAG:
+			opt = optrs{
+				Tag:   tag,
+				Name:  name,
+				URL:   types.GetStringByIndex(lst, 2),
+				index: 99,
+				Table: types.GetStringByIndex(lst, 2),
+			}
 		default:
-			opt = optrs{Tag: tag, Name: name, URL: types.GetStringByIndex(lst, 2), index: 99, Table: tableName}
+			opt = optrs{
+				Tag:   tag,
+				Name:  name,
+				URL:   types.GetStringByIndex(lst, 2),
+				index: 99,
+				Table: tableName,
+			}
 		}
 
 		opt.Label = types.GetStringByIndex(lst, 0)

@@ -17,6 +17,7 @@ const (
 	UPDATE_TAG    = "UPDATE"
 	DELETE_COLUMN = "D"
 	DELETE_TAG    = "DEL"
+	TAB_TAG       = "TAB"
 )
 
 type BaseColumn struct {
