@@ -149,7 +149,7 @@ where
 {-{- if gt (len $updator) 0}-}
 {-{- range $i,$c := $updator}-}
 
-//update{-{$table.Name.CName}-} 修改{-{.Desc}-}数据
+//update{-{$table.Name.CName}-} 修改{-{$table.Desc}-}数据
 const updator{-{$table.Name.CName}-}{-{$c.ReqURL}-} = `
 update {-{$table.Name.Raw}-} t set 
 {-{- range $i,$v := fltrColumns $table $c.RwName}-}

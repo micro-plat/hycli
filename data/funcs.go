@@ -21,6 +21,7 @@ var Funcs = map[string]interface{}{
 	"fltrMYSQLType":                fltrMYSQLType,
 	"fltrMYSQLDef":                 mySQLDefValue,
 	"fltrOptrs":                    fltrOptrs,
+	"fltr2CName":                   md.ToCName,
 	"fltrOptrsByPUNQ":              fltrOptrsByPUNQ,
 	"fltrOptrsByStatic":            fltrOptrsByStatic,
 	"fltrOptrsByTag":               fltrOptrsByTag,

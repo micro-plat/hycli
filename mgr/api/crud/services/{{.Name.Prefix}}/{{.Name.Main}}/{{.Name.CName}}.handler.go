@@ -19,7 +19,6 @@ import (
 {-{- $slen := (len $switchs)|minus}-}
 {-{- $updator := fltrOptrsByCmd $table.BarOpts "lstupdator"}-}
 
-//updator : {-{len $updator}-}
 //AuditInfoHandler 获取{-{.Desc}-}处理服务
 type {-{.Name.CName}-}Handler struct {
 	insertRequiredFields []string
@@ -193,13 +192,19 @@ func (u *{-{.Name.CName}-}Handler) SwitchHandle(ctx hydra.IContext) (r interface
 
 {-{- if gt (len $updator) 0}-}
 {-{- range $i,$c := $updator}-}
-//{-{$c.ReqURL}-}Handle  {-{$c.Label}-}
-func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL}-}Handle(ctx hydra.IContext) (r interface{}) {
+//{-{$c.ReqURL|fltr2CName}-}Handle  {-{$c.Label}-}
+func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|fltr2CName}-}Handle(ctx hydra.IContext) (r interface{}) {
 
 	ctx.Log().Info("--------{-{$c.Label}-}--------")
 
 	ctx.Log().Info("1.检查必须字段")
-	reqFields :=[]string{{-{flterJoinColumnNames $table $c.FwName "" ","}-}}
+	reqFields :=[]string{
+		//{{ $c.FwName }}
+		{-{flterJoinColumnNames $table $c.FwName `"` `",`}-}
+	}
+	if len(reqFields) == 0 {
+		return errs.NewError(601, "FwName字段未配置")
+	}
 	if err := ctx.Request().Check(reqFields...); err != nil {
 		return err
 	}
