@@ -70,7 +70,7 @@
             </template>
         </el-table-column>
         {-{- else}-}
-        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} {-{if eq true $c.Style.HideOverflow}-} :show-overflow-tooltip="true"  {-{end}-}  align="center" label="{-{$c.Label}-}" >
+        <el-table-column show-overflow-tooltip  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-}  align="center" label="{-{$c.Label}-}" >
             <template #default="scope">
                   <span>{{ scope.row.{-{$c.Name}-}||'-' }}</span>
               </template>

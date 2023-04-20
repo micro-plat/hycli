@@ -1,6 +1,7 @@
 package data
 
 import (
+	"fmt"
 	"sort"
 
 	"github.com/micro-plat/hycli/data/internal/md"
@@ -85,5 +86,6 @@ func NewTable(t *md.Table) *Table {
 	table.UNQIndex = createUNQIdx(table)
 	table.Tag = newTag(table)
 	table.Sort()
+	fmt.Println("baropts:", table.Name.Raw, table.BarOpts)
 	return table
 }

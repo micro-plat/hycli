@@ -144,3 +144,23 @@ where
 	&{-{$v.Name}-}
 {-{- end}-}`
 {-{- end}-}
+
+{-{- $updator := fltrOptrsByCmd $table.BarOpts "lstupdator"}-}
+{-{- if gt (len $updator) 0}-}
+{-{- range $i,$c := $updator}-}
+
+//update{-{$table.Name.CName}-} 修改{-{.Desc}-}数据
+const updator{-{$table.Name.CName}-}{-{$c.ReqURL}-} = `
+update {-{$table.Name.Raw}-} t set 
+{-{- range $i,$v := fltrColumns $table $c.RwName}-}
+	t.{-{$v.Name}-} = if(@{-{$v.Name}-}='',{-{if ne "" $v.Field.DefaultValue}-} {-{$v.Field.DefaultValue}-} {-{else}-}NULL{-{end}-},@{-{$v.Name}-}){-{if lt $i $ulen}-},{-{end}-}
+{-{- end}-}
+where 
+{-{- range $i,$v := fltrColumns $table $c.FwName}-}
+	&{-{$v.Name}-}
+{-{- end}-}`
+
+{-{- end}-}
+{-{- end}-}
+
+

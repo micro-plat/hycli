@@ -13,6 +13,7 @@ import (
 type optrs struct {
 	Tag       string
 	Name      string //link,dialog,cmpnt,tab,cnfrm
+	Cmd       string // lstupdator lstbar chart
 	Label     string //修改,预览，删除
 	ICON      string //图标
 	URL       string //组件URL
@@ -39,8 +40,8 @@ type extOptrs optrslst
 var viewOptCmd = []string{"view"}
 var lstatOptCmd = []string{"lstat"}
 var lstOptCmd = []string{"lst"}
-var batchCheck = []string{"bcheck", "@bcheck"}
-var barOptrCmd = []string{"export", "import", "lstbar"}
+var batchCheck = []string{"bcheck", "@bcheck", "&bcheck"}
+var barOptrCmd = []string{"export", "import", "lstbar", "lstupdator"}
 var charOptrCmd = []string{"chart"}
 var extCmptParam = []string{"add"}
 var extOptrsCmd = []string{"tskbar"}
@@ -228,6 +229,7 @@ func createOptrs(tableName string, t string, tag string) []*optrs {
 			}
 		}
 
+		opt.Cmd = tag
 		opt.Label = types.GetStringByIndex(lst, 0)
 		opt.UNQ = defFids.Next()
 		opt.Params = make(map[string]string)

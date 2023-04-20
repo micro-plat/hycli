@@ -24,6 +24,7 @@ var Funcs = map[string]interface{}{
 	"fltrOptrsByPUNQ":              fltrOptrsByPUNQ,
 	"fltrOptrsByStatic":            fltrOptrsByStatic,
 	"fltrOptrsByTag":               fltrOptrsByTag,
+	"fltrOptrsByCmd":               fltrOptrsByCmd,
 	"fltrColumns":                  fltrColumns,
 	"flterJoinColumnNames":         flterJoinColumnNames,
 	"mergeOptrs":                   mergeOptrs,
@@ -172,6 +173,19 @@ func fltrOptrsByTag(opts []*optrs, tag string) optrslst {
 	for _, v := range opts {
 		for _, tp := range tags {
 			if strings.EqualFold(v.Tag, tp) {
+				nopts = append(nopts, v)
+			}
+		}
+	}
+	sort.Sort(nopts)
+	return nopts
+}
+func fltrOptrsByCmd(opts []*optrs, cmds string) optrslst {
+	nopts := make(optrslst, 0, 1)
+	cmd := strings.Split(cmds, "-")
+	for _, v := range opts {
+		for _, c := range cmd {
+			if strings.EqualFold(v.Cmd, c) {
 				nopts = append(nopts, v)
 			}
 		}

@@ -26,6 +26,8 @@ show_cmpnt(cmd,row){
     {-{- range $k,$v := $c}-}
     {-{ if eq true (fltrStart $v "@")}-}
     query.{-{$k}-} = this.{-{fltrTrim $v "@"}-}
+    {-{else if eq true (fltrStart $v "&")}-}
+    query.{-{$k}-} = (this.{-{fltrTrim $v "&"}-}||[]).join(",")
     {-{- else}-}
     query.{-{$k}-} = "{-{$v}-}"
     {-{- end}-}

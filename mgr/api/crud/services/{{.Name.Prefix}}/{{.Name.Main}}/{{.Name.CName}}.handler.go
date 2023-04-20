@@ -17,7 +17,9 @@ import (
 {-{- $pklen := (len $table.PKColumns)|minus}-}
 {-{- $switchs := fltrCmpnt $table "switch" "l"}-}
 {-{- $slen := (len $switchs)|minus}-}
+{-{- $updator := fltrOptrsByCmd $table.BarOpts "lstupdator"}-}
 
+//updator : {-{len $updator}-}
 //AuditInfoHandler 获取{-{.Desc}-}处理服务
 type {-{.Name.CName}-}Handler struct {
 	insertRequiredFields []string
@@ -187,4 +189,30 @@ func (u *{-{.Name.CName}-}Handler) SwitchHandle(ctx hydra.IContext) (r interface
 	}
 	return
 }
+{-{- end}-}
+
+{-{- if gt (len $updator) 0}-}
+{-{- range $i,$c := $updator}-}
+//{-{$c.ReqURL}-}Handle  {-{$c.Label}-}
+func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL}-}Handle(ctx hydra.IContext) (r interface{}) {
+
+	ctx.Log().Info("--------{-{$c.Label}-}--------")
+
+	ctx.Log().Info("1.检查必须字段")
+	reqFields :=[]string{{-{flterJoinColumnNames $table $c.FwName "" ","}-}}
+	if err := ctx.Request().Check(reqFields...); err != nil {
+		return err
+	}
+	
+	ctx.Log().Info("2.修改数据")
+	rx, err := hydra.C.DB().GetRegularDB().Execute(updator{-{$table.Name.CName}-}{-{$c.ReqURL}-}, ctx.Request().GetMap())
+	if err == nil && rx == 0{
+		return errs.NewResult(204, nil)
+	}
+	if err != nil || rx == 0 {
+		return errs.NewErrorf(http.StatusNotExtended, "数据出错:%+v,row:%d", err,rx)
+	}
+	return
+}
+{-{- end}-}
 {-{- end}-}
