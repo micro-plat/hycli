@@ -16,6 +16,8 @@ var Funcs = map[string]interface{}{
 	"IsTmplTb":                     IsTmplTb,
 	"fltrSearchUITable":            fltrSearchUITable,
 	"fltrSearchUITableAndResetUNQ": fltrSearchUITableAndResetUNQ,
+	"fltrIsMutilValue":             fltrIsMutilValue,
+	"fltrNeedBatchCheck":           fltrNeedBatchCheck,
 	"fltrSearchTable":              fltrSearchTable,
 	"fltrHasConst":                 fltrHasConst,
 	"fltrMYSQLType":                fltrMYSQLType,
@@ -282,7 +284,21 @@ func fltrCmpnt(tx interface{}, cmpnt string, tps ...string) []*Column {
 	sort.Sort(cols)
 	return cols
 }
-
+func fltrIsMutilValue(tx interface{}, optr *optrs, name string) bool {
+	if optr.Params.IsBatchCheck(name) {
+		return true
+	}
+	colums := getColumns(tx)
+	for _, r := range colums {
+		if strings.HasPrefix(r.Cmpnt.Type, "multi") {
+			return true
+		}
+	}
+	return false
+}
+func fltrNeedBatchCheck(optr *optrs) bool {
+	return optr.NeedBatchCheck()
+}
 func resetForm(t *Table) *Table {
 	for _, c := range t.Columns {
 		c.Ext.FormName = "form"

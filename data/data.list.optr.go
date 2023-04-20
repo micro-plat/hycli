@@ -9,6 +9,21 @@ import (
 	"github.com/micro-plat/lib4go/types"
 )
 
+type optParams map[string]string
+
+func (o optParams) Get(n string) string {
+	for k, v := range o {
+		if k == n || "@"+n == k {
+			return v
+		}
+	}
+	return ""
+}
+func (o optParams) IsBatchCheck(k string) bool {
+	v := o.Get(k)
+	return types.StringContains(batchCheck, v)
+}
+
 // 操作信息
 type optrs struct {
 	Tag       string
@@ -23,10 +38,11 @@ type optrs struct {
 	IsMux     bool   //是否是复用组件
 	index     int    //顺序编号
 	Table     string
-	Params    map[string]string
+	Params    optParams
 	ParentUNQ string //父组件编号
 	UNQ       string
 }
+
 type optrslst []*optrs
 type formatOptrs optrslst
 type lstOptrs optrslst
@@ -59,6 +75,14 @@ func (s *optrs) Get(tableName string) *optrs {
 	nopts := *s
 	nopts.Table = tableName
 	return &nopts
+}
+func (s *optrs) NeedBatchCheck() bool {
+	for _, v := range s.Params {
+		if types.StringContains(batchCheck, v) {
+			return true
+		}
+	}
+	return false
 }
 func (s *optrs) String() string {
 	buff, _ := jsons.Marshal(s)
@@ -96,7 +120,6 @@ func (b barOptrs) NeedCheck(tb string) bool {
 				return true
 			}
 		}
-
 	}
 	return false
 }

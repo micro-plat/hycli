@@ -146,6 +146,7 @@ where
 {-{- end}-}
 
 {-{- $updator := fltrOptrsByCmd $table.BarOpts "lstupdator"}-}
+{-{- $uplen := len $updator}-}
 {-{- if gt (len $updator) 0}-}
 {-{- range $i,$c := $updator}-}
 
@@ -153,13 +154,16 @@ where
 const updator{-{$table.Name.CName}-}{-{$c.ReqURL}-} = `
 update {-{$table.Name.Raw}-} t set 
 {-{- range $i,$v := fltrColumns $table $c.RwName}-}
-	t.{-{$v.Name}-} = if(@{-{$v.Name}-}='',{-{if ne "" $v.Field.DefaultValue}-} {-{$v.Field.DefaultValue}-} {-{else}-}NULL{-{end}-},@{-{$v.Name}-}){-{if lt $i $ulen}-},{-{end}-}
+	t.{-{$v.Name}-} = if(@{-{$v.Name}-}='',{-{if ne "" $v.Field.DefaultValue}-} {-{$v.Field.DefaultValue}-} {-{else}-}t.{-{$v.Name}-}{-{end}-},@{-{$v.Name}-}){-{if lt $i $uplen}-},{-{end}-}
 {-{- end}-}
-where 
-{-{- range $i,$v := fltrColumns $table $c.FwName}-}
+where 1 = 1
+{-{- range $i,$v := fltrColumns $table $c.FwName -}-}
+	{-{- if fltrIsMutilValue $table $c $v.Name}-}
+	and FIND_IN_SET(t.{-{$v.Name}-},@{-{$v.Name}-})
+	{-{- else}-}
 	&{-{$v.Name}-}
+	{-{- end}-}
 {-{- end}-}`
-
 {-{- end}-}
 {-{- end}-}
 

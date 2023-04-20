@@ -199,7 +199,6 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|fltr2CName}-}Handle(ctx hy
 
 	ctx.Log().Info("1.检查必须字段")
 	reqFields :=[]string{
-		//{{ $c.FwName }}
 		{-{flterJoinColumnNames $table $c.FwName `"` `",`}-}
 	}
 	if len(reqFields) == 0 {

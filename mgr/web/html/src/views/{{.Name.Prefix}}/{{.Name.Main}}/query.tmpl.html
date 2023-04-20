@@ -152,7 +152,9 @@
             {-{- if gt $blen 1}-}
             <el-button-group>
                 {-{- range $i,$c:=fltrOptrs $table.BarOpts "CMPNT" }-}
-                <el-button :type="tagColor({-{spare $i 3}-})" {-{if ne "" $c.ICON}-} icon="{-{$c.ICON}-}" {-{end}-} @click="show_cmpnt_{-{$c.UNQ}-}">{-{$c.Label}-}</el-button>
+                <el-button :type="tagColor({-{spare $i 3}-})"
+                {-{if eq true (fltrNeedBatchCheck $c)}-} :disabled="bcheck.length==0" {-{ end}-}
+                {-{if ne "" $c.ICON}-} icon="{-{$c.ICON}-}" {-{end}-} @click="show_cmpnt_{-{$c.UNQ}-}">{-{$c.Label}-}</el-button>
                 {-{- end}-}
             </el-button-group>
             {-{- end}-}
