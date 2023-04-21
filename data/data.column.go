@@ -18,6 +18,8 @@ const (
 	DELETE_COLUMN = "D"
 	DELETE_TAG    = "DEL"
 	TAB_TAG       = "TAB"
+	QUERY_COLUMN  = "Q"
+	QUERY_TAG     = "QBAR"
 )
 
 type BaseColumn struct {

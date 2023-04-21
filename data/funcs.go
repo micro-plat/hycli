@@ -29,8 +29,10 @@ var Funcs = map[string]interface{}{
 	"fltrOptrsByTag":               fltrOptrsByTag,
 	"fltrOptrsByCmd":               fltrOptrsByCmd,
 	"fltrColumns":                  fltrColumns,
+	"getFirstColumns":              getFirstColumns,
 	"flterJoinColumnNames":         flterJoinColumnNames,
 	"mergeOptrs":                   mergeOptrs,
+	"getFirstOptr":                 getFirstOptr,
 	"fltrAssctColumns":             fltrAssctColumns,
 	"fltrTranslate":                fltrTranslate,
 	"fltrCmpnt":                    fltrCmpnt,
@@ -370,4 +372,16 @@ func getColumns(tx interface{}) []*Column {
 }
 func fltrMYSQLType(c *md.Row) string {
 	return mySQLType(c.Type.Name, c.Type.Len, c.Type.DLen)
+}
+func getFirstOptr(opts []*optrs) *optrs {
+	if len(opts) > 0 {
+		return opts[0]
+	}
+	return &optrs{}
+}
+func getFirstColumns(columns []*Column) *Column {
+	if len(columns) > 0 {
+		return columns[0]
+	}
+	return &Column{}
 }

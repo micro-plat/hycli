@@ -44,6 +44,8 @@ type Table struct {
 	//BarOpts 工具栏操作
 	BarOpts barOptrs
 
+	QueryOptrs queryOptrs
+
 	//NeedBatchCheck 是否需要批量选择
 	NeedBatchCheck bool
 
@@ -59,6 +61,13 @@ type Table struct {
 
 func (t *Table) Sort() {
 	sort.Sort(t.Columns)
+	sort.Sort(optrslst(t.BarOpts))
+	sort.Sort(optrslst(t.ViewExtCmptOpts))
+	sort.Sort(optrslst(t.ListOpts))
+	sort.Sort(optrslst(t.LStatOpts))
+	sort.Sort(optrslst(t.ChartOpts))
+	sort.Sort(optrslst(t.ExtOpts))
+	sort.Sort(optrslst(t.BarOpts))
 }
 func NewTable(t *md.Table) *Table {
 	if t.Cache != nil {
@@ -81,6 +90,7 @@ func NewTable(t *md.Table) *Table {
 	table.ViewOpts, table.ViewExtCmptOpts = createViewOptrs(table.Name.Raw, t.ExtInfo)
 	table.LStatOpts, table.ChartOpts = createLStatChartOptrs(table.Name.Raw, t.ExtInfo)
 	table.ExtOpts = createExtOptrs(table.Name.Raw, t.ExtInfo)
+	table.QueryOptrs = createQueryOptrs(table, t.ExtInfo)
 	table.NormalIdx = createNormalIdx(table)
 	table.UNQIndex = createUNQIdx(table)
 	table.Tag = newTag(table)

@@ -5,10 +5,15 @@
 {-{- $lstopts :=.ListOpts}-}
 {-{- $optLen := len $lstopts}-}
 {-{- $tmpl :=IsTmplTb .}-}
+{-{- $qbar:=$table.QueryOptrs|getFirstOptr}-}
+{-{- $pkName := $table.PKColumns|getFirstColumns}-}
+{-{- $treeNode := fltrOptrPara $qbar "treeNode" ""}-}
+	
 
 {-{- if gt (len $lcols) 0 }-}
 <div class="list">
     <el-table :data="dataList_{-{.UNQ}-}" 
+    {-{- if ne "" $treeNode}-} row-key="{-{$pkName.Name}-}" {-{end}-}
     {-{ if and (eq $table.NeedBatchCheck true) (eq false $tmpl)}-}@selection-change="handleSelectionChange" {-{end}-}
     v-loading="conf.loading" stripe {-{if eq true $tmpl }-}
         style="width: 100%;height:300px" {-{else }-} style="width: 100%;height:calc(100vh - 160px)" {-{- end}-}
@@ -67,6 +72,12 @@
         <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} prop="{-{$c.Name}-}_label" align="center" label="{-{$c.Label}-}">
             <template #default="scope">
                 <el-tag type="tagColor(scope.row.{-{$c.Name}-},'{-{$c.Name}-}')" round  v-text="scope.row.{-{$c.Name}-}"></el-tag>
+            </template>
+        </el-table-column>
+        {-{- else if eq "icon" $c.Cmpnt.Type}-}
+        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} prop="{-{$c.Name}-}_label" align="center" label="{-{$c.Label}-}">
+            <template #default="scope">
+                <i :class="scope.row.{-{$c.Name}-}"></i>
             </template>
         </el-table-column>
         {-{- else}-}

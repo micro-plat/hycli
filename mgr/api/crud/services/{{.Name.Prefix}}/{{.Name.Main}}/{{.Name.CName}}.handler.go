@@ -1,14 +1,6 @@
 //go:build ignore
 
 package {-{.Name.Main}-}
-
-import (
-	"net/http"
-
-	"github.com/micro-plat/hydra"
-	"github.com/micro-plat/lib4go/errs"
-	"github.com/micro-plat/lib4go/types"
-)
 {-{- $table := .}-}
 {-{- $ccols := fltrNotNullCols (fltrColumns $table "c")}-}
 {-{- $clen := (len $ccols)|minus}-}
@@ -18,6 +10,17 @@ import (
 {-{- $switchs := fltrCmpnt $table "switch" "l"}-}
 {-{- $slen := (len $switchs)|minus}-}
 {-{- $updator := fltrOptrsByCmd $table.BarOpts "lstupdator"}-}
+
+import (
+	"net/http"
+
+	"github.com/micro-plat/hydra"
+	"github.com/micro-plat/lib4go/errs"
+	{-{- if gt (len (fltrColumns $table "q-bq")) 0}-}
+	"github.com/micro-plat/lib4go/types"
+	{-{- end}-}
+)
+
 
 //AuditInfoHandler 获取{-{.Desc}-}处理服务
 type {-{.Name.CName}-}Handler struct {
@@ -102,7 +105,9 @@ func (u *{-{.Name.CName}-}Handler) PostHandle(ctx hydra.IContext) (r interface{}
 {-{- end}-}
 
 {-{- if gt (len (fltrColumns $table "q-bq")) 0}-}
-
+{-{- $qbar:=$table.QueryOptrs|getFirstOptr}-}
+{-{- $pkName := $table.PKColumns|getFirstColumns}-}
+{-{- $treeNode := fltrOptrPara $qbar "treeNode" ""}-}
 //QueryHandle  获取{-{.Desc}-}列表数据
 func (u *{-{.Name.CName}-}Handler) QueryHandle(ctx hydra.IContext) (r interface{}) {
 
@@ -131,13 +136,55 @@ func (u *{-{.Name.CName}-}Handler) QueryHandle(ctx hydra.IContext) (r interface{
 	if err != nil {
 		return errs.NewErrorf(http.StatusNotExtended, "查询数据出错:%+v", err)
 	}
-
+	
+	{-{- if ne "" $treeNode}-}
+	ctx.Log().Info("3.返回结果")
+	return map[string]interface{}{
+		"items": checkChildren(items,"{-{$treeNode}-}","{-{$pkName.Name}-}"),
+		"count":rcount,
+	}
+	{-{- else}-}
 	ctx.Log().Info("3.返回结果")
 	return map[string]interface{}{
 		"items": items,
 		"count":rcount,
 	}
+	{-{- end}-}
 }
+{-{- if ne "" $treeNode}-}
+func checkChildren(items types.XMaps, pidName string, pkName string) types.XMaps {
+	treeMap := map[string]types.XMaps{}
+	for _, r := range items {
+		pid := r.GetString(pidName)
+		if _, ok := treeMap[pid]; !ok {
+			treeMap[pid] = make(types.XMaps, 0, 1)
+		}
+		treeMap[pid] = append(treeMap[pid], r)
+	}
+	return getChildren("0", pkName, treeMap)
+
+}
+func getChildren(pid string, idName string, treeMap map[string]types.XMaps) types.XMaps {
+	pidChildren, ok := treeMap[pid]
+	if !ok {
+		return nil
+	}
+
+	for _, v := range pidChildren {
+		id := v.GetString(idName)
+		c, ok := treeMap[id]
+		if !ok {
+			continue
+		}
+		v.SetValue("children", c)
+		for _, x := range c {
+			x.SetValue("children", getChildren(x.GetString(idName), idName, treeMap))
+		}
+
+	}
+	return pidChildren
+}
+{-{- end}-}
 {-{- end}-}
 
 {-{- if gt  (len (fltrColumns $table "D")) 0}-}

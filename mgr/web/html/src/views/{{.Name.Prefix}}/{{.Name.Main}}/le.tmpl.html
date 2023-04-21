@@ -24,6 +24,8 @@
             </el-col>
             {-{- else if eq "cut" $c.Cmpnt.Type}-}
             <el-col :span="7" v-text="view.row.le_{-{$c.Name}-}" style="height: 26px"></el-col>
+            {-{- else if eq "icon" $c.Cmpnt.Type}-}
+            <el-col :span="7"  style="height: 26px"><i :class="view.row.le_{-{$c.Name}-}"></i></el-col>
             {-{- else}-}
             <el-col :span="7" v-text="view.row.le_{-{$c.Name}-}" style="height: 26px"></el-col>
             {-{- end }-}

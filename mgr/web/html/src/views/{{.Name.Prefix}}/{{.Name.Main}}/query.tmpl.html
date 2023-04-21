@@ -1,4 +1,5 @@
 {-{- $table :=.}-}
+{-{- $qOptrs:= $table.QueryOptrs}-}
 {-{- $qcols := fltrColumns $table "q"}-}
 {-{- $crow :=fltrColumns $table "c"}-}
 {-{- $clen := len $crow}-}
@@ -136,8 +137,10 @@
         {-{- if or (gt (len $qcols) 0) (gt $blen 0)}-}
         <el-form-item>
             <el-space wrap>
-                {-{- if gt (len $qcols) 0}-}
-            <el-button type="primary" icon="Search" @click="onQuery">查询</el-button>
+                {-{- if gt (len $qOptrs) 0}-}
+                {-{- range $i,$x:=$qOptrs}-}
+                <el-button type="primary" icon="{-{$x.ICON}-}" @click="onQuery">{-{$x.Label}-}</el-button>
+                {-{- end}-}
                 {-{- end}-}
             {-{- if eq $blen 1}-}
                 {-{- range $i,$c:=fltrOptrs $table.BarOpts "CMPNT" }-}

@@ -19,7 +19,7 @@ func TestFids2(t *testing.T) {
 }
 
 func TestGetExtOpt(t *testing.T) { //>/right/info,x
-	lst := createOptrs("view(项目,tab:wp_project_info,x:y),view(计划,tab:wp_plan_info)", "view")
+	lst := createOptrs("", "view(项目,tab:wp_project_info,x:y),view(计划,tab:wp_plan_info)", "view")
 	assert.Equal(t, 2, len(lst))
 	fmt.Println("lst:", lst)
 	assert.Equal(t, "TAB", lst[0].Name)

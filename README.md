@@ -37,12 +37,15 @@
 
 
 ### 组件配置
-| 指令                                  | 示例                                                                  | 说明         |
-| ------------------------------------- | --------------------------------------------------------------------- | ------------ |
-| view(名称，tab:表名[，样式设置])      | view(货架,tab:ots_supplier_shelf,style:{rwName:spp_no;fwName:spp_no}) | 预览页面组件 |
-| lst(名称,类型:地址[，样式设置])       | lst(账户加款,dialog:/beanpay/balance,style:{showExpr:@status==0}))    | 列表组件     |
-| lstat(名称,url:接口地址[，样式设置])  | lstat(今日交易,url:/ots/trade/order/lstat1day,style:{span:24})        | 字典类型     |
-| chart(名称,类型:接口地址[，样式设置]) | chart(支付情况,bar:/ots/trade/order/as7d,style:{height:300px})        | 图表         |
+| 指令                                       | 示例                                                                  | 说明         |
+| ------------------------------------------ | --------------------------------------------------------------------- | ------------ |
+| view(名称，tab:表名[，样式设置])           | view(货架,tab:ots_supplier_shelf,style:{rwName:spp_no;fwName:spp_no}) | 预览页面组件 |
+| lst(名称,类型:地址[，样式设置])            | lst(账户加款,dialog:/beanpay/balance,style:{showExpr:@status==0}))    | 列表组件     |
+| lstat(名称,url:接口地址[，样式设置])       | lstat(今日交易,url:/ots/trade/order/lstat1day,style:{span:24})        | 字典类型     |
+| chart(名称,类型:接口地址[，样式设置])      | chart(支付情况,bar:/ots/trade/order/as7d,style:{height:300px})        | 图表         |
+| lstbar(名称,类型:表名[，样式设置])         | lstbar(名称,类型:表名[，样式设置])                                    | 操作栏控件   |
+| lstupdator(名称,dialog:接口名[，样式设置]) | lstupdator(批量完成,dialog:finish,style:{@plan_id:&bcheck})           | 修改操作     |
+
 
 | 样式      | 示例                               | 适用范围    | 说明                 |
 | --------- | ---------------------------------- | ----------- | -------------------- |
@@ -56,6 +59,8 @@
 | add       | add:true,add:分配                  | view        | 允许添加列表         |
 | @字段名   | @pid:2                             | view        | 用于设置字段的固定值 |
 
+* rwName，lstbar,lstupdator等批量操作时为字段的标识符，其它时候为字段名
+* fwName,lstbar,lstupdator等批量操作时为条件标识符，其它时候为字段名
 
 ### 数据库
 | 指令 | 格式               | 示例                                  | 说明           |
@@ -91,8 +96,6 @@
 
 * 字段默认排序编号为100+字段顺序号(期望排第四个则编号可设置为104)，显示到最前面则排序数字应小于100
 
-### 操作栏按钮组
-export(导出,url:/a/b),export(导入,url:/a/b),bcheck(修改,url:/a/b)
 
 ### 组件清单
 | 指令                         | 示例               | 说明                                  |

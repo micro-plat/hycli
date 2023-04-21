@@ -70,55 +70,62 @@
         that.conf.loading = false
         that.dataList_{-{$table.UNQ}-} = res.items||[]
         that.total_{-{$table.UNQ}-} = res.count
-        that.dataList_{-{$table.UNQ}-}.forEach(item => {
-            
-          {-{- range $i,$c := $LLERows}-}
-        {-{- if eq true $c.Enum.IsEnum}-}
-        item.{-{$c.Name}-}_label = that.$theia.enum.getNames("{-{$c.Enum.EnumType}-}",item.{-{$c.Name}-})
-          {-{- end}-}
-          {-{- if eq "switch" $c.Cmpnt.Type}-}
-        item.{-{$c.Name}-}_switch = item.{-{$c.Name}-} == 0
-        {-{- else if eq "progress" $c.Cmpnt.Type}-}
-          {-{- $qrow := fltrColumns $table $c.Cmpnt.Format}-}
-          {-{- if gt (len $qrow) 0}-}
-          {-{- $frow := getColumn $qrow 0 $c}-}
-          {-{- $srow := getColumn $qrow 1 $c}-}
-          // 计算日期占比
-          item.{-{$c.Name}-}_progress = that.getDaysProgress(item.{-{$frow.Name}-},item.{-{$srow.Name}-})
-          {-{- end}-}
-          {-{- else}-}
-        item.{-{$c.Name}-}_progress = item.{-{$c.Name}-}
-          {-{- end}-}
-        {-{- end}-}
-
-        {-{- range $i,$c := $leRow}-}
-          {-{- if and (ne "" $c.Cmpnt.Format) (eq true $c.Field.IsDate)}-}
-        item.le_{-{$c.Name}-} = that.$theia.str.dateFormat(item.{-{$c.Name}-},'{-{$c.Cmpnt.Format}-}')
-        {-{- else if and (ne "" $c.Cmpnt.Format) (eq true $c.Field.IsNumber)}-}
-        item.le_{-{$c.Name}-} = that.$theia.str.numberFormat(item.{-{$c.Name}-},'{-{$c.Cmpnt.Format}-}')
-        {-{- else if eq "mobile" $c.Cmpnt.Type}-}
-        item.le_{-{$c.Name}-} = that.$theia.str.phoneFormat(item.{-{$c.Name}-})
-        {-{- else if eq "cut" $c.Cmpnt.Type}-}
-        item.le_{-{$c.Name}-} = that.$theia.str.cut(item.{-{$c.Name}-},{-{$c.Cmpnt.Format}-})
-          {-{else}-}
-        item.le_{-{$c.Name}-} = item.{-{$c.Name}-}
-        {-{- end}-}
-        {-{- end}-}
-
-        {-{- range $i,$c := $lstRow}-}
-            {-{- if and (ne "" $c.Cmpnt.Format) (eq true $c.Field.IsDate)}-}
-        item.{-{$c.Name}-} = that.$theia.str.dateFormat(item.{-{$c.Name}-},'{-{$c.Cmpnt.Format}-}')
-          {-{- else if and (ne "" $c.Cmpnt.Format) (eq true $c.Field.IsNumber)}-}
-        item.{-{$c.Name}-} = that.$theia.str.numberFormat(item.{-{$c.Name}-},'{-{$c.Cmpnt.Format}-}')
-          {-{- else if eq "mobile" $c.Cmpnt.Type}-}
-        item.{-{$c.Name}-} = that.$theia.str.phoneFormat(item.{-{$c.Name}-})
-          {-{- else if eq "cut" $c.Cmpnt.Type}-}
-        item.{-{$c.Name}-} = that.$theia.str.cut(item.{-{$c.Name}-},{-{$c.Cmpnt.Format}-})
-          {-{- end}-}
-          {-{- end}-}
+        that.resetItemData(that,that.dataList_{-{$table.UNQ}-})
       });
-    })
     {-{- end}-}
+  },
+
+  resetItemData(that,lst){
+    lst.forEach(item => {
+      {-{- range $i,$c := $LLERows}-}
+    {-{- if eq true $c.Enum.IsEnum}-}
+    item.{-{$c.Name}-}_label = that.$theia.enum.getNames("{-{$c.Enum.EnumType}-}",item.{-{$c.Name}-})
+      {-{- end}-}
+      {-{- if eq "switch" $c.Cmpnt.Type}-}
+    item.{-{$c.Name}-}_switch = item.{-{$c.Name}-} == 0
+    {-{- else if eq "progress" $c.Cmpnt.Type}-}
+      {-{- $qrow := fltrColumns $table $c.Cmpnt.Format}-}
+      {-{- if gt (len $qrow) 0}-}
+      {-{- $frow := getColumn $qrow 0 $c}-}
+      {-{- $srow := getColumn $qrow 1 $c}-}
+      // 计算日期占比
+      item.{-{$c.Name}-}_progress = that.getDaysProgress(item.{-{$frow.Name}-},item.{-{$srow.Name}-})
+      {-{- end}-}
+      {-{- else}-}
+    item.{-{$c.Name}-}_progress = item.{-{$c.Name}-}
+      {-{- end}-}
+    {-{- end}-}
+
+    {-{- range $i,$c := $leRow}-}
+      {-{- if and (ne "" $c.Cmpnt.Format) (eq true $c.Field.IsDate)}-}
+    item.le_{-{$c.Name}-} = that.$theia.str.dateFormat(item.{-{$c.Name}-},'{-{$c.Cmpnt.Format}-}')
+    {-{- else if and (ne "" $c.Cmpnt.Format) (eq true $c.Field.IsNumber)}-}
+    item.le_{-{$c.Name}-} = that.$theia.str.numberFormat(item.{-{$c.Name}-},'{-{$c.Cmpnt.Format}-}')
+    {-{- else if eq "mobile" $c.Cmpnt.Type}-}
+    item.le_{-{$c.Name}-} = that.$theia.str.phoneFormat(item.{-{$c.Name}-})
+    {-{- else if eq "cut" $c.Cmpnt.Type}-}
+    item.le_{-{$c.Name}-} = that.$theia.str.cut(item.{-{$c.Name}-},{-{$c.Cmpnt.Format}-})
+      {-{else}-}
+    item.le_{-{$c.Name}-} = item.{-{$c.Name}-}
+    {-{- end}-}
+    {-{- end}-}
+
+    {-{- range $i,$c := $lstRow}-}
+        {-{- if and (ne "" $c.Cmpnt.Format) (eq true $c.Field.IsDate)}-}
+    item.{-{$c.Name}-} = that.$theia.str.dateFormat(item.{-{$c.Name}-},'{-{$c.Cmpnt.Format}-}')
+      {-{- else if and (ne "" $c.Cmpnt.Format) (eq true $c.Field.IsNumber)}-}
+    item.{-{$c.Name}-} = that.$theia.str.numberFormat(item.{-{$c.Name}-},'{-{$c.Cmpnt.Format}-}')
+      {-{- else if eq "mobile" $c.Cmpnt.Type}-}
+    item.{-{$c.Name}-} = that.$theia.str.phoneFormat(item.{-{$c.Name}-})
+      {-{- else if eq "cut" $c.Cmpnt.Type}-}
+    item.{-{$c.Name}-} = that.$theia.str.cut(item.{-{$c.Name}-},{-{$c.Cmpnt.Format}-})
+      {-{- end}-}
+      {-{- end}-}
+    if(item.children){
+      that.resetItemData(that,item.children)
+    }
+  });
+
   },
 
   {-{- range $i,$c:= $qrow}-}
@@ -187,7 +194,8 @@
       //开始 当前时间 结束时间
       let total = this.getWeekHours(start, end)
       let pass = this.getWeekHours(start, now)
-      let persent = (pass / total) * 100 + ""
+      let pv = (pass / total) * 100
+      let persent = pv >100?"100":pv  + ""
       let lst = persent.split(".")
       return lst.length == 0 ? persent : lst[0]
     },

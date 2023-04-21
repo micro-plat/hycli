@@ -27,7 +27,7 @@ func (o optParams) IsBatchCheck(k string) bool {
 // 操作信息
 type optrs struct {
 	Tag       string
-	Name      string //link,dialog,cmpnt,tab,cnfrm
+	Name      string //link,dialog,cmpnt,tab,cnfrm,form
 	Cmd       string // lstupdator lstbar chart
 	Label     string //修改,预览，删除
 	ICON      string //图标
@@ -51,6 +51,7 @@ type lstatOptrs optrslst
 type chartOptrs optrslst
 type barOptrs optrslst
 type viewExtCmptOpts optrslst
+type queryOptrs optrslst
 type extOptrs optrslst
 
 var viewOptCmd = []string{"view"}
@@ -61,8 +62,10 @@ var barOptrCmd = []string{"export", "import", "lstbar", "lstupdator"}
 var charOptrCmd = []string{"chart"}
 var extCmptParam = []string{"add"}
 var extOptrsCmd = []string{"tskbar"}
+var queryOptrCmd = []string{"qbar"}
 
 var addOpts = &optrs{Tag: ADD_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.add", Name: "CMPNT", ICON: "Plus", Label: "添加", RwName: "C", UNQ: defFids.Next(), index: 1}
+var queryOpts = &optrs{Tag: QUERY_TAG, URL: "", Name: "FORM", ICON: "Search", RwName: QUERY_COLUMN, Label: "查询", UNQ: defFids.Next(), index: 1}
 var detailOpts = &optrs{Tag: VIEW_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.view", Name: "CMPNT", Label: "详情", RwName: "V", UNQ: defFids.Next(), index: 1}
 var updateOpts = &optrs{Tag: UPDATE_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.edit", Name: "CMPNT", Label: "修改", RwName: "U", UNQ: defFids.Next(), index: 2}
 var delOpts = &optrs{Tag: DELETE_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.cnfrm", ReqURL: "/{@mainPath}/del", Name: "CMPNT", Label: "删除", RwName: "D", UNQ: defFids.Next(), IsMux: true, index: 99}
@@ -93,7 +96,7 @@ func (s optrslst) Less(i, j int) bool { return s[i].index < s[j].index }
 func (s optrslst) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
 func (s optrslst) Find(tag string) bool {
 	for _, v := range s {
-		if v.Tag == tag {
+		if strings.EqualFold(v.Tag, tag) {
 			return true
 		}
 	}
@@ -142,6 +145,14 @@ func createViewOptrs(tableName, t string) (viewOptrs, viewExtCmptOpts) {
 	viewOpts := createCmdsOptrs(tableName, t, viewOptCmd)
 	extOpts := creatExtCmptOpts(viewOpts)
 	return viewOpts, extOpts
+}
+func createQueryOptrs(table *Table, t string) queryOptrs {
+	opts := createCmdsOptrs(table.Name.Raw, t, queryOptrCmd)
+
+	if !optrslst(opts).Find(QUERY_TAG) && len(fltrColumns(table, QUERY_COLUMN)) > 0 {
+		opts = append(opts, queryOpts.Get(table.Name.Raw))
+	}
+	return opts
 }
 func createLStatChartOptrs(tableName, t string) (lstatOptrs, chartOptrs) {
 	optrs := createCmdsOptrs(tableName, t, lstatOptCmd)
@@ -276,6 +287,9 @@ func createOptrs(tableName string, t string, tag string) []*optrs {
 			}
 			if tb, ok := opt.Params["table"]; ok {
 				opt.Table = tb
+			}
+			if v, ok := opt.Params["&idx"]; ok {
+				opt.index = types.GetInt(v)
 			}
 
 			opt.ICON = types.GetString(opt.Params["icon"], opt.ICON)

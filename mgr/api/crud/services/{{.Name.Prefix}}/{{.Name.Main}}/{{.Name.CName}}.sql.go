@@ -9,7 +9,7 @@ package {-{.Name.Main}-}
 {-{- $clen := (len $CColumns)|minus}-}
 {-{- $ulen := (len $UColumns)|minus}-}
 {-{- $slen := (len $switchs)|minus}-}
-{-{- $sigleQueryCols:= fltrColumnsExcludeExt (fltrColumns $table "l-le")}-}
+{-{- $sigleQueryCols:= fltrColumnsExcludeExt (fltrColumns $table "l-le-bl")}-}
 {-{- $totalQCols:= fltrColumnsExcludeExt (fltrColumns $table "q-bq")}-}
 {-{- $vlen := (len $sigleQueryCols)|minus}-}
 {-{- $ords := fltrColumnsExcludeExt (fltrColumns $table "ord")}-}
