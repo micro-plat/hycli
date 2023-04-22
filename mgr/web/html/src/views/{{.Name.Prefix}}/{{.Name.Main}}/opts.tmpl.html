@@ -1,9 +1,12 @@
 {-{- $optRow :=.ListOpts}-}
 {-{- $len :=len $optRow}-}
-<!-- {-{- $width :=multiply $len 60}-} -->
-{-{- $width := 180}-}
+{-{- $width:=60}-}
+{-{if eq $len 2}-}
+{-{- $width = 100}-}
+{-{- else}-}
+{-{- $width = 180}-}
+{-{- end}-}
 {-{- if lt $len 5}-}
-{-{- $width = multiply $len 60}-}
 {-{- end}-}
 {-{- $tmpl :=IsTmplTb .}-}
 {-{- if eq false $tmpl}-}
@@ -18,7 +21,12 @@
             {-{- $cmpnt_count:= len $cmpnts}-}
             {-{- range $x,$m:=$cmpnts }-}
             {-{- $exprs :=fltrOptrParaExprs $m "showExpr" ""}-}
-            {-{- if lt $x 2}-}
+           
+             
+            
+            {-{- if or (le $cmpnt_count 3) (lt $x 2) }-}
+             <!--cmpnt_count:{-{$cmpnt_count}-}  x:{-{$x}-}-->
+
             <el-button  size="small" type="text" @click="show_cmpnt_{-{$m.UNQ}-}(scope.row)" {-{if gt (len $exprs)  0}-} v-if='
             {-{- range $i,$expr := $exprs}-}
             {-{- if ne "" $expr.Name}-}{-{$expr.Name}-}{-{$expr.Symbol}-}{-{$expr.Value}-} 
@@ -29,7 +37,7 @@
             {-{- end -}-}'{-{- end}-}>{-{$m.Label}-} </el-button>
             {-{- end }-}
 
-            {-{- if gt $x 1}-}
+            {-{- if gt $cmpnt_count 3}-}
             {-{- if eq $x 2}-}
             <el-dropdown size="small" @command="(command) => show_cmpnt(command, scope.row)">
                 <span class="el-dropdown-link">
@@ -38,6 +46,8 @@
                 <template #dropdown>
                   <el-dropdown-menu>
             {-{- end}-}
+             <!--cmpnt_count:{-{$cmpnt_count}-}  x:{-{$x}-}-->
+             {-{if ge $x 2}-}
             <el-dropdown-item command="{-{$m.UNQ}-}" {-{if gt (len $exprs)  0}-} v-if='
             {-{- range $i,$expr := $exprs}-}
             {-{- if ne "" $expr.Name}-}{-{$expr.Name}-}{-{$expr.Symbol}-}{-{$expr.Value}-} 
@@ -47,12 +57,13 @@
             {-{- if lt $i (minus (len $exprs))}-}&&{-{- end -}-}
             {-{- end -}-}'{-{- end}-}>{-{$m.Label}-} </el-dropdown-item>
             {-{- end}-}
-          {-{- if and (gt $x 1) (eq $x (minus $cmpnt_count))}-}
+            {-{- end}-}
+            {-{- end}-}
+          {-{- if gt $cmpnt_count 3}-}
                 </el-dropdown-menu>
             </template>
             </el-dropdown>
-            {-{- end}-}
-            {-{- end}-}
+          {-{- end}-}
         </div>
     </template>
 </el-table-column>

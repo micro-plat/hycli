@@ -20,6 +20,7 @@ var Funcs = map[string]interface{}{
 	"fltrNeedBatchCheck":           fltrNeedBatchCheck,
 	"fltrSearchTable":              fltrSearchTable,
 	"fltrHasConst":                 fltrHasConst,
+	"fltrGetConst":                 fltrGetConst,
 	"fltrMYSQLType":                fltrMYSQLType,
 	"fltrMYSQLDef":                 mySQLDefValue,
 	"fltrOptrs":                    fltrOptrs,
@@ -124,6 +125,15 @@ func fltrColumnsExcludeExt(cols []*Column) []*Column {
 }
 func fltrHasConst(c *Column, p string) bool {
 	return md.HasConstraint(c.Constraints, strings.ToLower(p), strings.ToUpper(p))
+}
+func fltrGetConst(c *Column, p string, name string, def string) string {
+	v, page, _ := md.GetConsByTagIgnorecase(name, c.Constraints...)
+	pages := strings.Split(page, "-")
+	if len(pages) == 0 || types.StringContains(pages, p) {
+		return v
+	}
+	return def
+
 }
 func spare(x int, y int) int {
 	return x % y

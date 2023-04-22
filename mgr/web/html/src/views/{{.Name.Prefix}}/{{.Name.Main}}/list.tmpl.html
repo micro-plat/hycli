@@ -8,7 +8,6 @@
 {-{- $qbar:=$table.QueryOptrs|getFirstOptr}-}
 {-{- $pkName := $table.PKColumns|getFirstColumns}-}
 {-{- $treeNode := fltrOptrPara $qbar "treeNode" ""}-}
-	
 
 {-{- if gt (len $lcols) 0 }-}
 <div class="list">
@@ -25,20 +24,21 @@
         {-{ if and (eq $table.NeedBatchCheck true) (eq false $tmpl)}-}  <el-table-column type="selection" width="22" /> {-{end}-}
        
         {-{- range $i,$c:=$lcols }-}
+        {-{- $align := fltrGetConst $c "l" "align" "center"}-}	
         {-{- if eq "switch" $c.Cmpnt.Type}-}
-        <el-table-column   {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-}  align="center" label="{-{$c.Label}-}">
+        <el-table-column   {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-}  align="{-{$align}-}" label="{-{$c.Label}-}">
             <template #default="scope">
                 <el-switch {-{if ne true $tmpl}-} @change="on{-{$c.Name}-}SwitchChange(scope.row)" {-{else}-} disabled  {-{end}-} v-model="scope.row.{-{$c.Name}-}_switch" />
             </template>
         </el-table-column>
         {-{- else if eq "progress" $c.Cmpnt.Type}-}
-        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{else}-} width="100" {-{end}-} align="center" label="{-{$c.Label}-}">
+        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{else}-} width="100" {-{end}-} align="{-{$align}-}" label="{-{$c.Label}-}">
             <template #default="scope">
                 <el-progress :stroke-width="4"   :percentage="scope.row.{-{$c.Name}-}_progress" :color="conf.progressColor" />
             </template>
         </el-table-column>
         {-{- else if eq "img" $c.Cmpnt.Type}-}
-        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} align="center" label="{-{$c.Label}-}">
+        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} align="{-{$align}-}" label="{-{$c.Label}-}">
             <template #default="scope">
                 <el-image style="width:48px" :src="scope.row.{-{$c.Name}-}" :fit="contain">
                     <template #error>
@@ -52,13 +52,13 @@
             </template>
         </el-table-column>
         {-{- else if eq "link" $c.Cmpnt.Type}-}
-        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} {-{if eq true $c.Style.HideOverflow}-} :show-overflow-tooltip="true" {-{end}-}  align="center" label="{-{$c.Label}-}">
+        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} {-{if eq true $c.Style.HideOverflow}-} :show-overflow-tooltip="true" {-{end}-}  align="{-{$align}-}" label="{-{$c.Label}-}">
             <template #default="scope">
                 <el-link target="_blank" type="success" :href="scope.row.{-{$c.Name}-}" :title="scope.row.{-{$c.Name}-}">查看</el-link>
             </template>
         </el-table-column>
         {-{- else if eq true $c.Enum.IsEnum}-}
-        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} {-{if eq true $c.Style.HideOverflow}-} :show-overflow-tooltip="true" {-{end}-} prop="{-{$c.Name}-}_label" align="center" label="{-{$c.Label}-}">
+        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} {-{if eq true $c.Style.HideOverflow}-} :show-overflow-tooltip="true" {-{end}-} prop="{-{$c.Name}-}_label" align="{-{$align}-}" label="{-{$c.Label}-}">
             <template #default="scope">
                 {-{- if eq "tag" $c.Cmpnt.Type}-}
                 <el-tag :type="tagColor(scope.row.{-{$c.Name}-},'{-{$c.Name}-}')"   round v-text="scope.row.{-{$c.Name}-}_label"></el-tag>
@@ -69,19 +69,19 @@
             </template>
         </el-table-column>
         {-{- else if eq "tag" $c.Cmpnt.Type}-}
-        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} prop="{-{$c.Name}-}_label" align="center" label="{-{$c.Label}-}">
+        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} prop="{-{$c.Name}-}_label" align="{-{$align}-}" label="{-{$c.Label}-}">
             <template #default="scope">
                 <el-tag type="tagColor(scope.row.{-{$c.Name}-},'{-{$c.Name}-}')" round  v-text="scope.row.{-{$c.Name}-}"></el-tag>
             </template>
         </el-table-column>
         {-{- else if eq "icon" $c.Cmpnt.Type}-}
-        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} prop="{-{$c.Name}-}_label" align="center" label="{-{$c.Label}-}">
+        <el-table-column  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-} prop="{-{$c.Name}-}_label" align="{-{$align}-}" label="{-{$c.Label}-}">
             <template #default="scope">
                 <i :class="scope.row.{-{$c.Name}-}"></i>
             </template>
         </el-table-column>
         {-{- else}-}
-        <el-table-column show-overflow-tooltip  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-}  align="center" label="{-{$c.Label}-}" >
+        <el-table-column show-overflow-tooltip  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-}  align="{-{$align}-}" label="{-{$c.Label}-}" >
             <template #default="scope">
                   <span>{{ scope.row.{-{$c.Name}-}||'-' }}</span>
               </template>
