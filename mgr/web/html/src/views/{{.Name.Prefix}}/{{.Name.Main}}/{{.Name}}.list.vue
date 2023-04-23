@@ -5,8 +5,7 @@
     {-{- template "query.tmpl.html" $table }-}
     {-{- template "listbar.tmpl.html" $table }-}
     {-{- template "cmpnt.t.tmpl.html" $table }-}
-    {-{- $ct := contactTBS $table $table }-}
-    {-{- template "list.tmpl.html" $ct}-}
+    {-{- template "list.tmpl.html" $table }-}
   </div>
 </template>
 <script>

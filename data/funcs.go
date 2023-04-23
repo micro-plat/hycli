@@ -14,7 +14,6 @@ var Funcs = map[string]interface{}{
 	"getFirstTable":                getFirstTable,
 	"getColumn":                    getColumn,
 	"IsTmplTb":                     IsTmplTb,
-	"fltrBuildTable":               fltrBuildTable,
 	"fltrSearchUITable":            fltrSearchUITable,
 	"fltrSearchUITableAndResetUNQ": fltrSearchUITableAndResetUNQ,
 	"fltrIsMutilValue":             fltrIsMutilValue,
