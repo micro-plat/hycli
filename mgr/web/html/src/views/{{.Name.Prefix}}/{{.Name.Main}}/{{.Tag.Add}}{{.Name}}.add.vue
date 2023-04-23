@@ -5,7 +5,11 @@
   <el-dialog
     v-model="conf.visible"
     title="添加 {-{.Desc}-}"
+    {-{- if gt (len $cColumns) 14}-}
+    width="68%"
+    {-{- else }-}
     width="60%"
+  {-{- end  }-}
     draggable
     :close-on-click-modal="false"
     :before-close="hide"

@@ -43,9 +43,12 @@ type fieldType struct {
 	IsPK           bool   //是否是主键
 	IsSEQ          bool   //是否自增字段
 	IsExtFuncField bool   //扩展功能字段
+	IsLongText     bool   //是否是长字符
 	TMYSQL         string //mysql 数据库类型
 	VMYSQL         string //mysql 默认值
 }
+
+var longText = []string{"TINYTEXT", "TEXT", "MEDIUMTEXT", "LONGTEXT", "BLOB", "JSON"}
 
 func createFieldType(r *md.Row) fieldType {
 	return fieldType{
@@ -63,6 +66,7 @@ func createFieldType(r *md.Row) fieldType {
 		IsExtFuncField: strings.HasPrefix(r.Raw, "^"),                 //扩展字段
 		TMYSQL:         mySQLType(r.Type.Name, r.Type.Len, r.Type.DLen),
 		VMYSQL:         mySQLDefValue(r.DefValue),
+		IsLongText:     r.Type.Len >= 64 || types.StringContains(longText, r.Type.Name),
 	}
 }
 

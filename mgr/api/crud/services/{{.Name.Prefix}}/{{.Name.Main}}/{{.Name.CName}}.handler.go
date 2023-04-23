@@ -115,8 +115,8 @@ func (u *{-{.Name.CName}-}Handler) QueryHandle(ctx hydra.IContext) (r interface{
 
 	ctx.Log().Info("1.查询数据条数")
 	m := ctx.Request().GetMap()
-	m["ps"] = ctx.Request().GetInt("ps", 10)
-	m["offset"] = (ctx.Request().GetInt("pi", 1) - 1) * ctx.Request().GetInt("ps", 10)
+	m["ps"] ={-{- if ne "" $treeNode}-} 10000 {-{else}-} ctx.Request().GetInt("ps", 10) {-{end}-}
+	m["offset"] = (ctx.Request().GetInt("pi", 1) - 1) * {-{- if ne "" $treeNode}-} 10000 {-{else}-} ctx.Request().GetInt("ps", 10) {-{end}-}
 
 	
 	count, err := hydra.C.DB().GetRegularDB().Scalar(get{-{.Name.CName}-}ListCount, m)
@@ -140,7 +140,7 @@ func (u *{-{.Name.CName}-}Handler) QueryHandle(ctx hydra.IContext) (r interface{
 	{-{- if ne "" $treeNode}-}
 	ctx.Log().Info("3.返回结果")
 	return map[string]interface{}{
-		"items": checkChildren(items,"{-{$treeNode}-}","{-{$pkName.Name}-}"),
+		"items": getTreeNodes(items,"{-{$treeNode}-}","{-{$pkName.Name}-}"),
 		"count":rcount,
 	}
 	{-{- else}-}
@@ -152,38 +152,36 @@ func (u *{-{.Name.CName}-}Handler) QueryHandle(ctx hydra.IContext) (r interface{
 	{-{- end}-}
 }
 {-{- if ne "" $treeNode}-}
-func checkChildren(items types.XMaps, pidName string, pkName string) types.XMaps {
+func getTreeNodes(items types.XMaps, pidName string, pkName string) types.XMaps {
 	treeMap := map[string]types.XMaps{}
+	lstMap := types.XMaps{}
 	for _, r := range items {
 		pid := r.GetString(pidName)
 		if _, ok := treeMap[pid]; !ok {
 			treeMap[pid] = make(types.XMaps, 0, 1)
 		}
 		treeMap[pid] = append(treeMap[pid], r)
+		if pid == "0" {
+			lstMap = append(lstMap, r)
+		}
 	}
-	return getChildren("0", pkName, treeMap)
-
+	for _, m := range lstMap {
+		setChildren(m, pkName, treeMap)
+	}
+	return lstMap
 }
-func getChildren(pid string, idName string, treeMap map[string]types.XMaps) types.XMaps {
-	pidChildren, ok := treeMap[pid]
+func setChildren(current types.XMap, idName string, treeMap map[string]types.XMaps) {
+	id := current.GetString(idName)
+	children, ok := treeMap[id]
 	if !ok {
-		return nil
+		return
 	}
-
-	for _, v := range pidChildren {
-		id := v.GetString(idName)
-		c, ok := treeMap[id]
-		if !ok {
-			continue
-		}
-		v.SetValue("children", c)
-		for _, x := range c {
-			x.SetValue("children", getChildren(x.GetString(idName), idName, treeMap))
-		}
-
+	current.SetValue("children", children)
+	for _, v := range children {
+		setChildren(v, idName, treeMap)
 	}
-	return pidChildren
 }
+
 {-{- end}-}
 {-{- end}-}
 

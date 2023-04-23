@@ -12,7 +12,7 @@ package {-{.Name.Main}-}
 {-{- $sigleQueryCols:= fltrColumnsExcludeExt (fltrColumns $table "l-le-bl")}-}
 {-{- $totalQCols:= fltrColumnsExcludeExt (fltrColumns $table "q-bq")}-}
 {-{- $vlen := (len $sigleQueryCols)|minus}-}
-{-{- $ords := fltrColumnsExcludeExt (fltrColumns $table "ord")}-}
+{-{- $orders := fltrColumnsExcludeExt (fltrColumns $table "ord")}-}
 
 {-{- if gt (len (fltrColumns $table "q-bq")) 0}-}
 
@@ -63,7 +63,10 @@ where
 	&t.{-{$v.Name}-}
 	{-{- end}-}
 	{-{- end}-}
-order by {-{range $i,$v :=fltrColumnsExcludeExt $table.PKColumns}-}
+order by {-{ range $i,$m := $orders}-}
+	t.{-{$m.Name}-}{-{if eq "asc" $m.Cmpnt.Format}-} asc {-{else}-} desc {-{end}-},
+{-{- end}-}
+{-{- range $i,$v :=fltrColumnsExcludeExt $table.PKColumns}-}
 	t.{-{$v.Name}-} desc
 {-{- end}-}
 limit @ps offset @offset`

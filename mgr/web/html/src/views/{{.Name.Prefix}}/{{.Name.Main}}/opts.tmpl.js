@@ -30,10 +30,12 @@ show_cmpnt(cmd,row){
       //2023.4.18添加---
     {-{- $c := fltrOptrsByStatic $m }-}
     {-{- range $k,$v := $c}-}
-    {-{ if eq true (fltrStart $v "@")}-}
-    query.{-{$k}-} = fm.{-{fltrTrim $v "@"}-}
-    {-{else if eq true (fltrStart $v "&")}-}
-    query.{-{$k}-} = (fm.{-{fltrTrim $v "&"}-}||[]).join(",")
+    {-{- if eq true (fltrStart $v "@")}-}
+    query.{-{$k}-} = this.{-{fltrTrim $v "@"}-}
+    {-{- else if eq true (fltrStart $v "&")}-}
+    query.{-{$k}-} = (this.{-{fltrTrim $v "&"}-}||[]).join(",")
+    {-{- else if eq true (fltrStart $v "#")}-}
+    query.{-{$k}-} = fm.{-{fltrTrim $v "#"}-}
     {-{- else}-}
     query.{-{$k}-} = "{-{$v}-}"
     {-{- end}-}

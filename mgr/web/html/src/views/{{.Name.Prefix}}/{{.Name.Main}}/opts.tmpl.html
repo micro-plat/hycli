@@ -22,11 +22,7 @@
             {-{- range $x,$m:=$cmpnts }-}
             {-{- $exprs :=fltrOptrParaExprs $m "showExpr" ""}-}
            
-             
-            
             {-{- if or (le $cmpnt_count 3) (lt $x 2) }-}
-             <!--cmpnt_count:{-{$cmpnt_count}-}  x:{-{$x}-}-->
-
             <el-button  size="small" type="text" @click="show_cmpnt_{-{$m.UNQ}-}(scope.row)" {-{if gt (len $exprs)  0}-} v-if='
             {-{- range $i,$expr := $exprs}-}
             {-{- if ne "" $expr.Name}-}{-{$expr.Name}-}{-{$expr.Symbol}-}{-{$expr.Value}-} 
@@ -46,7 +42,6 @@
                 <template #dropdown>
                   <el-dropdown-menu>
             {-{- end}-}
-             <!--cmpnt_count:{-{$cmpnt_count}-}  x:{-{$x}-}-->
              {-{if ge $x 2}-}
             <el-dropdown-item command="{-{$m.UNQ}-}" {-{if gt (len $exprs)  0}-} v-if='
             {-{- range $i,$expr := $exprs}-}

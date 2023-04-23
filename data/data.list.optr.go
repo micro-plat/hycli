@@ -275,8 +275,8 @@ func createOptrs(tableName string, t string, tag string) []*optrs {
 			ps := strings.Split(content, ";")
 			for _, p := range ps {
 				vs := strings.Split(p, ":")
-				if types.GetStringByIndex(vs, 1) != "" {
-					opt.Params[types.GetStringByIndex(vs, 0)] = types.GetStringByIndex(vs, 1)
+				if key := types.GetStringByIndex(vs, 0); key != "" {
+					opt.Params[key] = types.GetStringByIndex(vs, 1)
 				}
 			}
 			if opt.Params["rwName"] != "" {

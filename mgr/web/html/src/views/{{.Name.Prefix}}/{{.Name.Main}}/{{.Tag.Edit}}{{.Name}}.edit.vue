@@ -5,7 +5,11 @@
   <el-dialog
     v-model="conf.visible"
     title="修改 {-{.Desc}-}"
+    {-{- if gt (len $ucols) 14}-}
+    width="68%"
+    {-{- else }-}
     width="60%"
+  {-{- end  }-}
     draggable
     :close-on-click-modal="false"
     :before-close="hide"

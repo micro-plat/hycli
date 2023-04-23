@@ -3,7 +3,7 @@
 {-{- $span:=24}-}
   <el-row>
   {-{- range $i,$c:= $ucols }-}
-  {-{- if le 33 $c.Field.Len }-}
+  {-{- if eq true $c.Field.IsLongText }-}
     {-{$m =  0}-}
         <el-col :span="24">
           {-{- $span = 24}-}
@@ -15,7 +15,6 @@
           <el-col :span="24">
           {-{- $span = 24}-}
           {-{$m = add $m 24 }-}
-         
   {-{- else if eq "newline" $c.Style.Position}-}
         {-{- if ne 0 (spare $m 24)}-}
         <el-col :span="12"></el-col>
@@ -148,8 +147,8 @@
       {-{- else}-}
       <!--{-{$c.Label}-} 输入控件 -->
       <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-        <el-input clearable style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" maxlength="{-{$c.Field.Len}-}"
-          :rows="{-{$c.Style.Rows}-}" {-{if gt $c.Field.Len 33}-} type="textarea" show-word-limit {-{end}-}
+        <el-input clearable style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" {-{ if ne 0 $c.Field.Len}-} maxlength="{-{$c.Field.Len}-}" {-{end}-}
+          :rows="{-{$c.Style.Rows}-}" {-{if eq true $c.Field.IsLongText}-} type="textarea" show-word-limit {-{end}-}
           placeholder="请输入{-{$c.Label}-}" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-} />
       </el-form-item>
       {-{- end }-}
