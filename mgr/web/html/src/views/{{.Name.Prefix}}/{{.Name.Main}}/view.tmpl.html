@@ -1,11 +1,14 @@
 {-{- $vcols := . }-}
 <el-row :gutter="24" style="font-size: 0.7rem;">
+    {-{- $span := 0}-}
     {-{- range $i,$c:=$vcols}-}
-    {-{- if gt $c.Field.Len 48}-}
-    {-{ if eq (spare $i 2) 1}-}
+    {-{- if eq true $c.Field.IsLongText }-}
+    {-{- if eq (spare $span 2) 1}-}
+    {-{- $span = add $span 1}-}
     <el-col :span="12"></el-col>
     {-{- end}-}
     {-{- end}-}
+    {-{- $span = add $span 1}-}
     <el-col :span="4" class="text-right" style="min-height:26px">{-{ $c.Label }-}:</el-col>
     {-{- if eq true $c.Enum.IsEnum}-}
     <el-col :span="8" v-text="view.{-{$c.Name}-}_label" style="min-height:26px" :class="'{-{$c.Style.CLR.BgColor}-}'==''?'':{-{$c.Style.CLR.BgColor}-}(view.{-{$c.Name}-},'{-{$c.Name}-}')"></el-col>
@@ -16,7 +19,8 @@
     <el-col :span="8">
     <el-link target="_blank" type="success" :href="view.{-{$c.Name}-}" :title="view.{-{$c.Name}-}">查看</el-link> 
     </el-col>
-    {-{- else if gt $c.Field.Len 48}-}
+    {-{- else if eq true $c.Field.IsLongText }-}
+    {-{- $span = add $span 1}-}
     <el-col :span="20" v-html="view.{-{$c.Name}-}"  style="min-height:26px" :class="'{-{$c.Style.CLR.BgColor}-}'==''?'':{-{$c.Style.CLR.BgColor}-}(view.{-{$c.Name}-},'{-{$c.Name}-}')"></el-col>
     {-{- else if gt $c.Field.Len 32}-}
     <el-col :span="8" v-html="view.{-{$c.Name}-}"  style="min-height:26px" :class="'{-{$c.Style.CLR.BgColor}-}'==''?'':{-{$c.Style.CLR.BgColor}-}(view.{-{$c.Name}-},'{-{$c.Name}-}')"></el-col>

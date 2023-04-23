@@ -1,17 +1,21 @@
-{-{- $table := .}-}
+{-{- $xtable := .}-}
+{-{- $table := $xtable.Current}-}
+{-{- $mtable := $xtable.Main}-}
 {-{- $lcols :=fltrColumns $table "l"}-}
 {-{- $lecols :=fltrColumns $table "le"}-}
 {-{- $leLen := len $lecols}-}
-{-{- $lstopts :=.ListOpts}-}
+{-{- $lstopts :=$table.ListOpts}-}
+
 {-{- $optLen := len $lstopts}-}
-{-{- $tmpl :=IsTmplTb .}-}
+{-{- $extLen := len $table.ViewExtCmptOpts}-}
+{-{- $tmpl :=IsTmplTb $xtable}-}
 {-{- $qbar:=$table.QueryOptrs|getFirstOptr}-}
 {-{- $pkName := $table.PKColumns|getFirstColumns}-}
 {-{- $treeNode := fltrOptrPara $qbar "treeNode" ""}-}
 
 {-{- if gt (len $lcols) 0 }-}
 <div class="list">
-    <el-table :data="dataList_{-{.UNQ}-}" 
+    <el-table :data="dataList_{-{$table.UNQ}-}" 
     {-{- if ne "" $treeNode}-} row-key="{-{$pkName.Name}-}" {-{end}-}
     {-{ if and (eq $table.NeedBatchCheck true) (eq false $tmpl)}-}@selection-change="handleSelectionChange" {-{end}-}
     v-loading="conf.loading" stripe {-{if eq true $tmpl }-}
@@ -88,8 +92,11 @@
         </el-table-column>
         {-{- end }-}
         {-{- end }-}
-        {-{if gt $optLen 0}-}
-        {-{- template "opts.tmpl.html" .}-}
+        {-{if  gt $optLen 0}-}
+        {-{- template "opts.tmpl.html" $table}-}
+        {-{else if gt (len $mtable.ViewExtCmptOpts) 0}-}
+        {-{- $tTable :=fltrBuildTable $mtable}-}
+        {-{- template "opts.tmpl.html" $tTable}-}
         {-{- end }-}
     </el-table>
     <el-pagination :currentPage="form_{-{$table.UNQ}-}.pi" :page-size="form_{-{$table.UNQ}-}.ps"

@@ -36,6 +36,7 @@ type optrs struct {
 	FwName    string //外部表字段标记
 	ReqURL    string //服务请求URL
 	IsMux     bool   //是否是复用组件
+	Position  string //位置
 	index     int    //顺序编号
 	Table     string
 	Params    optParams
@@ -60,19 +61,19 @@ var lstOptCmd = []string{"lst"}
 var batchCheck = []string{"bcheck", "@bcheck", "&bcheck"}
 var barOptrCmd = []string{"export", "import", "lstbar", "lstupdator"}
 var charOptrCmd = []string{"chart"}
-var extCmptParam = []string{"add"}
+var extCmptParam = []string{"add", "update", "view"}
 var extOptrsCmd = []string{"tskbar"}
 var queryOptrCmd = []string{"qbar"}
 
-var addOpts = &optrs{Tag: ADD_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.add", Name: "CMPNT", ICON: "Plus", Label: "添加", RwName: "C", UNQ: defFids.Next(), index: 1}
-var queryOpts = &optrs{Tag: QUERY_TAG, URL: "", Name: "FORM", ICON: "Search", RwName: QUERY_COLUMN, Label: "查询", UNQ: defFids.Next(), index: 1}
-var detailOpts = &optrs{Tag: VIEW_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.view", Name: "CMPNT", Label: "详情", RwName: "V", UNQ: defFids.Next(), index: 1}
-var updateOpts = &optrs{Tag: UPDATE_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.edit", Name: "CMPNT", Label: "修改", RwName: "U", UNQ: defFids.Next(), index: 2}
-var delOpts = &optrs{Tag: DELETE_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.cnfrm", ReqURL: "/{@mainPath}/del", Name: "CMPNT", Label: "删除", RwName: "D", UNQ: defFids.Next(), IsMux: true, index: 99}
-var dialogOpts = &optrs{Tag: "DIALOG", URL: "@/views/{@prefix}/{@main}/{@name}.dialog", Name: "CMPNT", IsMux: true, index: 99}
-var cnfrmOpts = &optrs{Tag: "CNFRM", URL: "@/views/{@prefix}/{@main}/{@name}.cnfrm", Name: "CMPNT", IsMux: true, index: 99}
-var chartLinePieBarOpts = &optrs{Tag: "CHART", URL: "@/views/cmpnts/chart.base.vue", Name: "CMPNT"}
-var taskBarOpts = &optrs{Tag: "TSKBAR", URL: "@/views/cmpnts/task.bar.vue", Name: "CMPNT"}
+var addOpts = &optrs{Position: "qbar", Tag: ADD_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.add", Name: "CMPNT", ICON: "Plus", Label: "添加", RwName: "C", UNQ: defFids.Next(), index: 1}
+var queryOpts = &optrs{Position: "qform", Tag: QUERY_TAG, URL: "", Name: "FORM", ICON: "Search", RwName: QUERY_COLUMN, Label: "查询", UNQ: defFids.Next(), index: 1}
+var detailOpts = &optrs{Position: "lstbar", Tag: VIEW_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.view", Name: "CMPNT", Label: "详情", RwName: "V", UNQ: defFids.Next(), index: 1}
+var updateOpts = &optrs{Position: "lstbar", Tag: UPDATE_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.edit", Name: "CMPNT", Label: "修改", RwName: "U", UNQ: defFids.Next(), index: 2}
+var delOpts = &optrs{Position: "lstbar", Tag: DELETE_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.cnfrm", ReqURL: "/{@mainPath}/del", Name: "CMPNT", Label: "删除", RwName: "D", UNQ: defFids.Next(), IsMux: true, index: 99}
+var dialogOpts = &optrs{Position: "lstbar", Tag: "DIALOG", URL: "@/views/{@prefix}/{@main}/{@name}.dialog", Name: "CMPNT", IsMux: true, index: 99}
+var cnfrmOpts = &optrs{Position: "lstbar", Tag: "CNFRM", URL: "@/views/{@prefix}/{@main}/{@name}.cnfrm", Name: "CMPNT", IsMux: true, index: 99}
+var chartLinePieBarOpts = &optrs{Position: "qbar", Tag: "CHART", URL: "@/views/cmpnts/chart.base.vue", Name: "CMPNT"}
+var taskBarOpts = &optrs{Position: "qbar", Tag: "TSKBAR", URL: "@/views/cmpnts/task.bar.vue", Name: "CMPNT"}
 
 func (s *optrs) Get(tableName string) *optrs {
 	nopts := *s
@@ -104,7 +105,9 @@ func (s optrslst) Find(tag string) bool {
 }
 
 var extCmptOpts = map[string]*optrs{
-	"add": addOpts,
+	"add":    addOpts,
+	"update": updateOpts,
+	"view":   detailOpts,
 }
 
 func (f formatOptrs) String() string {

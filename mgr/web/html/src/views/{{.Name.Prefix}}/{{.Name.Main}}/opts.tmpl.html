@@ -1,7 +1,8 @@
+{-{- $table :=.}-}
 {-{- $optRow :=.ListOpts}-}
 {-{- $len :=len $optRow}-}
 {-{- $width:=60}-}
-{-{if eq $len 2}-}
+{-{- if eq $len 2}-}
 {-{- $width = 100}-}
 {-{- else}-}
 {-{- $width = 180}-}
@@ -9,15 +10,16 @@
 {-{- if lt $len 5}-}
 {-{- end}-}
 {-{- $tmpl :=IsTmplTb .}-}
-{-{- if eq false $tmpl}-}
+{-{- $optrs := $optRow }-}
+{-{- if eq true $tmpl}-}
+{-{-  $optrs = fltrOptrsByPosition $table.ViewExtCmptOpts "lstbar"}-}
+{-{- end}-}
+<!--optrs: {-{$table.Name}-}  {-{ fltrOptrsByPosition $table.ViewExtCmptOpts "lstbar"}-}  -->
+{-{- if gt (len $optrs) 0}-}
 <el-table-column fixed="right" label="操作" width="{-{$width}-}">
     <template #default="scope">
         <div class="opts">
-            {-{- $cmpnts:= fltrOptrs $optRow "LINK"}-}
-            {-{- range $x,$m:=$cmpnts }-}
-            <el-button size="small" type="text" @click="goto_{-{$m.UNQ}-}(scope.row)">{-{$m.Label}-}</el-button>
-            {-{- end}-}
-            {-{- $cmpnts:= fltrOptrs $optRow "CMPNT"}-}
+            {-{- $cmpnts:= fltrOptrs $optrs "CMPNT"}-}
             {-{- $cmpnt_count:= len $cmpnts}-}
             {-{- range $x,$m:=$cmpnts }-}
             {-{- $exprs :=fltrOptrParaExprs $m "showExpr" ""}-}
@@ -42,7 +44,7 @@
                 <template #dropdown>
                   <el-dropdown-menu>
             {-{- end}-}
-             {-{if ge $x 2}-}
+             {-{- if ge $x 2}-}
             <el-dropdown-item command="{-{$m.UNQ}-}" {-{if gt (len $exprs)  0}-} v-if='
             {-{- range $i,$expr := $exprs}-}
             {-{- if ne "" $expr.Name}-}{-{$expr.Name}-}{-{$expr.Symbol}-}{-{$expr.Value}-} 

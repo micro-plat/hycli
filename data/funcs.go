@@ -14,6 +14,7 @@ var Funcs = map[string]interface{}{
 	"getFirstTable":                getFirstTable,
 	"getColumn":                    getColumn,
 	"IsTmplTb":                     IsTmplTb,
+	"fltrBuildTable":               fltrBuildTable,
 	"fltrSearchUITable":            fltrSearchUITable,
 	"fltrSearchUITableAndResetUNQ": fltrSearchUITableAndResetUNQ,
 	"fltrIsMutilValue":             fltrIsMutilValue,
@@ -29,6 +30,7 @@ var Funcs = map[string]interface{}{
 	"fltrOptrsByStatic":            fltrOptrsByStatic,
 	"fltrOptrsByTag":               fltrOptrsByTag,
 	"fltrOptrsByCmd":               fltrOptrsByCmd,
+	"fltrOptrsByPosition":          fltrOptrsByPosition,
 	"fltrColumns":                  fltrColumns,
 	"getFirstColumns":              getFirstColumns,
 	"flterJoinColumnNames":         flterJoinColumnNames,
@@ -105,10 +107,10 @@ func flterMainTable(tbs []*Table) []*Table {
 	}
 	return ntbs
 }
-func fltrOptrsByPUNQ(opts []*optrs, punq string) []*optrs {
+func fltrOptrsByPUNQ(opts []*optrs, punq string, position string) []*optrs {
 	lst := make([]*optrs, 0, 1)
 	for _, p := range opts {
-		if p.ParentUNQ == punq {
+		if strings.EqualFold(p.ParentUNQ, punq) && strings.EqualFold(p.Position, position) {
 			lst = append(lst, p)
 		}
 	}
@@ -195,6 +197,18 @@ func fltrOptrsByTag(opts []*optrs, tag string) optrslst {
 	sort.Sort(nopts)
 	return nopts
 }
+func fltrOptrsByPosition(opts []*optrs, position string) optrslst {
+	nopts := make(optrslst, 0, 1)
+	for _, v := range opts {
+		if strings.EqualFold(v.Position, position) {
+			nopts = append(nopts, v)
+		}
+
+	}
+	sort.Sort(nopts)
+	return nopts
+}
+
 func fltrOptrsByCmd(opts []*optrs, cmds string) optrslst {
 	nopts := make(optrslst, 0, 1)
 	cmd := strings.Split(cmds, "-")

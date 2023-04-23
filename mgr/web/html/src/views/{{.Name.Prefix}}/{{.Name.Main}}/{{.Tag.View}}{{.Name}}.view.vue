@@ -31,7 +31,7 @@
        {-{- else if eq "TAB" $c.Name}-}
         <el-tab-pane label="{-{$c.Label}-}" name="{-{$c.Label}-}"  @tab-click="show_view_{-{$c.UNQ}-}">
       
-          {-{- $tlbar :=fltrOptrsByPUNQ $table.ViewExtCmptOpts  $c.UNQ }-}
+          {-{- $tlbar :=fltrOptrsByPUNQ $table.ViewExtCmptOpts  $c.UNQ "qbar"}-}
            <!-- {-{$c.Table  }-},{-{ len $tlbar }-}-->
           {-{- if gt (len $tlbar) 0}-}
           <el-row>
@@ -44,8 +44,9 @@
         </el-col>
           </el-row>
          {-{- end}-}
-         {-{- $ct:= fltrSearchUITableAndResetUNQ $c}-}
-        {-{- template "list.tmpl.html" $ct}-}
+         {-{- $ct:= fltrSearchUITableAndResetUNQ $table $c}-}
+         {-{- $xmTable := contactTBS $ct $table }-}
+        {-{- template "list.tmpl.html" $xmTable}-}
          </el-tab-pane>
       {-{- end}-}
       {-{- end }-}
@@ -83,7 +84,7 @@ export default {
       form:{},
        {-{- range $i,$c:=  $viewOpts }-}
        {-{- if eq "TAB" $c.Name}-}
-          {-{- $ct:= fltrSearchUITableAndResetUNQ  $c}-}
+          {-{- $ct:= fltrSearchUITableAndResetUNQ  $table $c}-}
         {-{- template "queryform.tmpl.js" $ct}-}
       {-{- end}-}
       {-{- end }-}
@@ -108,7 +109,7 @@ export default {
     {-{- template "view.tmpl.js" $table}-}
      {-{- range $i,$c:= $viewOpts }-}
        {-{- if eq "TAB" $c.Name }-}
-          {-{- $ct:= fltrSearchUITableAndResetUNQ  $c }-}
+          {-{- $ct:= fltrSearchUITableAndResetUNQ  $table $c }-}
           {-{- $tbs := contactTBS  $ct $table }-}
         {-{- template "list.tmpl.js" $tbs}-}
       {-{- end }-}

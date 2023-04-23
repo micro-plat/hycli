@@ -76,7 +76,7 @@ export default {
      //--------------------{-{$m.Label}-}---------------------------------
       //显示 {-{$m.Label}-} 弹出框 {-{$m}-}
       show_{-{$m.UNQ}-}(fm){
-        {-{- $ct:= fltrSearchUITable  $m }-}
+        {-{- $ct:= fltrSearchUITable $table $m }-}
         {-{- $tbs := contactTBS  $table $ct }-}
         {-{- $ctable := $tbs.Current }-}
         {-{- $mtable := $tbs.Main }-}

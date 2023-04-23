@@ -15,11 +15,17 @@ func NewTables(tbs md.Tables) Tables {
 	}
 	return nt
 }
-func fltrSearchUITable(name *optrs) *TTable {
-	return fltrSearchTable(name.URL)
+func fltrSearchUITable(t *Table, name *optrs) *TTable {
+	return fltrSearchTable(t, name.URL)
 }
-func fltrSearchUITableAndResetUNQ(name *optrs) *TTable {
-	t := fltrSearchTable(name.URL)
+func fltrBuildTable(t interface{}) *TTable {
+	if v, ok := t.(*TTable); ok {
+		return v
+	}
+	return &TTable{Table: t.(*Table), Current: t.(*Table), IsTmpl: true}
+}
+func fltrSearchUITableAndResetUNQ(tb *Table, name *optrs) *TTable {
+	t := fltrSearchTable(tb, name.URL)
 	t.UNQ = name.UNQ
 	return t
 }
@@ -30,12 +36,13 @@ func findTable(uname string) *Table {
 	return Get(uname)
 }
 
-func fltrSearchTable(uname string) *TTable {
+func fltrSearchTable(t *Table, uname string) *TTable {
 	ut := findTable(uname)
-	return &TTable{Table: ut, IsTmpl: true}
+	return &TTable{Table: ut, Current: t, IsTmpl: true}
 }
 
 type TTable struct {
 	*Table
-	IsTmpl bool
+	Current *Table
+	IsTmpl  bool
 }

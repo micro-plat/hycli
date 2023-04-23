@@ -48,7 +48,7 @@ type fieldType struct {
 	VMYSQL         string //mysql 默认值
 }
 
-var longText = []string{"TINYTEXT", "TEXT", "MEDIUMTEXT", "LONGTEXT", "BLOB", "JSON"}
+var longText = []string{"tinytext", "text", "mediumtext", "longtext", "blob", "json", "TINYTEXT", "TEXT", "MEDIUMTEXT", "LONGTEXT", "BLOB", "JSON"}
 
 func createFieldType(r *md.Row) fieldType {
 	return fieldType{
