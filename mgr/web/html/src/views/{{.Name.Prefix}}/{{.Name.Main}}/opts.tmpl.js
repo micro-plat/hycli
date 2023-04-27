@@ -1,6 +1,11 @@
-{-{- $table := . }-}
+{-{- $xtable := . }-}
+{-{- $table := $xtable.Current }-}
+{-{- $mtable := $xtable.Main}-}
+{-{- $tmpl := IsTmplTb $xtable}-}
 {-{- $optRow:= mergeOptrs $table.ListOpts $table.BarOpts}-}
-
+{-{- if eq true $tmpl}-}
+{-{-  $optRow = fltrOptrsByTable (fltrOptrsByPosition $mtable.ViewExtCmptOpts "lstbar") $table.Name.Raw}-}
+{-{- end}-}
 {-{- $cmpnts:= fltrOptrs $optRow "CMPNT"}-}
 {-{- if gt (len $cmpnts) 0}-}
 show_cmpnt(cmd,row){

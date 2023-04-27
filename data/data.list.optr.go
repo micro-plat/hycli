@@ -27,9 +27,10 @@ func (o optParams) IsBatchCheck(k string) bool {
 // 操作信息
 type optrs struct {
 	Tag       string
-	Name      string //link,dialog,cmpnt,tab,cnfrm,form
+	Name      string //link,dialog,cmpnt,tab,cnfrm,form,view
 	Cmd       string // lstupdator lstbar chart
 	Label     string //修改,预览，删除
+	Desc      string //完整说明
 	ICON      string //图标
 	URL       string //组件URL
 	RwName    string //当前表字段标记
@@ -65,11 +66,11 @@ var extCmptParam = []string{"add", "update", "view"}
 var extOptrsCmd = []string{"tskbar"}
 var queryOptrCmd = []string{"qbar"}
 
-var addOpts = &optrs{Position: "qbar", Tag: ADD_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.add", Name: "CMPNT", ICON: "Plus", Label: "添加", RwName: "C", UNQ: defFids.Next(), index: 1}
-var queryOpts = &optrs{Position: "qform", Tag: QUERY_TAG, URL: "", Name: "FORM", ICON: "Search", RwName: QUERY_COLUMN, Label: "查询", UNQ: defFids.Next(), index: 1}
-var detailOpts = &optrs{Position: "lstbar", Tag: VIEW_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.view", Name: "CMPNT", Label: "详情", RwName: "V", UNQ: defFids.Next(), index: 1}
-var updateOpts = &optrs{Position: "lstbar", Tag: UPDATE_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.edit", Name: "CMPNT", Label: "修改", RwName: "U", UNQ: defFids.Next(), index: 2}
-var delOpts = &optrs{Position: "lstbar", Tag: DELETE_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.cnfrm", ReqURL: "/{@mainPath}/del", Name: "CMPNT", Label: "删除", RwName: "D", UNQ: defFids.Next(), IsMux: true, index: 99}
+var addOpts = &optrs{Position: "qbar", Tag: ADD_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.add", Name: "CMPNT", ICON: "Plus", Label: "添加", Desc: "添加", RwName: "C", UNQ: defFids.Next(), index: 1}
+var queryOpts = &optrs{Position: "qform", Tag: QUERY_TAG, URL: "", Name: "FORM", ICON: "Search", RwName: QUERY_COLUMN, Label: "查询", Desc: "查询", UNQ: defFids.Next(), index: 1}
+var detailOpts = &optrs{Position: "lstbar", Tag: VIEW_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.view", Name: "CMPNT", Label: "详情", Desc: "详情", RwName: "V", UNQ: defFids.Next(), index: 1}
+var updateOpts = &optrs{Position: "lstbar", Tag: UPDATE_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.edit", Name: "CMPNT", Label: "修改", Desc: "修改", RwName: "U", UNQ: defFids.Next(), index: 2}
+var delOpts = &optrs{Position: "lstbar", Tag: DELETE_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.cnfrm", ReqURL: "/{@mainPath}/del", Name: "CMPNT", Label: "删除", Desc: "删除", RwName: "D", UNQ: defFids.Next(), IsMux: true, index: 99}
 var dialogOpts = &optrs{Position: "lstbar", Tag: "DIALOG", URL: "@/views/{@prefix}/{@main}/{@name}.dialog", Name: "CMPNT", IsMux: true, index: 99}
 var cnfrmOpts = &optrs{Position: "lstbar", Tag: "CNFRM", URL: "@/views/{@prefix}/{@main}/{@name}.cnfrm", Name: "CMPNT", IsMux: true, index: 99}
 var chartLinePieBarOpts = &optrs{Position: "qbar", Tag: "CHART", URL: "@/views/cmpnts/chart.base.vue", Name: "CMPNT"}
@@ -98,6 +99,14 @@ func (s optrslst) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
 func (s optrslst) Find(tag string) bool {
 	for _, v := range s {
 		if strings.EqualFold(v.Tag, tag) {
+			return true
+		}
+	}
+	return false
+}
+func (s optrslst) FindName(name string) bool {
+	for _, v := range s {
+		if strings.EqualFold(v.Name, name) {
 			return true
 		}
 	}
@@ -144,14 +153,19 @@ func createLstOptrs(table *Table, t string) lstOptrs {
 	}
 	return optrs
 }
-func createViewOptrs(tableName, t string) (viewOptrs, viewExtCmptOpts) {
-	viewOpts := createCmdsOptrs(tableName, t, viewOptCmd)
-	extOpts := creatExtCmptOpts(viewOpts)
+func createViewOptrs(table *Table, t string) (viewOptrs, viewExtCmptOpts) {
+	viewOpts := createCmdsOptrs(table.Name.Raw, t, viewOptCmd)
+	//构建操作
+	if !optrslst(viewOpts).FindName(VIEW_TAG) && len(fltrColumns(table, VIEW_COLUMN)) > 0 {
+		view := *detailOpts.Get(table.Name.Raw)
+		view.Name = "view"
+		viewOpts = append(viewOpts, &view)
+	}
+	extOpts := creatExtCmptOpts(viewOpts...)
 	return viewOpts, extOpts
 }
 func createQueryOptrs(table *Table, t string) queryOptrs {
 	opts := createCmdsOptrs(table.Name.Raw, t, queryOptrCmd)
-
 	if !optrslst(opts).Find(QUERY_TAG) && len(fltrColumns(table, QUERY_COLUMN)) > 0 {
 		opts = append(opts, queryOpts.Get(table.Name.Raw))
 	}
@@ -184,26 +198,26 @@ func createCmdsOptrs(tableName string, t string, cmds []string) []*optrs {
 	return optrs
 }
 
-func creatExtCmptOpts(opts ...[]*optrs) []*optrs {
+func creatExtCmptOpts(opts ...*optrs) []*optrs {
 	nopts := make([]*optrs, 0, 1)
-	for _, opt := range opts {
-		for _, view := range opt {
-			for _, cmd := range extCmptParam {
-				if v, ok := view.Params[cmd]; ok {
-					if opts, ok := extCmptOpts[cmd]; ok {
-						xview := *opts
-						// xview.UNQ = view.UNQ
-						xview.UNQ = defFids.Next()
-						xview.Label = types.DecodeString(types.GetBool(v), true, view.Label, v)
-						xview.Params = view.Params
-						xview.Params["table"] = view.URL
-						xview.Table = view.URL
-						xview.ParentUNQ = view.UNQ
-						nopts = append(nopts, &xview)
-					}
-				}
+	for _, view := range opts {
+		for _, cmd := range extCmptParam {
+			op, okOptr := extCmptOpts[cmd]
+			v, ok := view.Params[cmd]
+			if ok && okOptr {
+				xview := *op
+				// xview.UNQ = view.UNQ
+				xview.UNQ = defFids.Next()
+				xview.Label = types.DecodeString(types.GetBool(v), true, view.Label, v)
+				xview.Desc = xview.Label
+				xview.Params = view.Params
+				xview.Params["table"] = view.URL
+				xview.Table = view.URL
+				xview.ParentUNQ = view.UNQ
+				nopts = append(nopts, &xview)
 			}
 		}
+
 	}
 	return nopts
 }
@@ -291,10 +305,15 @@ func createOptrs(tableName string, t string, tag string) []*optrs {
 			if tb, ok := opt.Params["table"]; ok {
 				opt.Table = tb
 			}
-			if v, ok := opt.Params["&idx"]; ok {
+			if v, ok := opt.Params["idx"]; ok {
 				opt.index = types.GetInt(v)
 			}
-
+			if v, ok := opt.Params["desc"]; ok {
+				opt.Desc = v
+			}
+			if opt.Desc == "" {
+				opt.Desc = opt.Label
+			}
 			opt.ICON = types.GetString(opt.Params["icon"], opt.ICON)
 			opts = append(opts, &opt)
 			continue
@@ -304,6 +323,9 @@ func createOptrs(tableName string, t string, tag string) []*optrs {
 		}
 		if fwName != "" {
 			opt.FwName = fwName
+		}
+		if opt.Desc == "" {
+			opt.Desc = opt.Label
 		}
 		opts = append(opts, &opt)
 	}

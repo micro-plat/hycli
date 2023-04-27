@@ -62,6 +62,7 @@ type Table struct {
 func (t *Table) Sort() {
 	sort.Sort(t.Columns)
 	sort.Sort(optrslst(t.BarOpts))
+	sort.Sort(optrslst(t.ViewOpts))
 	sort.Sort(optrslst(t.ViewExtCmptOpts))
 	sort.Sort(optrslst(t.ListOpts))
 	sort.Sort(optrslst(t.LStatOpts))
@@ -87,7 +88,7 @@ func NewTable(t *md.Table) *Table {
 	t.Cache = table
 	table.ListOpts = createLstOptrs(table, t.ExtInfo)
 	table.BarOpts, table.NeedBatchCheck = createBarOptrs(table, t.ExtInfo)
-	table.ViewOpts, table.ViewExtCmptOpts = createViewOptrs(table.Name.Raw, t.ExtInfo)
+	table.ViewOpts, table.ViewExtCmptOpts = createViewOptrs(table, t.ExtInfo)
 	table.LStatOpts, table.ChartOpts = createLStatChartOptrs(table.Name.Raw, t.ExtInfo)
 	table.ExtOpts = createExtOptrs(table.Name.Raw, t.ExtInfo)
 	table.QueryOptrs = createQueryOptrs(table, t.ExtInfo)

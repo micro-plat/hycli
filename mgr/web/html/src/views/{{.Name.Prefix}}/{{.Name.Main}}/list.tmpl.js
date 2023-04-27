@@ -70,12 +70,12 @@
         that.conf.loading = false
         that.dataList_{-{$table.UNQ}-} = res.items||[]
         that.total_{-{$table.UNQ}-} = res.count
-        that.resetItemData(that,that.dataList_{-{$table.UNQ}-})
+        that.resetItemData_{-{$table.UNQ}-}(that,that.dataList_{-{$table.UNQ}-})
       });
     {-{- end}-}
   },
 
-  resetItemData(that,lst){
+  resetItemData_{-{$table.UNQ}-}(that,lst){
     lst.forEach(item => {
       {-{- range $i,$c := $LLERows}-}
     {-{- if eq true $c.Enum.IsEnum}-}
@@ -122,7 +122,7 @@
       {-{- end}-}
       {-{- end}-}
     if(item.children){
-      that.resetItemData(that,item.children)
+      that.resetItemData_{-{$table.UNQ}-}(that,item.children)
     }
   });
 

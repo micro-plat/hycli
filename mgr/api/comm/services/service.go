@@ -14,6 +14,7 @@ import (
 	{-{- end}-}
 	"{-{$ft.PkgName}-}/services/enums"
 	_ "{-{$ft.PkgName}-}/modules/const/db/mysql"
+	_ "{-{$ft.PkgName}-}/services/member"
 )
 
 func init() {

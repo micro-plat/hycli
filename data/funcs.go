@@ -30,6 +30,8 @@ var Funcs = map[string]interface{}{
 	"fltrOptrsByTag":               fltrOptrsByTag,
 	"fltrOptrsByCmd":               fltrOptrsByCmd,
 	"fltrOptrsByPosition":          fltrOptrsByPosition,
+	"fltrOptrsByTable":             fltrOptrsByTable,
+	"fltrSelectedOptrs":            fltrSelectedOptrs,
 	"fltrColumns":                  fltrColumns,
 	"getFirstColumns":              getFirstColumns,
 	"flterJoinColumnNames":         flterJoinColumnNames,
@@ -72,6 +74,9 @@ func fltrAdd(x, y interface{}) int {
 
 func IsTmplTb(o interface{}) bool {
 	if v, ok := o.(*TTable); ok {
+		return v.IsTmpl
+	}
+	if v, ok := o.(*BUITable); ok {
 		return v.IsTmpl
 	}
 	return false
@@ -207,7 +212,30 @@ func fltrOptrsByPosition(opts []*optrs, position string) optrslst {
 	sort.Sort(nopts)
 	return nopts
 }
+func fltrOptrsByTable(opts []*optrs, tb string) optrslst {
+	nopts := make(optrslst, 0, 1)
+	for _, v := range opts {
+		if strings.EqualFold(v.Table, tb) {
+			nopts = append(nopts, v)
+		}
 
+	}
+	sort.Sort(nopts)
+	return nopts
+}
+
+func fltrSelectedOptrs(opts []*optrs) *optrs {
+	for _, optr := range opts {
+		if v, ok := optr.Params["selected"]; ok && v == "true" {
+			return optr
+		}
+	}
+	if len(opts) > 0 {
+		return opts[0]
+	}
+	return &optrs{}
+
+}
 func fltrOptrsByCmd(opts []*optrs, cmds string) optrslst {
 	nopts := make(optrslst, 0, 1)
 	cmd := strings.Split(cmds, "-")

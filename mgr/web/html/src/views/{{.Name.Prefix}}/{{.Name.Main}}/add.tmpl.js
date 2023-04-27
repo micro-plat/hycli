@@ -20,7 +20,9 @@
         {-{- end}-}
         },
         {-{- range $i,$c := $ccols}-}
-        {-{- if or (eq true $c.Enum.IsEnum) (eq true (fltrStart $c.Cmpnt.Type "multi"))}-}
+        {-{- if and (eq true $c.Enum.IsEnum) (eq true (fltrStart $c.Cmpnt.Type "tree"))}-}
+        {-{.Name}-}List:this.$theia.enum.getTree("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}","{-{$c.Enum.Group}-}"),
+        {-{- else if or (eq true $c.Enum.IsEnum) (eq true (fltrStart $c.Cmpnt.Type "multi"))}-}
         {-{.Name}-}List:this.$theia.enum.get("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}","{-{$c.Enum.Group}-}"),
         {-{- end}-}
         {-{- end}-}

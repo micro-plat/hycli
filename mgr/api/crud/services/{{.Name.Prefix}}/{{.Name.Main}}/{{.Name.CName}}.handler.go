@@ -13,6 +13,7 @@ package {-{.Name.Main}-}
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/micro-plat/hydra"
 	"github.com/micro-plat/lib4go/errs"
@@ -73,13 +74,16 @@ func (u *{-{.Name.CName}-}Handler) PutHandle(ctx hydra.IContext) (r interface{})
 	
 	ctx.Log().Info("2.修改数据")
 	rx, err := hydra.C.DB().GetRegularDB().Execute(update{-{.Name.CName}-}, ctx.Request().GetMap())
-	if err == nil && rx == 0{
-		return errs.NewResult(204, nil)
+	if err == nil{
+		if rx<=0{
+			return errs.NewResult(204, nil)
+		}
+		return
 	}
-	if err != nil || rx == 0 {
-		return errs.NewErrorf(http.StatusNotExtended, "保存数据出错:%+v,row:%d", err,rx)
+	if strings.Contains(err.Error(),"Error 1062"){
+		return errs.NewErrorf(909, "数据重复，请修改后提交")
 	}
-	return
+	return errs.NewErrorf(http.StatusNotExtended, "数据出错:%+v,row:%d", err,rx)
 }
 {-{- end}-}
 
@@ -97,10 +101,13 @@ func (u *{-{.Name.CName}-}Handler) PostHandle(ctx hydra.IContext) (r interface{}
 	
 	ctx.Log().Info("2.添加新数据")
 	rx, err := hydra.C.DB().GetRegularDB().Execute(insert{-{.Name.CName}-}, ctx.Request().GetMap())
-	if err != nil || rx == 0 {
-		return errs.NewErrorf(http.StatusNotExtended, "数据出错:%+v,row:%d", err,rx)
+	if err == nil && rx > 0 {
+		return 
 	}
-	return
+	if err != nil && strings.Contains(err.Error(),"Error 1062"){
+		return errs.NewErrorf(909, "数据重复，请修改后提交")
+	}
+	return errs.NewErrorf(http.StatusNotExtended, "数据出错:%+v,row:%d", err,rx)
 }
 {-{- end}-}
 

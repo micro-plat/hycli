@@ -1,11 +1,12 @@
 <template tag="{-{.Marker}-}">
   {-{- $table := .}-}
   {-{- $opts :=$table.ListOpts }-}
+  {-{- $tbs := contactTBS  $table $table }-}
   <div style="height: 100%">
     {-{- template "query.tmpl.html" $table }-}
     {-{- template "listbar.tmpl.html" $table }-}
     {-{- template "cmpnt.t.tmpl.html" $table }-}
-    {-{- template "list.tmpl.html" $table }-}
+    {-{- template "list.tmpl.html" $tbs }-}
   </div>
 </template>
 <script>
@@ -52,7 +53,6 @@ mounted() {
   },
   {-{- end}-}
 methods: {
-  {-{- $tbs := contactTBS  $table $table }-}
   {-{- template "list.tmpl.js" $tbs }-}
   handleSizeChange(ps){
     this.form_{-{ $table.UNQ }-}.ps = ps
@@ -89,7 +89,7 @@ methods: {
     let p = this.$theia.url.encode(param)
     window.location = `${url}?${p}`
   },
-  {-{- template "opts.tmpl.js" $table }-}
+  {-{- template "opts.tmpl.js" $tbs }-}
 },
 };
 </script>

@@ -64,6 +64,8 @@ export default {
         {-{- range $i,$c:= $cColumns }-}
         {-{- if eq "password" $c.Cmpnt.Type  }-}
         postForm.{-{$c.Name}-} = this.$theia.crypto.md5(this.form.{-{$c.Name}-})
+        {-{- else if eq "tree" $c.Cmpnt.Type  }-}
+        postForm.{-{$c.Name}-} = this.$refs.tree_{-{$c.UNQ}-}.getCheckedKeys().join(",")
         {-{- else if eq true (fltrStart $c.Cmpnt.Type "multi")}-}
         postForm.{-{$c.Name}-} = (postForm.{-{$c.Name}-}||[]).join(",")
         {-{- end }-}
@@ -83,6 +85,7 @@ export default {
         }).catch(res=>{
           let code = ((res||{}).response||{}).status||0
           let msg= `{-{.Desc}-}保存失败(${code})`
+          msg = code == 909? msg+"数据重复，请修改后重试":msg
           that.$notify.error({title: '失败',message:msg,duration:5000})
         })
     },

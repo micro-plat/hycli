@@ -13,39 +13,42 @@
   >
   {-{- range $i,$c:=fltrOptrs $viewOpts "step"}-}
   <el-steps class="steps" :active="conf.stepActive" align-center size="small" finish-status="success">
-    {-{ range $j,$s:= fltrColumns $table $c.RwName}-}
+    {-{- range $j,$s:= fltrColumns $table $c.RwName}-}
     <el-step title="{-{$s.Label}-}" :description="view.{-{$s.Name}-}||'未设置'" />
     {-{- end }-}
   </el-steps>
   {-{- end}-}
-
     <el-tabs v-model="conf.selected">
-      <el-tab-pane label="详情" name="first">
-        {-{- template "view.tmpl.html" $vcols}-}
-      </el-tab-pane>
       {-{- range $i,$c:= $viewOpts}-}
-      {-{- if eq "CMPNT" $c.Name}-}
-      <el-tab-pane label="{-{$c.Label}-}" name="{-{$c.Label}-}"  @tab-click="show_view_{-{$c.UNQ}-}">
-         <{-{$c.UNQ}-} ref="view_{-{$c.UNQ}-}"></{-{$c.UNQ}-}>
+      {-{- if eq "view" $c.Name}-}
+      {-{- $currentTable := fltrSearchTable  $c.Table }-}
+      {-{- $vxcols := fltrColumns $currentTable "v" }-}
+      <el-tab-pane label="详情" name="{-{$c.UNQ}-}">
+       {-{- template "view.tmpl.html" $vxcols}-}
       </el-tab-pane>
+      {-{- else if eq "CMPNT" $c.Name}-}
+      <el-tab-pane label="{-{$c.Label}-}" name="{-{$c.UNQ}-}"  @tab-click="show_view_{-{$c.UNQ}-}">
+        <{-{$c.UNQ}-} ref="view_{-{$c.UNQ}-}"></{-{$c.UNQ}-}>
+     </el-tab-pane>
        {-{- else if eq "TAB" $c.Name}-}
-        <el-tab-pane label="{-{$c.Label}-}" name="{-{$c.Label}-}"  @tab-click="show_view_{-{$c.UNQ}-}">
-      
+        <el-tab-pane label="{-{$c.Label}-}" name="{-{$c.UNQ}-}"  @tab-click="show_view_{-{$c.UNQ}-}">
           {-{- $tlbar :=fltrOptrsByPUNQ $table.ViewExtCmptOpts  $c.UNQ "qbar"}-}
-           <!-- {-{$c.Table  }-},{-{ len $tlbar }-}-->
           {-{- if gt (len $tlbar) 0}-}
           <el-row>
             <el-col :span="24" class="text-right">
           {-{- range $i,$x:= $tlbar}-}
+          {-{- if eq $c.UNQ $x.ParentUNQ}-}
           <el-button type="success" icon="Plus"
-           round size="small"
+           round size="small" x
             @click="show_cmpnt_{-{$x.UNQ}-}">{-{ $x.Label}-}</el-button>
+          {-{- end  }-}
          {-{- end}-}
         </el-col>
           </el-row>
          {-{- end}-}
          {-{- $ct:= fltrSearchUITableAndResetUNQ $c}-}
-        {-{- template "list.tmpl.html" $ct}-}
+         {-{- $tbs := contactTBS  $ct $table }-}
+        {-{- template "list.tmpl.html" $tbs}-}
          </el-tab-pane>
       {-{- end}-}
       {-{- end }-}
@@ -77,7 +80,7 @@ export default {
     return {
         conf:{
         visible:false,
-        selected:"first",
+        selected:"{-{(fltrSelectedOptrs $viewOpts).UNQ}-}",
         stepActive:0,
       },
       form:{},
@@ -96,12 +99,23 @@ export default {
   },
   methods: {
    {-{- range $x,$m:=fltrOptrs $table.ViewExtCmptOpts "CMPNT"}-}
-  show_cmpnt_{-{$m.UNQ}-}(){
+  show_cmpnt_{-{$m.UNQ}-}(fm = {}){
     let form = Object.assign({},this.form)
+    form = Object.assign(form,fm)
+ 
     {-{- $c := fltrOptrsByStatic $m }-}
     {-{- range $k,$v := $c}-}
-    form.{-{$k}-}="{-{$v}-}"
+    {-{- if eq true (fltrStart $v "@")}-}
+    form.{-{$k}-} = this.{-{fltrTrim $v "@"}-}
+    {-{- else if eq true (fltrStart $v "&")}-}
+    form.{-{$k}-} = (this.{-{fltrTrim $v "&"}-}||[]).join(",")
+    {-{- else if eq true (fltrStart $v "#")}-}
+    form.{-{$k}-} = fm.{-{fltrTrim $v "#"}-}
+    {-{- else}-}
+    form.{-{$k}-} = "{-{$v}-}"
     {-{- end}-}
+    {-{- end}-}
+
     this.$refs.cmpnt_{-{$m.UNQ}-}.show(form)
   },
 {-{- end}-}
