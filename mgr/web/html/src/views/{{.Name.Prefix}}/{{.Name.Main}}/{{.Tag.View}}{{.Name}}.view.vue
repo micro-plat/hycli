@@ -12,7 +12,7 @@
     :before-close="hide"
   >
   {-{- range $i,$c:=fltrOptrs $viewOpts "step"}-}
-  <el-steps class="steps" :active="conf.stepActive" align-center size="small" finish-status="success">
+  <el-steps class="steps" :active="conf.stepActive_{-{$c.UNQ}-}" align-center size="small" finish-status="success">
     {-{- range $j,$s:= fltrColumns $table $c.RwName}-}
     <el-step title="{-{$s.Label}-}" :description="view.{-{$s.Name}-}||'未设置'" />
     {-{- end }-}
@@ -81,7 +81,9 @@ export default {
         conf:{
         visible:false,
         selected:"{-{(fltrSelectedOptrs $viewOpts).UNQ}-}",
-        stepActive:0,
+        {-{- range $i,$c:=fltrOptrs $viewOpts "step"}-}
+        stepActive_{-{$c.UNQ}-}:0,
+        {-{- end}-}
       },
       form:{},
        {-{- range $i,$c:=  $viewOpts }-}

@@ -1,26 +1,29 @@
 {-{- $xtable :=.}-}
 {-{- $table :=.Current}-}
 {-{- $mtable :=.Main}-}
-{-{- $optRow :=$table.ListOpts}-}
-{-{- $len :=len $optRow}-}
-{-{- $width:=60}-}
-{-{- if eq $len 2}-}
-{-{- $width = 100}-}
-{-{- else if gt $len 2}-}
-{-{- $width = 180}-}
-{-{- end}-}
-{-{- if lt $len 5}-}
-{-{- end}-}
-{-{- $optrs := $optRow }-}
+{-{- $optrs :=$table.ListOpts}-}
 {-{- $tmpl :=IsTmplTb $xtable}-}
 {-{- if eq true $tmpl}-}
 {-{-  $optrs = fltrOptrsByTable (fltrOptrsByPosition $mtable.ViewExtCmptOpts "lstbar") $table.Name.Raw}-}
 {-{- end}-}
+
+{-{-  $optrs = fltrOptrs $optrs "CMPNT"}-}
+{-{- $words:=""}-}
+{-{- range $i,$c:= $optrs}-}
+{-{- $words =sjoin $words $c.Label}-}
+{-{- end}-}
+{-{- $len := div (len $words) 3}-}
+{-{- $width := multiply $len 21}-}
+{-{- if gt $width 180}-}
+{-{- $width = 180}-}
+{-{- end}-}
+
+
 {-{- if gt (len $optrs) 0}-}
 <el-table-column fixed="right" label="操作" width="{-{$width}-}">
     <template #default="scope">
         <div class="opts">
-            {-{- $cmpnts:= fltrOptrs $optrs "CMPNT"}-}
+            {-{- $cmpnts:= $optrs}-}
             {-{- $cmpnt_count:= len $cmpnts}-}
             {-{- range $x,$m:=$cmpnts }-}
             {-{- $exprs :=fltrOptrParaExprs $m "showExpr" ""}-}

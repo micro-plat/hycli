@@ -45,8 +45,9 @@
         item.{-{$c.Name}-} = (item.{-{$c.Name}-}||"").replace(/\n/g,"<br/>")
       {-{- end}-}
       {-{- end }-}
-      {-{- if gt (len (fltrOptrs $viewOpts "step")) 0}-}
-        that.conf.stepActive = that.getStepActive(res)
+      {-{- $steps := fltrOptrs $viewOpts "step"}-}
+      {-{- range $i,$m := $steps}-}
+        that.conf.stepActive_{-{$m.UNQ}-} = that.getStepActive_{-{$m.UNQ}-}(res)
       {-{- end}-}
         that.view = item
             
@@ -73,9 +74,11 @@
 
  {-{- $stepOpts:=fltrOptrs $viewOpts "step"}-}
  {-{- if gt (len $stepOpts) 0}-}
- getStepActive(view){
-  {-{- range $i,$c:= $stepOpts}-}
-  {-{- range $j,$s:= fltrColumns $table $c.RwName}-}
+ {-{- range $i,$c:= $stepOpts}-}
+ getStepActive_{-{$c.UNQ}-}(view){
+ 
+  {-{- $steps :=  fltrColumns $table $c.RwName}-}
+  {-{- range $j,$s:= $steps}-}
       {-{- if and (ne "" $s.Cmpnt.Format) (eq true $s.Field.IsDate)}-}
         if(!view["{-{$s.Name}-}"]|| new Date(view["{-{$s.Name}-}"]) > new Date()){
           return {-{$j}-}
@@ -86,9 +89,9 @@
       }
       {-{- end}-}
   {-{- end }-}
- {-{- end}-}
-     return {-{(len $stepOpts)|minus}-}
+        return {-{(len $steps)|minus}-}
  },
+ {-{- end}-}
  {-{- end}-}
    colorful(r){
      return this.$theia.env.conf.colorful[r]
