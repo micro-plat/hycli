@@ -57,7 +57,7 @@
         {-{- if eq "daterange" $c.Cmpnt.Type}-}
         <!--{-{$c.Label}-} 日期范围控件 -->
         <el-form-item>
-            <el-date-picker style="width: 200px" v-model="form_{-{$table.UNQ}-}.{-{$c.Name}-}" type="daterange" start-placeholder="开始日期"
+            <el-date-picker :shortcuts="shortcuts" style="width: 200px" v-model="form_{-{$table.UNQ}-}.{-{$c.Name}-}" type="daterange" start-placeholder="开始日期"
                 end-placeholder="结束日期" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
         </el-form-item>
         {-{- end}-}
@@ -67,7 +67,7 @@
         {-{- if eq "date" $c.Cmpnt.Type}-}
         <!--{-{$c.Label}-} 日期控件 -->
         <el-form-item>
-            <el-date-picker style="width: 120px" v-model="form_{-{$table.UNQ}-}.{-{$c.Name}-}" clearable type="date"
+            <el-date-picker  style="width: 120px" v-model="form_{-{$table.UNQ}-}.{-{$c.Name}-}" clearable type="date"
                 placeholder="{-{$c.Label}-}" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
         </el-form-item>
         {-{- end}-}

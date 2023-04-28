@@ -79,6 +79,7 @@ var taskBarOpts = &optrs{Position: "qbar", Tag: "TSKBAR", URL: "@/views/cmpnts/t
 func (s *optrs) Get(tableName string) *optrs {
 	nopts := *s
 	nopts.Table = tableName
+	nopts.UNQ = defFids.Next()
 	return &nopts
 }
 func (s *optrs) NeedBatchCheck() bool {
@@ -157,9 +158,9 @@ func createViewOptrs(table *Table, t string) (viewOptrs, viewExtCmptOpts) {
 	viewOpts := createCmdsOptrs(table.Name.Raw, t, viewOptCmd)
 	//构建操作
 	if !optrslst(viewOpts).FindName(VIEW_TAG) && len(fltrColumns(table, VIEW_COLUMN)) > 0 {
-		view := *detailOpts.Get(table.Name.Raw)
+		view := detailOpts.Get(table.Name.Raw)
 		view.Name = "view"
-		viewOpts = append(viewOpts, &view)
+		viewOpts = append(viewOpts, view)
 	}
 	extOpts := creatExtCmptOpts(viewOpts...)
 	return viewOpts, extOpts

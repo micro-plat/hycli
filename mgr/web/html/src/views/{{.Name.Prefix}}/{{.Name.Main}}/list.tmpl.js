@@ -141,20 +141,21 @@
 
 {-{- range $i,$c:= $lstRow}-}
 {-{- if eq "switch" $c.Cmpnt.Type}-}
-  on{-{$c.Name}-}SwitchChange(xfrom) {
-    let form = {}
-    form.{-{$c.Name}-} = xfrom.{-{$c.Name}-} == true?0:1;
-    {-{- range $i,$v :=  $table.PKColumns}-}
-    form.{-{$v.Name}-} = xfrom.{-{$v.Name}-}
-    {-{- end}-}
-    let that = this
-    this.$theia.http.post("/{-{$table.Name.MainPath|lower}-}/switch",form).then(res=>{
-      that.$notify.success({title: '成功',message: '修改{-{$c.Label}-}成功',duration:5000})
-    }).catch(res=>{
-      let code = ((res||{}).response||{}).status||0
-      let msg = `修改{-{$c.Label}-}失败(${code})`
-      that.$notify.error({title: '失败',message: msg,duration:5000})
-    });
+  on{-{$c.Name}-}SwitchChange(xfrom,v) {
+      let form = {}
+      form.{-{$c.Name}-} = v == true? 0 : 1;
+      {-{- range $i,$v :=  $table.PKColumns}-}
+      form.{-{$v.Name}-} = xfrom.{-{$v.Name}-}
+      {-{- end}-}
+      let that = this
+      this.$theia.http.post("/{-{$table.Name.MainPath|lower}-}/switch",form).then(res=>{
+        that.$notify.success({title: '成功',message: '修改{-{$c.Label}-}成功',duration:5000})
+      }).catch(res=>{
+        v = !v
+        let code = ((res||{}).response||{}).status||0
+        let msg = `修改{-{$c.Label}-}失败(${code})`
+        that.$notify.error({title: '失败',message: msg,duration:5000})
+      });
   },
 {-{- end}-}
 {-{- end}-}

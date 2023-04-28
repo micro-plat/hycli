@@ -1,5 +1,5 @@
 {-{- $table := .}-}
-{-{- $opts :=$table.ListOpts}-}
+{-{- $opts :=mergeOptrs $table.ListOpts $table.BarOpts}-}
 <template tag="{-{.Marker}-}">
   <div>
     {-{- range $x,$m:=$opts }-}
@@ -13,11 +13,11 @@
       :before-close="hide_{-{$m.UNQ}-}"
     >
       {-{- $cols:= fltrColumns $table $m.RwName (sjoin "form_" $m.UNQ)}-}
-      <span
-        >确认{-{$m.Label}-}({-{range $i,$c:= $cols}-} {-{ $c.Label }-}:<span
-          v-text="form_{-{$m.UNQ}-}.{-{$c.Name}-}"
-        ></span
-        >{-{ end }-}) 吗?</span
+      <span 
+        >确认{-{$m.Label}-}{-{range $i,$c:= $cols}-}<span 
+        v-if="form_{-{$m.UNQ}-}.{-{$c.Name}-}"
+        >{{form_{-{$m.UNQ}-}.{-{$c.Name}-}}}</span
+        >{-{ end }-} 吗?</span
       >
       <template #footer>
         <span class="dialog-footer">

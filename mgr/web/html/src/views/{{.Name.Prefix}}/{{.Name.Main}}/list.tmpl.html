@@ -30,7 +30,7 @@
         {-{- if eq "switch" $c.Cmpnt.Type}-}
         <el-table-column {-{if ne "" $show }-} v-if="{-{$show}-}" {-{end}-}  {-{if ne "" $c.Style.ListWidth}-} width="{-{$c.Style.ListWidth}-}" {-{end}-}  align="{-{$align}-}" label="{-{$c.Label}-}">
             <template #default="scope">
-                <el-switch {-{if ne true $tmpl}-} @change="on{-{$c.Name}-}SwitchChange(scope.row)" {-{else}-} disabled  {-{end}-} v-model="scope.row.{-{$c.Name}-}_switch" />
+                <el-switch {-{if ne true $tmpl}-} @change="on{-{$c.Name}-}SwitchChange(scope.row,$event)" {-{else}-} disabled  {-{end}-} v-model="scope.row.{-{$c.Name}-}_switch" />
             </template>
         </el-table-column>
         {-{- else if eq "progress" $c.Cmpnt.Type}-}
