@@ -24,6 +24,8 @@ var Funcs = map[string]interface{}{
 	"fltrMYSQLType":                fltrMYSQLType,
 	"fltrMYSQLDef":                 mySQLDefValue,
 	"fltrOptrs":                    fltrOptrs,
+	"fltrFindAllExtViewOptrs":      fltrFindAllExtViewOptrs,
+	"fltrFindExtViewOptrs":         fltrFindExtViewOptrs,
 	"fltr2CName":                   md.ToCName,
 	"fltrOptrsByPUNQ":              fltrOptrsByPUNQ,
 	"fltrOptrsByStatic":            fltrOptrsByStatic,
@@ -174,6 +176,41 @@ func fltrOptrs(opts []*optrs, tps string) optrslst {
 	sort.Sort(nopts)
 	return nopts
 }
+func fltrFindAllExtViewOptrs(optrs viewOptrs) optrslst {
+	lst := make(optrslst, 0, 1)
+	for _, op := range optrs {
+		lst = append(lst, findOptrsByView(op.Table, "lst-lstbar")...)
+	}
+	return lst
+}
+func fltrFindExtViewOptrs(optrs viewOptrs, tbName string, postion string) optrslst {
+	return fltrOptrsByPosition(fltrOptrsByTable(fltrFindAllExtViewOptrs(optrs), tbName), postion)
+}
+func findOptrsByView(tbName string, tp string) optrslst {
+	tb := findTable(tbName)
+	if tb.Name == nil {
+		return nil
+	}
+	tpNames := strings.Split(strings.ToLower(tp), "-")
+
+	nlst := make(optrslst, 0, 1)
+	for _, tpName := range tpNames {
+		lst := make(optrslst, 0, 1)
+		switch tpName {
+		case "lst":
+			lst = optrslst(tb.ListOpts)
+		case "lstbar":
+			lst = optrslst(tb.BarOpts)
+		}
+		for _, v := range lst {
+			if v.Params.Get("showView") == "true" {
+				nlst = append(nlst, v.Get(tbName))
+			}
+		}
+	}
+
+	return nlst
+}
 func mergeOptrs(opts ...[]*optrs) optrslst {
 	lst := make(optrslst, 0, 1)
 	v := map[string]bool{}
@@ -218,7 +255,6 @@ func fltrOptrsByTable(opts []*optrs, tb string) optrslst {
 		if strings.EqualFold(v.Table, tb) {
 			nopts = append(nopts, v)
 		}
-
 	}
 	sort.Sort(nopts)
 	return nopts

@@ -113,6 +113,13 @@ func (s optrslst) FindName(name string) bool {
 	}
 	return false
 }
+func (s optrslst) Gets(tableName string) optrslst {
+	optrslst := make(optrslst, 0, len(s))
+	for _, v := range s {
+		optrslst = append(optrslst, v.Get(tableName))
+	}
+	return optrslst
+}
 
 var extCmptOpts = map[string]*optrs{
 	"add":    addOpts,
