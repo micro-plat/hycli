@@ -47,17 +47,21 @@
 | lstupdator(名称,dialog:接口名[，样式设置]) | lstupdator(批量完成,dialog:finish,style:{@plan_id:&bcheck})           | 修改操作     |
 
 
-| 样式      | 示例                               | 适用范围    | 说明                 |
-| --------- | ---------------------------------- | ----------- | -------------------- |
-| rwName    |                                    | 所有        | 本表字段名或标记     |
-| fwName    |                                    | 所有        | 外部表字段名或标记   |
-| showExpr  | showExpr:@status==0 showExpr:age>0 | lst         | 显示表达式           |
-| span      | span:24                            | lstat chart | 分份数量             |
-| height    | height:300px                       | lstat chart | 高度                 |
-| rType     | rType:rose rType:radius            | chart       | pie图表类型          |
-| showLabel | showLabel:false                    | chart       | 显示文字标签         |
-| add       | add:true,add:分配                  | view        | 允许添加列表         |
-| @字段名   | @pid:2                             | view        | 用于设置字段的固定值 |
+| 样式      | 示例                               | 适用范围    | 说明                                                         |
+| --------- | ---------------------------------- | ----------- | ------------------------------------------------------------ |
+| rwName    |                                    | 所有        | 本表字段名或标记                                             |
+| fwName    |                                    | 所有        | 外部表字段名或标记                                           |
+| showExpr  | showExpr:@status==0 showExpr:age>0 | lst         | 显示表达式                                                   |
+| span      | span:24                            | lstat chart | 分份数量                                                     |
+| height    | height:300px                       | lstat chart | 高度                                                         |
+| rType     | rType:rose rType:radius            | chart       | pie图表类型                                                  |
+| showLabel | showLabel:false                    | chart       | 显示文字标签                                                 |
+| add       | add:true,add:分配                  | view        | 允许添加列表                                                 |
+| @字段名   | @pid:2                             | view        | 前端传值字段，用于设置改字段的传值方式，传值方式可通过值前缀配置 |
+| &字段名   | &pid:2                             | view        | 后端传值字段，用于设置改字段的传值方式，传值方式可通过值前缀配置 |
+
+*@字段名 值有四种配置方式：1. @开头，同当前this对象中取值 2. #开头，从当前this对象中取值并通过","连接拼接为支付串.3.其它 从当前传入参数中获取
+*&字段名 值有四种配置方式：1. @开头，从用户登录信息中获取 2.其它 从当前传入参数中获取
 
 * rwName，lstbar,lstupdator等批量操作时为字段的标识符，其它时候为字段名
 * fwName,lstbar,lstupdator等批量操作时为条件标识符，其它时候为字段名

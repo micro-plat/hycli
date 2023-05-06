@@ -10,7 +10,7 @@
       //{-{ $c.Label}-}查询
       let nform_{-{$c.UNQ}-} = {}
       {-{- $ct:= fltrSearchUITableAndResetUNQ $c}-}
-      {-{- $os := fltrOptrsByStatic $c }-}
+      {-{- $os := fltrFrontOptrsByStatic $c }-}
       {-{- range $k,$v := $os}-}
       nform_{-{$c.UNQ}-}.{-{$k}-} =this.$route.params["{-{$k}-}"]|| "{-{$v}-}"
       {-{- end}-}

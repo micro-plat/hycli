@@ -103,7 +103,7 @@ func getNamesx(t string) []string {
 
 func getNames(p string) []string {
 	// reg := regexp.MustCompile(`([\w]+[\(][\w]+[,]?[\w]*\))|([@]?[\w]+)`)
-	reg := regexp.MustCompile(`([\w]+\([^(]*\))|([@]?[\w]+)`)
+	reg := regexp.MustCompile(`([@&\^]?[\w]+\([^(]*\))|([@&\^]?[\w]+)`)
 	xn := reg.FindAllStringSubmatch(p, -1)
 	if len(xn) == 0 {
 		return nil

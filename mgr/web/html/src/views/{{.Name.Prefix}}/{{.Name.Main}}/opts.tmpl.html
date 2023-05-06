@@ -13,14 +13,14 @@
 {-{- $words =sjoin $words $c.Label}-}
 {-{- end}-}
 {-{- $len := div (len $words) 3}-}
-{-{- $width := multiply $len 21}-}
+{-{- $width := multiply $len 24}-}
 {-{- if gt $width 180}-}
 {-{- $width = 180}-}
 {-{- end}-}
 
 
 {-{- if gt (len $optrs) 0}-}
-<el-table-column fixed="right" label="操作" width="{-{$width}-}">
+<el-table-column fixed="right" align="center" label="操作" width="{-{$width}-}">
     <template #default="scope">
         <div class="opts">
             {-{- $cmpnts:= $optrs}-}
@@ -29,7 +29,7 @@
             {-{- $exprs :=fltrOptrParaExprs $m "showExpr" ""}-}
            
             {-{- if or (le $cmpnt_count 3) (lt $x 2) }-}
-            <el-button  size="small" type="text" @click="show_cmpnt_{-{$m.UNQ}-}(scope.row)" {-{if gt (len $exprs)  0}-} v-if='
+            <el-button   type="text" @click="show_cmpnt_{-{$m.UNQ}-}(scope.row)" {-{if gt (len $exprs)  0}-} v-if='
             {-{- range $i,$expr := $exprs}-}
             {-{- if ne "" $expr.Name}-}{-{$expr.Name}-}{-{$expr.Symbol}-}{-{$expr.Value}-} 
             {-{- else if ne "" $expr.Field}-}
@@ -41,7 +41,7 @@
 
             {-{- if gt $cmpnt_count 3}-}
             {-{- if eq $x 2}-}
-            <el-dropdown size="small" @command="(command) => show_cmpnt(command, scope.row)">
+            <el-dropdown  @command="(command) => show_cmpnt(command, scope.row)">
                 <span class="el-dropdown-link">
                  其它<el-icon class="el-icon--right"><arrow-down /></el-icon>
                 </span>

@@ -12,7 +12,7 @@
     :before-close="hide"
   >
   {-{- range $i,$c:=fltrOptrs $viewOpts "step"}-}
-  <el-steps class="steps" :active="conf.stepActive_{-{$c.UNQ}-}" align-center size="small" finish-status="success">
+  <el-steps class="steps" :active="conf.stepActive_{-{$c.UNQ}-}" align-center  finish-status="success">
     {-{- range $j,$s:= fltrColumns $table $c.RwName}-}
     <el-step title="{-{$s.Label}-}" :description="view.{-{$s.Name}-}||'未设置'" />
     {-{- end }-}
@@ -39,7 +39,7 @@
           {-{- range $i,$x:= $tlbar}-}
           {-{- if eq $c.UNQ $x.ParentUNQ}-}
           <el-button type="success" icon="Plus"
-           round size="small" x
+           round 
             @click="show_cmpnt_{-{$x.UNQ}-}">{-{ $x.Label}-}</el-button>
           {-{- end  }-}
          {-{- end}-}
@@ -105,7 +105,7 @@ export default {
     let form = Object.assign({},this.form)
     form = Object.assign(form,fm)
  
-    {-{- $c := fltrOptrsByStatic $m }-}
+    {-{- $c := fltrFrontOptrsByStatic $m }-}
     {-{- range $k,$v := $c}-}
     {-{- if eq true (fltrStart $v "@")}-}
     form.{-{$k}-} = this.{-{fltrTrim $v "@"}-}

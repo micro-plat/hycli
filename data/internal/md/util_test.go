@@ -136,10 +136,10 @@ func TestGetName3x(t *testing.T) {
 
 }
 func TestGetNameFor(t *testing.T) {
-	p := "Q,l,LE,C,U,lw(120),sl(project_system,project_id),tp(blist)"
+	p := "Q,l,LE,C,U,lw(120),sl(project_system,project_id),tp(blist),&uid,@name,^abc,^ex(100),_x,_ef(ef)"
 	xn := getNames(p)
 	fmt.Println("xxxy:", strings.Join(xn, "|"))
-	assert.Equal(t, 4, len(xn))
+	assert.Equal(t, 8, len(xn))
 
 }
 

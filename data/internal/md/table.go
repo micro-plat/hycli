@@ -9,8 +9,9 @@ import (
 
 type RName struct {
 	Raw      string `json:'raw'`
-	OName    string `json:'oname'` //原始名称，包含~
-	CName    string `json:'cname'` //单词间首字母大写
+	OName    string `json:'oname'`  //原始名称，包含~
+	CName    string `json:'cname'`  //单词间首字母大写
+	LOName   string `json:'loName'` //全小写，"."进行分隔
 	Main     string `json:'main'`
 	Short    string `json:'short'`
 	RealName string `json:'realName'` ////原始名称去掉~等特殊字符
@@ -52,7 +53,7 @@ func NewTable(name, desc, extinfo string) *Table {
 			Main:     strings.Join(names[1:2], "_"),         //第二段字符
 			OName:    fname,                                 //原始名称
 			MainPath: strings.Join(names, "/"),              //以斜杠分隔的路径
-
+			LOName:   strings.ToLower(strings.Join(names[1:], ".")),
 		},
 
 		Exclude: strings.HasPrefix(name, "^"),

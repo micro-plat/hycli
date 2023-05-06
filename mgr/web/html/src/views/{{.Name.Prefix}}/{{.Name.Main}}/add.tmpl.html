@@ -67,7 +67,7 @@
       {-{- else if eq "multicheck" $c.Cmpnt.Type}-}
       <!--{-{$c.Label}-} chckbox-group -->
       <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-        <el-checkbox-group v-model="{-{$c.Ext.FormName}-}.{-{.Name}-}" size="small" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}>
+        <el-checkbox-group v-model="{-{$c.Ext.FormName}-}.{-{.Name}-}"  {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}>
           <el-checkbox-button v-for="item in {-{.Name}-}List" :key="item.value" :label="item.value"  :value="item.value">
             {{item.name}}
           </el-checkbox-button>
@@ -85,7 +85,7 @@
      </el-form-item>
       {-{- else if eq "slider" $c.Cmpnt.Type}-}
       <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-        <el-slider size="small" show-input {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}
+        <el-slider  show-input {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}
         placement="right" style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{ $c.Name }-}" 
         {-{- if ne 0 $c.Style.Min}-}
          :min="{-{ $c.Style.Min }-}" {-{- end }-} 
@@ -110,7 +110,7 @@
       </el-form-item>
       {-{- else if  (eq "radio" $c.Cmpnt.Type)}-}
      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-      <el-radio-group v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" size="small" 
+      <el-radio-group v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}"  
       {-{if gt (len (fltrAssctColumns $ucols $c.Name)) 0}-} @change="onChange_{-{$c.Name}-}"  {-{end}-}  >
         <el-radio-button v-for="item in {-{$c.Name}-}List" :key="item.value" :label="item.value" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}>
             {{item.name}}

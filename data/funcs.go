@@ -28,7 +28,8 @@ var Funcs = map[string]interface{}{
 	"fltrFindExtViewOptrs":         fltrFindExtViewOptrs,
 	"fltr2CName":                   md.ToCName,
 	"fltrOptrsByPUNQ":              fltrOptrsByPUNQ,
-	"fltrOptrsByStatic":            fltrOptrsByStatic,
+	"fltrFrontOptrsByStatic":       fltrFrontOptrsByStatic,
+	"fltrBgOptrsByStatic":          fltrBgOptrsByStatic,
 	"fltrOptrsByTag":               fltrOptrsByTag,
 	"fltrOptrsByCmd":               fltrOptrsByCmd,
 	"fltrOptrsByPosition":          fltrOptrsByPosition,
@@ -285,7 +286,7 @@ func fltrOptrsByCmd(opts []*optrs, cmds string) optrslst {
 	sort.Sort(nopts)
 	return nopts
 }
-func fltrOptrsByStatic(opts *optrs) map[string]string {
+func fltrFrontOptrsByStatic(opts *optrs) map[string]string {
 	outs := make(map[string]string)
 	for k, v := range opts.Params {
 		if strings.HasPrefix(k, "@") {
@@ -295,6 +296,17 @@ func fltrOptrsByStatic(opts *optrs) map[string]string {
 
 	return outs
 }
+func fltrBgOptrsByStatic(opts *optrs) map[string]string {
+	outs := make(map[string]string)
+	for k, v := range opts.Params {
+		if strings.HasPrefix(k, "&") {
+			outs[strings.Trim(k, "&")] = v
+		}
+	}
+
+	return outs
+}
+
 func fltr2Num(t string, def int) int {
 	return types.GetInt(t, def)
 }

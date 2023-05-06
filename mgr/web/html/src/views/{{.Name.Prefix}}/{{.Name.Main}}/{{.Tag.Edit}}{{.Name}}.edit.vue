@@ -14,7 +14,7 @@
     :close-on-click-modal="false"
     :before-close="hide"
   >
-<el-form :model="form" size="small" ref="form" :rules="rules">
+<el-form :model="form"  ref="form" :rules="rules">
 {-{- template "add.tmpl.html" $ucols}-}
 </el-form>
     <template #footer>

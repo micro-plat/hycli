@@ -15,7 +15,7 @@
       {-{- $rows:= fltrColumns $table $m.RwName (sjoin "form_" $m.UNQ)}-}
       <el-form
         :model="form_{-{$m.UNQ}-}"
-        size="small"
+        
         ref="fm_{-{$m.UNQ}-}"
         :rules="rules_{-{$m.UNQ}-}"
       >

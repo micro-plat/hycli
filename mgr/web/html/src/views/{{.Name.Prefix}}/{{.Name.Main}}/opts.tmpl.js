@@ -33,7 +33,7 @@ show_cmpnt(cmd,row){
       {-{- end}-}
 
       //2023.4.18添加---
-    {-{- $c := fltrOptrsByStatic $m }-}
+    {-{- $c := fltrFrontOptrsByStatic $m }-}
     {-{- range $k,$v := $c}-}
     {-{- if eq true (fltrStart $v "@")}-}
     query.{-{$k}-} = this.{-{fltrTrim $v "@"}-}

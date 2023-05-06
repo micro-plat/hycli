@@ -3,9 +3,9 @@
         <el-tag v-for="tag in tags" :key="tag" class="mx-1" closable :disable-transitions="false" @close="handleClose(tag)">
             {{ tag }}
         </el-tag>
-        <el-input v-if="inputVisible" ref="input" v-model="inputValue" class="ml-1 w-20" size="small"
+        <el-input v-if="inputVisible" ref="input" v-model="inputValue" class="ml-1 w-20" 
             @keyup.enter="handleInputConfirm" @blur="handleInputConfirm" />
-        <el-button v-else class="button-new-tag ml-1" size="small" @click="showInput">
+        <el-button v-else class="button-new-tag ml-1"  @click="showInput">
             + 添加
         </el-button>
     </div>

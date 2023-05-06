@@ -20,7 +20,7 @@
     </div>
     {-{- end}-}
     {-{- if or (gt (len $qcols) 0 ) (gt (len $blist) 0)}-}
-    <el-form :model="form_{-{$table.UNQ}-}" inline size="small">
+    <el-form :model="form_{-{$table.UNQ}-}" inline >
         {-{- range $i,$c:= $qcols}-}
         {-{- if eq "year" $c.Cmpnt.Type}-}
         <!--{-{$c.Label}-} 年控件 -->
@@ -163,7 +163,7 @@
             {-{- end}-}
 
             {-{- range $i,$c:= $blist}-}
-            <el-radio-group v-model="form_{-{$table.UNQ}-}.{-{.Name}-}" size="small" @change="onQuery">
+            <el-radio-group v-model="form_{-{$table.UNQ}-}.{-{.Name}-}"  @change="onQuery">
                 <el-radio-button>{-{$c.Label}-}</el-radio-button>
                 <el-radio-button v-for="item in {-{.Name}-}List" :key="item.value" :label="item.value">
                     {{item.name}}
