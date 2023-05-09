@@ -4,9 +4,8 @@
 {-{- $optrs :=$table.ListOpts}-}
 {-{- $tmpl :=IsTmplTb $xtable}-}
 {-{- if eq true $tmpl}-}
-{-{-  $optrs = fltrOptrsByTable (fltrOptrsByPosition $mtable.ViewExtCmptOpts "lstbar") $table.Name.Raw}-}
+{-{-  $optrs = fltrOptrsByTable (fltrOptrsByPosition $mtable.ViewExtCmptOpts "lstbar-lst") $table.Name.Raw}-}
 {-{- end}-}
-
 {-{-  $optrs = fltrOptrs $optrs "CMPNT"}-}
 {-{- $words:=""}-}
 {-{- range $i,$c:= $optrs}-}
@@ -17,8 +16,6 @@
 {-{- if gt $width 180}-}
 {-{- $width = 180}-}
 {-{- end}-}
-
-
 {-{- if gt (len $optrs) 0}-}
 <el-table-column fixed="right" align="center" label="操作" width="{-{$width}-}">
     <template #default="scope">

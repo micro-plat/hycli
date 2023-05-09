@@ -1,9 +1,11 @@
 package member
 {-{- $ft := .}-}
 import (
+	"fmt"
 	"github.com/micro-plat/hydra"
 	"{-{$ft.PkgName}-}/modules/biz/member"
 	"{-{$ft.PkgName}-}/modules/const/field"
+	"{-{$ft.PkgName}-}/modules/biz/system"
 )
 
 var loginRequiredFields = []string{"user_name", "password"}
@@ -25,5 +27,6 @@ func loginHandle(ctx hydra.IContext) (r interface{}) {
 		return err
 	}
 	ctx.User().Auth().Response(state)
+	system.SaveLogByUID(state.UserID,fmt.Sprintf("【%s】登录系统",state.FullName),"")
 	return state
 }

@@ -23,8 +23,8 @@
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="hide_{-{$m.UNQ}-}">取消</el-button>
-          <el-button type="primary" @click="save_{-{$m.UNQ}-}">提交</el-button>
+          <el-button @click="hide_{-{$m.UNQ}-}" icon="close">取消</el-button>
+          <el-button type="primary" @click="save_{-{$m.UNQ}-}" icon="select">提交</el-button>
         </span>
       </template>
     </el-dialog>

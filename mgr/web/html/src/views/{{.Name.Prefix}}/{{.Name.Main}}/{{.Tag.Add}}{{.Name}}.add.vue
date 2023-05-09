@@ -19,8 +19,8 @@
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="hide">取消</el-button>
-        <el-button type="primary" @click="save">提交</el-button>
+        <el-button @click="hide" icon="close">取消</el-button>
+        <el-button type="primary" @click="save" icon="select">提交</el-button>
       </span>
     </template>
   </el-dialog>

@@ -29,7 +29,8 @@ var Funcs = map[string]interface{}{
 	"fltr2CName":                   md.ToCName,
 	"fltrOptrsByPUNQ":              fltrOptrsByPUNQ,
 	"fltrFrontOptrsByStatic":       fltrFrontOptrsByStatic,
-	"fltrBgOptrsByStatic":          fltrBgOptrsByStatic,
+	"fltrStaticColumn":             fltrStaticColumn,
+	"fltrHasStaticColumn":          fltrHasStaticColumn,
 	"fltrOptrsByTag":               fltrOptrsByTag,
 	"fltrOptrsByCmd":               fltrOptrsByCmd,
 	"fltrOptrsByPosition":          fltrOptrsByPosition,
@@ -239,11 +240,15 @@ func fltrOptrsByTag(opts []*optrs, tag string) optrslst {
 	sort.Sort(nopts)
 	return nopts
 }
-func fltrOptrsByPosition(opts []*optrs, position string) optrslst {
+func fltrOptrsByPosition(opts []*optrs, pss string) optrslst {
 	nopts := make(optrslst, 0, 1)
+	postions := strings.Split(pss, "-")
 	for _, v := range opts {
-		if strings.EqualFold(v.Position, position) {
-			nopts = append(nopts, v)
+		for _, p := range postions {
+			if strings.EqualFold(v.Position, p) {
+				nopts = append(nopts, v)
+				break
+			}
 		}
 
 	}
@@ -296,15 +301,30 @@ func fltrFrontOptrsByStatic(opts *optrs) map[string]string {
 
 	return outs
 }
-func fltrBgOptrsByStatic(opts *optrs) map[string]string {
-	outs := make(map[string]string)
-	for k, v := range opts.Params {
-		if strings.HasPrefix(k, "&") {
-			outs[strings.Trim(k, "&")] = v
+func fltrStaticColumn(tb *Table, tps, prefix string) map[string]*Column {
+	columns := make(map[string]*Column, 1)
+	tplst := strings.Split(tps, "-")
+	for _, c := range tb.Columns {
+		for _, tp := range tplst {
+			f := md.GetFormat(tp, c.Constraints...)
+			if strings.HasPrefix(f, prefix) {
+				columns[f] = c
+			}
 		}
 	}
-
-	return outs
+	return columns
+}
+func fltrHasStaticColumn(tb *Table, tps, prefix string) bool {
+	tplst := strings.Split(tps, "-")
+	for _, c := range tb.Columns {
+		for _, tp := range tplst {
+			f := md.GetFormat(tp, c.Constraints...)
+			if strings.HasPrefix(f, prefix) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func fltr2Num(t string, def int) int {

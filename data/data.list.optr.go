@@ -242,6 +242,7 @@ func createOptrs(tableName string, t string, tag string) []*optrs {
 		switch name {
 		case VIEW_TAG:
 			opt = *detailOpts
+			opt.Position = tag
 			opt.Table = types.GetStringByIndex(lst, 2, tableName)
 		case UPDATE_TAG:
 			opt = *updateOpts

@@ -25,10 +25,11 @@ func (r *RName) String() string {
 
 // Table 表名称
 type Table struct {
-	Name    *RName `json:'name'`     //表名
-	Desc    string `json:'desc'`     //表描述
-	Rows    []*Row `json:'rows'`     //原始行
-	ExtInfo string `json:'ext_info'` //扩展信息
+	Name     *RName `json:'name'`     //表名
+	Desc     string `json:'desc'`     //表描述
+	Rows     []*Row `json:'rows'`     //原始行
+	ExtInfo  string `json:'ext_info'` //扩展信息
+	Settings string `json:'json'`
 
 	Exclude bool        `json:'exclude'`
 	PkgName string      `json:'pkg_name'`
@@ -38,7 +39,7 @@ type Table struct {
 }
 
 // NewTable 创建表
-func NewTable(name, desc, extinfo string) *Table {
+func NewTable(name, desc, extinfo string, settings string) *Table {
 	fname := types.GetStringByIndex(getNames(name), 0)
 	rname := strings.Trim(fname, "^")
 	names := strings.Split(rname, "_")
@@ -56,13 +57,14 @@ func NewTable(name, desc, extinfo string) *Table {
 			LOName:   strings.ToLower(strings.Join(names[1:], ".")),
 		},
 
-		Exclude: strings.HasPrefix(name, "^"),
-		PkgName: GetPkgName(),
-		Desc:    desc,
-		Rows:    make([]*Row, 0, 1),
-		ExtInfo: extinfo,
-		Tbs:     Tables{},
-		Marker:  output.MARKER,
+		Exclude:  strings.HasPrefix(name, "^"),
+		PkgName:  GetPkgName(),
+		Desc:     desc,
+		Rows:     make([]*Row, 0, 1),
+		ExtInfo:  extinfo,
+		Settings: settings,
+		Tbs:      Tables{},
+		Marker:   output.MARKER,
 	}
 }
 

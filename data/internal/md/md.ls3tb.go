@@ -22,7 +22,7 @@ func Lines2Table(lines Lines) (tables Tables, err error) {
 				if err != nil {
 					return nil, err
 				}
-				tb = NewTable(name, getTableDesc(line), getTableExtInfo(line))
+				tb = NewTable(name, getTableDesc(line), getTableExtInfo(line), getTableSettingInfo(line))
 				continue
 			}
 			if i < 3 {
@@ -61,7 +61,14 @@ func getTableExtInfo(line *Line) string {
 	}
 	return strings.TrimSpace(names[1])
 }
-
+func getTableSettingInfo(line *Line) string {
+	reg := regexp.MustCompile(`[\]>]{1}\((.*?)\)`)
+	names := reg.FindStringSubmatch(line.Text)
+	if len(names) == 0 {
+		return ""
+	}
+	return strings.TrimSpace(names[1])
+}
 func getTableName(line *Line) (string, error) {
 	if !strings.HasPrefix(line.Text, "###") {
 		return "", fmt.Errorf("%d行表名称标注不正确，请以###开头:(%s)", line.LineID, line.Text)

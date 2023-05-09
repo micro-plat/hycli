@@ -103,7 +103,7 @@ func getNamesx(t string) []string {
 
 func getNames(p string) []string {
 	// reg := regexp.MustCompile(`([\w]+[\(][\w]+[,]?[\w]*\))|([@]?[\w]+)`)
-	reg := regexp.MustCompile(`([@&\^]?[\w]+\([^(]*\))|([@&\^]?[\w]+)`)
+	reg := regexp.MustCompile(`([@&\^\?#\$%\*]?[\w]+\([^(]*\))|([@&\^\?#\$%\*]?[\w]+)`)
 	xn := reg.FindAllStringSubmatch(p, -1)
 	if len(xn) == 0 {
 		return nil
@@ -122,7 +122,7 @@ func getNames(p string) []string {
 func mergeConstraint(input []string) []string {
 	output := make([]string, 0, 1)
 	for _, v := range input {
-		if strings.HasPrefix(v, "@") {
+		if strings.HasPrefix(v, "?") {
 			lst := []rune(v[1:])
 			for _, c := range lst {
 				output = append(output, string(c))
@@ -133,7 +133,7 @@ func mergeConstraint(input []string) []string {
 	}
 	routput := make([]string, 0, len(output))
 	for _, v := range output {
-		if x, ok := mtp[v]; ok {
+		if x, ok := mtp[strings.ToLower(v)]; ok {
 			routput = append(routput, x...)
 			continue
 		}
@@ -152,9 +152,12 @@ func getShortDesc(t string) string {
 
 var mtp = map[string][]string{
 	"e": {"le"},
-	"E": {"le"},
 	"i": {"DI"},
 	"n": {"DN"},
 	"s": {"sl"},
-	"t": {"DT"},
+	"q": {"q"},
+	"l": {"l"},
+	"c": {"c"},
+	"u": {"u"},
+	"d": {"d"},
 }

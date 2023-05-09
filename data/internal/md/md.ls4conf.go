@@ -27,24 +27,26 @@ func (t TableConfs) Map() TableConfsMap {
 
 // Table 表名称
 type TableConf struct {
-	Name    string              `json:'name'` //表名
-	Desc    string              `json:'desc'` //表描述
-	Rows    map[string]*RowConf `json:'rows'` //原始行
-	Exclude bool                `json:'exclude'`
-	ExtInfo string              `json:'ext_info'` //扩展信息
+	Name     string              `json:'name'` //表名
+	Desc     string              `json:'desc'` //表描述
+	Rows     map[string]*RowConf `json:'rows'` //原始行
+	Exclude  bool                `json:'exclude'`
+	ExtInfo  string              `json:'ext_info'` //扩展信息
+	Settings string              `json:'settings'`
 }
 
 // newTableConf 创建表
-func newTableConf(name, desc, extinfo string) *TableConf {
+func newTableConf(name, desc, extinfo string, settings string) *TableConf {
 	fname := types.GetStringByIndex(getNames(name), 0)
 	rname := strings.Trim(fname, "^")
 
 	return &TableConf{
-		Name:    rname,
-		Exclude: strings.HasPrefix(fname, "^"),
-		Desc:    desc,
-		Rows:    make(map[string]*RowConf),
-		ExtInfo: extinfo,
+		Name:     rname,
+		Exclude:  strings.HasPrefix(fname, "^"),
+		Desc:     desc,
+		Rows:     make(map[string]*RowConf),
+		ExtInfo:  extinfo,
+		Settings: settings,
 	}
 }
 func (t TableConfs) Duplicate() error {
@@ -83,7 +85,7 @@ func Lines2Conf(lines Lines) (confs TableConfs, err error) {
 				if err != nil {
 					return nil, err
 				}
-				tb = newTableConf(name, getTableDesc(line), getTableExtInfo(line))
+				tb = newTableConf(name, getTableDesc(line), getTableExtInfo(line), getTableSettingInfo(line))
 				continue
 			}
 			if i < 3 {

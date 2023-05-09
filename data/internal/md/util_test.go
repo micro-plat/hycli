@@ -87,6 +87,10 @@ func TestHasConstraint2(t *testing.T) {
 	b := HasConstraint([]string{"c", "u", "l", "le", "sl", "DT"}, "DT")
 	assert.Equal(t, true, b)
 }
+func TestHasConstraint3(t *testing.T) {
+	b := HasConstraint([]string{"c(#ef)"}, "c")
+	assert.Equal(t, true, b)
+}
 func TestRangeReg(t *testing.T) {
 	reg := regexp.MustCompile(`range\((\w+)[-]?([\w]*)\)`)
 	names := reg.FindAllStringSubmatch("range(100)", -1)
@@ -142,7 +146,13 @@ func TestGetNameFor(t *testing.T) {
 	assert.Equal(t, 8, len(xn))
 
 }
+func TestGetNameFor2(t *testing.T) {
+	p := "#USERiD,#wf(23),$ww,$ww(bw),%ef,%ef(wf),?2342,?234(ef),&uid,@name,^abc,^ex(100),_x,_ef(ef)"
+	xn := getNames(p)
+	fmt.Println("xxxy:", strings.Join(xn, "|"))
+	assert.Equal(t, 8, len(xn))
 
+}
 func TestGetExtOpt(t *testing.T) { //>/right/info,x
 	lst := GetExtOpt("lst(权限,link:/right/info,x:y),lst(启用,dialog:/right/save,m),pnl(启用,dialog:/right/save,m)", "lst")
 	assert.Equal(t, 2, len(lst))
@@ -269,4 +279,17 @@ func TestVx(t *testing.T) {
 
 	assert.Equal(t, "企业微信文档", titles[0][0])
 
+}
+func TestGetTableSettingInfo(t *testing.T) {
+	v := getTableSettingInfo(&Line{Text: `6. 文档[ws_dev_docs]<lstbar(添加文档,add:ws_dev_docs,style:{})>`})
+	assert.Equal(t, "", v)
+
+	v = getTableSettingInfo(&Line{Text: `6. 文档[ws_dev_docs]<lstbar(添加文档,add:ws_dev_docs,style:{})>(a:b)`})
+	assert.Equal(t, "a:b", v)
+
+	v = getTableSettingInfo(&Line{Text: `6. 文档[ws_dev_docs](a:b)`})
+	assert.Equal(t, "a:b", v)
+
+	v = getTableSettingInfo(&Line{Text: `6. 文档[ws_dev_docs](a:{@c:&d})`})
+	assert.Equal(t, "a:{@c:&d}", v)
 }

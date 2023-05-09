@@ -63,6 +63,7 @@ func (t Tables) resetConf(cnf TableConfs) Tables {
 			continue
 		}
 		tb.ExtInfo = types.GetString(conf.ExtInfo, tb.ExtInfo)
+		tb.Settings = types.GetString(conf.Settings, tb.Settings)
 		tb.Desc = types.GetString(conf.Desc, tb.Desc)
 		tb.Exclude = conf.Exclude || tb.Exclude
 
@@ -97,7 +98,7 @@ func (t Tables) resetConf(cnf TableConfs) Tables {
 		if _, ok := tmpTable[c.Name]; ok {
 			continue
 		}
-		tb := NewTable(types.DecodeString(strings.HasPrefix(c.Name, "^"), true, c.Name, "^"+c.Name), c.Desc, c.ExtInfo)
+		tb := NewTable(types.DecodeString(strings.HasPrefix(c.Name, "^"), true, c.Name, "^"+c.Name), c.Desc, c.ExtInfo, c.Settings)
 		//查找原表未包含的列
 		for _, r := range c.Rows {
 			name := types.DecodeString(strings.HasPrefix(r.Name, "^"), true, r.Name, "^"+r.Name)

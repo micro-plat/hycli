@@ -1,10 +1,10 @@
 package member
 
 import (
-	"gitee.com/emshop/workspace/mgrserver/api/modules/const/enum"
-	"gitee.com/emshop/workspace/mgrserver/api/modules/const/field"
 	"github.com/micro-plat/hydra"
 	"github.com/micro-plat/lib4go/errs"
+	"{-{.PkgName}-}/modules/const/enum"
+	"{-{.PkgName}-}/modules/const/field"
 )
 
 // 用户登录

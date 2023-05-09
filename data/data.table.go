@@ -1,6 +1,7 @@
 package data
 
 import (
+	"fmt"
 	"sort"
 
 	"github.com/micro-plat/hycli/data/internal/md"
@@ -49,6 +50,9 @@ type Table struct {
 	//NeedBatchCheck 是否需要批量选择
 	NeedBatchCheck bool
 
+	//Conf 配置
+	Conf *config
+
 	//Enum 枚举类型
 	Enum *EnumType
 
@@ -95,6 +99,9 @@ func NewTable(t *md.Table) *Table {
 	table.NormalIdx = createNormalIdx(table)
 	table.UNQIndex = createUNQIdx(table)
 	table.Tag = newTag(table)
+	table.Conf = newConfig(t.Settings)
 	table.Sort()
+	fmt.Println(table.Name, ".lst.opts:", table.ListOpts)
+	fmt.Println(table.Name, ".ext.opts:", table.ViewExtCmptOpts)
 	return table
 }
