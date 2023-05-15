@@ -21,7 +21,8 @@
     </el-col>
     {-{- else if eq true $c.Field.IsLongText }-}
     {-{- $span = add $span 1}-}
-    <el-col :span="20" v-html="view.{-{$c.Name}-}"  style="min-height:26px" :class="'{-{$c.Style.CLR.BgColor}-}'==''?'':{-{$c.Style.CLR.BgColor}-}(view.{-{$c.Name}-},'{-{$c.Name}-}')"></el-col>
+    <el-col :span="20"   style="min-height:26px" :class="'{-{$c.Style.CLR.BgColor}-}'==''?'':{-{$c.Style.CLR.BgColor}-}(view.{-{$c.Name}-},'{-{$c.Name}-}')">
+        <pre>{{view.{-{$c.Name}-}}}</pre></el-col>
     {-{- else if gt $c.Field.Len 32}-}
     <el-col :span="8" v-html="view.{-{$c.Name}-}"  style="min-height:26px" :class="'{-{$c.Style.CLR.BgColor}-}'==''?'':{-{$c.Style.CLR.BgColor}-}(view.{-{$c.Name}-},'{-{$c.Name}-}')"></el-col>
     {-{- else}-}

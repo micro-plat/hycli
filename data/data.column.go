@@ -20,6 +20,7 @@ const (
 	TAB_TAG       = "TAB"
 	QUERY_COLUMN  = "Q"
 	QUERY_TAG     = "QBAR"
+	CNFRM         = "CNFRM"
 )
 
 type BaseColumn struct {
@@ -46,12 +47,14 @@ type fieldType struct {
 	IsLongText     bool   //是否是长字符
 	TMYSQL         string //mysql 数据库类型
 	VMYSQL         string //mysql 默认值
+	row            *md.Row
 }
 
 var longText = []string{"tinytext", "text", "mediumtext", "longtext", "blob", "json", "TINYTEXT", "TEXT", "MEDIUMTEXT", "LONGTEXT", "BLOB", "JSON"}
 
 func createFieldType(r *md.Row) fieldType {
 	return fieldType{
+		row:            r,
 		Name:           r.Name,
 		Type:           r.Type.Name, //字段原长度
 		Len:            r.Type.Len,

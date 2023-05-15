@@ -21,13 +21,13 @@ func newTag(table *Table) *Tag {
 		Dialog: "~",
 		Cnfrm:  "~",
 	}
-	opts := mergeOptrs(table.ListOpts, table.BarOpts, table.ViewOpts, table.ViewExtCmptOpts)
+	opts := mergeOptrs(table.ListOpts, table.BarOpts, table.ViewOpts, table.ViewExtCmptOpts.ALL)
 	for _, opt := range opts {
 		if opt.Tag == "DIALOG" {
 			tag.Dialog = ""
 			continue
 		}
-		if opt.Tag == "CNFRM" {
+		if opt.Tag == "CNFRM" || opt.Tag == DELETE_TAG {
 			tag.Cnfrm = ""
 			continue
 		}

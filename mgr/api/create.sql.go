@@ -55,6 +55,7 @@ func CreateSQLScript(mdpath string, tbs string, outpath string, cover bool) erro
 
 	ntbs := data.NewTables(tbls)
 
+	data.Caches(ntbs)
 	//创建服务文件
 	for _, tb := range ntbs {
 		if err = createMySQL(outpath, tb, cover); err != nil {

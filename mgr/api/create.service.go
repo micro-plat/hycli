@@ -39,6 +39,7 @@ func CreateService(mdpath string, tbs string, outpath string, cover bool) error 
 
 	ntbs := data.NewTables(tbls)
 
+	data.Caches(ntbs)
 	//创建服务文件
 	for _, tb := range ntbs {
 		if err = createService(outpath, tb, cover); err != nil {

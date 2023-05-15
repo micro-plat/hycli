@@ -13,6 +13,7 @@ func NewTables(tbs md.Tables) Tables {
 	for _, t := range tbs {
 		nt = append(nt, NewTable(t))
 	}
+
 	return nt
 }
 func fltrSearchUITable(name *optrs) *TTable {

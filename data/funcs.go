@@ -25,15 +25,12 @@ var Funcs = map[string]interface{}{
 	"fltrMYSQLDef":                 mySQLDefValue,
 	"fltrOptrs":                    fltrOptrs,
 	"fltrFindAllExtViewOptrs":      fltrFindAllExtViewOptrs,
-	"fltrFindExtViewOptrs":         fltrFindExtViewOptrs,
 	"fltr2CName":                   md.ToCName,
-	"fltrOptrsByPUNQ":              fltrOptrsByPUNQ,
 	"fltrFrontOptrsByStatic":       fltrFrontOptrsByStatic,
 	"fltrStaticColumn":             fltrStaticColumn,
 	"fltrHasStaticColumn":          fltrHasStaticColumn,
 	"fltrOptrsByTag":               fltrOptrsByTag,
 	"fltrOptrsByCmd":               fltrOptrsByCmd,
-	"fltrOptrsByPosition":          fltrOptrsByPosition,
 	"fltrOptrsByTable":             fltrOptrsByTable,
 	"fltrSelectedOptrs":            fltrSelectedOptrs,
 	"fltrColumns":                  fltrColumns,
@@ -115,15 +112,7 @@ func flterMainTable(tbs []*Table) []*Table {
 	}
 	return ntbs
 }
-func fltrOptrsByPUNQ(opts []*optrs, punq string, position string) []*optrs {
-	lst := make([]*optrs, 0, 1)
-	for _, p := range opts {
-		if strings.EqualFold(p.ParentUNQ, punq) && strings.EqualFold(p.Position, position) {
-			lst = append(lst, p)
-		}
-	}
-	return lst
-}
+
 func fltrColumnsExcludeExt(cols []*Column) []*Column {
 	vc := make([]*Column, 0, 1)
 	for _, v := range cols {
@@ -185,9 +174,7 @@ func fltrFindAllExtViewOptrs(optrs viewOptrs) optrslst {
 	}
 	return lst
 }
-func fltrFindExtViewOptrs(optrs viewOptrs, tbName string, postion string) optrslst {
-	return fltrOptrsByPosition(fltrOptrsByTable(fltrFindAllExtViewOptrs(optrs), tbName), postion)
-}
+
 func findOptrsByView(tbName string, tp string) optrslst {
 	tb := findTable(tbName)
 	if tb.Name == nil {
@@ -240,21 +227,7 @@ func fltrOptrsByTag(opts []*optrs, tag string) optrslst {
 	sort.Sort(nopts)
 	return nopts
 }
-func fltrOptrsByPosition(opts []*optrs, pss string) optrslst {
-	nopts := make(optrslst, 0, 1)
-	postions := strings.Split(pss, "-")
-	for _, v := range opts {
-		for _, p := range postions {
-			if strings.EqualFold(v.Position, p) {
-				nopts = append(nopts, v)
-				break
-			}
-		}
 
-	}
-	sort.Sort(nopts)
-	return nopts
-}
 func fltrOptrsByTable(opts []*optrs, tb string) optrslst {
 	nopts := make(optrslst, 0, 1)
 	for _, v := range opts {

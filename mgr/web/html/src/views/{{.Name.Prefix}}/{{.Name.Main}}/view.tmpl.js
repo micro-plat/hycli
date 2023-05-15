@@ -42,7 +42,7 @@
       {-{- else if eq "cut" $c.Cmpnt.Type}-}
         item.{-{$c.Name}-} = that.$theia.str.cut(item.{-{$c.Name}-},{-{$c.Cmpnt.Format}-})
       {-{- else if gt $c.Field.Len 32}-}  
-        item.{-{$c.Name}-} = (item.{-{$c.Name}-}||"").replace(/\n/g,"<br/>")
+        item.{-{$c.Name}-} = (item.{-{$c.Name}-}||"")
       {-{- end}-}
       {-{- end }-}
       {-{- $steps := fltrOptrs $viewOpts "step"}-}

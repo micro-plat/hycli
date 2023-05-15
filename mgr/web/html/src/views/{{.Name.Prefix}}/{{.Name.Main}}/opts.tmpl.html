@@ -4,7 +4,7 @@
 {-{- $optrs :=$table.ListOpts}-}
 {-{- $tmpl :=IsTmplTb $xtable}-}
 {-{- if eq true $tmpl}-}
-{-{-  $optrs = fltrOptrsByTable (fltrOptrsByPosition $mtable.ViewExtCmptOpts "lstbar-lst") $table.Name.Raw}-}
+{-{- $optrs = $mtable.ViewExtCmptOpts.GetLstOptrs  $table.Name.Raw}-}
 {-{- end}-}
 {-{-  $optrs = fltrOptrs $optrs "CMPNT"}-}
 {-{- $words:=""}-}

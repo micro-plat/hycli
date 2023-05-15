@@ -1,7 +1,6 @@
 package data
 
 import (
-	"fmt"
 	"sort"
 
 	"github.com/micro-plat/hycli/data/internal/md"
@@ -29,7 +28,8 @@ type Table struct {
 	ViewOpts viewOptrs
 
 	//ViewExtCmptOpts 预览页扩展组件
-	ViewExtCmptOpts viewExtCmptOpts
+	// ViewExtCmptOpts viewExtCmptOpts
+	ViewExtCmptOpts *viewExtOptrsMap
 
 	//ListOpts 列表操作
 	ListOpts lstOptrs
@@ -67,7 +67,6 @@ func (t *Table) Sort() {
 	sort.Sort(t.Columns)
 	sort.Sort(optrslst(t.BarOpts))
 	sort.Sort(optrslst(t.ViewOpts))
-	sort.Sort(optrslst(t.ViewExtCmptOpts))
 	sort.Sort(optrslst(t.ListOpts))
 	sort.Sort(optrslst(t.LStatOpts))
 	sort.Sort(optrslst(t.ChartOpts))
@@ -90,18 +89,20 @@ func NewTable(t *md.Table) *Table {
 		Enum:        newEnumType(t.Name.Short, t.Rows, columns.GetEnumDelColumns()),
 	}
 	t.Cache = table
-	table.ListOpts = createLstOptrs(table, t.ExtInfo)
-	table.BarOpts, table.NeedBatchCheck = createBarOptrs(table, t.ExtInfo)
-	table.ViewOpts, table.ViewExtCmptOpts = createViewOptrs(table, t.ExtInfo)
+	table.ListOpts = createLstBarOptrs(table, t.ExtInfo)
+	table.BarOpts, table.NeedBatchCheck = createQBarOptrs(table, t.ExtInfo)
+	table.ViewOpts, _ = createViewOptrs(table, t.ExtInfo)
 	table.LStatOpts, table.ChartOpts = createLStatChartOptrs(table.Name.Raw, t.ExtInfo)
 	table.ExtOpts = createExtOptrs(table.Name.Raw, t.ExtInfo)
 	table.QueryOptrs = createQueryOptrs(table, t.ExtInfo)
 	table.NormalIdx = createNormalIdx(table)
 	table.UNQIndex = createUNQIdx(table)
-	table.Tag = newTag(table)
 	table.Conf = newConfig(t.Settings)
 	table.Sort()
-	fmt.Println(table.Name, ".lst.opts:", table.ListOpts)
-	fmt.Println(table.Name, ".ext.opts:", table.ViewExtCmptOpts)
+	table.ViewExtCmptOpts = &viewExtOptrsMap{}
 	return table
+}
+func (t *Table) LoadExtOptrs() {
+	t.ViewExtCmptOpts = getViewExtCmptOptsByTable(t)
+	t.Tag = newTag(t)
 }

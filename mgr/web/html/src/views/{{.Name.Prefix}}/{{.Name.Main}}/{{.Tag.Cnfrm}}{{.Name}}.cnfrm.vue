@@ -22,7 +22,7 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="hide_{-{$m.UNQ}-}" icon="close">取消</el-button>
-          <el-button type="primary" @click="save_{-{$m.UNQ}-}" icon="select">提交</el-button>
+          <el-button type="primary" @click="save_{-{$m.UNQ}-}" icon="select">确定</el-button>
         </span>
       </template>
     </el-dialog>
@@ -79,7 +79,7 @@ export default {
           that.hide_{-{$m.UNQ}-}()
        }).catch(err=>{
           that.conf.confirmVisible = false
-          let code = res.response.status
+          let code = err.response.status
           let msg= `{-{$m.Label}-}失败(${code})`
           that.$notify.error({title: '失败',message:msg,duration:5000})
        })

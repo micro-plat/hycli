@@ -6,9 +6,9 @@
 {-{- $lstopts := $table.ListOpts}-}
 {-{- $optLen := len $lstopts}-}
 {-{- $tmpl := IsTmplTb $xtable}-}
-{-{- $qbar:=$table.QueryOptrs|getFirstOptr}-}
+{-{- $queryOpts:=$table.QueryOptrs|getFirstOptr}-}
 {-{- $pkName := $table.PKColumns|getFirstColumns}-}
-{-{- $treeNode := fltrOptrPara $qbar "treeNode" ""}-}
+{-{- $treeNode := fltrOptrPara $queryOpts "treeNode" ""}-}
 
 {-{- if gt (len $lcols) 0 }-}
 <div class="list">

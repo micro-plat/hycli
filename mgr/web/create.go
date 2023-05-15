@@ -31,8 +31,8 @@ func CreatePage(mdpath string, tbs string, outpath string, cover bool) error {
 	//过滤表格
 	tbls := otbls.Filter(tbs, false)
 	ntbs := data.NewTables(tbls)
-	data.Caches(ntbs)
 
+	data.Caches(ntbs)
 	//创建页面文件
 	for _, tb := range ntbs {
 

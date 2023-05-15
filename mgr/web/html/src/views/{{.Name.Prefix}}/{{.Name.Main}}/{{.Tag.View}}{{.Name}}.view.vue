@@ -32,16 +32,13 @@
      </el-tab-pane>
        {-{- else if eq "TAB" $c.Name}-}
         <el-tab-pane label="{-{$c.Label}-}" name="{-{$c.UNQ}-}"  @tab-click="show_view_{-{$c.UNQ}-}">
-          {-{- $tlbar :=fltrOptrsByPUNQ $table.ViewExtCmptOpts  $c.UNQ "qbar"}-}
+          {-{- $tlbar := $table.ViewExtCmptOpts.GetBarOptrs  $c.Table $c.UNQ}-}
           {-{- if gt (len $tlbar) 0}-}
           <el-row>
             <el-col :span="24" class="text-right">
           {-{- range $i,$x:= $tlbar}-}
-          {-{- if eq $c.UNQ $x.ParentUNQ}-}
           <el-button type="success" icon="Plus"
-           round 
-            @click="show_cmpnt_{-{$x.UNQ}-}">{-{ $x.Label}-}</el-button>
-          {-{- end  }-}
+           round  @click="show_cmpnt_{-{$x.UNQ}-}">{-{ $x.Label}-}</el-button>
          {-{- end}-}
         </el-col>
           </el-row>
@@ -56,7 +53,7 @@
     <template #footer>
       <span style="height: 60px"> </span>
     </template>
-    {-{- range $x,$m:= $table.ViewExtCmptOpts}-}
+    {-{- range $x,$m:= $table.ViewExtCmptOpts.ALL}-}
     {-{- if eq "CMPNT" $m.Name  }-}
     <{-{$m.UNQ}-} ref="cmpnt_{-{$m.UNQ}-}" @onsaved="show(form)"></{-{$m.UNQ}-}>
     {-{- end}-}
@@ -66,13 +63,13 @@
 </div>
 </template>
 <script>
- {-{- range $x,$m:=fltrOptrs (mergeOptrs $viewOpts $table.ViewExtCmptOpts) "CMPNT"}-}
+ {-{- range $x,$m:=fltrOptrs (mergeOptrs $viewOpts $table.ViewExtCmptOpts.ALL) "CMPNT"}-}
 import {-{$m.UNQ}-} from "{-{fltrTranslate $m.URL (fltrFindTable $m.Table)}-}"
 {-{- end}-}
 
 export default {
    components: {
-    {-{- range $x,$m:=fltrOptrs (mergeOptrs $viewOpts $table.ViewExtCmptOpts) "CMPNT"}-}
+    {-{- range $x,$m:=fltrOptrs (mergeOptrs $viewOpts $table.ViewExtCmptOpts.ALL) "CMPNT"}-}
     {-{$m.UNQ}-},
     {-{- end }-}
   },
@@ -100,7 +97,7 @@ export default {
       }
   },
   methods: {
-   {-{- range $x,$m:=fltrOptrs $table.ViewExtCmptOpts "CMPNT"}-}
+   {-{- range $x,$m:=fltrOptrs $table.ViewExtCmptOpts.ALL "CMPNT"}-}
   show_cmpnt_{-{$m.UNQ}-}(fm = {}){
     let form = Object.assign({},this.form)
     form = Object.assign(form,fm)
