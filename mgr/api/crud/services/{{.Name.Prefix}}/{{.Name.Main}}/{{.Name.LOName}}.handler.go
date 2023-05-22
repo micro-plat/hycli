@@ -146,7 +146,7 @@ func (u *{-{.Name.CName}-}Handler) PostHandle(ctx hydra.IContext) (r interface{}
 	}
 	{-{- if eq true $table.Conf.WriteLog}-}
 	ctx.Log().Info("3. 保存用户日志")
-	system.SaveLog(ctx,"修改{-{$table.Desc}-}",string(ctx.Request().Marshal()))
+	system.SaveLog(ctx,"添加{-{$table.Desc}-}",string(ctx.Request().Marshal()))
 	{-{- end}-}
 	return
 }
