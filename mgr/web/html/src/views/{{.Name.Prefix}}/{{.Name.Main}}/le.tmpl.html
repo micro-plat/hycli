@@ -6,7 +6,7 @@
             <el-col :span="5" class="text-right" style="min-height:26px">{-{ $c.Label }-}:</el-col>
             {-{- if eq "img" $c.Cmpnt.Type}-}
             <el-col :span="7" style="min-height:26px">
-                <el-image style="width:48px" :src="view.row.le_{-{$c.Name}-}" :fit="contain">
+                <el-image style="width:48px" :src="view.row.le_{-{$c.Name}-}" preview-teleported :fit="contain"  :preview-src-list="[view.row.le_{-{$c.Name}-}]">
                     <template #error>
                         <div class="image-slot">
                           <el-icon><icon-picture /></el-icon>

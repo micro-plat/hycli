@@ -36,6 +36,13 @@
         ></{-{$c.UNQ}-}>
     </el-col>
     {-{- end}-}
+    {-{- range $i,$c:= fltrOptrsByTag $table.ExtOpts "img"}-}
+    <el-col :span='{-{fltrOptrPara $c "span" "24"}-}'>
+      <{-{$c.UNQ}-} ref="ext_{-{$c.UNQ}-}" height='{-{fltrOptrPara $c "height" "auto"}-}' type="{-{$c.Tag}-}"
+        unq="{-{$c.UNQ}-}" count='{-{fltrOptrPara $c "count" "10"}-}' url="{-{$c.ReqURL}-}" rows='{-{fltrOptrPara $c "rows" "1"}-}'  margin='{-{fltrOptrPara $c "margin" "8px 0px 16px 0px"}-}'
+        ></{-{$c.UNQ}-}>
+    </el-col>
+    {-{- end}-}
   </el-row>
 </div>
 {-{- end}-}

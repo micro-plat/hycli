@@ -147,10 +147,10 @@ func TestGetNameFor(t *testing.T) {
 
 }
 func TestGetNameFor2(t *testing.T) {
-	p := "#USERiD,#wf(23),$ww,$ww(bw),%ef,%ef(wf),?2342,?234(ef),&uid,@name,^abc,^ex(100),_x,_ef(ef)"
+	p := "*abc,#USERiD,#wf(23),$ww,$ww(bw),%ef,%ef(wf),?2342,?234(ef),&uid,@name,^abc,^ex(100),_x,_ef(ef)"
 	xn := getNames(p)
 	fmt.Println("xxxy:", strings.Join(xn, "|"))
-	assert.Equal(t, 8, len(xn))
+	assert.Equal(t, 15, len(xn))
 
 }
 func TestGetExtOpt(t *testing.T) { //>/right/info,x

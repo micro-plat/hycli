@@ -27,6 +27,7 @@ import (
 	{-{- end}-}
 	{-{- if eq true $table.Conf.WriteLog}-}
 	"{-{$table.PkgName}-}/modules/biz/system"
+	"fmt"
 	{-{- end}-}
 
 )
@@ -63,7 +64,7 @@ func (u *{-{.Name.CName}-}Handler) GetHandle(ctx hydra.IContext) (r interface{})
 	ctx.Log().Info("2.查询数据")
 	items, err := hydra.C.DB().GetRegularDB().Query(get{-{.Name.CName}-}, ctx.Request().GetMap())
 	if err != nil {
-		return errs.NewErrorf(http.StatusNotExtended, "保存数据出错:%+v", err)
+		return errs.NewErrorf(http.StatusNotExtended, "查询数据出错:%+v", err)
 	}
 	return items.Get(0)
 }
@@ -105,7 +106,8 @@ func (u *{-{.Name.CName}-}Handler) PutHandle(ctx hydra.IContext) (r interface{})
 	}
 	{-{- if eq true $table.Conf.WriteLog}-}
 	ctx.Log().Info("3.保存用户日志")
-	system.SaveLog(ctx,"修改{-{$table.Desc}-}",string(ctx.Request().Marshal()))
+	name := ctx.Request().GetString("{-{$table.Enum.Name}-}")
+	system.SaveLog(ctx,fmt.Sprintf("修改{-{$table.Desc}-} %s",name),string(ctx.Request().Marshal()))
 	{-{- end}-}
 	return
 }
@@ -146,7 +148,8 @@ func (u *{-{.Name.CName}-}Handler) PostHandle(ctx hydra.IContext) (r interface{}
 	}
 	{-{- if eq true $table.Conf.WriteLog}-}
 	ctx.Log().Info("3. 保存用户日志")
-	system.SaveLog(ctx,"添加{-{$table.Desc}-}",string(ctx.Request().Marshal()))
+	name := ctx.Request().GetString("{-{$table.Enum.Name}-}")
+	system.SaveLog(ctx,fmt.Sprintf("添加{-{$table.Desc}-} %s",name),string(ctx.Request().Marshal()))
 	{-{- end}-}
 	return
 }
@@ -256,7 +259,7 @@ func (u *{-{.Name.CName}-}Handler) DelHandle(ctx hydra.IContext) (r interface{})
 		return err
 	}
 	
-	ctx.Log().Info("2.查询数据")
+	ctx.Log().Info("2.删除数据")
 	rx, err := hydra.C.DB().GetRegularDB().Execute(delete{-{.Name.CName}-}, ctx.Request().GetMap())
 	if err == nil && rx == 0{
 		return errs.NewResult(204, nil)
@@ -264,6 +267,11 @@ func (u *{-{.Name.CName}-}Handler) DelHandle(ctx hydra.IContext) (r interface{})
 	if err != nil||rx <= 0 {
 		return errs.NewErrorf(http.StatusNotExtended, "删除数据出错:%+v", err)
 	}
+	{-{- if eq true $table.Conf.WriteLog}-}
+	ctx.Log().Info("3. 保存用户日志")
+	name := ctx.Request().GetString("{-{$table.Enum.Name}-}")
+	system.SaveLog(ctx,fmt.Sprintf("删除{-{$table.Desc}-} %s",name),string(ctx.Request().Marshal()))
+	{-{- end}-}
 	return
 }
 {-{- end}-}
@@ -290,6 +298,11 @@ func (u *{-{.Name.CName}-}Handler) SwitchHandle(ctx hydra.IContext) (r interface
 	if err != nil || rx == 0 {
 		return errs.NewErrorf(http.StatusNotExtended, "数据出错:%+v,row:%d", err,rx)
 	}
+	{-{- if eq true $table.Conf.WriteLog}-}
+	ctx.Log().Info("3. 保存用户日志")
+	name := ctx.Request().GetString("{-{$table.Enum.Name}-}")
+	system.SaveLog(ctx,fmt.Sprintf("切换状态{-{$table.Desc}-} %s",name),string(ctx.Request().Marshal()))
+	{-{- end}-}
 	return
 }
 {-{- end}-}
@@ -320,6 +333,11 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|fltr2CName}-}Handle(ctx hy
 	if err != nil || rx == 0 {
 		return errs.NewErrorf(http.StatusNotExtended, "数据出错:%+v,row:%d", err,rx)
 	}
+	{-{- if eq true $table.Conf.WriteLog}-}
+	ctx.Log().Info("3. 保存用户日志")
+	name := ctx.Request().GetString("{-{$table.Enum.Name}-}")
+	system.SaveLog(ctx,fmt.Sprintf("更新{-{$table.Desc}-} {-{$c.Label}-} %s",name),string(ctx.Request().Marshal()))
+	{-{- end}-}
 	return
 }
 {-{- end}-}

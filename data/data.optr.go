@@ -74,7 +74,7 @@ var batchCheck = []string{"bcheck", "@bcheck", "&bcheck"}
 var qBarOptrCmd = []string{"export", "import", "lstbar", "lstupdator"}
 var charOptrCmd = []string{"chart"}
 var extCmptParam = []string{"add", "update", "view"}
-var extOptrsCmd = []string{"tskbar"}
+var extOptrsCmd = []string{"tskbar", "xbar"}
 var queryOptrCmd = []string{"qbar"}
 
 const (
@@ -92,6 +92,7 @@ var dialogOpts = &optrs{Tag: "DIALOG", URL: "@/views/{@prefix}/{@main}/{@name}.d
 var cnfrmOpts = &optrs{Tag: "CNFRM", URL: "@/views/{@prefix}/{@main}/{@name}.cnfrm", Name: "CMPNT", IsMux: true, index: 99}
 var chartLinePieBarOpts = &optrs{Tag: "CHART", URL: "@/views/cmpnts/chart.base.vue", Name: "CMPNT"}
 var taskBarOpts = &optrs{Tag: "TSKBAR", URL: "@/views/cmpnts/task.bar.vue", Name: "CMPNT"}
+var xBarOpts = &optrs{Tag: "XBAR", URL: "@/views/cmpnts/xbar.vue", Name: "CMPNT"}
 
 func (s *optrs) Get(tableName string) *optrs {
 	nopts := *s
@@ -299,6 +300,11 @@ func createOptrs(tableName string, extInfo string, tag string) []*optrs {
 			opt.Table = tableName
 		case "TSKBAR":
 			opt = *taskBarOpts
+			opt.Tag = name
+			opt.ReqURL = types.GetStringByIndex(lst, 2)
+			opt.Table = tableName
+		case "IMG":
+			opt = *xBarOpts
 			opt.Tag = name
 			opt.ReqURL = types.GetStringByIndex(lst, 2)
 			opt.Table = tableName

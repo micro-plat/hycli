@@ -42,7 +42,8 @@
         {-{- else if eq "img" $c.Cmpnt.Type}-}
         <el-table-column {-{if ne "" $show }-} v-if="{-{$show}-}" {-{end}-} {-{if ne "" $c.Style.ListWidth}-} min-width="{-{$c.Style.ListWidth}-}" {-{end}-} align="{-{$align}-}" label="{-{$c.Label}-}">
             <template #default="scope">
-                <el-image style="width:48px" :src="scope.row.{-{$c.Name}-}" :fit="contain">
+                <el-image style="width:48px"  :src="scope.row.{-{$c.Name}-}" preview-teleported :fit="contain"  :preview-src-list="[scope.row.{-{$c.Name}-}]"
+               >
                     <template #error>
                         <div class="image-slot">
                             <el-icon>
