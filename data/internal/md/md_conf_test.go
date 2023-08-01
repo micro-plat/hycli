@@ -14,7 +14,7 @@ func TestTBConf(t *testing.T) {
 	
 	| 字段名      | 类型        |      默认值       | 为空  |  约束   | 描述                 |
 	| ----------- | ----------- | :---------------: | :---: | :-----: | :------------------- |
-	| role_id     | bigint(20)  |                   |  否   | PK,SEQ | 角色id               |
+	| role_id     | bigint(20)  |                   |  否   | PK,SEQ | 角色id(角色)               |
 	| name        | varchar(64) |                   |  否   |   UNQ   | 角色名称             |`
 
 	reader, err := readMarkdownByReader(bufio.NewReader(strings.NewReader(row)))
@@ -28,6 +28,7 @@ func TestTBConf(t *testing.T) {
 	assert.Equal(t, 2, len(tbs[0].Rows))
 
 	assert.Equal(t, "role_id", tbs[0].Rows[0].Name)
+	assert.Equal(t, "角色id(角色)", tbs[0].Rows[0].Desc.Raw)
 	assert.Equal(t, 2, len(tbs[0].Rows[0].Constraints))
 	assert.Equal(t, "PK", tbs[0].Rows[0].Constraints[0])
 	assert.Equal(t, "SEQ", tbs[0].Rows[0].Constraints[1])

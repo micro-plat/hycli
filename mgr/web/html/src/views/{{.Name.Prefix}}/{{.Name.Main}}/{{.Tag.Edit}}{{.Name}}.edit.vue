@@ -55,7 +55,7 @@ export default {
         {-{- end}-}
         Object.assign(that.form, res)
         }).catch(res=>{
-          let code = res.response.status
+          let code = ((res||{}).response||{}).status||0
           let msg = `{-{.Desc}-}查询失败(${code})`
           that.$notify.error({title: '失败',message:msg ,duration:5000})
         })
@@ -93,7 +93,7 @@ export default {
             that.hide()
             that.$emit("onsaved")
         }).catch(res=>{
-          let code = res.response.status
+          let code = ((res||{}).response||{}).status||0
           let msg = `{-{.Desc}-}修改失败(${code})`
           that.$notify.error({title: '失败',message: msg,duration:5000})
         })

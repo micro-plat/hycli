@@ -122,7 +122,7 @@ export default {
             that.hide_{-{$m.UNQ}-}()
             
         }).catch(res=>{
-          let code = res.response.status
+          let code = ((res||{}).response||{}).status||0
           let msg= `提交失败(${code})`
           that.$notify.error({title: '失败',message:msg,duration:5000})
         })

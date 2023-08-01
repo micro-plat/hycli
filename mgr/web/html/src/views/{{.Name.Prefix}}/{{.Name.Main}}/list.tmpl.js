@@ -243,3 +243,7 @@
       })
     },
      {-{- end}-}
+     columnfilterHandler(value,row,column){
+        const property = column['property']
+        return row[property] === value
+     },

@@ -142,7 +142,7 @@ func mergeConstraint(input []string) []string {
 	return routput
 }
 func getShortDesc(t string) string {
-	reg := regexp.MustCompile(`[\w\p{Han}]+`)
+	reg := regexp.MustCompile(`[\w\p{Han}]+[\(]?[\w\p{Han}]*[\)]?`)
 	names := reg.FindAllString(t, -1)
 	if len(names) == 0 {
 		return ""

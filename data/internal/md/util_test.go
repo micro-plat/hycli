@@ -293,3 +293,20 @@ func TestGetTableSettingInfo(t *testing.T) {
 	v = getTableSettingInfo(&Line{Text: `6. 文档[ws_dev_docs](a:{@c:&d})`})
 	assert.Equal(t, "a:{@c:&d}", v)
 }
+
+func TestGetShortDe(t *testing.T) {
+	tb := []struct {
+		raw    string
+		except string
+	}{
+		{raw: "时长(小时)", except: "时长(小时)"},
+		{raw: "时长(小时) aef", except: "时长(小时)"},
+		{raw: "时长 单位：小时", except: "时长"},
+		{raw: "时长 单位：小时", except: "时长"},
+		{raw: "状态 0：启用 1: 禁用", except: "状态"},
+	}
+	for _, x := range tb {
+		s := getShortDesc(x.raw)
+		assert.Equal(t, x.except, s)
+	}
+}

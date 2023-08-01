@@ -69,18 +69,15 @@ func GetConsNameByTag(t string, cns ...string) string {
 	return ""
 }
 func GetExprs(v string) [][]string {
-	f := `([@]?\w+)([><!=][=]?)(\w*)`
+	f := `([@]?\w+)([><!=]?[=]?)(\w*)`
 	reg := regexp.MustCompile(f)
 	names := reg.FindAllStringSubmatch(v, -1)
 	lst := make([][]string, 0, 1)
 	for i := range names {
-		if names[i][1] != "" &&
-			names[i][2] != "" &&
-			names[i][3] != "" {
+		if names[i][1] != "" {
 			lst = append(lst, names[i][1:])
 		}
 	}
-
 	return lst
 }
 func GetConsByTag(t string, cns ...string) (string, string, string) {

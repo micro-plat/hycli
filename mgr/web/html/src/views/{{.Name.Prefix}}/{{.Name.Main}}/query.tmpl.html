@@ -139,7 +139,7 @@
             <el-space wrap>
                 {-{- if gt (len $qOptrs) 0}-}
                 {-{- range $i,$x:=$qOptrs}-}
-                <el-button type="primary" icon="{-{$x.ICON}-}" @click="onQuery">{-{$x.Label}-}</el-button>
+                <el-button type="primary" icon="{-{$x.ICON}-}" @click="onQuery(true)">{-{$x.Label}-}</el-button>
                 {-{- end}-}
                 {-{- end}-}
             {-{- if eq $blen 1}-}
@@ -155,7 +155,16 @@
             {-{- if gt $blen 1}-}
             <el-button-group>
                 {-{- range $i,$c:=fltrOptrs $table.BarOpts "CMPNT" }-}
+                {-{- $exprs :=fltrOptrParaExprs $c "showExpr" ""}-}
                 <el-button :type="tagColor({-{spare $i 3}-})"
+                {-{- if gt (len $exprs)  0}-} v-if='
+                {-{- range $i,$expr := $exprs}-}
+                {-{- if ne "" $expr.Name}-}{-{$expr.Name}-}{-{$expr.Symbol}-}{-{$expr.Value}-} 
+                {-{- else if ne "" $expr.Field}-}
+                form_{-{$table.UNQ}-}.{-{$expr.Field}-}{-{$expr.Symbol}-}{-{$expr.Value}-}
+                {-{- end}-}
+                {-{- if lt $i (minus (len $exprs))}-}&&{-{- end -}-}
+                {-{- end -}-}'{-{- end}-}
                 {-{if eq true (fltrNeedBatchCheck $c)}-} :disabled="bcheck.length==0" {-{ end}-}
                 {-{if ne "" $c.ICON}-} icon="{-{$c.ICON}-}" {-{end}-} @click="show_cmpnt_{-{$c.UNQ}-}">{-{$c.Label}-}</el-button>
                 {-{- end}-}

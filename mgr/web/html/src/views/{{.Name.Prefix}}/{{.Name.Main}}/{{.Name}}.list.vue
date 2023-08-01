@@ -90,8 +90,10 @@ methods: {
     this.form_{-{ $table.UNQ }-}.pi = pi
     this.queryData_{-{ $table.UNQ }-} ()
   },
-  onQuery(){
-    this.form_{-{ $table.UNQ }-}.pi = 1
+  onQuery(refresh){
+    if(refresh){
+      this.form_{-{ $table.UNQ }-}.pi = 1
+    }
     this.queryData_{-{ $table.UNQ }-} ()
   },
   colorful(r, name){

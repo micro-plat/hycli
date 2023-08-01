@@ -101,7 +101,6 @@ export default {
       {-{- else}-}
       this.form.{-{$c.Name}-} = response.path
       {-{- end}-}
-      
       {-{- end }-}
       {-{- end}-}
     },

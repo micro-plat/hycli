@@ -33,7 +33,7 @@
       <!--{-{$c.Label}-} 密码控件 -->
       <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
         <el-input clearable type="password" show-password style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}"
-          maxlength="{-{$c.Field.Len}-}" placeholder="请输入{-{$c.Label}-}" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}/>
+          maxlength="{-{$c.Field.Len}-}" placeholder="请输入{-{$c.Desc.Raw}-}" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}/>
       </el-form-item>
 
       {-{- else if eq "switch" $c.Cmpnt.Type}-}
@@ -46,7 +46,7 @@
       <!--{-{$c.Label}-} 日期控件 -->
       <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
         <el-date-picker style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" clearable type="date"
-          placeholder="请选择{-{.Label}-}" format="YYYY-MM-DD" value-format="YYYY-MM-DD" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{else if ne "" $c.Cmpnt.Format}-} :default-time="new Date($theia.str.dateFormat(new Date(),'{-{$c.Cmpnt.Format}-}'))"{-{end}-}/>
+          placeholder="请选择{-{.Desc.Raw}-}" format="YYYY-MM-DD" value-format="YYYY-MM-DD" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{else if ne "" $c.Cmpnt.Format}-} :default-time="new Date($theia.str.dateFormat(new Date(),'{-{$c.Cmpnt.Format}-}'))"{-{end}-}/>
       </el-form-item>
       {-{- else if eq "datetime" $c.Cmpnt.Type}-}
       <!--{-{$c.Label}-} 日期控件 -->
@@ -60,7 +60,7 @@
       <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
         <el-select style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{.Name}-}" clearable multiple {-{if ne $span 24}-} collapse-tags {-{end}-}
         collapse-tags-tooltip
-          placeholder="请选择{-{.Label}-}">
+          placeholder="请选择{-{.Desc.Raw}-}">
           <el-option v-for="item in {-{.Name}-}List" :key="item.value" :label="item.name" :value="item.value" />
         </el-select>
       </el-form-item>
@@ -96,7 +96,8 @@
       <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
         <el-input-number {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}
         {-{if le 0 $c.Field.DLen }-} :precision="{-{$c.Field.DLen}-}" {-{end}-} 
-         controls-position="right" style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{ $c.Name }-}" 
+        {-{ if eq "right" $c.Cmpnt.Format}-} controls-position="right" {-{end}-}
+         style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{ $c.Name }-}" 
         {-{- if ne 0 $c.Style.Min}-}
          :min="{-{ $c.Style.Min }-}" {-{- end }-} {-{- if ne 0 $c.Style.Max}-}  :max="{-{ $c.Style.Max }-}" {-{- end }-} />
       </el-form-item>
@@ -104,9 +105,15 @@
       {-{- else if or (eq "file" $c.Cmpnt.Type) (eq "img" $c.Cmpnt.Type)}-}
       <!--{-{$c.Label}-} 文件控件 -->
       <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-        <el-upload multiple :action="conf.uploadPath" :limit="1" :on-success="onUploadSuccess" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}>
-          <el-button type="primary">选择文件</el-button>
-        </el-upload>
+        <el-input clearable style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" {-{ if ne 0 $c.Field.Len}-} maxlength="{-{$c.Field.Len}-}" {-{end}-}
+          :rows="{-{$c.Style.Rows}-}" {-{if eq true $c.Field.IsLongText}-}  show-word-limit {-{end}-}
+          placeholder="请输入{-{$c.Desc.Raw}-}地址或上传文件" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-} >
+          <template #append>
+            <el-upload multiple :show-file-list="false" :action="conf.uploadPath" :limit="100" :on-success="onUploadSuccess" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}>
+              <el-button type="primary">选择文件</el-button>
+            </el-upload>
+          </template>
+        </el-input>
       </el-form-item>
       {-{- else if  (eq "radio" $c.Cmpnt.Type)}-}
      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
@@ -122,7 +129,7 @@
      <!--{-{$c.Label}-} 下拉控件 -->
      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
        <el-select  {-{if gt (len (fltrAssctColumns $ucols $c.Name)) 0}-} @change="onChange_{-{$c.Name}-}"  {-{end}-} v-model="{-{$c.Ext.FormName}-}.{-{.Name}-}" style="width: 100%" filterable clearable
-         placeholder="请选择{-{.Label}-}" {-{ if eq "readonly" $c.Cmpnt.Type}-}disabled {-{end}-}>
+         placeholder="请选择{-{.Desc.Raw}-}" {-{ if eq "readonly" $c.Cmpnt.Type}-}disabled {-{end}-}>
          <el-option v-for="item in {-{.Name}-}List" :key="item.value" :label="item.name" :value="item.value" />
        </el-select>
      </el-form-item>
@@ -144,7 +151,7 @@
       <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
         <el-input clearable style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" maxlength="{-{$c.Field.Len}-}"
           :rows="{-{$c.Style.Rows}-}" {-{if gt $c.Field.Len 33}-} type="textarea" show-word-limit {-{end}-}
-          placeholder="请输入{-{$c.Label}-}" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-} />
+          placeholder="请输入{-{$c.Desc.Raw}-}" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-} />
           <template #prepend>Http://</template>
       </el-form-item>
       {-{- else if (eq "https" $c.Cmpnt.Type )}-}
@@ -152,7 +159,7 @@
       <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
         <el-input clearable style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" maxlength="{-{$c.Field.Len}-}"
           :rows="{-{$c.Style.Rows}-}" {-{if gt $c.Field.Len 33}-} type="textarea" show-word-limit {-{end}-}
-          placeholder="请输入{-{$c.Label}-}" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}/>
+          placeholder="请输入{-{$c.Desc.Raw}-}" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}/>
           <template #prepend>Https://</template>
       </el-form-item>
       {-{- else}-}
@@ -160,7 +167,7 @@
       <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
         <el-input clearable style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" {-{ if ne 0 $c.Field.Len}-} maxlength="{-{$c.Field.Len}-}" {-{end}-}
           :rows="{-{$c.Style.Rows}-}" {-{if eq true $c.Field.IsLongText}-} type="textarea" show-word-limit {-{end}-}
-          placeholder="请输入{-{$c.Label}-}" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-} />
+          placeholder="请输入{-{$c.Desc.Raw}-}" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-} />
       </el-form-item>
       {-{- end }-}
     </el-col>

@@ -329,8 +329,8 @@ func fltr2Expr(f string) []*expr {
 		lst = append(lst, &expr{
 			Name:   types.DecodeString(strings.HasPrefix(pr[0], "@"), true, "", pr[0]),
 			Field:  types.DecodeString(strings.HasPrefix(pr[0], "@"), true, strings.Trim(pr[0], "@"), ""),
-			Symbol: pr[1],
-			Value:  pr[2],
+			Symbol: types.GetStringByIndex(pr, 1, ""),
+			Value:  types.GetStringByIndex(pr, 2, ""),
 		})
 	}
 	return lst

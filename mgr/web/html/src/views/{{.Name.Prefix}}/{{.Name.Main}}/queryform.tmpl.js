@@ -1,4 +1,5 @@
-{-{- $qcols := fltrColumns . "q"}-}
+{-{- $table := .}-}
+{-{- $qcols := fltrColumns $table "q"}-}
     form_{-{.UNQ}-}: {
         pi: 1,
         ps: 15,
@@ -10,7 +11,7 @@
         {-{- end}-}
         {-{- end}-}
         },
-    {-{- range $i,$c := $qcols }-}
+    {-{- range $i,$c := fltrColumns $table "q-l-le" }-}
     {-{- if or (eq true $c.Enum.IsEnum) (eq true (fltrStart $c.Cmpnt.Type "multi"))}-}
     {-{.Name}-}List:this.$theia.enum.get("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}","{-{$c.Enum.Group}-}"),
     {-{.Name}-}Exts:this.$theia.enum.getExts("{-{$c.Enum.EnumType}-}"),
