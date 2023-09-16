@@ -10,7 +10,9 @@ package {-{.Name.Main}-}
 {-{- $switchs := fltrCmpnt $table "switch" "l"}-}
 {-{- $slen := (len $switchs)|minus}-}
 {-{- $updator := fltrOptrsByCmd $table.BarOpts "lstupdator"}-}
+{-{- $batinserts := fltrOptrsByCmd $table.BarOpts "batinsert"}-}
 {-{- $hasStatic := fltrHasStaticColumn  $table "bc-bu-bq" "#"}-}
+
 import (
 	"net/http"
 	{-{- if or (gt (len (fltrColumns $table "c-bc")) 0) (gt (len (fltrColumnsExcludeExt (fltrColumns $table "u"))) 0)}-}
@@ -29,7 +31,9 @@ import (
 	"{-{$table.PkgName}-}/modules/biz/system"
 	"fmt"
 	{-{- end}-}
-
+	{-{- if gt (len $batinserts) 0}-}
+	"{-{$table.PkgName}-}/services/utils"
+	{-{- end}-}
 )
 
 
@@ -337,6 +341,66 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|fltr2CName}-}Handle(ctx hy
 	ctx.Log().Info("3. 保存用户日志")
 	name := ctx.Request().GetString("{-{$table.Enum.Name}-}")
 	system.SaveLog(ctx,fmt.Sprintf("更新{-{$table.Desc}-} {-{$c.Label}-} %s",name),string(ctx.Request().Marshal()))
+	{-{- end}-}
+	return
+}
+{-{- end}-}
+{-{- end}-}
+
+{-{- if gt (len $batinserts) 0}-}
+{-{- range $i,$c := $batinserts}-}
+//{-{$c.ReqURL|fltr2CName}-}Handle  {-{$c.Label}-}
+func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|fltr2CName}-}Handle(ctx hydra.IContext) (r interface{}) {
+
+	ctx.Log().Info("--------{-{$c.Label}-}--------")
+
+	ctx.Log().Info("1.检查必须字段")
+	reqFields :=[]string{
+		{-{flterJoinColumnNames $table $c.RwName `"` `",`}-}
+	}
+	if len(reqFields) == 0 {
+		return errs.NewError(601, "RwName字段未配置")
+	}
+	if err := ctx.Request().Check(reqFields...); err != nil {
+		return err
+	}
+	fileds := []string{
+		{-{flterJoinColumnNames $table $c.FwName `"` `",`}-}
+	}
+	enumsMap := map[string]interface{}{
+		{-{- range $i,$c := $table.EnumColumns}-}
+		"{-{$c.Name}-}":"{-{$c.Enum.EnumType}-}",
+		{-{- end}-}
+	}
+	{-{ $binsertColums :=  fltrColumns $table "batisert" -}-}
+	{-{- $binsertColum := getFirstColumns $binsertColums -}-}
+	cfield := "{-{- $binsertColum.Name}-}"
+	xfm :="{-{- join (fltrGetConstrainValues $table "batisert") ","}-}"
+	xms,err := utils.TransformBatchContent(fileds,enumsMap, cfield, xfm, ctx.Request().GetMap())
+	if err != nil{
+		return err
+	}
+	if xms.Len() == 0 {
+		return errs.NewResult(512, "导入数据格式错误")
+	}
+
+	ctx.Log().Info("2.修改数据")
+	db, err := hydra.C.DB().GetRegularDB().Begin()
+	if err != nil {
+		return err
+	}
+	for _, xm := range xms {
+		rx, err := db.Execute(batInsert{-{$table.Name.CName}-}{-{$c.ReqURL}-}, xm)
+		if err != nil || rx == 0 {
+			db.Rollback()
+			return errs.NewErrorf(http.StatusNotExtended, "数据出错:%+v,row:%d", err, rx)
+		}
+	}
+	db.Commit()
+	{-{- if eq true $table.Conf.WriteLog}-}
+	ctx.Log().Info("3. 保存用户日志")
+	name := ctx.Request().GetString("{-{$table.Enum.Name}-}")
+	system.SaveLog(ctx,fmt.Sprintf("批量添加{-{$table.Desc}-} {-{$c.Label}-} %s",name),string(ctx.Request().Marshal()))
 	{-{- end}-}
 	return
 }

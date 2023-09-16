@@ -1,5 +1,5 @@
 {-{- $table := .}-}
-{-{- $optCols:= mergeOptrs $table.ListOpts $table.BarOpts}-}
+{-{- $optCols:=  $table.ListOpts.Merge $table.BarOpts}-}
 <template tag="{-{.Marker}-}">
   <div>
     {-{- range $x,$m:=$optCols }-}
@@ -77,7 +77,7 @@ export default {
       //显示 {-{$m.Label}-} 弹出框 {-{$m}-}
       show_{-{$m.UNQ}-}(fm){
         {-{- $ct:= fltrSearchUITable  $m }-}
-        {-{- $tbs := contactTBS  $table $ct }-}
+        {-{- $tbs := $table.Contact $ct }-}
         {-{- $ctable := $tbs.Current }-}
         {-{- $mtable := $tbs.Main }-}
         {-{- $MLLERows:= fltrColumns $mtable "l-le"}-}

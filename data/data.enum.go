@@ -14,6 +14,7 @@ type EnumType struct {
 	Status    string //枚举状态字段
 	Expire    string //日期过期字段
 	SortName  string //排序字段
+	SortType  string //排序方式
 	Multiple  bool
 	DEColumns []*Column
 }
@@ -39,9 +40,18 @@ func newEnumType(enumType string, rs []*md.Row, delColumn Columns) *EnumType {
 		}
 		if md.HasConstraint(r.Constraints, "DSN", "dsn") {
 			tp.SortName = r.Name
+			tp.SortType = "asc"
+		}
+		if md.HasConstraint(r.Constraints, "DSND", "dsnd") {
+			tp.SortName = r.Name
+			tp.SortType = "desc"
 		}
 		if md.HasConstraint(r.Constraints, "expire") {
 			tp.Expire = r.Name
+		}
+		if tp.SortName == "" {
+			tp.SortName = tp.Id
+			tp.SortType = "desc"
 		}
 
 	}

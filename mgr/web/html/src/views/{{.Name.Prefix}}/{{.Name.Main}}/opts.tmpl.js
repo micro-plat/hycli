@@ -2,7 +2,7 @@
 {-{- $table := $xtable.Current }-}
 {-{- $mtable := $xtable.Main}-}
 {-{- $tmpl := IsTmplTb $xtable}-}
-{-{- $optRow:= mergeOptrs $table.ListOpts $table.BarOpts}-}
+{-{- $optRow:=  $table.ListOpts.Merge $table.BarOpts}-}
 {-{- if eq true $tmpl}-}
 {-{- $optRow = $mtable.ViewExtCmptOpts.GetLstOptrs  $table.Name.Raw}-}
 {-{- end}-}

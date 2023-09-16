@@ -54,6 +54,7 @@ func TestTBConf(t *testing.T) {
 	assert.Equal(t, 2, len(tbs[0].Rows[1].Constraints))
 	assert.Equal(t, "DN", tbs[0].Rows[1].Constraints[0])
 	assert.Equal(t, "Q", tbs[0].Rows[1].Constraints[1])
+
 }
 
 func TestXxx(t *testing.T) {

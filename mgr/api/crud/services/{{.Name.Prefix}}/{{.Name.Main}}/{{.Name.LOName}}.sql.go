@@ -148,7 +148,6 @@ where
 {-{- end}-}
 
 {-{- $updator := fltrOptrsByCmd $table.BarOpts "lstupdator"}-}
-{-{- $uplen := minus (len $updator)}-}
 {-{- if gt (len $updator) 0}-}
 {-{- range $i,$c := $updator}-}
 
@@ -156,6 +155,7 @@ where
 const updator{-{$table.Name.CName}-}{-{$c.ReqURL}-} = `
 update {-{$table.Name.Raw}-} t set 
 {-{- $fields := fltrColumns $table $c.RwName}-}
+{-{- $uplen := minus (len $fields)}-}
 {-{- range $i,$v := $fields}-}
 	t.{-{$v.Name}-} = if(@{-{$v.Name}-}='',{-{if ne "" $v.Field.DefaultValue}-} {-{$v.Field.DefaultValue}-} {-{else}-}t.{-{$v.Name}-}{-{end}-},@{-{$v.Name}-}){-{if lt $i $uplen}-},{-{end}-}
 {-{- end}-}
@@ -171,3 +171,25 @@ where 1 = 1
 {-{- end}-}
 
 
+
+
+//批量添加数据
+{-{- $batinserts := fltrOptrsByCmd $table.BarOpts "batinsert"}-}
+{-{- $uplen := minus (len $batinserts)}-}
+{-{- if gt (len $batinserts) 0}-}
+{-{- range $i,$c := $batinserts}-}
+
+//batInsert{-{$table.Name.CName}-}{-{$c.ReqURL}-} 修改{-{$table.Desc}-}数据
+const batInsert{-{$table.Name.CName}-}{-{$c.ReqURL}-} = `
+insert {-{$table.Name.Raw}-} (
+	{-{- $fields := fltrColumns $table $c.FwName}-}
+	{-{- $flen := minus (len $fields)}-}
+{-{- range $i,$v := $fields}-}
+	{-{$v.Name}-}{-{if lt $i $flen}-},{-{end}-}
+{-{- end}-})values(
+	{-{- range $i,$v := $fields}-}
+	@{-{$v.Name}-}{-{if lt $i $flen}-},{-{end}-}
+{-{- end}-}
+)`
+{-{- end}-}
+{-{- end}-}

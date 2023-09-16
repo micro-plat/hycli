@@ -1,6 +1,7 @@
 package data
 
 import (
+	"sort"
 	"strings"
 
 	"github.com/micro-plat/hycli/data/internal/md"
@@ -58,20 +59,39 @@ type optrs struct {
 }
 
 type optrslst []*optrs
-type lstOptrs optrslst
-type viewOptrs optrslst
-type lstatOptrs optrslst
-type chartOptrs optrslst
-type barOptrs optrslst
-type viewExtCmptOpts optrslst
-type queryOptrs optrslst
-type extOptrs optrslst
+
+func (o optrslst) Merge(optsm ...optrslst) optrslst {
+	lst := make(optrslst, 0, 1)
+	v := map[string]bool{}
+	for _, opts := range optsm {
+		for _, opt := range opts {
+			if _, ok := v[opt.UNQ]; !ok {
+				lst = append(lst, opt)
+				v[opt.UNQ] = true
+			}
+
+		}
+	}
+
+	sort.Sort(lst)
+	return lst
+
+}
+
+type lstOptrs = optrslst
+type viewOptrs = optrslst
+type lstatOptrs = optrslst
+type chartOptrs = optrslst
+type barOptrs = optrslst
+type viewExtCmptOpts = optrslst
+type queryOptrs = optrslst
+type extOptrs = optrslst
 
 var viewOptCmd = []string{"view"}
 var lstatOptCmd = []string{"lstat"}
 var lstBarOptCmd = []string{"lst"}
 var batchCheck = []string{"bcheck", "@bcheck", "&bcheck"}
-var qBarOptrCmd = []string{"export", "import", "lstbar", "lstupdator"}
+var qBarOptrCmd = []string{"export", "import", "lstbar", "lstupdator", "batinsert"}
 var charOptrCmd = []string{"chart"}
 var extCmptParam = []string{"add", "update", "view"}
 var extOptrsCmd = []string{"tskbar", "xbar"}
@@ -115,6 +135,10 @@ func (s *optrs) NeedBatchCheck() bool {
 	}
 	return false
 }
+func (s *optrs) GetParams(p string) string {
+	return s.Params.Get(p)
+}
+
 func (s *optrs) String() string {
 	buff, _ := jsons.Marshal(s)
 	return string(buff)

@@ -6,7 +6,7 @@ package enums
 var enumSQL = map[string]string{
 	{-{- range $i,$v:=$etable}-}
 	{-{- if ne "" $v.Enum.EnumType}-}
-	"{-{$v.Enum.EnumType}-}":"select {-{$v.Enum.Id}-} value,{-{if ne "" $v.Enum.PID}-} {-{$v.Enum.PID}-} pid, {-{end}-}{-{$v.Enum.Name}-} name,{-{- range $j,$v:=$v.Enum.DEColumns}-}{-{$v.Name}-} {-{$v.Desc}-},{-{end}-}{-{if ne "" $v.Enum.Status}-}{-{$v.Enum.Status}-} status,{-{end}-}'{-{$v.Enum.EnumType}-}' type from {-{$v.Name.Raw}-} where 1=1   {-{if ne "" $v.Enum.Expire}-} and {-{$v.Enum.Expire}-} >= DATE_FORMAT(now(),'%Y-%m-%d'){-{end}-}{-{if ne "" $v.Enum.SortName}-} order by {-{$v.Enum.SortName}-} asc {-{end}-}",
+	"{-{$v.Enum.EnumType}-}":"select {-{$v.Enum.Id}-} value,{-{if ne "" $v.Enum.PID}-} {-{$v.Enum.PID}-} pid, {-{end}-}{-{$v.Enum.Name}-} name,{-{- range $j,$v:=$v.Enum.DEColumns}-}{-{$v.Name}-} {-{$v.Desc}-},{-{end}-}{-{if ne "" $v.Enum.Status}-}{-{$v.Enum.Status}-} status,{-{end}-}'{-{$v.Enum.EnumType}-}' type from {-{$v.Name.Raw}-} where 1=1   {-{if ne "" $v.Enum.Expire}-} and {-{$v.Enum.Expire}-} >= DATE_FORMAT(now(),'%Y-%m-%d'){-{end}-}{-{if ne "" $v.Enum.SortName}-} order by {-{$v.Enum.SortName}-} {-{$v.Enum.SortType}-} {-{end}-}",
 	{-{- end}-}
 	{-{- end}-}
 }
@@ -14,7 +14,7 @@ var enumSQL = map[string]string{
 var unspecifiedEnum = []string{
 	{-{- range $i,$v:=$etable}-}
 	{-{- if and (ne "" $v.Enum.EnumType) (eq true $v.Enum.Multiple)}-}
-	"select {-{$v.Enum.Id}-} value,{-{if ne "" $v.Enum.PID}-} {-{$v.Enum.PID}-} pid, {-{end}-}{-{$v.Enum.Name}-} name,{-{- range $j,$v:=$v.Enum.DEColumns}-}{-{$v.Name}-} {-{$v.Desc}-},{-{end}-}{-{if ne "" $v.Enum.Status}-}{-{$v.Enum.Status}-} status,{-{end}-} {-{$v.Enum.Type}-} type from {-{$v.Name.Raw}-} where {-{$v.Enum.Type}-}=if(@type='',{-{$v.Enum.Type}-},@type)  {-{if ne "" $v.Enum.Expire}-} and {-{$v.Enum.Expire}-} >= DATE_FORMAT(now(),'%Y-%m-%d'){-{end}-}{-{if ne "" $v.Enum.SortName}-} order by {-{$v.Enum.SortName}-} asc {-{end}-}",
+	"select {-{$v.Enum.Id}-} value,{-{if ne "" $v.Enum.PID}-} {-{$v.Enum.PID}-} pid, {-{end}-}{-{$v.Enum.Name}-} name,{-{- range $j,$v:=$v.Enum.DEColumns}-}{-{$v.Name}-} {-{$v.Desc}-},{-{end}-}{-{if ne "" $v.Enum.Status}-}{-{$v.Enum.Status}-} status,{-{end}-} {-{$v.Enum.Type}-} type from {-{$v.Name.Raw}-} where {-{$v.Enum.Type}-}=if(@type='',{-{$v.Enum.Type}-},@type)  {-{if ne "" $v.Enum.Expire}-} and {-{$v.Enum.Expire}-} >= DATE_FORMAT(now(),'%Y-%m-%d'){-{end}-}{-{if ne "" $v.Enum.SortName}-} order by {-{$v.Enum.SortName}-} {-{$v.Enum.SortType}-} {-{end}-}",
 	{-{- end}-}
 	{-{- end}-}
 }
@@ -34,10 +34,4 @@ func getSQLs(tp string) []string {
 
 	//指定未明确类型的枚举
 	return unspecifiedEnum
-}
-func init() {
-	for _, v := range enumSQL {
-		sqls = append(sqls, v)
-	}
-	sqls = append(sqls, unspecifiedEnum...)
 }

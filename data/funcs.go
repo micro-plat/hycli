@@ -29,6 +29,7 @@ var Funcs = map[string]interface{}{
 	"fltrFrontOptrsByStatic":       fltrFrontOptrsByStatic,
 	"fltrStaticColumn":             fltrStaticColumn,
 	"fltrHasStaticColumn":          fltrHasStaticColumn,
+	"fltrGetConstrainValues":       fltrGetConstrainValues,
 	"fltrOptrsByTag":               fltrOptrsByTag,
 	"fltrOptrsByCmd":               fltrOptrsByCmd,
 	"fltrOptrsByTable":             fltrOptrsByTable,
@@ -36,28 +37,28 @@ var Funcs = map[string]interface{}{
 	"fltrColumns":                  fltrColumns,
 	"getFirstColumns":              getFirstColumns,
 	"flterJoinColumnNames":         flterJoinColumnNames,
-	"mergeOptrs":                   mergeOptrs,
-	"getFirstOptr":                 getFirstOptr,
-	"fltrAssctColumns":             fltrAssctColumns,
-	"fltrTranslate":                fltrTranslate,
-	"fltrCmpnt":                    fltrCmpnt,
-	"fltrColumnsExcludeExt":        fltrColumnsExcludeExt,
-	"fltrOptrPara":                 fltrOptrPara,
-	"fltr2Expr":                    fltr2Expr,
-	"fltrOptrParaExprs":            fltrOptrParaExprs,
-	"fltrStart":                    fltrStart,
-	"fltrFindTable":                findTable,
-	"fltrTrim":                     fltrTrim,
-	"resetForm":                    resetForm,
-	"multiply":                     multiply,
-	"sjoin":                        sjoin,
-	"add":                          fltrAdd,
-	"spare":                        spare,
-	"bleft":                        bleft,
-	"div":                          divide,
-	"bright":                       bright,
-	"contactTBS":                   contactTables,
-	"fltr2Num":                     fltr2Num,
+	// "mergeOptrs":                   mergeOptrs,
+	"getFirstOptr":          getFirstOptr,
+	"fltrAssctColumns":      fltrAssctColumns,
+	"fltrTranslate":         fltrTranslate,
+	"fltrCmpnt":             fltrCmpnt,
+	"fltrColumnsExcludeExt": fltrColumnsExcludeExt,
+	"fltrOptrPara":          fltrOptrPara,
+	"fltr2Expr":             fltr2Expr,
+	"fltrOptrParaExprs":     fltrOptrParaExprs,
+	"fltrStart":             fltrStart,
+	"fltrFindTable":         findTable,
+	"fltrTrim":              fltrTrim,
+	"resetForm":             resetForm,
+	"multiply":              multiply,
+	"sjoin":                 sjoin,
+	"join":                  join,
+	"add":                   fltrAdd,
+	"spare":                 spare,
+	"bleft":                 bleft,
+	"div":                   divide,
+	"bright":                bright,
+	"fltr2Num":              fltr2Num,
 }
 
 func divide(x, y interface{}) int {
@@ -113,6 +114,16 @@ func flterMainTable(tbs []*Table) []*Table {
 	return ntbs
 }
 
+func fltrGetConstrainValues(t *Table, tp string) []string {
+	for _, c := range t.Columns {
+		if md.HasConstraint(c.Constraints, tp) {
+			return md.GetConstrainValues(tp, c.Constraints...)
+		}
+
+	}
+	return nil
+
+}
 func fltrColumnsExcludeExt(cols []*Column) []*Column {
 	vc := make([]*Column, 0, 1)
 	for _, v := range cols {
@@ -144,7 +155,9 @@ func multiply(v int, b int) int {
 func sjoin(v ...string) string {
 	return strings.Join(v, "")
 }
-
+func join(v []string, p string) string {
+	return strings.Join(v, p)
+}
 func fltrNotNullRows(rs []*Column) []*Column {
 	r := make([]*Column, 0, 1)
 	for _, v := range rs {
@@ -200,20 +213,21 @@ func findOptrsByView(tbName string, tp string) optrslst {
 
 	return nlst
 }
-func mergeOptrs(opts ...[]*optrs) optrslst {
-	lst := make(optrslst, 0, 1)
-	v := map[string]bool{}
-	for _, fopts := range opts {
-		for _, opt := range fopts {
-			if _, ok := v[opt.UNQ]; !ok {
-				lst = append(lst, opt)
-				v[opt.UNQ] = true
-			}
-		}
-	}
-	sort.Sort(lst)
-	return lst
-}
+
+//	func mergeOptrs(opts ...[]*optrs) optrslst {
+//		lst := make(optrslst, 0, 1)
+//		v := map[string]bool{}
+//		for _, fopts := range opts {
+//			for _, opt := range fopts {
+//				if _, ok := v[opt.UNQ]; !ok {
+//					lst = append(lst, opt)
+//					v[opt.UNQ] = true
+//				}
+//			}
+//		}
+//		sort.Sort(lst)
+//		return lst
+//	}
 func fltrOptrsByTag(opts []*optrs, tag string) optrslst {
 	nopts := make(optrslst, 0, 1)
 	tags := strings.Split(tag, "-")
@@ -337,7 +351,7 @@ func fltr2Expr(f string) []*expr {
 }
 
 // fltrColumns 过滤用户自定义类型对应的行，自定义行对应的控件按新增模式处理
-func fltrColumns(tx interface{}, tp string, formName ...string) []*Column {
+func fltrColumns(tx interface{}, tp string, formName ...string) Columns {
 	t, ok := tx.(*Table)
 	if !ok {
 		t = tx.(*TTable).Table

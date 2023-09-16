@@ -1,6 +1,8 @@
 {-{- $table := .}-}
 {-{- $cColumns := fltrColumns $table "C"}-}
+{-{- $acColumns := fltrColumns $table "C-BC"}-}
 {-{- $enumColumns :=$table.EnumColumns}-}
+
 <template tag="{-{.Marker}-}">
   <el-dialog
     v-model="conf.visible"
@@ -39,7 +41,31 @@ export default {
   methods: {
     show(fm = {}) {
       this.conf.visible = true;
-      this.form = Object.assign(fm,this.$route.params)
+      let local = {}
+      {-{- range $i,$c:=fltrOptrsByTag $table.BarOpts "ADD" }-}
+        {-{- $read2window := $c.GetParams "read2window" -}-}
+        {-{- if ne "" $read2window}-}
+        
+        //将数据保存到window缓存中
+      local = window.{-{$read2window}-} || {}
+        {-{- end -}-}
+        {-{- end }-}
+      let cache =  Object.assign(local,fm)
+      this.form = Object.assign(cache,this.$route.params)
+
+      {-{- range $i,$c := $acColumns.GetColumnsBy "alias"}-}
+      {-{- $name := $c.GetOpt "alias" -}-}
+      {-{- if ne "" $name}-}
+      this.form.{-{$c.Name}-} = cache["{-{$name}-}"]
+      {-{- end -}-}
+      {-{- end -}-}
+
+      {-{- range $i,$c := $cColumns}-}
+      {-{- if eq true (fltrStart $c.Cmpnt.Type "multi")}-}
+      this.form.{-{$c.Name}-} = cache["{-{$c.Name}-}"]?[cache["{-{$c.Name}-}"]]:[];
+      {-{- end}-}
+      {-{- end}-}
+
       {-{- range $i,$c:= $cColumns }-}
       {-{- if and (gt (len (fltrAssctColumns $cColumns $c.Name)) 0) (eq true (fltrHasConst $c "rp"))}-} 
       this.onChange_{-{$c.Name}-}(this.$route.params["{-{$c.Name}-}"]||this.form["{-{$c.Name}-}"])
@@ -70,6 +96,16 @@ export default {
         postForm.{-{$c.Name}-} = (postForm.{-{$c.Name}-}||[]).join(",")
         {-{- end }-}
         {-{- end}-}
+        {-{- range $i,$c:=fltrOptrsByTag $table.BarOpts "ADD" }-}
+        {-{- $save2window := $c.GetParams "save2window" -}-}
+        {-{- if ne "" $save2window}-}
+        
+        //将数据保存到window缓存中
+        window.{-{$save2window}-} = postForm
+        {-{- end -}-}
+        {-{- end }-}
+
+        //保存数据
         this.$theia.http.post("/{-{.Name.MainPath|lower}-}",postForm).then(res=>{
             that.$notify.success({title: '成功',message: '{-{.Desc}-}保存成功',duration:5000})
             that.hide()
@@ -81,6 +117,7 @@ export default {
             that.$theia.enum.get("{-{$table.Enum.EnumType}-}")
             {-{- end}-}
             {-{- end}-}
+            
             that.$emit("onsaved")
         }).catch(res=>{
           let code = ((res||{}).response||{}).status||0

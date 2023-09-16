@@ -1,5 +1,5 @@
 {-{- $table := .}-}
-{-{- $opts:= mergeOptrs $table.ListOpts $table.BarOpts}-}
+{-{- $opts:=  $table.ListOpts.Merge $table.BarOpts}-}
 {-{- if gt (len $opts) 0}-}
 <div>
     {-{- range $x,$m:= fltrOptrs $opts "CMPNT"}-}

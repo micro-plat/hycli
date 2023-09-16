@@ -6,11 +6,10 @@ type BUITable struct {
 	IsTmpl  bool
 }
 
-// contactTB 连接多个UITable
-func contactTables(c interface{}, e interface{}) *BUITable {
+func (t *Table) Contact(x interface{}) *BUITable {
 	return &BUITable{
-		Current: c,
-		Main:    e,
-		IsTmpl:  c != e,
+		Current: t,
+		Main:    x,
+		IsTmpl:  t != x,
 	}
 }

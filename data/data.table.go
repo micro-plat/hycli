@@ -64,6 +64,7 @@ type Table struct {
 }
 
 func (t *Table) Sort() {
+	t.ListOpts.Merge(t.BarOpts)
 	sort.Sort(t.Columns)
 	sort.Sort(optrslst(t.BarOpts))
 	sort.Sort(optrslst(t.ViewOpts))

@@ -80,6 +80,15 @@ func GetExprs(v string) [][]string {
 	}
 	return lst
 }
+
+func GetConstrainValues(t string, cns ...string) []string {
+	lst := GetConstraintByReg(cns, fmt.Sprintf(`^%s$|^%s\(([^\)]*)\)$`, t, t))
+	if len(lst) == 0 {
+		return nil
+	}
+	return strings.Split(lst[0], ",")
+}
+
 func GetConsByTag(t string, cns ...string) (string, string, string) {
 	cons := GetConstraintByReg(cns, fmt.Sprintf(`^(%s)$|^%s\(([^\(^\)^,]+)[,]?([^\(^\)^,]*)[,]?([^\(^\)]*)\)$`, t, t))
 	if len(cons) == 0 {

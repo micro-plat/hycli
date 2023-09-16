@@ -1,6 +1,7 @@
 {-{- $table := .}-}
 {-{- $ucols := fltrColumns $table "U"}-}
 {-{- $enumColumns :=$table.EnumColumns}-}
+
 <template tag="{-{.Marker}-}">
   <el-dialog
     v-model="conf.visible"
@@ -84,6 +85,18 @@ export default {
         postForm.{-{$c.Name}-} = (postForm.{-{$c.Name}-}||[]).join(",")
         {-{- end }-}
         {-{- end}-}
+        {-{- range $i,$c:= fltrOptrsByTag $table.ListOpts "UPDATE" }-}
+        {-{- $save2window := $c.GetParams "save2window" -}-}
+        {-{- if ne "" $save2window}-}
+        
+        //将数据保存到window缓存中
+        window.{-{$save2window}-} = postForm
+        {-{- range $i,$v :=fltrColumnsExcludeExt $table.PKColumns}-}
+        window.{-{$v.Name}-} = null
+      {-{- end}-}
+        {-{- end -}-}
+        {-{- end }-}
+
         this.$theia.http.put("/{-{.Name.MainPath|lower}-}",postForm).then(res=>{
             that.$notify.success({title: '成功',message: '{-{.Desc}-}保存成功',duration:5000})
             {-{- if ne "" $table.Enum.EnumType}-}

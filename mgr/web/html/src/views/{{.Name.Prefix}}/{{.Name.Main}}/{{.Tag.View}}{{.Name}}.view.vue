@@ -44,7 +44,7 @@
           </el-row>
          {-{- end}-}
          {-{- $ct:= fltrSearchUITableAndResetUNQ $c}-}
-         {-{- $tbs := contactTBS  $ct $table }-}
+         {-{- $tbs := $ct.Contact $table }-}
         {-{- template "list.tmpl.html" $tbs}-}
          </el-tab-pane>
       {-{- end}-}
@@ -63,13 +63,13 @@
 </div>
 </template>
 <script>
- {-{- range $x,$m:=fltrOptrs (mergeOptrs $viewOpts $table.ViewExtCmptOpts.ALL) "CMPNT"}-}
+ {-{- range $x,$m:=fltrOptrs ( $viewOpts.Merge $table.ViewExtCmptOpts.ALL) "CMPNT"}-}
 import {-{$m.UNQ}-} from "{-{fltrTranslate $m.URL (fltrFindTable $m.Table)}-}"
 {-{- end}-}
 
 export default {
    components: {
-    {-{- range $x,$m:=fltrOptrs (mergeOptrs $viewOpts $table.ViewExtCmptOpts.ALL) "CMPNT"}-}
+    {-{- range $x,$m:=fltrOptrs ( $viewOpts.Merge $table.ViewExtCmptOpts.ALL) "CMPNT"}-}
     {-{$m.UNQ}-},
     {-{- end }-}
   },
@@ -122,7 +122,7 @@ export default {
      {-{- range $i,$c:= $viewOpts }-}
        {-{- if eq "TAB" $c.Name }-}
           {-{- $ct:= fltrSearchUITableAndResetUNQ  $c }-}
-          {-{- $tbs := contactTBS  $ct $table }-}
+          {-{- $tbs := $ct.Contact $table }-}
         {-{- template "list.tmpl.js" $tbs}-}
       {-{- end }-}
       {-{- end }-}

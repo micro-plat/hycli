@@ -1,7 +1,7 @@
 <template tag="{-{.Marker}-}">
   {-{- $table := .}-}
   {-{- $opts :=$table.ListOpts }-}
-  {-{- $tbs := contactTBS  $table $table }-}
+  {-{- $tbs := $table.Contact $table }-}
   <div style="height: 100%">
     {-{- template "query.tmpl.html" $table }-}
     {-{- template "listbar.tmpl.html" $table }-}
@@ -56,7 +56,7 @@ data() {
 };
   },
 mounted() {
-  {-{- $optRow:= mergeOptrs $table.ListOpts $table.BarOpts}-}
+  {-{- $optRow:= $table.ListOpts.Merge $table.BarOpts}-}
   {-{- $cmpnts:= fltrOptrs $optRow "CMPNT"}-}
   {-{- range $x,$m:= $cmpnts}-}
     this.cmpnt_funcs["{-{$m.UNQ}-}"] = this.show_cmpnt_{-{$m.UNQ}-}
