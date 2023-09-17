@@ -1,11 +1,11 @@
 {-{- $table :=.}-}
 {-{- $qOptrs:= $table.QueryOptrs}-}
-{-{- $qcols := fltrColumns $table "q"}-}
-{-{- $crow :=fltrColumns $table "c"}-}
+{-{- $qcols :=  $table.GetColumnsByName "q"}-}
+{-{- $crow := $table.GetColumnsByName "c"}-}
 {-{- $clen := len $crow}-}
 {-{- $blen :=len $table.BarOpts}-}
-{-{- $tabs := fltrCmpnt $table "tabs" "q"}-}
-{-{- $blist := fltrCmpnt $table "blist" "q"}-}
+{-{- $tabs :=  $table.GetColumsByCmpnt "tabs" "q"}-}
+{-{- $blist :=  $table.GetColumsByCmpnt "blist" "q"}-}
 
 {-{- if or (gt (len $tabs) 0) (or (gt (len $qcols) 0) (gt (len $blist) 0))}-}
 <div class="query">
@@ -77,7 +77,7 @@
         {-{- if or (eq "select" $c.Cmpnt.Type) (eq "radio" $c.Cmpnt.Type)}-}
         <!--{-{$c.Label}-} 下拉控件 -->
         <el-form-item>
-            <el-select {-{if gt (len (fltrAssctColumns $qcols $c.Name)) 0}-} @change="onChange_{-{$c.Name}-}"  {-{end}-} v-model="form_{-{$table.UNQ}-}.{-{.Name}-}" style="width: 120px" clearable placeholder="{-{$c.Label}-}">
+            <el-select {-{if gt (len ( $qcols.GetColumnsByColumName $c.Name)) 0}-} @change="onChange_{-{$c.Name}-}"  {-{end}-} v-model="form_{-{$table.UNQ}-}.{-{.Name}-}" style="width: 120px" clearable placeholder="{-{$c.Label}-}">
                 <el-option v-for="item in {-{.Name}-}List" :key="item.value" :label="item.name" :value="item.value" />
             </el-select>
         </el-form-item>
@@ -85,7 +85,7 @@
         {-{- end}-}
 
         {-{- range $i,$c:= $qcols}-}
-        {-{- if eq true (fltrStart $c.Cmpnt.Type "multi")}-}
+        {-{- if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
         <!--{-{$c.Label}-} 下拉控件多选 -->
         <el-form-item>
             <el-select v-model="form_{-{$table.UNQ}-}.{-{.Name}-}" filterable clearable multiple collapse-tags  style="width: 140px"
@@ -143,8 +143,8 @@
                 {-{- end}-}
                 {-{- end}-}
             {-{- if eq $blen 1}-}
-                {-{- range $i,$c:=fltrOptrs $table.BarOpts "CMPNT" }-}
-                <el-button :type="tagColor({-{spare $i 3}-})" {-{if ne "" $c.ICON}-} icon="{-{$c.ICON}-}" {-{end}-} @click="show_cmpnt_{-{$c.UNQ}-}">{-{$c.Label}-}</el-button>
+                {-{- range $i,$c:= $table.BarOpts.GetByName "CMPNT" }-}
+                <el-button :type="tagColor({-{f_num_spare $i 3}-})" {-{if ne "" $c.ICON}-} icon="{-{$c.ICON}-}" {-{end}-} @click="show_cmpnt_{-{$c.UNQ}-}">{-{$c.Label}-}</el-button>
                 {-{- end}-}
             {-{- end}-}
             </el-space>
@@ -154,9 +154,9 @@
         <div class="blist"> 
             {-{- if gt $blen 1}-}
             <el-button-group>
-                {-{- range $i,$c:=fltrOptrs $table.BarOpts "CMPNT" }-}
-                {-{- $exprs :=fltrOptrParaExprs $c "showExpr" ""}-}
-                <el-button :type="tagColor({-{spare $i 3}-})"
+                {-{- range $i,$c:= $table.BarOpts.GetByName "CMPNT" }-}
+                {-{- $exprs := $c.GetExprs "showExpr" ""}-}
+                <el-button :type="tagColor({-{f_num_spare $i 3}-})"
                 {-{- if gt (len $exprs)  0}-} v-if='
                 {-{- range $i,$expr := $exprs}-}
                 {-{- if ne "" $expr.Name}-}{-{$expr.Name}-}{-{$expr.Symbol}-}{-{$expr.Value}-} 
@@ -165,7 +165,7 @@
                 {-{- end}-}
                 {-{- if lt $i (minus (len $exprs))}-}&&{-{- end -}-}
                 {-{- end -}-}'{-{- end}-}
-                {-{if eq true (fltrNeedBatchCheck $c)}-} :disabled="bcheck.length==0" {-{ end}-}
+                {-{if eq true $c.NeedBatchCheck}-} :disabled="bcheck.length==0" {-{ end}-}
                 {-{if ne "" $c.ICON}-} icon="{-{$c.ICON}-}" {-{end}-} @click="show_cmpnt_{-{$c.UNQ}-}">{-{$c.Label}-}</el-button>
                 {-{- end}-}
             </el-button-group>

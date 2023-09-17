@@ -12,7 +12,7 @@
       :close-on-click-modal="false"
       :before-close="hide_{-{$m.UNQ}-}"
     >
-      {-{- $cols:= fltrColumns $table $m.RwName (sjoin "form_" $m.UNQ)}-}
+      {-{- $cols:=  $table.GetColumnsByName $m.RwName (f_string_contact "form_" $m.UNQ)}-}
       <span 
         >确认{-{$m.Label}-}{-{range $i,$c:= $cols}-}<span 
         v-if="form_{-{$m.UNQ}-}.{-{$c.Name}-}"
@@ -46,7 +46,7 @@ export default {
      {-{- if eq "CNFRM" $m.Tag }-}
       //{-{$m.Label}-} form by  [{-{$m.RwName}-}]
       form_{-{$m.UNQ}-}:{
-       {-{- $cols:= fltrColumns $table $m.RwName }-}
+       {-{- $cols:=  $table.GetColumnsByName $m.RwName }-}
         {-{- range $i,$c:=$cols }-} 
         {-{$c.Name}-}:"",
         {-{- end}-}
@@ -72,7 +72,7 @@ export default {
       //保存 {-{$m.Label}-} 弹出框数据
       save_{-{$m.UNQ}-}(){
         let that = this
-        this.$theia.http.post("{-{fltrTranslate $m.ReqURL (fltrFindTable $m.Table)}-}",this.form_{-{$m.UNQ}-}).then(res=>{
+        this.$theia.http.post("{-{f_string_translate $m.ReqURL (f_table_find_by_name $m.Table)}-}",this.form_{-{$m.UNQ}-}).then(res=>{
           that.conf.confirmVisible = false 
           that.$notify.success({title: '成功',message: '{-{$m.Label}-}成功',duration:5000})
           that.$emit("onsaved")

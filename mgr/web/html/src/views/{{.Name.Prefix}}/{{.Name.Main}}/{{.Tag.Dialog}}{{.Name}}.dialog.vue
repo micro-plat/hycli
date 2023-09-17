@@ -12,7 +12,7 @@
       draggable
       :before-close="hide_{-{$m.UNQ}-}"
     >
-      {-{- $rows:= fltrColumns $table $m.RwName (sjoin "form_" $m.UNQ)}-}
+      {-{- $rows:=  $table.GetColumnsByName $m.RwName (f_string_contact "form_" $m.UNQ)}-}
       <el-form
         :model="form_{-{$m.UNQ}-}"
         
@@ -47,9 +47,9 @@ export default {
   {-{- range $x,$m:=$optCols }-}
      {-{- if eq "DIALOG" $m.Tag}-}
       //{-{$m.Label}-} form by  {-{$m.RwName}-}
-      {-{- $rows:= fltrColumns $table $m.RwName }-}
+      {-{- $rows:=  $table.GetColumnsByName $m.RwName }-}
         {-{- range $i,$c:=$rows }-} 
-        {-{- if or (eq true $c.Enum.IsEnum) (eq true (fltrStart $c.Cmpnt.Type "multi"))}-}
+        {-{- if or (eq true $c.Enum.IsEnum) (eq true (f_string_start $c.Cmpnt.Type "multi"))}-}
     {-{.Name}-}List:this.$theia.enum.get("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}","{-{$c.Enum.Group}-}"),
          {-{- else}-}
     {-{$c.Name}-}:"",
@@ -61,7 +61,7 @@ export default {
     {-{- range $x,$m:=$optCols }-}
     {-{- if eq "DIALOG" $m.Tag}-}
     rules_{-{$m.UNQ}-}:{
-        {-{- $rows:= fltrColumns $table $m.RwName }-}
+        {-{- $rows:=  $table.GetColumnsByName $m.RwName }-}
          {-{- range $i,$c:=$rows}-} 
           {-{$c.Name}-}:[{required:{-{$c.Field.Required}-}, message:"请输入{-{$c.Label}-}", trigger: 'blur'}],
           {-{- end}-}
@@ -76,11 +76,11 @@ export default {
      //--------------------{-{$m.Label}-}---------------------------------
       //显示 {-{$m.Label}-} 弹出框 {-{$m}-}
       show_{-{$m.UNQ}-}(fm){
-        {-{- $ct:= fltrSearchUITable  $m }-}
+        {-{- $ct:=   $m.GetAssociatedTable }-}
         {-{- $tbs := $table.Contact $ct }-}
         {-{- $ctable := $tbs.Current }-}
         {-{- $mtable := $tbs.Main }-}
-        {-{- $MLLERows:= fltrColumns $mtable "l-le"}-}
+        {-{- $MLLERows:=  $mtable.GetColumnsByName "l-le"}-}
           
         //处理关联表{-{$m.URL}-}
         let currentForm = {}
@@ -109,14 +109,14 @@ export default {
                 return
             }
         let post_form_{-{$m.UNQ}-} = this.form_{-{$m.UNQ}-}
-        {-{- $rows:= fltrColumns $table $m.RwName (sjoin "form_" $m.UNQ)}-}
+        {-{- $rows:=  $table.GetColumnsByName $m.RwName (f_string_contact "form_" $m.UNQ)}-}
         {-{range $i,$c:= $rows }-}
        
          {-{- if eq "password" $c.Cmpnt.Type  }-}
         post_form_{-{$m.UNQ}-}.{-{$c.Name}-} = this.$theia.crypto.md5(this.form_{-{$m.UNQ}-}.{-{$c.Name}-})
          {-{- end }-}
           {-{end}-}
-        this.$theia.http.post("/{-{$table.Name.MainPath|lower}-}/{-{fltrTranslate $m.ReqURL (fltrFindTable $m.Table)}-}",post_form_{-{$m.UNQ}-}).then(res=>{
+        this.$theia.http.post("/{-{$table.Name.MainPath|lower}-}/{-{f_string_translate $m.ReqURL (f_table_find_by_name $m.Table)}-}",post_form_{-{$m.UNQ}-}).then(res=>{
             that.$notify.success({title: '成功',message: '提交成功',duration:5000})
             that.$emit("onsaved")
             that.hide_{-{$m.UNQ}-}()

@@ -1,5 +1,5 @@
 {-{- $table := . }-}
-{-{- $vcols := fltrColumns $table "v" }-}
+{-{- $vcols :=  $table.GetColumnsByName "v" }-}
 {-{- $viewOpts :=$table.ViewOpts}-}
 <template tag="{-{.Marker}-}">
   <div>
@@ -11,9 +11,9 @@
     :close-on-click-modal="false"
     :before-close="hide"
   >
-  {-{- range $i,$c:=fltrOptrs $viewOpts "step"}-}
+  {-{- range $i,$c:= $viewOpts.GetByName "step"}-}
   <el-steps class="steps" :active="conf.stepActive_{-{$c.UNQ}-}" align-center  finish-status="success">
-    {-{- range $j,$s:= fltrColumns $table $c.RwName}-}
+    {-{- range $j,$s:=  $table.GetColumnsByName $c.RwName}-}
     <el-step title="{-{$s.Label}-}" :description="view.{-{$s.Name}-}||'未设置'" />
     {-{- end }-}
   </el-steps>
@@ -21,8 +21,8 @@
     <el-tabs v-model="conf.selected">
       {-{- range $i,$c:= $viewOpts}-}
       {-{- if eq "view" $c.Name}-}
-      {-{- $currentTable := fltrSearchTable  $c.Table }-}
-      {-{- $vxcols := fltrColumns $currentTable "v" }-}
+      {-{- $currentTable := f_table_get_ttable  $c.Table }-}
+      {-{- $vxcols :=  $currentTable.GetColumnsByName "v" }-}
       <el-tab-pane label="详情" name="{-{$c.UNQ}-}">
        {-{- template "view.tmpl.html" $vxcols}-}
       </el-tab-pane>
@@ -43,7 +43,7 @@
         </el-col>
           </el-row>
          {-{- end}-}
-         {-{- $ct:= fltrSearchUITableAndResetUNQ $c}-}
+         {-{- $ct:=  $c.GetAssociatedTable true}-}
          {-{- $tbs := $ct.Contact $table }-}
         {-{- template "list.tmpl.html" $tbs}-}
          </el-tab-pane>
@@ -63,13 +63,16 @@
 </div>
 </template>
 <script>
- {-{- range $x,$m:=fltrOptrs ( $viewOpts.Merge $table.ViewExtCmptOpts.ALL) "CMPNT"}-}
-import {-{$m.UNQ}-} from "{-{fltrTranslate $m.URL (fltrFindTable $m.Table)}-}"
+{-{- $vaopts := $viewOpts.Merge $table.ViewExtCmptOpts.ALL}-}
+{-{- $vaCmpntOpts :=  $vaopts.GetByName "CMPNT"}-}
+ {-{- range $x,$m := $vaCmpntOpts}-}
+import {-{$m.UNQ}-} from "{-{f_string_translate $m.URL (f_table_find_by_name $m.Table)}-}"
 {-{- end}-}
 
 export default {
    components: {
-    {-{- range $x,$m:=fltrOptrs ( $viewOpts.Merge $table.ViewExtCmptOpts.ALL) "CMPNT"}-}
+
+    {-{- range $x,$m:= $vaCmpntOpts}-}
     {-{$m.UNQ}-},
     {-{- end }-}
   },
@@ -77,15 +80,15 @@ export default {
     return {
         conf:{
         visible:false,
-        selected:"{-{(fltrSelectedOptrs $viewOpts).UNQ}-}",
-        {-{- range $i,$c:=fltrOptrs $viewOpts "step"}-}
+        selected:"{-{($viewOpts.GetSelected).UNQ}-}",
+        {-{- range $i,$c:= $viewOpts.GetByName "step"}-}
         stepActive_{-{$c.UNQ}-}:0,
         {-{- end}-}
       },
       form:{},
        {-{- range $i,$c:=  $viewOpts }-}
        {-{- if eq "TAB" $c.Name}-}
-          {-{- $ct:= fltrSearchUITableAndResetUNQ  $c}-}
+          {-{- $ct:=   $c.GetAssociatedTable true}-}
         {-{- template "queryform.tmpl.js" $ct}-}
       {-{- end}-}
       {-{- end }-}
@@ -97,19 +100,19 @@ export default {
       }
   },
   methods: {
-   {-{- range $x,$m:=fltrOptrs $table.ViewExtCmptOpts.ALL "CMPNT"}-}
+   {-{- range $x,$m:= $table.ViewExtCmptOpts.ALL.GetByName "CMPNT"}-}
   show_cmpnt_{-{$m.UNQ}-}(fm = {}){
     let form = Object.assign({},this.form)
     form = Object.assign(form,fm)
  
-    {-{- $c := fltrFrontOptrsByStatic $m }-}
+    {-{- $c :=  $m.GetParamsByAtPrefix }-}
     {-{- range $k,$v := $c}-}
-    {-{- if eq true (fltrStart $v "@")}-}
-    form.{-{$k}-} = this.{-{fltrTrim $v "@"}-}
-    {-{- else if eq true (fltrStart $v "&")}-}
-    form.{-{$k}-} = (this.{-{fltrTrim $v "&"}-}||[]).join(",")
-    {-{- else if eq true (fltrStart $v "#")}-}
-    form.{-{$k}-} = fm.{-{fltrTrim $v "#"}-}
+    {-{- if eq true (f_string_start $v "@")}-}
+    form.{-{$k}-} = this.{-{f_string_trim $v "@"}-}
+    {-{- else if eq true (f_string_start $v "&")}-}
+    form.{-{$k}-} = (this.{-{f_string_trim $v "&"}-}||[]).join(",")
+    {-{- else if eq true (f_string_start $v "#")}-}
+    form.{-{$k}-} = fm.{-{f_string_trim $v "#"}-}
     {-{- else}-}
     form.{-{$k}-} = "{-{$v}-}"
     {-{- end}-}
@@ -121,7 +124,7 @@ export default {
     {-{- template "view.tmpl.js" $table}-}
      {-{- range $i,$c:= $viewOpts }-}
        {-{- if eq "TAB" $c.Name }-}
-          {-{- $ct:= fltrSearchUITableAndResetUNQ  $c }-}
+          {-{- $ct:=   $c.GetAssociatedTable true }-}
           {-{- $tbs := $ct.Contact $table }-}
         {-{- template "list.tmpl.js" $tbs}-}
       {-{- end }-}

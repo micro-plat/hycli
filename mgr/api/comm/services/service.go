@@ -3,8 +3,8 @@
 package services
 
 {-{- $etable := .}-}
-{-{- $mtable :=$etable|flterMainTable}-}
-{-{- $ft := $etable|getFirstTable}-}
+{-{- $mtable :=$etable|f_table_cache}-}
+{-{- $ft := $etable|f_table_first}-}
 import (
 	"github.com/micro-plat/hydra"
 	{-{- range $i,$v:=$mtable}-}

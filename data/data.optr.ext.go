@@ -54,7 +54,7 @@ func getViewExtCmptOptsByTable(t *Table) *viewExtOptrsMap {
 
 func getViewExtCmptOpts(table string, parentUNQID string, params map[string]string) *viewExtOptrs {
 	viewExtOpts := &viewExtOptrs{BarOptrs: make([]*optrs, 0, 1), LstOptrs: make([]*optrs, 0, 1)}
-	tb := findTable(table)
+	tb := f_table_find_by_name(table)
 	if tb.Table == nil {
 		return viewExtOpts
 	}

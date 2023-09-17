@@ -7,7 +7,7 @@
 {-{- range $i,$c:=$tables}-}
 {
     "name":"{-{$c.Desc}-}",
-    "url": "/{-{$c.Name.MainPath}-}{-{flterJoinColumnNames $c $rp  $split $end}-}",
+    "url": "/{-{$c.Name.MainPath}-}{-{ $c.JoinNames $rp  $split $end}-}",
     "table":"{-{$c.Name.Raw}-}",
     "path":"../views/{-{$c.Name.Prefix}-}/{-{$c.Name.Main}-}/{-{$c.Name}-}.list.vue",
     "funcs":[

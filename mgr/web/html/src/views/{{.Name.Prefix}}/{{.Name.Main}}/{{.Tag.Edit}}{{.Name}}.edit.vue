@@ -1,5 +1,5 @@
 {-{- $table := .}-}
-{-{- $ucols := fltrColumns $table "U"}-}
+{-{- $ucols :=  $table.GetColumnsByName "U"}-}
 {-{- $enumColumns :=$table.EnumColumns}-}
 
 <template tag="{-{.Marker}-}">
@@ -50,7 +50,7 @@ export default {
           res.{-{$c.Name}-}_switch = res.{-{$c.Name}-} == 0
         {-{- else if eq "tree" $c.Cmpnt.Type  }-}
         that.$refs.tree_{-{$c.UNQ}-}.setCheckedKeys(res.{-{$c.Name}-}.split(","))
-        {-{- else if eq true (fltrStart $c.Cmpnt.Type "multi")}-}
+        {-{- else if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
           res.{-{$c.Name}-} = (res.{-{$c.Name}-}+"").split(",")
         {-{- end}-}
         {-{- end}-}
@@ -81,17 +81,17 @@ export default {
         postForm.{-{$c.Name}-} = this.$theia.crypto.md5(this.form.{-{$c.Name}-})
         {-{- else if eq "tree" $c.Cmpnt.Type  }-}
         postForm.{-{$c.Name}-} = this.$refs.tree_{-{$c.UNQ}-}.getCheckedKeys().join(",")
-        {-{- else if eq true (fltrStart $c.Cmpnt.Type "multi")}-}
+        {-{- else if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
         postForm.{-{$c.Name}-} = (postForm.{-{$c.Name}-}||[]).join(",")
         {-{- end }-}
         {-{- end}-}
-        {-{- range $i,$c:= fltrOptrsByTag $table.ListOpts "UPDATE" }-}
+        {-{- range $i,$c:=  $table.ListOpts.GetByTag "UPDATE" }-}
         {-{- $save2window := $c.GetParams "save2window" -}-}
         {-{- if ne "" $save2window}-}
         
         //将数据保存到window缓存中
         window.{-{$save2window}-} = postForm
-        {-{- range $i,$v :=fltrColumnsExcludeExt $table.PKColumns}-}
+        {-{- range $i,$v := $table.PKColumns.GetValidColumns}-}
         window.{-{$v.Name}-} = null
       {-{- end}-}
         {-{- end -}-}
@@ -124,7 +124,7 @@ export default {
     },
 
     {-{- range $i,$c:= $ucols}-}
-    {-{- $aColumns := fltrAssctColumns $ucols $c.Name}-}
+    {-{- $aColumns :=  $ucols.GetColumnsByColumName $c.Name}-}
     {-{- if gt (len $aColumns) 0}-} 
     onChange_{-{$c.Name}-}(val){
       {-{- range $j,$x:= $aColumns }-}

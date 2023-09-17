@@ -1,12 +1,12 @@
 {-{- $xtable := . }-}
 {-{- $table := $xtable.Current }-}
 {-{- $mtable := $xtable.Main}-}
-{-{- $tmpl := IsTmplTb $xtable}-}
+{-{- $tmpl := f_table_is_tmp $xtable}-}
 {-{- $optRow:=  $table.ListOpts.Merge $table.BarOpts}-}
 {-{- if eq true $tmpl}-}
 {-{- $optRow = $mtable.ViewExtCmptOpts.GetLstOptrs  $table.Name.Raw}-}
 {-{- end}-}
-{-{- $cmpnts:= fltrOptrs $optRow "CMPNT"}-}
+{-{- $cmpnts:=  $optRow.GetByName "CMPNT"}-}
 {-{- if gt (len $cmpnts) 0}-}
 show_cmpnt(cmd,row){
   if(this.cmpnt_funcs[cmd]){
@@ -20,7 +20,7 @@ show_cmpnt(cmd,row){
     {-{- if and (ne "" $m.RwName) (ne "" $m.FwName)}-}
     query.{-{$m.FwName}-} = fm.{-{$m.RwName}-}|| fm.le_{-{$m.RwName}-}
     {-{- else}-}
-    {-{- $rows:= fltrColumns $table $m.RwName}-}
+    {-{- $rows:=  $table.GetColumnsByName $m.RwName}-}
     {-{- range $i,$c:=$rows}-} 
     query.{-{$c.Name}-} = fm.{-{$c.Name}-}|| fm.le_{-{$c.Name}-}
       {-{- end}-}
@@ -33,14 +33,14 @@ show_cmpnt(cmd,row){
       {-{- end}-}
 
       //2023.4.18添加---
-    {-{- $c := fltrFrontOptrsByStatic $m }-}
+    {-{- $c :=  $m.GetParamsByAtPrefix }-}
     {-{- range $k,$v := $c}-}
-    {-{- if eq true (fltrStart $v "@")}-}
-    query.{-{$k}-} = this.{-{fltrTrim $v "@"}-}
-    {-{- else if eq true (fltrStart $v "&")}-}
-    query.{-{$k}-} = (this.{-{fltrTrim $v "&"}-}||[]).join(",")
-    {-{- else if eq true (fltrStart $v "#")}-}
-    query.{-{$k}-} = fm.{-{fltrTrim $v "#"}-}
+    {-{- if eq true (f_string_start $v "@")}-}
+    query.{-{$k}-} = this.{-{f_string_trim $v "@"}-}
+    {-{- else if eq true (f_string_start $v "&")}-}
+    query.{-{$k}-} = (this.{-{f_string_trim $v "&"}-}||[]).join(",")
+    {-{- else if eq true (f_string_start $v "#")}-}
+    query.{-{$k}-} = fm.{-{f_string_trim $v "#"}-}
     {-{- else}-}
     query.{-{$k}-} = "{-{$v}-}"
     {-{- end}-}
@@ -53,11 +53,11 @@ show_cmpnt(cmd,row){
     {-{- end}-}
   },
 {-{- end}-}
-{-{- $linkcmpnts:= fltrOptrs $optRow "LINK"}-}
+{-{- $linkcmpnts:=  $optRow.GetByName "LINK"}-}
 {-{- range $x,$m:=$linkcmpnts}-}
   goto_{-{$m.UNQ}-}(fm = {}){
     let query = {}
-    {-{- $rows:= fltrColumns $table $m.RwName}-}
+    {-{- $rows:=  $table.GetColumnsByName $m.RwName}-}
       {-{- range $i,$c:=$rows}-} 
     query.{-{$c.Name}-} = fm.{-{$c.Name}-}
       {-{- end}-}

@@ -3,18 +3,18 @@
 {-{- if or (or (gt (len $table.LStatOpts) 0) (gt (len $table.ChartOpts) 0)) (gt (len $table.ExtOpts) 0)}-}
 <div class="listbar">
     {-{- range $i,$c:= $table.LStatOpts }-}
-    {-{- $ucols := fltrColumns $table $c.RwName }-}
-    {-{- $span := fltrOptrPara $c "span" "24" }-}
+    {-{- $ucols :=  $table.GetColumnsByName $c.RwName }-}
+    {-{- $span :=  $c.GetParam "span" "24" }-}
     {-{- $l := len $ucols}-}
     {-{- if ne 0 $l}-}
     <el-row>
-    {-{- if eq "true" ( fltrOptrPara $c "showLabel" "true")}-}
-    {-{- $span = add  $span -2}-}
+    {-{- if eq "true" (  $c.GetParam "showLabel" "true")}-}
+    {-{- $span = f_num_add  $span -2}-}
     <el-col :span="2" style="font-size: 0.9rem;font-weight:600;margin-bottom: 16px;">
       {-{$c.Label}-}
     </el-col>
     {-{- end}-}
-    {-{- $x := div $span $l}-}
+    {-{- $x := f_num_divide $span $l}-}
     {-{- range $j,$m:= $ucols}-}
     <el-col :span="{-{$x}-}" style="margin-bottom: 16px;">
       <el-statistic title="{-{$m.Label}-}" :value="stat_{-{$c.UNQ}-}.{-{$m.Name}-}" />
@@ -22,24 +22,24 @@
     {-{end}-} {-{end}-} </el-row> {-{end}-}
     <el-row>
     {-{- range $i,$c:=  $table.ChartOpts }-}
-    <el-col :span='{-{fltrOptrPara $c "span" "24"}-}'>
-      <{-{$c.UNQ}-} ref="chart_{-{$c.UNQ}-}" height='{-{fltrOptrPara $c "height" "200px"}-}' title="{-{$c.Label}-}"
-        unq="{-{$c.UNQ}-}" url="{-{$c.ReqURL}-}" type="{-{$c.Tag}-}" stack='{-{fltrOptrPara $c "stack" ""}-}'
-        rType='{-{fltrOptrPara $c "rType" ""}-}' margin='{-{fltrOptrPara $c "margin" "32px 0px 16px 0px"}-}'
-        showLabel='{-{fltrOptrPara $c "showLabel" "true"}-}' theme='{-{fltrOptrPara $c "theme" ""}-}'></{-{$c.UNQ}-}>
+    <el-col :span='{-{ $c.GetParam "span" "24"}-}'>
+      <{-{$c.UNQ}-} ref="chart_{-{$c.UNQ}-}" height='{-{ $c.GetParam "height" "200px"}-}' title="{-{$c.Label}-}"
+        unq="{-{$c.UNQ}-}" url="{-{$c.ReqURL}-}" type="{-{$c.Tag}-}" stack='{-{ $c.GetParam "stack" ""}-}'
+        rType='{-{ $c.GetParam "rType" ""}-}' margin='{-{ $c.GetParam "margin" "32px 0px 16px 0px"}-}'
+        showLabel='{-{ $c.GetParam "showLabel" "true"}-}' theme='{-{ $c.GetParam "theme" ""}-}'></{-{$c.UNQ}-}>
     </el-col>
     {-{- end}-}
-    {-{- range $i,$c:= fltrOptrsByTag $table.ExtOpts "tskbar"}-}
-    <el-col :span='{-{fltrOptrPara $c "span" "24"}-}'>
-      <{-{$c.UNQ}-} ref="ext_{-{$c.UNQ}-}" height='{-{fltrOptrPara $c "height" "200px"}-}' title="{-{$c.Label}-}"
-        unq="{-{$c.UNQ}-}" count='{-{fltrOptrPara $c "count" "10"}-}' url="{-{$c.ReqURL}-}" rows='{-{fltrOptrPara $c "rows" "1"}-}'  margin='{-{fltrOptrPara $c "margin" "8px 0px 16px 0px"}-}'
+    {-{- range $i,$c:=  $table.ExtOpts.GetByTag "tskbar"}-}
+    <el-col :span='{-{ $c.GetParam "span" "24"}-}'>
+      <{-{$c.UNQ}-} ref="ext_{-{$c.UNQ}-}" height='{-{ $c.GetParam "height" "200px"}-}' title="{-{$c.Label}-}"
+        unq="{-{$c.UNQ}-}" count='{-{ $c.GetParam "count" "10"}-}' url="{-{$c.ReqURL}-}" rows='{-{ $c.GetParam "rows" "1"}-}'  margin='{-{ $c.GetParam "margin" "8px 0px 16px 0px"}-}'
         ></{-{$c.UNQ}-}>
     </el-col>
     {-{- end}-}
-    {-{- range $i,$c:= fltrOptrsByTag $table.ExtOpts "img"}-}
-    <el-col :span='{-{fltrOptrPara $c "span" "24"}-}'>
-      <{-{$c.UNQ}-} ref="ext_{-{$c.UNQ}-}" height='{-{fltrOptrPara $c "height" "auto"}-}' type="{-{$c.Tag}-}"
-        unq="{-{$c.UNQ}-}" count='{-{fltrOptrPara $c "count" "10"}-}' url="{-{$c.ReqURL}-}" rows='{-{fltrOptrPara $c "rows" "1"}-}'  margin='{-{fltrOptrPara $c "margin" "8px 0px 16px 0px"}-}'
+    {-{- range $i,$c:=  $table.ExtOpts.GetByTag "img"}-}
+    <el-col :span='{-{ $c.GetParam "span" "24"}-}'>
+      <{-{$c.UNQ}-} ref="ext_{-{$c.UNQ}-}" height='{-{ $c.GetParam "height" "auto"}-}' type="{-{$c.Tag}-}"
+        unq="{-{$c.UNQ}-}" count='{-{ $c.GetParam "count" "10"}-}' url="{-{$c.ReqURL}-}" rows='{-{ $c.GetParam "rows" "1"}-}'  margin='{-{ $c.GetParam "margin" "8px 0px 16px 0px"}-}'
         ></{-{$c.UNQ}-}>
     </el-col>
     {-{- end}-}

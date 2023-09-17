@@ -12,7 +12,7 @@
         {-{- range $i,$c := $ccols}-}
         {-{- if eq "switch" $c.Cmpnt.Type}-}
         {-{$c.Name}-}_switch:false,
-        {-{- else if eq true (fltrStart $c.Cmpnt.Type "multi")}-}
+        {-{- else if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
         {-{$c.Name}-}:[],
         {-{- else}-}
         {-{$c.Name}-}:"",
@@ -20,9 +20,9 @@
         {-{- end}-}
         },
         {-{- range $i,$c := $ccols}-}
-        {-{- if and (eq true $c.Enum.IsEnum) (eq true (fltrStart $c.Cmpnt.Type "tree"))}-}
+        {-{- if and (eq true $c.Enum.IsEnum) (eq true (f_string_start $c.Cmpnt.Type "tree"))}-}
         {-{.Name}-}List:this.$theia.enum.getTree("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}","{-{$c.Enum.Group}-}"),
-        {-{- else if or (eq true $c.Enum.IsEnum) (eq true (fltrStart $c.Cmpnt.Type "multi"))}-}
+        {-{- else if or (eq true $c.Enum.IsEnum) (eq true (f_string_start $c.Cmpnt.Type "multi"))}-}
         {-{.Name}-}List:this.$theia.enum.get("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}","{-{$c.Enum.Group}-}"),
         {-{- end}-}
         {-{- end}-}

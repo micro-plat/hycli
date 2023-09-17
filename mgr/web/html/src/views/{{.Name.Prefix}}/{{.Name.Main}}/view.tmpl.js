@@ -1,5 +1,5 @@
 {-{- $table :=. }-}
-{-{- $vcols := fltrColumns $table "v"}-}
+{-{- $vcols :=  $table.GetColumnsByName "v"}-}
 {-{- $viewOpts :=$table.ViewOpts}-}
  show(form) {
     this.conf.visible = true
@@ -9,8 +9,8 @@
      
       //{-{ $c.Label}-}查询
       let nform_{-{$c.UNQ}-} = {}
-      {-{- $ct:= fltrSearchUITableAndResetUNQ $c}-}
-      {-{- $os := fltrFrontOptrsByStatic $c }-}
+      {-{- $ct:=  $c.GetAssociatedTable true}-}
+      {-{- $os :=  $c.GetParamsByAtPrefix }-}
       {-{- range $k,$v := $os}-}
       nform_{-{$c.UNQ}-}.{-{$k}-} =this.$route.params["{-{$k}-}"]|| "{-{$v}-}"
       {-{- end}-}
@@ -45,7 +45,7 @@
         item.{-{$c.Name}-} = (item.{-{$c.Name}-}||"")
       {-{- end}-}
       {-{- end }-}
-      {-{- $steps := fltrOptrs $viewOpts "step"}-}
+      {-{- $steps :=  $viewOpts.GetByName "step"}-}
       {-{- range $i,$m := $steps}-}
         that.conf.stepActive_{-{$m.UNQ}-} = that.getStepActive_{-{$m.UNQ}-}(res)
       {-{- end}-}
@@ -63,7 +63,7 @@
     show_view_{-{$m.UNQ}-}(){
       let that = this;
       let query={}
-      {-{- $rows:= fltrColumns $table $m.RwName }-}
+      {-{- $rows:=  $table.GetColumnsByName $m.RwName }-}
       {-{- range $i,$c:=$rows}-} 
         query.{-{$c.Name}-} = that.view.{-{$c.Name}-}
       {-{- end}-}
@@ -72,12 +72,12 @@
     {-{- end}-}
  {-{- end}-}
 
- {-{- $stepOpts:=fltrOptrs $viewOpts "step"}-}
+ {-{- $stepOpts:= $viewOpts.GetByName "step"}-}
  {-{- if gt (len $stepOpts) 0}-}
  {-{- range $i,$c:= $stepOpts}-}
  getStepActive_{-{$c.UNQ}-}(view){
  
-  {-{- $steps :=  fltrColumns $table $c.RwName}-}
+  {-{- $steps :=   $table.GetColumnsByName $c.RwName}-}
   {-{- range $j,$s:= $steps}-}
       {-{- if and (ne "" $s.Cmpnt.Format) (eq true $s.Field.IsDate)}-}
         if(!view["{-{$s.Name}-}"]|| new Date(view["{-{$s.Name}-}"]) > new Date()){

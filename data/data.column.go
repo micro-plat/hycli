@@ -68,7 +68,7 @@ func createFieldType(r *md.Row) fieldType {
 		IsSEQ:          md.HasConstraint(r.Constraints, "SEQ", "seq"), //是否自增字段
 		IsExtFuncField: strings.HasPrefix(r.Raw, "^"),                 //扩展字段
 		TMYSQL:         mySQLType(r.Type.Name, r.Type.Len, r.Type.DLen),
-		VMYSQL:         mySQLDefValue(r.DefValue),
+		VMYSQL:         f_mysql_get_def_value(r.DefValue),
 		IsLongText:     r.Type.Len >= 64 || types.StringContains(longText, r.Type.Name),
 	}
 }

@@ -1,6 +1,6 @@
 {-{- $table := .}-}
-{-{- $cColumns := fltrColumns $table "C"}-}
-{-{- $acColumns := fltrColumns $table "C-BC"}-}
+{-{- $cColumns :=  $table.GetColumnsByName "C"}-}
+{-{- $acColumns :=  $table.GetColumnsByName "C-BC"}-}
 {-{- $enumColumns :=$table.EnumColumns}-}
 
 <template tag="{-{.Marker}-}">
@@ -42,7 +42,7 @@ export default {
     show(fm = {}) {
       this.conf.visible = true;
       let local = {}
-      {-{- range $i,$c:=fltrOptrsByTag $table.BarOpts "ADD" }-}
+      {-{- range $i,$c:= $table.BarOpts.GetByTag "ADD" }-}
         {-{- $read2window := $c.GetParams "read2window" -}-}
         {-{- if ne "" $read2window}-}
         
@@ -61,13 +61,13 @@ export default {
       {-{- end -}-}
 
       {-{- range $i,$c := $cColumns}-}
-      {-{- if eq true (fltrStart $c.Cmpnt.Type "multi")}-}
+      {-{- if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
       this.form.{-{$c.Name}-} = cache["{-{$c.Name}-}"]?[cache["{-{$c.Name}-}"]]:[];
       {-{- end}-}
       {-{- end}-}
 
       {-{- range $i,$c:= $cColumns }-}
-      {-{- if and (gt (len (fltrAssctColumns $cColumns $c.Name)) 0) (eq true (fltrHasConst $c "rp"))}-} 
+      {-{- if and (gt (len ( $cColumns.GetColumnsByColumName $c.Name)) 0) (eq true ( $c.HasConst "rp"))}-} 
       this.onChange_{-{$c.Name}-}(this.$route.params["{-{$c.Name}-}"]||this.form["{-{$c.Name}-}"])
       {-{- end}-} 
       {-{- end}-}
@@ -92,11 +92,11 @@ export default {
         postForm.{-{$c.Name}-} = this.$theia.crypto.md5(this.form.{-{$c.Name}-})
         {-{- else if eq "tree" $c.Cmpnt.Type  }-}
         postForm.{-{$c.Name}-} = this.$refs.tree_{-{$c.UNQ}-}.getCheckedKeys().join(",")
-        {-{- else if eq true (fltrStart $c.Cmpnt.Type "multi")}-}
+        {-{- else if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
         postForm.{-{$c.Name}-} = (postForm.{-{$c.Name}-}||[]).join(",")
         {-{- end }-}
         {-{- end}-}
-        {-{- range $i,$c:=fltrOptrsByTag $table.BarOpts "ADD" }-}
+        {-{- range $i,$c:= $table.BarOpts.GetByTag "ADD" }-}
         {-{- $save2window := $c.GetParams "save2window" -}-}
         {-{- if ne "" $save2window}-}
         
@@ -133,8 +133,8 @@ export default {
     onUploadSuccess(response){
       {-{- range $i,$c:= $cColumns }-}
       {-{- if eq "file" $c.Cmpnt.Type  }-}
-      {-{- if eq true (fltrStart $c.Cmpnt.Format "#")}-}
-      this.form.{-{fltrTrim $c.Cmpnt.Format "#"}-} = response.path
+      {-{- if eq true (f_string_start $c.Cmpnt.Format "#")}-}
+      this.form.{-{f_string_trim $c.Cmpnt.Format "#"}-} = response.path
       {-{- else}-}
       this.form.{-{$c.Name}-} = response.path
       {-{- end}-}
@@ -142,7 +142,7 @@ export default {
       {-{- end}-}
     },
     {-{- range $i,$c:= $cColumns }-}
-    {-{- $aColumns := fltrAssctColumns $cColumns $c.Name }-}
+    {-{- $aColumns :=  $cColumns.GetColumnsByColumName $c.Name }-}
     {-{- if gt (len $aColumns) 0}-} 
     onChange_{-{$c.Name}-}(val){
       {-{- range $j,$x:= $aColumns  }-}

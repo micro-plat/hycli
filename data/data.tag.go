@@ -11,9 +11,9 @@ type Tag struct {
 }
 
 func newTag(table *Table) *Tag {
-	view := len(fltrColumns(table, VIEW_COLUMN)) > 0
-	add := len(fltrColumns(table, ADD_COLUMN)) > 0
-	edit := len(fltrColumns(table, UPDATE_COLUMN)) > 0
+	view := len(table.GetColumnsByName(VIEW_COLUMN)) > 0
+	add := len(table.GetColumnsByName(ADD_COLUMN)) > 0
+	edit := len(table.GetColumnsByName(UPDATE_COLUMN)) > 0
 	tag := &Tag{
 		View:   types.DecodeString(view, true, "", "~"),
 		Add:    types.DecodeString(add, true, "", "~"),

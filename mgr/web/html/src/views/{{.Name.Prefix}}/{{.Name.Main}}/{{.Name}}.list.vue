@@ -57,7 +57,7 @@ data() {
   },
 mounted() {
   {-{- $optRow:= $table.ListOpts.Merge $table.BarOpts}-}
-  {-{- $cmpnts:= fltrOptrs $optRow "CMPNT"}-}
+  {-{- $cmpnts:=  $optRow.GetByName "CMPNT"}-}
   {-{- range $x,$m:= $cmpnts}-}
     this.cmpnt_funcs["{-{$m.UNQ}-}"] = this.show_cmpnt_{-{$m.UNQ}-}
   {-{- end}-}
@@ -72,7 +72,7 @@ mounted() {
 {-{- end }-}
 
     },
-  {-{- if ne "" (flterJoinColumnNames $table "rp" "")}-}
+  {-{- if ne "" ( $table.JoinNames "rp" "")}-}
  watch: {
     '$route' () {
       this.form_{-{$table.UNQ}-} = Object.assign(this.form_{-{$table.UNQ}-},this.$route.params)

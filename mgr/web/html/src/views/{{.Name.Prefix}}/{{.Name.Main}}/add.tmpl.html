@@ -8,26 +8,26 @@
         <el-col :span="24">
           {-{- $span = 24}-}
    {-{- else if eq "full" $c.Style.Position}-}
-          {-{- if ne 0 (spare $m 24)}-}
+          {-{- if ne 0 (f_num_spare $m 24)}-}
           <el-col :span="12"></el-col>
-          {-{$m = add $m 12 }-}
+          {-{$m = f_num_add $m 12 }-}
           {-{- end}-}
           <el-col :span="24">
           {-{- $span = 24}-}
-          {-{$m = add $m 24 }-}
+          {-{$m = f_num_add $m 24 }-}
   {-{- else if eq "newline" $c.Style.Position}-}
-        {-{- if ne 0 (spare $m 24)}-}
+        {-{- if ne 0 (f_num_spare $m 24)}-}
         <el-col :span="12"></el-col>
         {-{- $span = 12}-}
-        {-{$m = add $m 12 }-}
+        {-{$m = f_num_add $m 12 }-}
         {-{- end}-}
       <el-col :span="12">
       {-{- $span = 12}-}
-      {-{$m = add $m 12 }-}
+      {-{$m = f_num_add $m 12 }-}
       {-{- else }-}
         <el-col :span="12">
         {-{- $span = 12}-}
-        {-{$m = add $m 12}-}
+        {-{$m = f_num_add $m 12}-}
   {-{- end }-}
       {-{- if eq "password" $c.Cmpnt.Type}-}
       <!--{-{$c.Label}-} 密码控件 -->
@@ -118,7 +118,7 @@
       {-{- else if  (eq "radio" $c.Cmpnt.Type)}-}
      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
       <el-radio-group v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}"  
-      {-{if gt (len (fltrAssctColumns $ucols $c.Name)) 0}-} @change="onChange_{-{$c.Name}-}"  {-{end}-}  >
+      {-{if gt (len ( $ucols.GetColumnsByColumName $c.Name)) 0}-} @change="onChange_{-{$c.Name}-}"  {-{end}-}  >
         <el-radio-button v-for="item in {-{$c.Name}-}List" :key="item.value" :label="item.value" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}>
             {{item.name}}
         </el-radio-button>
@@ -128,7 +128,7 @@
      {-{- else if eq true $c.Enum.IsEnum}-}
      <!--{-{$c.Label}-} 下拉控件 -->
      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-       <el-select  {-{if gt (len (fltrAssctColumns $ucols $c.Name)) 0}-} @change="onChange_{-{$c.Name}-}"  {-{end}-} v-model="{-{$c.Ext.FormName}-}.{-{.Name}-}" style="width: 100%" filterable clearable
+       <el-select  {-{if gt (len ( $ucols.GetColumnsByColumName $c.Name)) 0}-} @change="onChange_{-{$c.Name}-}"  {-{end}-} v-model="{-{$c.Ext.FormName}-}.{-{.Name}-}" style="width: 100%" filterable clearable
          placeholder="请选择{-{.Desc.Raw}-}" {-{ if eq "readonly" $c.Cmpnt.Type}-}disabled {-{end}-}>
          <el-option v-for="item in {-{.Name}-}List" :key="item.value" :label="item.name" :value="item.value" />
        </el-select>

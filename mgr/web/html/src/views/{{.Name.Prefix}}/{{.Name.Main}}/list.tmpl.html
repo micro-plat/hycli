@@ -1,14 +1,14 @@
 {-{- $xtable := .}-}
 {-{- $table := $xtable.Current}-}
-{-{- $lcols :=fltrColumns $table "l"}-}
-{-{- $lecols :=fltrColumns $table "le"}-}
+{-{- $lcols := $table.GetColumnsByName "l"}-}
+{-{- $lecols := $table.GetColumnsByName "le"}-}
 {-{- $leLen := len $lecols}-}
 {-{- $lstopts := $table.ListOpts}-}
 {-{- $optLen := len $lstopts}-}
-{-{- $tmpl := IsTmplTb $xtable}-}
-{-{- $queryOpts:=$table.QueryOptrs|getFirstOptr}-}
-{-{- $pkName := $table.PKColumns|getFirstColumns}-}
-{-{- $treeNode := fltrOptrPara $queryOpts "treeNode" ""}-}
+{-{- $tmpl := f_table_is_tmp $xtable}-}
+{-{- $queryOpts:=$table.QueryOptrs|f_optr_first}-}
+{-{- $pkName := $table.PKColumns|f_colum_first}-}
+{-{- $treeNode := $queryOpts.GetParam "treeNode" ""}-}
 
 {-{- if gt (len $lcols) 0 }-}
 <div class="list">
@@ -24,8 +24,8 @@
         {-{ if and (eq $table.NeedBatchCheck true) (eq false $tmpl)}-}  <el-table-column type="selection" width="22" /> {-{end}-}
        
         {-{- range $i,$c:=$lcols }-}
-        {-{- $align := fltrGetConst $c "l" "align" "center"}-}	
-        {-{- $show := fltrGetConst $c "l" "show" ""}-}
+        {-{- $align :=  $c.GetConst "l" "align" "center"}-}	
+        {-{- $show :=  $c.GetConst "l" "show" ""}-}
         	<!--{-{$c.Name }-} {-{$c.Cmpnt.Type }-} -->
         {-{- if eq "switch" $c.Cmpnt.Type}-}
         <el-table-column {-{if ne "" $show }-} v-if="{-{$show}-}" {-{end}-}  {-{if ne "" $c.Style.ListWidth}-} min-width="{-{$c.Style.ListWidth}-}" {-{end}-}  align="{-{$align}-}" label="{-{$c.Desc.Name}-}">
@@ -61,7 +61,7 @@
             </template>
         </el-table-column>
         {-{- else if eq "tag" $c.Cmpnt.Type}-}
-        <el-table-column {-{if and (eq false $tmpl) (eq true (fltrHasConst $c "fq"))}-} :filters="{-{$c.Name}-}List" :filter-method="columnfilterHandler" column-key="{-{$c.Name}-}" {-{end}-} {-{if ne "" $show }-} v-if="{-{$show}-}" {-{end}-} {-{if ne "" $c.Style.ListWidth}-} min-width="{-{$c.Style.ListWidth}-}" {-{end}-} prop="{-{$c.Name}-}" align="{-{$align}-}" label="{-{$c.Desc.Name}-}">
+        <el-table-column {-{if and (eq false $tmpl) (eq true ( $c.HasConst "fq"))}-} :filters="{-{$c.Name}-}List" :filter-method="columnfilterHandler" column-key="{-{$c.Name}-}" {-{end}-} {-{if ne "" $show }-} v-if="{-{$show}-}" {-{end}-} {-{if ne "" $c.Style.ListWidth}-} min-width="{-{$c.Style.ListWidth}-}" {-{end}-} prop="{-{$c.Name}-}" align="{-{$align}-}" label="{-{$c.Desc.Name}-}">
             <template #default="scope">
                 <el-tag :type="tagColor(scope.row.{-{$c.Name}-},'{-{$c.Name}-}')" round 
                 {-{- if eq true $c.Enum.IsEnum}-} v-text="scope.row.{-{$c.Name}-}_label" {-{else}-}
@@ -75,7 +75,7 @@
             </template>
         </el-table-column>
         {-{- else if eq true $c.Enum.IsEnum}-}
-        <el-table-column {-{if and (eq true (fltrHasConst $c "fq")) (ne true $tmpl)}-} :filters="{-{$c.Name}-}List" :filter-method="columnfilterHandler" column-key="{-{$c.Name}-}" {-{end}-} {-{if ne "" $show }-} v-if="{-{$show}-}" {-{end}-} {-{if ne "" $c.Style.ListWidth}-} min-width="{-{$c.Style.ListWidth}-}" {-{end}-} {-{if eq true $c.Style.HideOverflow}-} :show-overflow-tooltip="true" {-{end}-} prop="{-{$c.Name}-}" align="{-{$align}-}" label="{-{$c.Desc.Name}-}">
+        <el-table-column {-{if and (eq true ( $c.HasConst "fq")) (ne true $tmpl)}-} :filters="{-{$c.Name}-}List" :filter-method="columnfilterHandler" column-key="{-{$c.Name}-}" {-{end}-} {-{if ne "" $show }-} v-if="{-{$show}-}" {-{end}-} {-{if ne "" $c.Style.ListWidth}-} min-width="{-{$c.Style.ListWidth}-}" {-{end}-} {-{if eq true $c.Style.HideOverflow}-} :show-overflow-tooltip="true" {-{end}-} prop="{-{$c.Name}-}" align="{-{$align}-}" label="{-{$c.Desc.Name}-}">
             <template #default="scope">
                 <span :class="'{-{$c.Style.CLR.BgColor}-}'==''?'':{-{$c.Style.CLR.BgColor}-}(scope.row.{-{$c.Name}-},'{-{$c.Name}-}')"
                     v-text="scope.row.{-{$c.Name}-}_label"></span>

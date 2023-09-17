@@ -2,26 +2,26 @@
 
 package {-{.Name.Main}-}
 {-{- $table := .}-}
-{-{- $ccols := fltrNotNullCols (fltrColumns $table "c")}-}
+{-{- $ccols :=  $table.GetRequiredColumnsByName "c"}-}
 {-{- $clen := (len $ccols)|minus}-}
-{-{- $ucols := fltrNotNullCols  (fltrColumns $table "u")}-}
+{-{- $ucols :=  $table.GetRequiredColumnsByName "u"}-}
 {-{- $ulen := (len $ucols)|minus}-}
 {-{- $pklen := (len $table.PKColumns)|minus}-}
-{-{- $switchs := fltrCmpnt $table "switch" "l"}-}
+{-{- $switchs :=  $table.GetColumsByCmpnt "switch" "l"}-}
 {-{- $slen := (len $switchs)|minus}-}
-{-{- $updator := fltrOptrsByCmd $table.BarOpts "lstupdator"}-}
-{-{- $batinserts := fltrOptrsByCmd $table.BarOpts "batinsert"}-}
-{-{- $hasStatic := fltrHasStaticColumn  $table "bc-bu-bq" "#"}-}
+{-{- $updator :=  $table.BarOpts.GetByCmptName "lstupdator"}-}
+{-{- $batinserts :=  $table.BarOpts.GetByCmptName  "batinsert"}-}
+{-{- $hasStatic :=   $table.HasStaticColumn "bc-bu-bq" "#"}-}
 
 import (
 	"net/http"
-	{-{- if or (gt (len (fltrColumns $table "c-bc")) 0) (gt (len (fltrColumnsExcludeExt (fltrColumns $table "u"))) 0)}-}
+	{-{- if or (gt (len ( $table.GetColumnsByName "c-bc")) 0) (gt (len ( $table.GetValidColumnsByName "u")) 0)}-}
 	"strings"
 	{-{- end}-}
 
 	"github.com/micro-plat/hydra"
 	"github.com/micro-plat/lib4go/errs"
-	{-{- if gt (len (fltrColumns $table "q-bq")) 0}-}
+	{-{- if gt (len ( $table.GetColumnsByName "q-bq")) 0}-}
 	"github.com/micro-plat/lib4go/types"
 	{-{- end}-}
 	{-{- if eq true $hasStatic}-}
@@ -53,7 +53,7 @@ func New{-{.Name.CName}-}Handler() *{-{.Name.CName}-}Handler {
 		switchRequiredFields:[]string{ {-{- range $i,$v :=  $switchs }-}"{-{$v.Name}-}"{-{if lt $i $slen}-},{-{end}-}{-{end}-}},
 	}
 }
-{-{- $leColumns:= fltrColumnsExcludeExt (fltrColumns $table "l-le") }-}
+{-{- $leColumns:=  $table.GetValidColumnsByName "l-le" }-}
 {-{- if gt (len $leColumns) 0}-}
 
 //GetHandle  查询{-{.Desc}-}数据
@@ -74,7 +74,7 @@ func (u *{-{.Name.CName}-}Handler) GetHandle(ctx hydra.IContext) (r interface{})
 }
 {-{- end}-}
 
-{-{- $uColumns := fltrColumnsExcludeExt (fltrColumns $table "u-bu")}-}
+{-{- $uColumns :=  $table.GetValidColumnsByName "u-bu"}-}
 {-{- if gt (len $uColumns) 0}-}
 
 //PutHandle  修改{-{.Desc}-}数据
@@ -88,14 +88,14 @@ func (u *{-{.Name.CName}-}Handler) PutHandle(ctx hydra.IContext) (r interface{})
 	}
 	
 	ctx.Log().Info("2.修改数据")
-	{-{- $memberClus := fltrStaticColumn $table "bu" "#"}-}
+	{-{- $memberClus :=  $table.GetStaticColumn "bu" "#"}-}
 	{-{- if gt (len $memberClus) 0}-}
 	member, err := member.GetMemberState(ctx)
 	if err != nil {
 		return err
 	}
 	{-{- range $i,$v := $memberClus}-}
-	ctx.Request().SetValue("{-{$v.Name}-}",member.{-{fltrTrim $i "#"}-})
+	ctx.Request().SetValue("{-{$v.Name}-}",member.{-{f_string_trim $i "#"}-})
 	{-{- end}-}
 	{-{- end}-}
 	rx, err := hydra.C.DB().GetRegularDB().Execute(update{-{.Name.CName}-}, ctx.Request().GetMap())
@@ -117,7 +117,7 @@ func (u *{-{.Name.CName}-}Handler) PutHandle(ctx hydra.IContext) (r interface{})
 }
 {-{- end}-}
 
-{-{- $cColumns := fltrColumnsExcludeExt (fltrColumns $table "c-bc")}-}
+{-{- $cColumns :=   $table.GetValidColumnsByName "c-bc"}-}
 {-{- if gt (len $cColumns) 0}-}
 //PostHandle  保存{-{.Desc}-}数据
 func (u *{-{.Name.CName}-}Handler) PostHandle(ctx hydra.IContext) (r interface{}) {
@@ -130,14 +130,14 @@ func (u *{-{.Name.CName}-}Handler) PostHandle(ctx hydra.IContext) (r interface{}
 	}
 	
 	ctx.Log().Info("2.添加新数据")
-	{-{- $memberClus := fltrStaticColumn $table "bc" "#"}-}
+	{-{- $memberClus :=  $table.GetStaticColumn "bc" "#"}-}
 	{-{- if gt (len $memberClus) 0}-}
 	member, err := member.GetMemberState(ctx)
 	if err != nil {
 		return err
 	}
 	{-{- range $i,$v := $memberClus}-}
-	ctx.Request().SetValue("{-{$v.Name}-}",member.{-{fltrTrim $i "#"}-})
+	ctx.Request().SetValue("{-{$v.Name}-}",member.{-{f_string_trim $i "#"}-})
 	{-{- end}-}
 	{-{- end}-}
 	rx, err := hydra.C.DB().GetRegularDB().Execute(insert{-{.Name.CName}-}, ctx.Request().GetMap())
@@ -159,25 +159,25 @@ func (u *{-{.Name.CName}-}Handler) PostHandle(ctx hydra.IContext) (r interface{}
 }
 {-{- end}-}
 
-{-{- $qColumns := fltrColumnsExcludeExt (fltrColumns $table "q-bq")}-}
+{-{- $qColumns :=  $table.GetValidColumnsByName "q-bq"}-}
 {-{- if gt (len $qColumns) 0}-}
-{-{- $qbar:=$table.QueryOptrs|getFirstOptr}-}
-{-{- $pkName := $table.PKColumns|getFirstColumns}-}
-{-{- $treeNode := fltrOptrPara $qbar "treeNode" ""}-}
+{-{- $qbar:=$table.QueryOptrs|f_optr_first}-}
+{-{- $pkName := $table.PKColumns|f_colum_first}-}
+{-{- $treeNode :=  $qbar.GetParam "treeNode" ""}-}
 //QueryHandle  获取{-{.Desc}-}列表数据
 func (u *{-{.Name.CName}-}Handler) QueryHandle(ctx hydra.IContext) (r interface{}) {
 
 	ctx.Log().Info("--------获取{-{.Desc}-}数据列表--------")
 
 	ctx.Log().Info("1.查询数据条数")
-	{-{- $memberClus := fltrStaticColumn $table "bq" "#"}-}
+	{-{- $memberClus :=  $table.GetStaticColumn "bq" "#"}-}
 	{-{- if gt (len $memberClus) 0}-}
 	member, err := member.GetMemberState(ctx)
 	if err != nil {
 		return err
 	}
 	{-{- range $i,$v := $memberClus}-}
-	ctx.Request().SetValue("{-{$v.Name}-}",member.{-{fltrTrim $i "#"}-})
+	ctx.Request().SetValue("{-{$v.Name}-}",member.{-{f_string_trim $i "#"}-})
 	{-{- end}-}
 	{-{- end}-}
 	m := ctx.Request().GetMap()
@@ -251,7 +251,7 @@ func setChildren(current types.XMap, idName string, treeMap map[string]types.XMa
 {-{- end}-}
 {-{- end}-}
 
-{-{- $dColumns := fltrColumnsExcludeExt (fltrColumns $table "d")}-}
+{-{- $dColumns :=  $table.GetValidColumnsByName "d"}-}
 {-{- if gt  (len $dColumns) 0}-}
 //DeleteHandle  删除{-{.Desc}-}数据
 func (u *{-{.Name.CName}-}Handler) DelHandle(ctx hydra.IContext) (r interface{}) {
@@ -313,14 +313,14 @@ func (u *{-{.Name.CName}-}Handler) SwitchHandle(ctx hydra.IContext) (r interface
 
 {-{- if gt (len $updator) 0}-}
 {-{- range $i,$c := $updator}-}
-//{-{$c.ReqURL|fltr2CName}-}Handle  {-{$c.Label}-}
-func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|fltr2CName}-}Handle(ctx hydra.IContext) (r interface{}) {
+//{-{$c.ReqURL|f_string_2cname}-}Handle  {-{$c.Label}-}
+func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(ctx hydra.IContext) (r interface{}) {
 
 	ctx.Log().Info("--------{-{$c.Label}-}--------")
 
 	ctx.Log().Info("1.检查必须字段")
 	reqFields :=[]string{
-		{-{flterJoinColumnNames $table $c.FwName `"` `",`}-}
+		{-{ $table.JoinNames $c.FwName `"` `",`}-}
 	}
 	if len(reqFields) == 0 {
 		return errs.NewError(601, "FwName字段未配置")
@@ -349,14 +349,14 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|fltr2CName}-}Handle(ctx hy
 
 {-{- if gt (len $batinserts) 0}-}
 {-{- range $i,$c := $batinserts}-}
-//{-{$c.ReqURL|fltr2CName}-}Handle  {-{$c.Label}-}
-func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|fltr2CName}-}Handle(ctx hydra.IContext) (r interface{}) {
+//{-{$c.ReqURL|f_string_2cname}-}Handle  {-{$c.Label}-}
+func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(ctx hydra.IContext) (r interface{}) {
 
 	ctx.Log().Info("--------{-{$c.Label}-}--------")
 
 	ctx.Log().Info("1.检查必须字段")
 	reqFields :=[]string{
-		{-{flterJoinColumnNames $table $c.RwName `"` `",`}-}
+		{-{ $table.JoinNames $c.RwName `"` `",`}-}
 	}
 	if len(reqFields) == 0 {
 		return errs.NewError(601, "RwName字段未配置")
@@ -365,17 +365,17 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|fltr2CName}-}Handle(ctx hy
 		return err
 	}
 	fileds := []string{
-		{-{flterJoinColumnNames $table $c.FwName `"` `",`}-}
+		{-{ $table.JoinNames $c.FwName `"` `",`}-}
 	}
 	enumsMap := map[string]interface{}{
 		{-{- range $i,$c := $table.EnumColumns}-}
 		"{-{$c.Name}-}":"{-{$c.Enum.EnumType}-}",
 		{-{- end}-}
 	}
-	{-{ $binsertColums :=  fltrColumns $table "batisert" -}-}
-	{-{- $binsertColum := getFirstColumns $binsertColums -}-}
+	{-{ $binsertColums :=   $table.GetColumnsByName "batisert" -}-}
+	{-{- $binsertColum := f_colum_first $binsertColums -}-}
 	cfield := "{-{- $binsertColum.Name}-}"
-	xfm :="{-{- join (fltrGetConstrainValues $table "batisert") ","}-}"
+	xfm :="{-{- f_string_join ($table.GetKeyParams "batisert") ","}-}"
 	xms,err := utils.TransformBatchContent(fileds,enumsMap, cfield, xfm, ctx.Request().GetMap())
 	if err != nil{
 		return err

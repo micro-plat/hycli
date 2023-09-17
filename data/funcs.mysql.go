@@ -42,7 +42,7 @@ var defMap = map[string]string{
 	"*":        "'*'",
 }
 
-func mySQLDefValue(t string) string {
+func f_mysql_get_def_value(t string) string {
 	if v, ok := defMap[strings.Trim(t, "'")]; ok {
 		return v
 	}

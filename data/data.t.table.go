@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/micro-plat/hycli/data/internal/md"
+	"github.com/micro-plat/lib4go/types"
 )
 
 type Tables []*Table
@@ -16,24 +17,18 @@ func NewTables(tbs md.Tables) Tables {
 
 	return nt
 }
-func fltrSearchUITable(name *optrs) *TTable {
-	return fltrSearchTable(name.URL)
+func (name *optrs) GetAssociatedTable(v ...bool) *TTable {
+	ut := f_table_find_by_name(name.URL)
+	if types.GetBoolByIndex(v, 0, false) {
+		ut.UNQ = name.UNQ
+	}
+	return &TTable{Table: ut, IsTmpl: true}
 }
-func fltrSearchUITableAndResetUNQ(name *optrs) *TTable {
-	t := fltrSearchTable(name.URL)
-	t.UNQ = name.UNQ
-	return t
-}
-func findTable(uname string) *Table {
+func f_table_find_by_name(uname string) *Table {
 	if strings.Contains(uname, "/") {
 		uname = strings.Replace(strings.Trim(uname, "/"), "/", "_", -1)
 	}
 	return Get(uname)
-}
-
-func fltrSearchTable(uname string) *TTable {
-	ut := findTable(uname)
-	return &TTable{Table: ut, IsTmpl: true}
 }
 
 type TTable struct {

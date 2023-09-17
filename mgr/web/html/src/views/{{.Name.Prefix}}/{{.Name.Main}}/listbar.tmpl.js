@@ -1,6 +1,6 @@
 {-{- $table :=.}-}
 {-{- range $i,$c:= $table.LStatOpts }-}
-{-{- $ucols := fltrColumns $table $c.RwName}-}
+{-{- $ucols :=  $table.GetColumnsByName $c.RwName}-}
 stat_{-{$c.UNQ}-}:{
     {-{- range $j,$m:= $ucols}-}
     {-{$m.Name}-}:0,

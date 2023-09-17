@@ -1,7 +1,6 @@
 package data
 
 import (
-	"sort"
 	"strings"
 
 	"github.com/micro-plat/hycli/data/internal/md"
@@ -59,24 +58,6 @@ type optrs struct {
 }
 
 type optrslst []*optrs
-
-func (o optrslst) Merge(optsm ...optrslst) optrslst {
-	lst := make(optrslst, 0, 1)
-	v := map[string]bool{}
-	for _, opts := range optsm {
-		for _, opt := range opts {
-			if _, ok := v[opt.UNQ]; !ok {
-				lst = append(lst, opt)
-				v[opt.UNQ] = true
-			}
-
-		}
-	}
-
-	sort.Sort(lst)
-	return lst
-
-}
 
 type lstOptrs = optrslst
 type viewOptrs = optrslst
@@ -203,14 +184,14 @@ func (b barOptrs) NeedCheck(tb string) bool {
 func createLstBarOptrs(table *Table, t string) lstOptrs {
 	optrs := createCmdsOptrs(table.Name.Raw, t, lstBarOptCmd)
 	//构建操作
-	if !optrslst(optrs).Find(VIEW_TAG) && len(fltrColumns(table, VIEW_COLUMN)) > 0 {
+	if !optrslst(optrs).Find(VIEW_TAG) && len(table.GetColumnsByName(VIEW_COLUMN)) > 0 {
 		optrs = append(optrs, detailOpts.Get(table.Name.Raw))
 	}
-	if !optrslst(optrs).Find(UPDATE_TAG) && len(fltrColumns(table, UPDATE_COLUMN)) > 0 {
+	if !optrslst(optrs).Find(UPDATE_TAG) && len(table.GetColumnsByName(UPDATE_COLUMN)) > 0 {
 		optrs = append(optrs, updateOpts.Get(table.Name.Raw))
 	}
 
-	if !optrslst(optrs).Find(DELETE_TAG) && len(fltrColumns(table, DELETE_COLUMN)) > 0 {
+	if !optrslst(optrs).Find(DELETE_TAG) && len(table.GetColumnsByName(DELETE_COLUMN)) > 0 {
 		optrs = append(optrs, delOpts.GetAndSetTag(table.Name.Raw, CNFRM))
 	}
 	if tag, ok := optrslst(optrs).Get(DELETE_TAG); ok {
@@ -222,7 +203,7 @@ func createLstBarOptrs(table *Table, t string) lstOptrs {
 func createViewOptrs(table *Table, t string) (viewOptrs, viewExtCmptOpts) {
 	viewOpts := createCmdsOptrs(table.Name.Raw, t, viewOptCmd)
 	//构建操作
-	if !optrslst(viewOpts).FindName(VIEW_TAG) && len(fltrColumns(table, VIEW_COLUMN)) > 0 {
+	if !optrslst(viewOpts).FindName(VIEW_TAG) && len(table.GetColumnsByName(VIEW_COLUMN)) > 0 {
 		view := detailOpts.Get(table.Name.Raw)
 		view.Name = "view"
 		viewOpts = append(viewOpts, view)
@@ -232,7 +213,7 @@ func createViewOptrs(table *Table, t string) (viewOptrs, viewExtCmptOpts) {
 }
 func createQueryOptrs(table *Table, t string) queryOptrs {
 	opts := createCmdsOptrs(table.Name.Raw, t, queryOptrCmd)
-	if !optrslst(opts).Find(QUERY_TAG) && len(fltrColumns(table, QUERY_COLUMN)) > 0 {
+	if !optrslst(opts).Find(QUERY_TAG) && len(table.GetColumnsByName(QUERY_COLUMN)) > 0 {
 		opts = append(opts, queryOpts.Get(table.Name.Raw))
 	}
 	return opts
@@ -250,7 +231,7 @@ func createExtOptrs(tableName string, t string) extOptrs {
 }
 func createQBarOptrs(table *Table, t string) (barOptrs, bool) {
 	opts := createCmdsOptrs(table.Name.Raw, t, qBarOptrCmd)
-	if !optrslst(opts).Find(ADD_TAG) && len(fltrColumns(table, ADD_COLUMN)) > 0 {
+	if !optrslst(opts).Find(ADD_TAG) && len(table.GetColumnsByName(ADD_COLUMN)) > 0 {
 		opts = append(opts, addOpts.Get(table.Name.Raw))
 	}
 	return opts, barOptrs(opts).NeedCheck(table.Name.Raw)

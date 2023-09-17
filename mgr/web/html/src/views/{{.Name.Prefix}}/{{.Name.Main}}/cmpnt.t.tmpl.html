@@ -2,7 +2,7 @@
 {-{- $opts:=  $table.ListOpts.Merge $table.BarOpts}-}
 {-{- if gt (len $opts) 0}-}
 <div>
-    {-{- range $x,$m:= fltrOptrs $opts "CMPNT"}-}
+    {-{- range $x,$m:=  $opts.GetByName "CMPNT"}-}
    <{-{$m.UNQ}-} ref="cmpnt_{-{$m.UNQ}-}" @onsaved="onQuery"></{-{$m.UNQ}-}>
    {-{- end}-}
 </div>

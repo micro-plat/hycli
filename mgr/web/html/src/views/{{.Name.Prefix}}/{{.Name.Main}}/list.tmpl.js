@@ -1,11 +1,11 @@
 {-{- $xtable := .}-}
 {-{- $table := $xtable.Current}-}
 {-{- $mtable := $xtable.Main}-}
-{-{- $qrow := fltrColumns $table "q"}-}
-{-{- $lstRow := fltrColumns $table "l"}-}
-{-{- $leRow := fltrColumns $table "le"}-}
-{-{- $LLERows:= fltrColumns $table "l-le"}-}
-{-{- $MLLERows:= fltrColumns $mtable "l-le"}-}
+{-{- $qrow :=  $table.GetColumnsByName "q"}-}
+{-{- $lstRow :=  $table.GetColumnsByName "l"}-}
+{-{- $leRow :=  $table.GetColumnsByName "le"}-}
+{-{- $LLERows:=  $table.GetColumnsByName "l-le"}-}
+{-{- $MLLERows:=  $mtable.GetColumnsByName "l-le"}-}
 
     queryData_{-{$table.UNQ}-}(mform = {},nform={}){
     //构建查询参数
@@ -19,7 +19,7 @@
       queryForm.start_{-{$c.Name}-} = queryForm.{-{$c.Name}-}[0]
       queryForm.end_{-{$c.Name}-} = queryForm.{-{$c.Name}-}[1]
     }
-    {-{- else if eq true (fltrStart $c.Cmpnt.Type "multi")}-}
+    {-{- else if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
       queryForm.{-{$c.Name}-} = (queryForm.{-{$c.Name}-}||[]).join(",")
     {-{- end}-}
     {-{- end}-}
@@ -53,7 +53,7 @@
     {-{- range $i,$v:= $table.LStatOpts}-}
       this.$theia.http.get("{-{$v.URL|lower}-}",queryForm).then(res=>{
         let item = res||{}
-        {-{- $uxcols := fltrColumns $table $v.RwName}-}
+        {-{- $uxcols :=  $table.GetColumnsByName $v.RwName}-}
         {-{- range $i,$c := $uxcols}-}
         {-{- if and (ne "" $c.Cmpnt.Format) (eq true $c.Field.IsNumber)}-}
           that.stat_{-{$v.UNQ}-}.{-{$c.Name}-} = that.$theia.str.numberFormat(item.{-{$c.Name}-},'{-{$c.Cmpnt.Format}-}')
@@ -84,10 +84,10 @@
       {-{- if eq "switch" $c.Cmpnt.Type}-}
     item.{-{$c.Name}-}_switch = item.{-{$c.Name}-} == 0
     {-{- else if eq "progress" $c.Cmpnt.Type}-}
-      {-{- $qrow := fltrColumns $table $c.Cmpnt.Format}-}
+      {-{- $qrow :=  $table.GetColumnsByName $c.Cmpnt.Format}-}
       {-{- if gt (len $qrow) 0}-}
-      {-{- $frow := getColumn $qrow 0 $c}-}
-      {-{- $srow := getColumn $qrow 1 $c}-}
+      {-{- $frow := f_colum_idx $qrow 0 $c}-}
+      {-{- $srow := f_colum_idx $qrow 1 $c}-}
       // 计算日期占比
       item.{-{$c.Name}-}_progress = that.getDaysProgress(item.{-{$frow.Name}-},item.{-{$srow.Name}-})
       {-{- end}-}
@@ -160,7 +160,7 @@
 {-{- end}-}
 {-{- end}-}
 {-{- range $i,$c:= $qrow }-}
-    {-{- $aColumns := fltrAssctColumns $qrow $c.Name }-}
+    {-{- $aColumns :=  $qrow.GetColumnsByColumName $c.Name }-}
     {-{- if gt (len $aColumns) 0}-} 
     onChange_{-{$c.Name}-}(val){
       {-{- range $j,$x:= $aColumns  }-}
@@ -170,7 +170,7 @@
     },
     {-{- end}-}
     {-{- end}-}
-    {-{- $progress := fltrCmpnt $table "progress" "l"}-}
+    {-{- $progress :=  $table.GetColumsByCmpnt "progress" "l"}-}
     {-{- if gt (len $progress) 0}-}
     getDaysProgress(s, e) {
       let start = s ? new Date(s.replace(/-/g, "/")) : null;

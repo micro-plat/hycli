@@ -1,5 +1,5 @@
 //go:build ignore
-{-{- $table := .|getFirstTable}-}
+{-{- $table := .|f_table_first}-}
 package enums
 
 import (

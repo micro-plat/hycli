@@ -1,5 +1,5 @@
 {-{- $table := .}-}
-{-{- $rows :=fltrColumnsExcludeExt $table.Columns}-}
+{-{- $rows := $table.Columns.GetValidColumns}-}
 {-{- $count :=len $rows}-}
 -- {-{$table.Name}-} {-{$table.Desc}-}
 CREATE TABLE IF NOT EXISTS `{-{.Name.Raw}-}` (
@@ -28,4 +28,4 @@ CREATE TABLE IF NOT EXISTS `{-{.Name.Raw}-}` (
 	{-{- end}-}) USING BTREE {-{if lt $i ((len $table.NormalIdx)|minus)}-},{-{end}-}
 	{-{- end}-}
 	{-{- end}-}
-) ENGINE=InnoDB {-{- range $i,$c:=$rows}-} {-{- if and (eq true $c.Field.IsSEQ) (ne "" $c.DefValue)}-} AUTO_INCREMENT = {-{$c.DefValue|fltrMYSQLDef}-}{-{- end}-}{-{- end}-} DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='{-{$table.Desc}-}'
+) ENGINE=InnoDB {-{- range $i,$c:=$rows}-} {-{- if and (eq true $c.Field.IsSEQ) (ne "" $c.DefValue)}-} AUTO_INCREMENT = {-{$c.DefValue|f_mysql_get_def_value}-}{-{- end}-}{-{- end}-} DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='{-{$table.Desc}-}'
