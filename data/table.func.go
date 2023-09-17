@@ -142,3 +142,24 @@ func (t *Table) GetKeyParams(tp string) []string {
 	return nil
 
 }
+func getColumns(tx interface{}) []*Column {
+	if t, ok := tx.(*Table); ok {
+		return t.Columns
+	}
+	if t, ok := tx.(*TTable); ok {
+		return t.Columns
+	}
+	if t, ok := tx.([]*Column); ok {
+		return t
+	}
+	return nil
+}
+func getTPS(tp string) []string {
+	is := strings.Split(tp, "-")
+	lst := make([]string, 0, 1)
+	for _, v := range is {
+		lst = append(lst, strings.ToLower(v))
+		lst = append(lst, strings.ToUpper(v))
+	}
+	return lst
+}
