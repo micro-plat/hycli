@@ -1,11 +1,18 @@
 <template>
     <div :style="{ margin: margin, height: height, width: width }">
-        <div class="title"> {{ title }}</div>
+        <div class="title"> {{ title }} <span>
+                <Back v-if="pi > 1" @click="add(-1)"/>
+                <Right v-if="pc > 1 && pi < pc" @click="add(1)" />
+            </span></div>
         <el-row>
-            <el-col :span="24 / rows" v-for="(item, i) in list" :key="item" class="panel">
-                <el-alert v-if="i < count" :description="item.desc || item.memo" :title="item.title || item.name" :type="types[i % 4]"
-                    closable="false" />
-            </el-col>
+            
+                <el-col :span="24 / rows"  v-for="(item, i) in list" :key="item" class="panel" 
+                  v-show="i >= (pi - 1) * count && i < pi * count">
+                   <el-alert :description="item.desc || item.memo" 
+                       :title="item.title || item.name" :type="types[i % 4]" closable="false" />
+               </el-col>
+           
+            
         </el-row>
     </div>
 </template>
@@ -34,14 +41,16 @@ export default {
             type: String,
             default: "8px 0px 16px 0px"
         },
-        count:{
-            type:String,
-            default:10
+        count: {
+            type: String,
+            default: 10
         }
     },
     data() {
 
         return {
+            pi: 1,
+            pc: 1,
             types: ["success", "warning", "error", "info"],
             list: [{ title: "售后二期延期处理问题修复", desc: "2023/2/15上线" },
             { title: "商城取消订单处理", desc: "2023/4/15上线" },
@@ -50,6 +59,9 @@ export default {
         }
     },
     methods: {
+        add(i) {
+            this.pi = this.pi + i
+        },
         show(queryForm = {}) {
             if (!this.url) {
                 return
@@ -59,6 +71,8 @@ export default {
             let that = this
             this.$theia.http.post(this.url, queryForm).then(res => {
                 that.list = res
+                that.pc = Math.ceil(that.list.length / that.count)
+                console.log("pc:", that.pc, that.list.length, that.count)
             });
         }
     },
@@ -73,6 +87,18 @@ export default {
     margin-bottom: 8px;
 }
 
+.title span {
+    float: right;
+    font-size: 0.8rem;
+}
+
+.title span * {
+    cursor: pointer;
+    width: 1.2em;
+    height: 1.2em;
+}
+
+
 .panel {
     padding: 5px 5px;
 }
@@ -83,5 +109,4 @@ export default {
 
 /deep/ .el-alert__close-btn {
     display: none;
-}
-</style>
+}</style>

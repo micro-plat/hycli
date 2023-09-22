@@ -170,8 +170,31 @@ where 1 = 1
 {-{- end}-}
 {-{- end}-}
 
-
-
+{-{- $lstinsert :=  $table.BarOpts.GetByCmptName  "lstinsert"}-}
+{-{- if gt (len $lstinsert) 0}-}
+{-{- range $i,$c := $lstinsert}-}
+{-{- $colums:=$table.GetValidColumnsByName $c.RwName}-}
+{-{- $clen :=minus (len $colums)}-}
+// lstinsert{-{$table.Name.CName}-} 保存{-{.Desc}-}数据
+const lstinsert{-{$c.ReqURL|f_string_2cname}-}{-{$table.Name.CName}-} = `
+insert into {-{$table.Name.Raw}-}
+(
+	{-{- range $i,$v :=  $colums}-}
+	{-{$v.Name}-}{-{if lt $i $clen}-},{-{end}-}
+	{-{- end}-}
+)
+values
+(
+	{-{- range $i,$v := $colums}-}
+	{-{- if eq false $v.Field.Required}-}
+	if(@{-{$v.Name}-}='',{-{if ne "" $v.Field.DefaultValue}-} {-{$v.Field.DefaultValue}-} {-{else}-}NULL{-{end}-},@{-{$v.Name}-}){-{if lt $i $clen}-},{-{end}-}
+	{-{- else}-}
+	@{-{$v.Name}-}{-{if lt $i $clen}-},{-{end}-}
+	{-{- end}-}
+	{-{- end}-}
+)`
+{-{- end}-}
+{-{- end}-}
 
 //批量添加数据
 {-{- $batinserts :=  $table.BarOpts.GetByCmptName  "batinsert"}-}

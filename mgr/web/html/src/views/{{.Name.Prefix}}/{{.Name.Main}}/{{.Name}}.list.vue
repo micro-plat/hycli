@@ -3,6 +3,8 @@
   {-{- $opts :=$table.ListOpts }-}
   {-{- $tbs := $table.Contact $table }-}
   <div style="height: 100%">
+    <div style="margin:0.8rem;"><h5 style="display:inline">{-{$table.Desc}-}</h5><span style="margin-left: 0.5rem; color:#999"> {-{$table.Conf.Get "desc"}-}</span></div>
+    <hr style="margin-top:0;color:#999"/>
     {-{- template "query.tmpl.html" $table }-}
     {-{- template "listbar.tmpl.html" $table }-}
     {-{- template "cmpnt.t.tmpl.html" $table }-}
@@ -72,7 +74,7 @@ mounted() {
 {-{- end }-}
 
     },
-  {-{- if ne "" ( $table.JoinNames "rp" "")}-}
+  {-{- if ne "" ( $table.JoinNames  "rp" false "")}-}
  watch: {
     '$route' () {
       this.form_{-{$table.UNQ}-} = Object.assign(this.form_{-{$table.UNQ}-},this.$route.params)
@@ -168,4 +170,15 @@ methods: {
 /deep/.el-button--small{
   padding: 5px 4px;
 }
+
+.prepend /deep/.el-input__wrapper{
+  border-top-right-radius:0;
+  border-bottom-right-radius:0;
+}
+.prepend+/deep/.el-date-editor{
+  border-top-left-radius:0;
+  border-bottom-left-radius:0;
+  border-left:0;
+}
+
 </style>

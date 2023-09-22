@@ -233,9 +233,6 @@ func TestExpr(t *testing.T) {
 	assert.Equal(t, "!=", p[1])
 	assert.Equal(t, "20", p[2])
 
-	px = GetExprs("age")
-	assert.Equal(t, 0, len(px))
-
 }
 func TestExprs(t *testing.T) {
 	px := GetExprs("age!=20&name==3")

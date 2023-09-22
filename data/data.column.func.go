@@ -24,10 +24,12 @@ func (c *Column) GetOpt(name string) string {
 	v, _, _ := c.GetOpts(name)
 	return v
 }
-func (colums Columns) JoinNames(tp string, start string, end ...string) string {
+func (colums Columns) JoinNames(tp string, required bool, start string, end ...string) string {
 	names := make([]string, 0, 1)
 	for _, v := range colums {
-		names = append(names, v.Name)
+		if required && v.Field.Required || !required {
+			names = append(names, v.Name)
+		}
 	}
 	if len(names) == 0 {
 		return ""

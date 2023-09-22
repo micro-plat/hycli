@@ -10,6 +10,7 @@ package {-{.Name.Main}-}
 {-{- $switchs :=  $table.GetColumsByCmpnt "switch" "l"}-}
 {-{- $slen := (len $switchs)|minus}-}
 {-{- $updator :=  $table.BarOpts.GetByCmptName "lstupdator"}-}
+{-{- $lstinsert :=  $table.BarOpts.GetByCmptName "lstinsert"}-}
 {-{- $batinserts :=  $table.BarOpts.GetByCmptName  "batinsert"}-}
 {-{- $hasStatic :=   $table.HasStaticColumn "bc-bu-bq" "#"}-}
 
@@ -88,7 +89,7 @@ func (u *{-{.Name.CName}-}Handler) PutHandle(ctx hydra.IContext) (r interface{})
 	}
 	
 	ctx.Log().Info("2.修改数据")
-	{-{- $memberClus :=  $table.GetStaticColumn "bu" "#"}-}
+	{-{- $memberClus :=  $table.GetStaticColumns "bu" "#"}-}
 	{-{- if gt (len $memberClus) 0}-}
 	member, err := member.GetMemberState(ctx)
 	if err != nil {
@@ -130,7 +131,7 @@ func (u *{-{.Name.CName}-}Handler) PostHandle(ctx hydra.IContext) (r interface{}
 	}
 	
 	ctx.Log().Info("2.添加新数据")
-	{-{- $memberClus :=  $table.GetStaticColumn "bc" "#"}-}
+	{-{- $memberClus :=  $table.GetStaticColumns "bc" "#"}-}
 	{-{- if gt (len $memberClus) 0}-}
 	member, err := member.GetMemberState(ctx)
 	if err != nil {
@@ -170,7 +171,7 @@ func (u *{-{.Name.CName}-}Handler) QueryHandle(ctx hydra.IContext) (r interface{
 	ctx.Log().Info("--------获取{-{.Desc}-}数据列表--------")
 
 	ctx.Log().Info("1.查询数据条数")
-	{-{- $memberClus :=  $table.GetStaticColumn "bq" "#"}-}
+	{-{- $memberClus :=  $table.GetStaticColumns "bq" "#"}-}
 	{-{- if gt (len $memberClus) 0}-}
 	member, err := member.GetMemberState(ctx)
 	if err != nil {
@@ -320,7 +321,7 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 
 	ctx.Log().Info("1.检查必须字段")
 	reqFields :=[]string{
-		{-{ $table.JoinNames $c.FwName `"` `",`}-}
+		{-{ $table.JoinNames $c.FwName true `"` `",`}-}
 	}
 	if len(reqFields) == 0 {
 		return errs.NewError(601, "FwName字段未配置")
@@ -347,6 +348,60 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 {-{- end}-}
 {-{- end}-}
 
+{-{- if gt (len $lstinsert) 0}-}
+{-{- range $i,$c := $lstinsert}-}
+//{-{$c.ReqURL|f_string_2cname}-}Handle  保存{-{.Desc}-}数据
+func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(ctx hydra.IContext) (r interface{}) {
+
+	ctx.Log().Info("--------保存{-{.Desc}-}数据--------")
+
+	ctx.Log().Info("1.检查必须字段")
+	reqFields :=[]string{
+		{-{ $table.JoinNames $c.RwName true `"` `",`}-}
+	}
+	if len(reqFields) == 0 {
+		return errs.NewError(601, "RwName字段未配置")
+	}
+	if err := ctx.Request().Check(reqFields...); err != nil {
+		return err
+	}
+	
+	ctx.Log().Info("2.添加新数据")
+	{-{- $memberClus :=  $table.GetStaticColumns "bc" "#"}-}
+	{-{- if gt (len $memberClus) 0}-}
+	member, err := member.GetMemberState(ctx)
+	if err != nil {
+		return err
+	}
+	{-{- range $i,$v := $memberClus}-}
+	ctx.Request().SetValue("{-{$v.Name}-}",member.{-{f_string_trim $i "#"}-})
+	{-{- end}-}
+	{-{- end}-}
+	rx, err := hydra.C.DB().GetRegularDB().Execute(lstinsert{-{$c.ReqURL|f_string_2cname}-}{-{$table.Name.CName}-}, ctx.Request().GetMap())
+	if err != nil{
+		if strings.Contains(err.Error(),"Error 1062"){
+			return errs.NewErrorf(909, "数据重复，请修改后提交")
+		}
+		return errs.NewErrorf(http.StatusNotExtended, "数据出错:%+v,row:%d", err,rx)
+	}
+	if rx <= 0 {
+		return errs.NewResult(204, nil)
+	}
+	{-{- if eq true $table.Conf.WriteLog}-}
+	ctx.Log().Info("3. 保存用户日志")
+	name := ctx.Request().GetString("{-{$table.Enum.Name}-}")
+	system.SaveLog(ctx,fmt.Sprintf("添加{-{$table.Desc}-} %s",name),string(ctx.Request().Marshal()))
+	{-{- end}-}
+	return
+}
+
+
+
+{-{- end}-}
+{-{- end}-}
+
+
+
 {-{- if gt (len $batinserts) 0}-}
 {-{- range $i,$c := $batinserts}-}
 //{-{$c.ReqURL|f_string_2cname}-}Handle  {-{$c.Label}-}
@@ -356,7 +411,7 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 
 	ctx.Log().Info("1.检查必须字段")
 	reqFields :=[]string{
-		{-{ $table.JoinNames $c.RwName `"` `",`}-}
+		{-{ $table.JoinNames $c.RwName true `"` `",`}-}
 	}
 	if len(reqFields) == 0 {
 		return errs.NewError(601, "RwName字段未配置")
@@ -365,7 +420,7 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 		return err
 	}
 	fileds := []string{
-		{-{ $table.JoinNames $c.FwName `"` `",`}-}
+		{-{ $table.JoinNames $c.FwName true `"` `",`}-}
 	}
 	enumsMap := map[string]interface{}{
 		{-{- range $i,$c := $table.EnumColumns}-}

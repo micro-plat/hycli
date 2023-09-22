@@ -11,6 +11,14 @@
     //构建查询参数
     let queryForm = Object.assign({},this.form_{-{$table.UNQ}-})
     queryForm = Object.assign(queryForm,nform||{})
+    
+    //处理多个日期选择
+    {-{- $cmpnts :=$table.GetColumsByCmpnt "daterange" "q" -}-}
+    {-{- if gt (len $cmpnts) 1}-}
+    queryForm[this.form_{-{$table.UNQ}-}.single_date_range_name] = this.form_{-{$table.UNQ}-}.single_date_range_value
+    {-{- end}-}
+
+    //处理日期范围选择
     {-{- range $i,$c:= $qrow}-}
     {-{- if eq "daterange" $c.Cmpnt.Type}-}
       queryForm.start_{-{$c.Name}-} = null
@@ -23,6 +31,10 @@
       queryForm.{-{$c.Name}-} = (queryForm.{-{$c.Name}-}||[]).join(",")
     {-{- end}-}
     {-{- end}-}
+
+    queryForm[this.form_{-{$table.UNQ}-}.single_date_range_name] = null
+    queryForm.single_date_range_value = null
+    queryForm.single_date_range_name = null
  
     //处理关联表{-{$table.Name}-} {-{$xtable.Main.Name}-} {-{$table.Enum.EnumType}-}
     {-{- $exit := false}-}
@@ -44,6 +56,10 @@
     {-{- end}-}
     {-{- end}-}
     {-{- end}-}
+
+   
+   
+
    
     //发送查询请求
     let that = this

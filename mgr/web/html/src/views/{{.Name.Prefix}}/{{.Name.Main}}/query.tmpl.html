@@ -5,9 +5,12 @@
 {-{- $clen := len $crow}-}
 {-{- $blen :=len $table.BarOpts}-}
 {-{- $tabs :=  $table.GetColumsByCmpnt "tabs" "q"}-}
+{-{- $xtabs :=  $table.GetColumsByCmpnt "xtabs" "q"}-}
 {-{- $blist :=  $table.GetColumsByCmpnt "blist" "q"}-}
+{-{- $xlen := f_num_add (len $tabs) (len $qcols)}-}
+{-{- $xlen = f_num_add $xlen  (len $blist)}-}
 
-{-{- if or (gt (len $tabs) 0) (or (gt (len $qcols) 0) (gt (len $blist) 0))}-}
+{-{- if gt $xlen 0}-}
 <div class="query">
     {-{ if gt (len $tabs) 0}-}
     <div class="tabs">
@@ -41,7 +44,6 @@
         {-{- end}-}
         {-{- end}-}
 
-
         {-{- range $i,$c:= $qcols}-}
         {-{- if eq "monthrange" $c.Cmpnt.Type}-}
         <!--{-{$c.Label}-} 月份控件 -->
@@ -52,15 +54,30 @@
         {-{- end}-}
         {-{- end}-}
 
-
-        {-{- range $i,$c:= $qcols}-}
-        {-{- if eq "daterange" $c.Cmpnt.Type}-}
-        <!--{-{$c.Label}-} 日期范围控件 -->
+        {-{- $cmpnts :=$table.GetColumsByCmpnt "daterange" "q"}-}
+        <!-- 日期控件个数： {-{ len $cmpnts}-} -->
+        {-{- if le (len $cmpnts) 1}-}
+        {-{- range $i,$c:= $cmpnts}-}
+        <!--{-{$c.Label}-} 单日期范围控件 -->
         <el-form-item>
             <el-date-picker :shortcuts="shortcuts" style="width: 200px" v-model="form_{-{$table.UNQ}-}.{-{$c.Name}-}" type="daterange" start-placeholder="开始日期"
                 end-placeholder="结束日期" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
         </el-form-item>
         {-{- end}-}
+        {-{- else}-}
+        <el-form-item>
+            <!--多日期范围控件 -->
+            <el-select v-model="form_{-{$table.UNQ}-}.single_date_range_name" placeholder="日期类型" style="width:100px;" class="prepend">
+                <el-option
+                v-for="item in multiQueryDateRange"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+        </el-select>
+            <el-date-picker :shortcuts="shortcuts" style="width: 200px" v-model="form_{-{$table.UNQ}-}.single_date_range_value" type="daterange" start-placeholder="开始日期"
+                end-placeholder="结束日期" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
+        </el-form-item>
         {-{- end}-}
 
         {-{- range $i,$c:= $qcols}-}
@@ -77,7 +94,7 @@
         {-{- if or (eq "select" $c.Cmpnt.Type) (eq "radio" $c.Cmpnt.Type)}-}
         <!--{-{$c.Label}-} 下拉控件 -->
         <el-form-item>
-            <el-select {-{if gt (len ( $qcols.GetColumnsByColumName $c.Name)) 0}-} @change="onChange_{-{$c.Name}-}"  {-{end}-} v-model="form_{-{$table.UNQ}-}.{-{.Name}-}" style="width: 120px" clearable placeholder="{-{$c.Label}-}">
+            <el-select {-{if gt (len ( $qcols.GetColumnsByColumName $c.Name)) 0}-} @change="onChange_{-{$c.Name}-}"  {-{end}-} v-model="form_{-{$table.UNQ}-}.{-{.Name}-}" style="width: 100px" clearable placeholder="{-{$c.Label}-}">
                 <el-option v-for="item in {-{.Name}-}List" :key="item.value" :label="item.name" :value="item.value" />
             </el-select>
         </el-form-item>
@@ -112,7 +129,7 @@
         {-{- if or ( eq "input" $c.Cmpnt.Type) ( eq "text" $c.Cmpnt.Type)}-}
         <!--{-{$c.Label}-} 输入控件 -->
         <el-form-item>
-            <el-input clearable style="width: 120px" v-model="form_{-{$table.UNQ}-}.{-{$c.Name}-}" maxlength="{-{$c.Field.Len}-}"
+            <el-input clearable style="width: 100px" v-model="form_{-{$table.UNQ}-}.{-{$c.Name}-}" maxlength="{-{$c.Field.Len}-}"
                 placeholder="{-{$c.Label}-}" />
         </el-form-item>
         {-{- end}-} 
@@ -181,6 +198,20 @@
             {-{- end}-}
         </div>
         {-{- end}-}
+
+        <!-- xtabs -->
+        {-{ if gt (len $xtabs) 0}-}
+        <div class="tabs">
+            {-{- range $i,$c:= $xtabs}-}
+            <el-tabs v-model="form_{-{$table.UNQ}-}.{-{.Name}-}"  @tab-change="onQuery">
+                <el-tab-pane name="" label="全部"  ></el-tab-pane>
+                <el-tab-pane v-for="item in {-{.Name}-}List" :name="item.value" :key="item.value" :label="item.name" 
+                 ></el-tab-pane>
+              </el-tabs> 
+            {-{- end}-}
+        </div>
+        {-{- end}-}
+
     </el-form>
     {-{- end}-}
 </div>

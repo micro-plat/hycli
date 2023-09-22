@@ -10,6 +10,7 @@ import (
 var Funcs = map[string]interface{}{
 	"f_string_contact":   f_string_contact,
 	"f_string_join":      f_string_join,
+	"f_string_contains":  f_string_contains,
 	"f_string_start":     f_string_start,
 	"f_string_2cname":    md.ToCName,
 	"f_string_translate": f_string_translate,
@@ -66,6 +67,9 @@ func f_colum_idx(ts []*Column, i int, d *Column) *Column {
 }
 func f_string_start(p string, s string) bool {
 	return strings.HasPrefix(p, s)
+}
+func f_string_contains(p string, s string) bool {
+	return strings.Contains(p, s)
 }
 func f_string_trim(p string, s string) string {
 	return strings.Trim(p, s)

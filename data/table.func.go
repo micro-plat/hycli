@@ -8,6 +8,7 @@ import (
 	"github.com/micro-plat/lib4go/types"
 )
 
+// HasStaticColumn 是否包含静态字段(从用户信息、指定固定值)取值
 func (tb *Table) HasStaticColumn(tps, prefix string) bool {
 	tplst := strings.Split(tps, "-")
 	for _, c := range tb.Columns {
@@ -20,7 +21,9 @@ func (tb *Table) HasStaticColumn(tps, prefix string) bool {
 	}
 	return false
 }
-func (tb *Table) GetStaticColumn(tps, prefix string) map[string]*Column {
+
+// GetStaticColumns 获取包含指定组件和包含某个静态字段(从用户信息、指定固定值)的列
+func (tb *Table) GetStaticColumns(tps, prefix string) map[string]*Column {
 	columns := make(map[string]*Column, 1)
 	tplst := strings.Split(tps, "-")
 	for _, c := range tb.Columns {
@@ -42,13 +45,13 @@ func (tx *TTable) GetColumsByCmpnt(cmpnt string, tps ...string) []*Column {
 func (tx Columns) GetColumsByCmpnt(cmpnt string, tps ...string) []*Column {
 	return getCmpnt(tx, cmpnt, tps...)
 }
-func (tx *Table) JoinNames(tp string, start string, end ...string) string {
+func (tx *Table) JoinNames(tp string, required bool, start string, end ...string) string {
 	colums := tx.GetColumnsByName(tp)
-	return colums.JoinNames(tp, start, end...)
+	return colums.JoinNames(tp, required, start, end...)
 }
-func (tx *TTable) JoinNames(tp string, start string, end ...string) string {
+func (tx *TTable) JoinNames(tp string, required bool, start string, end ...string) string {
 	colums := tx.GetColumnsByName(tp)
-	return colums.JoinNames(tp, start, end...)
+	return colums.JoinNames(tp, required, start, end...)
 }
 
 func getCmpnt(tx interface{}, cmpnt string, tps ...string) []*Column {

@@ -5,7 +5,7 @@ const routes = [
       children: [
         {-{- range $i,$c:=. }-}
         {
-          path: '{-{$c.Name.MainPath}-}{-{ $c.JoinNames "rp" "/:" "?"}-}',
+          path: '{-{$c.Name.MainPath}-}{-{ $c.JoinNames "rp" false "/:" "?"}-}',
           component: () => import("../views/{-{.Name.Prefix}-}/{-{$c.Name.Main}-}/{-{$c.Name}-}.list.vue"),
         },
        {-{- end}-}

@@ -12,12 +12,9 @@
       :close-on-click-modal="false"
       :before-close="hide_{-{$m.UNQ}-}"
     >
-      {-{- $cols:=  $table.GetColumnsByName $m.RwName (f_string_contact "form_" $m.UNQ)}-}
+    {-{- $label:= $m.GetParam "label" ""}-}
       <span 
-        >确认{-{$m.Label}-}{-{range $i,$c:= $cols}-}<span 
-        v-if="form_{-{$m.UNQ}-}.{-{$c.Name}-}"
-        >{{form_{-{$m.UNQ}-}.{-{$c.Name}-}}}</span
-        >{-{ end }-} 吗?</span
+        >确认{-{$m.Label}-}{-{$label}-}吗?</span
       >
       <template #footer>
         <span class="dialog-footer">
@@ -72,7 +69,11 @@ export default {
       //保存 {-{$m.Label}-} 弹出框数据
       save_{-{$m.UNQ}-}(){
         let that = this
-        this.$theia.http.post("{-{f_string_translate $m.ReqURL (f_table_find_by_name $m.Table)}-}",this.form_{-{$m.UNQ}-}).then(res=>{
+        {-{- $url := f_string_translate $m.ReqURL (f_table_find_by_name $m.Table)}-}
+        {-{- if eq false (f_string_contains $url "/") }-}
+        {-{- $url = f_string_contact "/" (lower $table.Name.MainPath) "/" (f_string_translate $m.ReqURL (f_table_find_by_name $m.Table)) }-}
+        {-{- end}-}
+        this.$theia.http.post("{-{$url}-}",this.form_{-{$m.UNQ}-}).then(res=>{
           that.conf.confirmVisible = false 
           that.$notify.success({title: '成功',message: '{-{$m.Label}-}成功',duration:5000})
           that.$emit("onsaved")

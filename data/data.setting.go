@@ -35,3 +35,6 @@ func (c *config) Type() string {
 func (c *config) WriteLog() bool {
 	return c.KV["@log"] == "true"
 }
+func (c *config) Get(v string) string {
+	return c.KV[v]
+}

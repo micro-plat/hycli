@@ -1,8 +1,11 @@
 {-{- $table := .}-}
+{-{- $cmpnts :=$table.GetColumsByCmpnt "daterange" "q" -}-}
 {-{- $qcols :=  $table.GetColumnsByName "q"}-}
     form_{-{.UNQ}-}: {
         pi: 1,
         ps: 15,
+        single_date_range_name:"",
+        single_date_range_value:[],
         {-{- range $i,$c := $qcols}-}
         {-{- if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
         {-{$c.Name}-}:[],
@@ -21,4 +24,5 @@
     {-{- end}-}
     {-{- end}-}
     dataList_{-{.UNQ}-}:[],
+    multiQueryDateRange:[{-{- range $i,$c:= $cmpnts}-}{label:"{-{$c.Label}-}",value:"{-{$c.Name}-}"},{-{end}-}],
     total_{-{.UNQ}-}:0,

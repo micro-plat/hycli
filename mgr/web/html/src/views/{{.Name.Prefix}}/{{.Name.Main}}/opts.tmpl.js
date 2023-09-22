@@ -15,6 +15,8 @@ show_cmpnt(cmd,row){
 },
 {-{- end}-}
 {-{- range $x,$m:= $cmpnts}-}
+
+  //{-{$m.Label}-}
   show_cmpnt_{-{$m.UNQ}-}(fm = {}){
     let query = {}
     {-{- if and (ne "" $m.RwName) (ne "" $m.FwName)}-}
@@ -26,6 +28,10 @@ show_cmpnt(cmd,row){
       {-{- end}-}
     {-{- end}-}
    
+     {-{- $rows:=  $table.GetColumnsByName ($m.GetParam "labelName" "")}-}
+     {-{- range $i,$c:=$rows}-} 
+     query.{-{$c.Name}-} = fm.{-{$c.Name}-}|| fm.le_{-{$c.Name}-}
+     {-{- end}-}  
 
     {-{- $pkrows:=  $table.PKColumns}-}
       {-{- range $i,$c:=$pkrows}-} 
