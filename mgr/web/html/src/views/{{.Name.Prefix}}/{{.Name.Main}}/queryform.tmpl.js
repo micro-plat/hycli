@@ -1,11 +1,14 @@
 {-{- $table := .}-}
-{-{- $cmpnts :=$table.GetColumsByCmpnt "daterange" "q" -}-}
+{-{- $dateRangeCmpnts :=$table.GetColumsByCmpnt "daterange" "q" -}-}
+{-{- $textcmpnts :=$table.GetColumsByCmpnt "input-text" "q" -}-}
 {-{- $qcols :=  $table.GetColumnsByName "q"}-}
     form_{-{.UNQ}-}: {
         pi: 1,
         ps: 15,
         single_date_range_name:"",
         single_date_range_value:[],
+        single_text_name:"",
+        single_text_value:"",
         {-{- range $i,$c := $qcols}-}
         {-{- if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
         {-{$c.Name}-}:[],
@@ -24,5 +27,6 @@
     {-{- end}-}
     {-{- end}-}
     dataList_{-{.UNQ}-}:[],
-    multiQueryDateRange:[{-{- range $i,$c:= $cmpnts}-}{label:"{-{$c.Label}-}",value:"{-{$c.Name}-}"},{-{end}-}],
+    multiQueryDateRange:[{-{- range $i,$c:= $dateRangeCmpnts}-}{label:"{-{$c.Label}-}",value:"{-{$c.Name}-}"},{-{end}-}],
+    multiQueryText:[{-{- range $i,$c:= $textcmpnts}-}{label:"{-{$c.Label}-}",value:"{-{$c.Name}-}"},{-{end}-}],
     total_{-{.UNQ}-}:0,

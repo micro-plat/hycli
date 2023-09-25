@@ -13,10 +13,9 @@
     queryForm = Object.assign(queryForm,nform||{})
     
     //处理多个日期选择
-    {-{- $cmpnts :=$table.GetColumsByCmpnt "daterange" "q" -}-}
-    {-{- if gt (len $cmpnts) 1}-}
     queryForm[this.form_{-{$table.UNQ}-}.single_date_range_name] = this.form_{-{$table.UNQ}-}.single_date_range_value
-    {-{- end}-}
+    queryForm[this.form_{-{$table.UNQ}-}.single_text_name] = this.form_{-{$table.UNQ}-}.single_text_value
+   
 
     //处理日期范围选择
     {-{- range $i,$c:= $qrow}-}
@@ -35,6 +34,10 @@
     queryForm[this.form_{-{$table.UNQ}-}.single_date_range_name] = null
     queryForm.single_date_range_value = null
     queryForm.single_date_range_name = null
+
+    queryForm[this.form_{-{$table.UNQ}-}.single_text_name] = null
+    queryForm.single_text_value = null
+    queryForm.single_text_name = null
  
     //处理关联表{-{$table.Name}-} {-{$xtable.Main.Name}-} {-{$table.Enum.EnumType}-}
     {-{- $exit := false}-}
@@ -43,9 +46,9 @@
     {-{- if and (ne "" $v.RwName) (ne "" $v.FwName)}-}
     {-{- $exit = true}-}
     queryForm.{-{$v.FwName}-} = mform.{-{$v.RwName}-}   
-  {-{- end}-}
     {-{- end}-}
-{-{- end}-}
+    {-{- end}-}
+    {-{- end}-}
 
     {-{- if eq false $exit}-}
     {-{- range $i,$c := $MLLERows}-}
@@ -56,10 +59,6 @@
     {-{- end}-}
     {-{- end}-}
     {-{- end}-}
-
-   
-   
-
    
     //发送查询请求
     let that = this

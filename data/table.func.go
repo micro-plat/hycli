@@ -57,8 +57,9 @@ func (tx *TTable) JoinNames(tp string, required bool, start string, end ...strin
 func getCmpnt(tx interface{}, cmpnt string, tps ...string) []*Column {
 	colums := getColumns(tx)
 	cols := make(Columns, 0, 1)
+	cmpnts := strings.Split(cmpnt, "-")
 	for _, r := range colums {
-		if r.allCmpnt.getCmpnt(r.Row, tps...).Type == cmpnt {
+		if types.StringContains(cmpnts, r.allCmpnt.getCmpnt(r.Row, tps...).Type) {
 			r.ResetCmpnt(tps...)
 			cols = append(cols, r)
 		}

@@ -56,15 +56,7 @@
 
         {-{- $cmpnts :=$table.GetColumsByCmpnt "daterange" "q"}-}
         <!-- 日期控件个数： {-{ len $cmpnts}-} -->
-        {-{- if le (len $cmpnts) 1}-}
-        {-{- range $i,$c:= $cmpnts}-}
-        <!--{-{$c.Label}-} 单日期范围控件 -->
-        <el-form-item>
-            <el-date-picker :shortcuts="shortcuts" style="width: 200px" v-model="form_{-{$table.UNQ}-}.{-{$c.Name}-}" type="daterange" start-placeholder="开始日期"
-                end-placeholder="结束日期" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
-        </el-form-item>
-        {-{- end}-}
-        {-{- else}-}
+        {-{- if gt (len $cmpnts) 0}-}
         <el-form-item>
             <!--多日期范围控件 -->
             <el-select v-model="form_{-{$table.UNQ}-}.single_date_range_name" placeholder="日期类型" style="width:100px;" class="prepend">
@@ -125,15 +117,26 @@
         {-{- end}-} 
         {-{- end}-}
 
-        {-{- range $i,$c:= $qcols}-}
-        {-{- if or ( eq "input" $c.Cmpnt.Type) ( eq "text" $c.Cmpnt.Type)}-}
-        <!--{-{$c.Label}-} 输入控件 -->
-        <el-form-item>
-            <el-input clearable style="width: 100px" v-model="form_{-{$table.UNQ}-}.{-{$c.Name}-}" maxlength="{-{$c.Field.Len}-}"
-                placeholder="{-{$c.Label}-}" />
+        {-{- $cmpnts :=$table.GetColumsByCmpnt "input-text" "q"}-}
+        <!-- 日期控件个数： {-{ len $cmpnts}-} -->
+        {-{- if gt (len $cmpnts) 0}-}
+         <el-form-item>
+            <el-input clearable style="width: 120px" v-model="form_{-{$table.UNQ}-}.single_text_value" maxlength="32"
+                placeholder="请输入查询关键字" >
+                <template #prepend>
+                    <el-select v-model="form_{-{$table.UNQ}-}.single_text_name" placeholder="查询类型" style="width:60px;">
+                        <el-option
+                        v-for="item in multiQueryText"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                      </el-select>
+                  </template>
+            </el-input>
         </el-form-item>
-        {-{- end}-} 
         {-{- end}-}
+
         <span class="ddl">
             {-{- range $i,$c:= $qcols}-}
             {-{- if eq "ddl" $c.Cmpnt.Type}-}
