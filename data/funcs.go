@@ -15,6 +15,7 @@ var Funcs = map[string]interface{}{
 	"f_string_2cname":    md.ToCName,
 	"f_string_translate": f_string_translate,
 	"f_string_trim":      f_string_trim,
+	"f_string_equal":     f_string_equal,
 
 	"f_mysql_get_type":      f_mysql_get_type,
 	"f_mysql_get_def_value": f_mysql_get_def_value,
@@ -93,6 +94,17 @@ func f_num_spare(x int, y int) int {
 func f_num_multiply(v int, b int) int {
 	return v * b
 }
+
+func f_string_equal(v string, bb string) bool {
+	bs := strings.Split(bb, "-")
+	for _, b := range bs {
+		if strings.EqualFold(v, b) {
+			return true
+		}
+	}
+	return false
+}
+
 func f_string_contact(v ...string) string {
 	return strings.Join(v, "")
 }

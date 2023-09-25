@@ -62,7 +62,7 @@ export default {
 
       {-{- range $i,$c := $cColumns}-}
       {-{- if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
-      this.form.{-{$c.Name}-} = cache["{-{$c.Name}-}"]?[cache["{-{$c.Name}-}"]]:[];
+      this.form.{-{$c.Name}-} = this.form.{-{$c.Name}-}?this.form.{-{$c.Name}-}:[];
       {-{- end}-}
       {-{- end}-}
 

@@ -1,14 +1,21 @@
 {-{- $table :=.}-}
-<!-- {-{- $cmptopts := $table.ChartOpts.Merge $table.LStatOpts $table.ExtOpts}-} -->
+{-{- $cmptopts := $table.ChartOpts.Merge $table.LStatOpts $table.ExtOpts}-}
+{-{- $len := len $cmptopts}-}
 
-{-{- if or (or (gt (len $table.LStatOpts) 0) (gt (len $table.ChartOpts) 0)) (gt (len $table.ExtOpts) 0)}-}
+{-{- if gt $len 0}-}
 <div class="listbar">
-    {-{- range $i,$c:= $table.LStatOpts }-}
+  <el-row>
+  {-{- range $i,$c:= $cmptopts }-}
+
+    {-{- if f_string_equal $c.Tag "lstat"}-}
+      <!-- lstat {-{$c.Tag}-} - {-{- $c.Name}-}-->
+    <el-col :span="24">
+      <el-row>
     {-{- $ucols :=  $table.GetColumnsByName $c.RwName }-}
     {-{- $span :=  $c.GetParam "span" "24" }-}
     {-{- $l := len $ucols}-}
     {-{- if ne 0 $l}-}
-    <el-row>
+
     {-{- if eq "true" (  $c.GetParam "showLabel" "true")}-}
     {-{- $span = f_num_add  $span -2}-}
     <el-col :span="2" style="font-size: 0.9rem;font-weight:600;margin-bottom: 16px;">
@@ -20,30 +27,40 @@
     <el-col :span="{-{$x}-}" style="margin-bottom: 16px;">
       <el-statistic title="{-{$m.Label}-}" :value="stat_{-{$c.UNQ}-}.{-{$m.Name}-}" />
     </el-col>
-    {-{end}-} {-{end}-} </el-row> {-{end}-}
-    <el-row>
-    {-{- range $i,$c:=  $table.ChartOpts }-}
+    {-{end}-} {-{end}-} 
+  </el-row>
+  </el-col>
+ 
+
+      {-{- else if f_string_equal $c.Tag "BAR-PIE-LINE"}-}
+      <!-- ChartOpts {-{$c.Tag}-} - {-{- $c.Name}-}-->
     <el-col :span='{-{ $c.GetParam "span" "24"}-}'>
       <{-{$c.UNQ}-} ref="chart_{-{$c.UNQ}-}" height='{-{ $c.GetParam "height" "200px"}-}' title="{-{$c.Label}-}"
         unq="{-{$c.UNQ}-}" url="{-{$c.ReqURL}-}" type="{-{$c.Tag}-}" stack='{-{ $c.GetParam "stack" ""}-}'
         rType='{-{ $c.GetParam "rType" ""}-}' margin='{-{ $c.GetParam "margin" "32px 0px 16px 0px"}-}'
         showLabel='{-{ $c.GetParam "showLabel" "true"}-}' theme='{-{ $c.GetParam "theme" ""}-}'></{-{$c.UNQ}-}>
     </el-col>
-    {-{- end}-}
-    {-{- range $i,$c:=  $table.ExtOpts.GetByTag "tskbar"}-}
+
+    
+    {-{- else if f_string_equal $c.Tag "tskbar"}-}
+    <!-- tskbar {-{$c.Tag}-} - {-{- $c.Name}-}-->
     <el-col :span='{-{ $c.GetParam "span" "24"}-}'>
       <{-{$c.UNQ}-} ref="ext_{-{$c.UNQ}-}" height='{-{ $c.GetParam "height" "200px"}-}' title="{-{$c.Label}-}"
         unq="{-{$c.UNQ}-}" count='{-{ $c.GetParam "count" "10"}-}' url="{-{$c.ReqURL}-}" rows='{-{ $c.GetParam "rows" "1"}-}'  margin='{-{ $c.GetParam "margin" "8px 0px 16px 0px"}-}'
         ></{-{$c.UNQ}-}>
     </el-col>
-    {-{- end}-}
-    {-{- range $i,$c:=  $table.ExtOpts.GetByTag "img"}-}
+
+    {-{- else if f_string_equal $c.Tag "img"}-}
+     <!-- img {-{$c.Tag}-} - {-{- $c.Name}-}-->
     <el-col :span='{-{ $c.GetParam "span" "24"}-}'>
       <{-{$c.UNQ}-} ref="ext_{-{$c.UNQ}-}" height='{-{ $c.GetParam "height" "auto"}-}' type="{-{$c.Tag}-}"
         unq="{-{$c.UNQ}-}" count='{-{ $c.GetParam "count" "10"}-}' url="{-{$c.ReqURL}-}" rows='{-{ $c.GetParam "rows" "1"}-}'  margin='{-{ $c.GetParam "margin" "8px 0px 16px 0px"}-}'
         ></{-{$c.UNQ}-}>
     </el-col>
+    {-{- else}-}
+    <!-- no "{-{$c.Tag}-}" - {-{- $c.Name}-}  {-{f_string_equal "PIE" "BAR-PIE-LINE"}-}-->
     {-{- end}-}
-  </el-row>
+  {-{- end}-}
+</el-row>
 </div>
 {-{- end}-}
