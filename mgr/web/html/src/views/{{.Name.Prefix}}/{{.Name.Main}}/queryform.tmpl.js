@@ -1,6 +1,6 @@
 {-{- $table := .}-}
 {-{- $dateRangeCmpnts :=$table.GetColumsByCmpnt "daterange" "q" -}-}
-{-{- $textcmpnts :=$table.GetColumsByCmpnt "input-text" "q" -}-}
+{-{- $textcmpnts :=$table.GetColumsByCmpnt "text" "q" -}-}
 {-{- $qcols :=  $table.GetColumnsByName "q"}-}
     form_{-{.UNQ}-}: {
         pi: 1,

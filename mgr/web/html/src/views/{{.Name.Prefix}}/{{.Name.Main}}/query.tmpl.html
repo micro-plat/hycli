@@ -118,13 +118,13 @@
         {-{- end}-}
 
         {-{- $cmpnts :=$table.GetColumsByCmpnt "input-text" "q"}-}
-        <!-- 日期控件个数： {-{ len $cmpnts}-} -->
+        <!-- 控件个数：{-{$cmpnts}-} -->
         {-{- if gt (len $cmpnts) 0}-}
          <el-form-item>
-            <el-input clearable style="width: 120px" v-model="form_{-{$table.UNQ}-}.single_text_value" maxlength="32"
-                placeholder="请输入查询关键字" >
+            <el-input clearable style="width: 160px" v-model="form_{-{$table.UNQ}-}.single_text_value" maxlength="32"
+                placeholder="查询关键字" >
                 <template #prepend>
-                    <el-select v-model="form_{-{$table.UNQ}-}.single_text_name" placeholder="查询类型" style="width:60px;">
+                    <el-select v-model="form_{-{$table.UNQ}-}.single_text_name" placeholder="查询类型" style="width:84px;">
                         <el-option
                         v-for="item in multiQueryText"
                         :key="item.value"

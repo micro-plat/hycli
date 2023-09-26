@@ -134,3 +134,14 @@ export default {
   },
 }
 </script>
+<style scoped>
+.form_item_info{
+  margin-left: 4px;
+  color:#999;
+}
+.form_item_info:hover{
+  cursor: pointer;
+  font-weight: 500;
+  color:#333;
+}
+</style>

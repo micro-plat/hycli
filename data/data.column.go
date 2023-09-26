@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/micro-plat/hycli/data/internal/md"
+	"github.com/micro-plat/lib4go/jsons"
 	"github.com/micro-plat/lib4go/types"
 )
 
@@ -85,6 +86,12 @@ type displayCmpnt struct {
 	Format string //字段显示格式，如:yyyy-MM-dd
 
 }
+
+func (s displayCmpnt) String() string {
+	buff, _ := jsons.Marshal(s)
+	return string(buff)
+}
+
 type ext struct {
 	FormName string
 }

@@ -35,7 +35,6 @@
     queryForm.single_date_range_value = null
     queryForm.single_date_range_name = null
 
-    queryForm[this.form_{-{$table.UNQ}-}.single_text_name] = null
     queryForm.single_text_value = null
     queryForm.single_text_name = null
  

@@ -20,6 +20,24 @@ func (c *Column) GetOpts(name string) (string, string, string) {
 	f, s, t := md.GetConsByTagIgnorecase(name, c.RawConsts...)
 	return f, s, t
 }
+func (c *Column) GetParams(name string) map[string]string {
+	s := md.GetParamByTag(name, c.RawConsts...)
+	item := strings.Split(s, ";")
+	param := make(map[string]string)
+	for _, v := range item {
+		kv := strings.Split(v, ":")
+		if len(kv) == 0 || kv[0] == "" {
+			continue
+		}
+		if len(kv) == 2 {
+			param[kv[0]] = kv[1]
+			continue
+		}
+		param[kv[0]] = ""
+	}
+	return param
+
+}
 func (c *Column) GetOpt(name string) string {
 	v, _, _ := c.GetOpts(name)
 	return v

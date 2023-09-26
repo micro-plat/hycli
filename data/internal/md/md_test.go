@@ -17,7 +17,7 @@ func TestTB2(t *testing.T) {
 | staff_id    | number(10)   |  10000  |  否   | PK,SEQ, l,le,bq,DI | 编号     |
 | name        | varchar2(32) |         |  否   |   c,u,l,le,q,DN    | 名称     |
 | position    | varchar2(32) |         |  否   |   c,u,l,le,sl,DT   | 岗位     |
-| title       | varchar2(32) |         |  否   |   c,u,l,le,sl,DP,xx(1-1,2-1,3-2)  | 职位     |
+| title       | varchar2(32) |         |  否   |   c,u,l,le,sl,DP,xx(1-1,2-1,3-2),@change(name:#id;pwd:#id)  | 职位     |
 | mobile      | varchar2(32) |         |  否   |      c,u,l,le      | 手机     |
 | email       | varchar2(32) |         |  否   |      c,u,l,le| 邮箱     |
 | status      | number(2)    |         |  否   | c,u,l,le,sl,color  | 状态     |
@@ -32,10 +32,12 @@ func TestTB2(t *testing.T) {
 	assert.Equal(t, 6, len(tbs[0].Rows[2].Constraints))
 	assert.Equal(t, true, HasConstraint(tbs[0].Rows[2].Constraints, "DT"))
 	assert.Equal(t, true, HasConstraint(tbs[0].Rows[3].Constraints, "DP"))
+	assert.Equal(t, true, HasConstraint(tbs[0].Rows[3].Constraints, "@change(name:#id;pwd:#id)"))
 
 	lst := GetConstrainValues("xx", tbs[0].Rows[3].Constraints...)
 	assert.Equal(t, 3, len(lst))
 	assert.Equal(t, "1-1", lst[0])
+
 }
 func TestTB(t *testing.T) {
 	row := `

@@ -7,7 +7,7 @@
     v-model="conf.visible"
     title="修改 {-{.Desc}-}"
     {-{- if gt (len $ucols) 14}-}
-    width="68%"
+    width="70%"
     {-{- else }-}
     width="60%"
   {-{- end  }-}
@@ -138,5 +138,14 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.form_item_info{
+  margin-left: 4px;
+  color:#999;
+}
+.form_item_info:hover{
+  cursor: pointer;
+  font-weight: 500;
+  color:#333;
+}
 </style>

@@ -59,10 +59,15 @@ func getCmpnt(tx interface{}, cmpnt string, tps ...string) []*Column {
 	cols := make(Columns, 0, 1)
 	cmpnts := strings.Split(cmpnt, "-")
 	for _, r := range colums {
-		if types.StringContains(cmpnts, r.allCmpnt.getCmpnt(r.Row, tps...).Type) {
+		if !md.HasConstraint(r.Constraints, tps...) {
+			continue
+		}
+		cmp := r.allCmpnt.getCmpnt(r.Row, tps...)
+		if types.StringContains(cmpnts, cmp.Type) {
 			r.ResetCmpnt(tps...)
 			cols = append(cols, r)
 		}
+
 	}
 	sort.Sort(cols)
 	return cols

@@ -80,7 +80,7 @@ func TestRelation2(t *testing.T) {
 	| ----------- | ----------- | :---------------: | :---: | :-----: | :------------------- |
 	| role_id     | bigint(20)  |                   |  否   | PK,SEQ,DI | 角色id               |
 	| name        | varchar(64) |                   |  否   |   UNQ,DN  | 角色名称             |
-	| price      | decimal(10,5)  |         0         |  是   |   alias(a,b,c)      | 价格 |
+	| price      | decimal(10,5)  |         0         |  是   |   alias(a,b,c),@change(name:#id;pwd:#id)      | 价格 |
 	| status      | tinyint(1)  |         0         |  否   |         | 状态 1: 禁用 0: 正常 |
 	| create_time | datetime    | sysdate |  否   |         | 创建时间             |`
 
@@ -92,13 +92,25 @@ func TestRelation2(t *testing.T) {
 	tbs := NewTables(tbls)
 
 	assert.Equal(t, 1, len(tbs))
-	columns := tbs[0].Columns.GetColumnsBy("alias")
+
+	tab := tbs[0]
+	columns := tab.Columns.GetColumnsBy("alias")
 	assert.Equal(t, 1, len(columns))
 	assert.Equal(t, "a", columns[0].GetOpt("alias"))
 	a, b, c := columns[0].GetOpts("alias")
 	assert.Equal(t, "a", a)
 	assert.Equal(t, "b", b)
 	assert.Equal(t, "c", c)
+
+	assert.Equal(t, "name:#id;pwd:#id", md.GetParamByTag("change", "change(name:#id;pwd:#id)"))
+	columnxs := tab.GetColumnsByColumName("price")
+	assert.Equal(t, 1, len(columnxs))
+
+	assert.Equal(t, 1, tab.GetColumnsByName("@change").Len())
+	params := tab.GetColumnsByName("@change")[0].GetParams("@change")
+	assert.Equal(t, 2, len(params))
+	assert.Equal(t, "#id", params["name"])
+	assert.Equal(t, "#id", params["pwd"])
 
 }
 func TestSplitConst(t *testing.T) {

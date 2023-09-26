@@ -8,7 +8,7 @@
     v-model="conf.visible"
     title="添加 {-{.Desc}-}"
     {-{- if gt (len $cColumns) 14}-}
-    width="68%"
+    width="70%"
     {-{- else }-}
     width="60%"
   {-{- end  }-}
@@ -149,6 +149,13 @@ export default {
       this.{-{$x.Name}-}List = this.$theia.enum.get("{-{$x.Enum.EnumType}-}",val)
       this.form.{-{$x.Name}-} = null
       {-{- end}-}
+
+      //添加联动
+     {-{- range $i,$c:= $table.GetColumnsByName("@change")}-} 
+        
+
+     {-{- end}-}
+
     },
     {-{- end}-}
     {-{- end}-}
@@ -161,5 +168,14 @@ export default {
   width: 80px;
   height: 80px;
   display: block;
+}
+.form_item_info{
+  margin-left: 4px;
+  color:#999;
+}
+.form_item_info:hover{
+  cursor: pointer;
+  font-weight: 500;
+  color:#333;
 }
 </style>

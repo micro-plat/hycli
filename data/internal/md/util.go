@@ -68,6 +68,13 @@ func GetConsNameByTag(t string, cns ...string) string {
 	}
 	return ""
 }
+func GetParamByTag(t string, cns ...string) string {
+	if r := types.GetStringByIndex(GetConstraintByReg(cns,
+		fmt.Sprintf(`%s\(([^)]*)\)`, t)), 0); r != "" {
+		return r
+	}
+	return ""
+}
 func GetExprs(v string) [][]string {
 	f := `([@]?\w+)([><!=]?[=]?)(\w*)`
 	reg := regexp.MustCompile(f)
