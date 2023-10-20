@@ -17,7 +17,7 @@
     <el-image style="width:48px" :src="view.{-{$c.Name}-}" preview-teleported :fit="contain"  :preview-src-list="[view.{-{$c.Name}-}]" /></el-col>
     {-{- else if eq "link" $c.Cmpnt.Type}-}
     <el-col :span="8">
-    <el-link target="_blank" type="success" :href="view.{-{$c.Name}-}" :title="view.{-{$c.Name}-}">查看</el-link> 
+    <el-link target="_blank" type="success" v-if="view.{-{$c.Name}-}" :href="view.{-{$c.Name}-}" :title="view.{-{$c.Name}-}">查看</el-link> 
     </el-col>
     {-{- else if eq true $c.Field.IsLongText }-}
     {-{- $span = f_num_add $span 1}-}

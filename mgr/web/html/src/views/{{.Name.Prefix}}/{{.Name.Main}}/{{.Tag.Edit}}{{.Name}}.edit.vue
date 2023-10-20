@@ -1,5 +1,5 @@
 {-{- $table := .}-}
-{-{- $ucols :=  $table.GetColumnsByName "U"}-}
+{-{- $ucols :=  $table.GetColumnsByTPName "U"}-}
 {-{- $enumColumns :=$table.EnumColumns}-}
 
 <template tag="{-{.Marker}-}">
@@ -40,6 +40,7 @@ export default {
   methods: {
     show(form) {
       this.conf.visible = true;
+      this.form = Object.assign(form,this.$route.params)
       this.get(form)
     },
       get(form){
@@ -54,7 +55,12 @@ export default {
           res.{-{$c.Name}-} = (res.{-{$c.Name}-}+"").split(",")
         {-{- end}-}
         {-{- end}-}
-        Object.assign(that.form, res)
+        that.form = Object.assign(that.form, res)
+        {-{- range $j,$x:=$ucols}-}
+      {-{- range $i,$c:= $ucols.GetColumnsByTriggerChangeEvent $x.Name}-}
+      that.onChange_{-{$x.Name}-}(that.form["{-{$x.Name}-}"],"{-{$x.Enum.EnumType}-}")
+      {-{- end}-} 
+      {-{- end}-}
         }).catch(res=>{
           let code = ((res||{}).response||{}).status||0
           let msg = `{-{.Desc}-}查询失败(${code})`
@@ -123,14 +129,28 @@ export default {
       {-{- end}-}
     },
 
-    {-{- range $i,$c:= $ucols}-}
-    {-{- $aColumns :=  $ucols.GetColumnsByColumName $c.Name}-}
-    {-{- if gt (len $aColumns) 0}-} 
-    onChange_{-{$c.Name}-}(val){
-      {-{- range $j,$x:= $aColumns }-}
-      this.{-{$x.Name}-}List = this.$theia.enum.get("{-{$x.Enum.EnumType}-}",val)
-      this.form.{-{$x.Name}-} = null
+    {-{- range $j,$x:=$ucols}-}
+    {-{- $ctriger := $ucols.GetColumnsByTriggerChangeEvent $x.Name}-}
+     {-{- if gt (len $ctriger) 0}-}
+    onChange_{-{$x.Name}-}(val,tp){
+      {-{- range $i,$c:= $ctriger}-}
+      this.{-{$c.Name}-}List = this.$theia.enum.get("{-{$c.Enum.EnumType}-}",val)
       {-{- end}-}
+      //添加联动
+      {-{- $p := $x.GetParams "@change"}-}
+      {-{- if gt (len $p) 0}-}
+      let that = this
+      if(tp){
+        let lst= this.$theia.enum.get(tp)
+        lst.forEach(el => {
+          if(el.value == val)
+          {-{- range $i,$c:= $p}-}
+          that.form.{-{$i}-} = that.form.{-{$i}-}==""?el.{-{$c}-}:that.form.{-{$i}-}
+          {-{- end}-}
+        });
+      }
+      {-{- end}-}
+
     },
     {-{- end}-}
     {-{- end}-}

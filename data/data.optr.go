@@ -72,7 +72,7 @@ var viewOptCmd = []string{"view"}
 var lstatOptCmd = []string{"lstat"}
 var lstBarOptCmd = []string{"lst"}
 var batchCheck = []string{"bcheck", "@bcheck", "&bcheck"}
-var qBarOptrCmd = []string{"export", "import", "lstbar", "lstupdator", "lstinsert", "batinsert"}
+var qBarOptrCmd = []string{"export", "import", "lstbar", "lstupdator", "lstinsert", "batinsert", "list"}
 var charOptrCmd = []string{"chart"}
 var extCmptParam = []string{"add", "update", "view"}
 var extOptrsCmd = []string{"tskbar", "xbar"}
@@ -184,14 +184,14 @@ func (b barOptrs) NeedCheck(tb string) bool {
 func createLstBarOptrs(table *Table, t string) lstOptrs {
 	optrs := createCmdsOptrs(table.Name.Raw, t, lstBarOptCmd)
 	//构建操作
-	if !optrslst(optrs).Find(VIEW_TAG) && len(table.GetColumnsByName(VIEW_COLUMN)) > 0 {
+	if !optrslst(optrs).Find(VIEW_TAG) && len(table.GetColumnsByTPName(VIEW_COLUMN)) > 0 {
 		optrs = append(optrs, detailOpts.Get(table.Name.Raw))
 	}
-	if !optrslst(optrs).Find(UPDATE_TAG) && len(table.GetColumnsByName(UPDATE_COLUMN)) > 0 {
+	if !optrslst(optrs).Find(UPDATE_TAG) && len(table.GetColumnsByTPName(UPDATE_COLUMN)) > 0 {
 		optrs = append(optrs, updateOpts.Get(table.Name.Raw))
 	}
 
-	if !optrslst(optrs).Find(DELETE_TAG) && len(table.GetColumnsByName(DELETE_COLUMN)) > 0 {
+	if !optrslst(optrs).Find(DELETE_TAG) && len(table.GetColumnsByTPName(DELETE_COLUMN)) > 0 {
 		optrs = append(optrs, delOpts.GetAndSetTag(table.Name.Raw, CNFRM))
 	}
 	if tag, ok := optrslst(optrs).Get(DELETE_TAG); ok {
@@ -203,7 +203,7 @@ func createLstBarOptrs(table *Table, t string) lstOptrs {
 func createViewOptrs(table *Table, t string) (viewOptrs, viewExtCmptOpts) {
 	viewOpts := createCmdsOptrs(table.Name.Raw, t, viewOptCmd)
 	//构建操作
-	if !optrslst(viewOpts).FindName(VIEW_TAG) && len(table.GetColumnsByName(VIEW_COLUMN)) > 0 {
+	if !optrslst(viewOpts).FindName(VIEW_TAG) && len(table.GetColumnsByTPName(VIEW_COLUMN)) > 0 {
 		view := detailOpts.Get(table.Name.Raw)
 		view.Name = "view"
 		viewOpts = append(viewOpts, view)
@@ -213,7 +213,7 @@ func createViewOptrs(table *Table, t string) (viewOptrs, viewExtCmptOpts) {
 }
 func createQueryOptrs(table *Table, t string) queryOptrs {
 	opts := createCmdsOptrs(table.Name.Raw, t, queryOptrCmd)
-	if !optrslst(opts).Find(QUERY_TAG) && len(table.GetColumnsByName(QUERY_COLUMN)) > 0 {
+	if !optrslst(opts).Find(QUERY_TAG) && len(table.GetColumnsByTPName(QUERY_COLUMN)) > 0 {
 		opts = append(opts, queryOpts.Get(table.Name.Raw))
 	}
 	return opts
@@ -231,7 +231,7 @@ func createExtOptrs(tableName string, t string) extOptrs {
 }
 func createQBarOptrs(table *Table, t string) (barOptrs, bool) {
 	opts := createCmdsOptrs(table.Name.Raw, t, qBarOptrCmd)
-	if !optrslst(opts).Find(ADD_TAG) && len(table.GetColumnsByName(ADD_COLUMN)) > 0 {
+	if !optrslst(opts).Find(ADD_TAG) && len(table.GetColumnsByTPName(ADD_COLUMN)) > 0 {
 		opts = append(opts, addOpts.Get(table.Name.Raw))
 	}
 	return opts, barOptrs(opts).NeedCheck(table.Name.Raw)

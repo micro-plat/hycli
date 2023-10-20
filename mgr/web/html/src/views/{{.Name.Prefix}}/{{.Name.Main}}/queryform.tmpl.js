@@ -1,7 +1,7 @@
 {-{- $table := .}-}
 {-{- $dateRangeCmpnts :=$table.GetColumsByCmpnt "daterange" "q" -}-}
 {-{- $textcmpnts :=$table.GetColumsByCmpnt "text" "q" -}-}
-{-{- $qcols :=  $table.GetColumnsByName "q"}-}
+{-{- $qcols :=  $table.GetColumnsByTPName "q"}-}
     form_{-{.UNQ}-}: {
         pi: 1,
         ps: 15,
@@ -17,7 +17,7 @@
         {-{- end}-}
         {-{- end}-}
         },
-    {-{- range $i,$c :=  $table.GetColumnsByName "q-l-le" }-}
+    {-{- range $i,$c :=  $table.GetColumnsByTPName "q-l-le" }-}
     {-{- if or (eq true $c.Enum.IsEnum) (eq true (f_string_start $c.Cmpnt.Type "multi"))}-}
     {-{.Name}-}List:this.$theia.enum.get("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}","{-{$c.Enum.Group}-}"),
     {-{.Name}-}Exts:this.$theia.enum.getExts("{-{$c.Enum.EnumType}-}"),

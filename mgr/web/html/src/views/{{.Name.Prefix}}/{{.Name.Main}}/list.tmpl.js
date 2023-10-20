@@ -1,11 +1,11 @@
 {-{- $xtable := .}-}
 {-{- $table := $xtable.Current}-}
 {-{- $mtable := $xtable.Main}-}
-{-{- $qrow :=  $table.GetColumnsByName "q"}-}
-{-{- $lstRow :=  $table.GetColumnsByName "l"}-}
-{-{- $leRow :=  $table.GetColumnsByName "le"}-}
-{-{- $LLERows:=  $table.GetColumnsByName "l-le"}-}
-{-{- $MLLERows:=  $mtable.GetColumnsByName "l-le"}-}
+{-{- $qrow :=  $table.GetColumnsByTPName "q"}-}
+{-{- $lstRow :=  $table.GetColumnsByTPName "l"}-}
+{-{- $leRow :=  $table.GetColumnsByTPName "le"}-}
+{-{- $LLERows:=  $table.GetColumnsByTPName "l-le"}-}
+{-{- $MLLERows:=  $mtable.GetColumnsByTPName "l-le"}-}
 
     queryData_{-{$table.UNQ}-}(mform = {},nform={}){
     //构建查询参数
@@ -40,11 +40,13 @@
  
     //处理关联表{-{$table.Name}-} {-{$xtable.Main.Name}-} {-{$table.Enum.EnumType}-}
     {-{- $exit := false}-}
+    {-{- if eq true $xtable.IsTmpl}-}
     {-{- range $x,$v := $xtable.Main.ViewOpts}-}
     {-{- if eq $v.URL $table.Name.Raw}-}
     {-{- if and (ne "" $v.RwName) (ne "" $v.FwName)}-}
     {-{- $exit = true}-}
     queryForm.{-{$v.FwName}-} = mform.{-{$v.RwName}-}   
+    {-{- end}-}
     {-{- end}-}
     {-{- end}-}
     {-{- end}-}
@@ -67,7 +69,7 @@
     {-{- range $i,$v:= $table.LStatOpts}-}
       this.$theia.http.get("{-{$v.URL|lower}-}",queryForm).then(res=>{
         let item = res||{}
-        {-{- $uxcols :=  $table.GetColumnsByName $v.RwName}-}
+        {-{- $uxcols :=  $table.GetColumnsByTPName $v.RwName}-}
         {-{- range $i,$c := $uxcols}-}
         {-{- if and (ne "" $c.Cmpnt.Format) (eq true $c.Field.IsNumber)}-}
           that.stat_{-{$v.UNQ}-}.{-{$c.Name}-} = that.$theia.str.numberFormat(item.{-{$c.Name}-},'{-{$c.Cmpnt.Format}-}')
@@ -91,6 +93,7 @@
 
   resetItemData_{-{$table.UNQ}-}(that,lst){
     lst.forEach(item => {
+      item.__raw = Object.assign({}, item)
       {-{- range $i,$c := $LLERows}-}
     {-{- if eq true $c.Enum.IsEnum}-}
     item.{-{$c.Name}-}_label = that.$theia.enum.getNames("{-{$c.Enum.EnumType}-}",item.{-{$c.Name}-})
@@ -98,7 +101,7 @@
       {-{- if eq "switch" $c.Cmpnt.Type}-}
     item.{-{$c.Name}-}_switch = item.{-{$c.Name}-} == 0
     {-{- else if eq "progress" $c.Cmpnt.Type}-}
-      {-{- $qrow :=  $table.GetColumnsByName $c.Cmpnt.Format}-}
+      {-{- $qrow :=  $table.GetColumnsByTPName $c.Cmpnt.Format}-}
       {-{- if gt (len $qrow) 0}-}
       {-{- $frow := f_colum_idx $qrow 0 $c}-}
       {-{- $srow := f_colum_idx $qrow 1 $c}-}
@@ -174,7 +177,7 @@
 {-{- end}-}
 {-{- end}-}
 {-{- range $i,$c:= $qrow }-}
-    {-{- $aColumns :=  $qrow.GetColumnsByColumName $c.Name }-}
+    {-{- $aColumns :=  $qrow.GetColumnsByTriggerChangeEvent $c.Name }-}
     {-{- if gt (len $aColumns) 0}-} 
     onChange_{-{$c.Name}-}(val){
       {-{- range $j,$x:= $aColumns  }-}

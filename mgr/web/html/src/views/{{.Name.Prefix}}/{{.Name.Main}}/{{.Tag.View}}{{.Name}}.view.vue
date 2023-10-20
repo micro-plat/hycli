@@ -1,5 +1,5 @@
 {-{- $table := . }-}
-{-{- $vcols :=  $table.GetColumnsByName "v" }-}
+{-{- $vcols :=  $table.GetColumnsByTPName "v" }-}
 {-{- $viewOpts :=$table.ViewOpts}-}
 <template tag="{-{.Marker}-}">
   <div>
@@ -13,7 +13,7 @@
   >
   {-{- range $i,$c:= $viewOpts.GetByName "step"}-}
   <el-steps class="steps" :active="conf.stepActive_{-{$c.UNQ}-}" align-center  finish-status="success">
-    {-{- range $j,$s:=  $table.GetColumnsByName $c.RwName}-}
+    {-{- range $j,$s:=  $table.GetColumnsByTPName $c.RwName}-}
     <el-step title="{-{$s.Label}-}" :description="view.{-{$s.Name}-}||'未设置'" />
     {-{- end }-}
   </el-steps>
@@ -22,7 +22,7 @@
       {-{- range $i,$c:= $viewOpts}-}
       {-{- if eq "view" $c.Name}-}
       {-{- $currentTable := f_table_get_ttable  $c.Table }-}
-      {-{- $vxcols :=  $currentTable.GetColumnsByName "v" }-}
+      {-{- $vxcols :=  $currentTable.GetColumnsByTPName "v" }-}
       <el-tab-pane label="详情" name="{-{$c.UNQ}-}">
        {-{- template "view.tmpl.html" $vxcols}-}
       </el-tab-pane>

@@ -11,7 +11,7 @@
       <!-- lstat {-{$c.Tag}-} - {-{- $c.Name}-}-->
     <el-col :span="24">
       <el-row>
-    {-{- $ucols :=  $table.GetColumnsByName $c.RwName }-}
+    {-{- $ucols :=  $table.GetColumnsByTPName $c.RwName }-}
     {-{- $span :=  $c.GetParam "span" "24" }-}
     {-{- $l := len $ucols}-}
     {-{- if ne 0 $l}-}

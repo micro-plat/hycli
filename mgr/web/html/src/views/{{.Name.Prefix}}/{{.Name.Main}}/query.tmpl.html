@@ -1,7 +1,7 @@
 {-{- $table :=.}-}
 {-{- $qOptrs:= $table.QueryOptrs}-}
-{-{- $qcols :=  $table.GetColumnsByName "q"}-}
-{-{- $crow := $table.GetColumnsByName "c"}-}
+{-{- $qcols :=  $table.GetColumnsByTPName "q"}-}
+{-{- $crow := $table.GetColumnsByTPName "c"}-}
 {-{- $clen := len $crow}-}
 {-{- $blen :=len $table.BarOpts}-}
 {-{- $tabs :=  $table.GetColumsByCmpnt "tabs" "q"}-}
@@ -86,7 +86,7 @@
         {-{- if or (eq "select" $c.Cmpnt.Type) (eq "radio" $c.Cmpnt.Type)}-}
         <!--{-{$c.Label}-} 下拉控件 -->
         <el-form-item>
-            <el-select {-{if gt (len ( $qcols.GetColumnsByColumName $c.Name)) 0}-} @change="onChange_{-{$c.Name}-}"  {-{end}-} v-model="form_{-{$table.UNQ}-}.{-{.Name}-}" style="width: 100px" clearable placeholder="{-{$c.Label}-}">
+            <el-select {-{if eq true ($c.NeedTriggerChangeEvent $c.Name)}-} @change="onChange_{-{$c.Name}-}"  {-{end}-} v-model="form_{-{$table.UNQ}-}.{-{.Name}-}" style="width: 100px" clearable placeholder="{-{$c.Label}-}">
                 <el-option v-for="item in {-{.Name}-}List" :key="item.value" :label="item.name" :value="item.value" />
             </el-select>
         </el-form-item>
@@ -121,8 +121,8 @@
         <!-- 控件个数：{-{$cmpnts}-} -->
         {-{- if gt (len $cmpnts) 0}-}
          <el-form-item>
-            <el-input clearable style="width: 160px" v-model="form_{-{$table.UNQ}-}.single_text_value" maxlength="32"
-                placeholder="查询关键字" >
+            <el-input clearable style="width: 220px" v-model="form_{-{$table.UNQ}-}.single_text_value" maxlength="32"
+                placeholder="关键字" >
                 <template #prepend>
                     <el-select v-model="form_{-{$table.UNQ}-}.single_text_name" placeholder="查询类型" style="width:84px;">
                         <el-option

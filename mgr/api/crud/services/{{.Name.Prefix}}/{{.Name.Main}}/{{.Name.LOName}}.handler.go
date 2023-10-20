@@ -16,13 +16,13 @@ package {-{.Name.Main}-}
 
 import (
 	"net/http"
-	{-{- if or (gt (len ( $table.GetColumnsByName "c-bc")) 0) (gt (len ( $table.GetValidColumnsByName "u")) 0)}-}
+	{-{- if or (gt (len ( $table.GetColumnsByTPName "c-bc")) 0) (gt (len ( $table.GetValidColumnsByName "u")) 0)}-}
 	"strings"
 	{-{- end}-}
 
 	"github.com/micro-plat/hydra"
 	"github.com/micro-plat/lib4go/errs"
-	{-{- if gt (len ( $table.GetColumnsByName "q-bq")) 0}-}
+	{-{- if gt (len ( $table.GetColumnsByTPName "q-bq")) 0}-}
 	"github.com/micro-plat/lib4go/types"
 	{-{- end}-}
 	{-{- if eq true $hasStatic}-}
@@ -165,6 +165,8 @@ func (u *{-{.Name.CName}-}Handler) PostHandle(ctx hydra.IContext) (r interface{}
 {-{- $qbar:=$table.QueryOptrs|f_optr_first}-}
 {-{- $pkName := $table.PKColumns|f_colum_first}-}
 {-{- $treeNode :=  $qbar.GetParam "treeNode" ""}-}
+{-{- $treeId :=  $qbar.GetParam "treeId" $pkName.Name}-}
+{-{- $treeDef :=  $qbar.GetParam "firstNodeValue" "0"}-}
 //QueryHandle  获取{-{.Desc}-}列表数据
 func (u *{-{.Name.CName}-}Handler) QueryHandle(ctx hydra.IContext) (r interface{}) {
 
@@ -181,10 +183,19 @@ func (u *{-{.Name.CName}-}Handler) QueryHandle(ctx hydra.IContext) (r interface{
 	ctx.Request().SetValue("{-{$v.Name}-}",member.{-{f_string_trim $i "#"}-})
 	{-{- end}-}
 	{-{- end}-}
+	{-{- if eq "" $treeNode}-}
 	m := ctx.Request().GetMap()
-	m["ps"] ={-{- if ne "" $treeNode}-} 10000 {-{else}-} ctx.Request().GetInt("ps", 10) {-{end}-}
-	m["offset"] = (ctx.Request().GetInt("pi", 1) - 1) * {-{- if ne "" $treeNode}-} 10000 {-{else}-} ctx.Request().GetInt("ps", 10) {-{end}-}
-
+	m["ps"] = ctx.Request().GetInt("ps", 10) 
+	m["offset"] = (ctx.Request().GetInt("pi", 1) - 1) * ctx.Request().GetInt("ps", 10) 
+	{-{- else}-}
+	ps := ctx.Request().GetInt("ps", 10)
+	pi := ctx.Request().GetInt("pi", 1) - 1
+	offset := pi * ps
+	m := ctx.Request().GetMap()
+	m["ps"] = 10000
+	m["offset"] = 0
+	{-{end}-}
+	
 	
 	count, err := hydra.C.DB().GetRegularDB().Scalar(get{-{.Name.CName}-}ListCount, m)
 	if err != nil {
@@ -206,9 +217,10 @@ func (u *{-{.Name.CName}-}Handler) QueryHandle(ctx hydra.IContext) (r interface{
 	
 	{-{- if ne "" $treeNode}-}
 	ctx.Log().Info("3.返回结果")
+	nodes := getTreeNodes(items,"{-{$treeNode}-}","{-{$treeId}-}")
 	return map[string]interface{}{
-		"items": getTreeNodes(items,"{-{$treeNode}-}","{-{$pkName.Name}-}"),
-		"count":rcount,
+		"items": getRange(nodes, offset, offset+ps),
+		"count":len(nodes),
 	}
 	{-{- else}-}
 	ctx.Log().Info("3.返回结果")
@@ -219,23 +231,62 @@ func (u *{-{.Name.CName}-}Handler) QueryHandle(ctx hydra.IContext) (r interface{
 	{-{- end}-}
 }
 {-{- if ne "" $treeNode}-}
+func getRange(xm types.XMaps, min int, max int) types.XMaps {
+	if min >= len(xm) || min < 0 || max <= min {
+		return nil
+	}
+	if max >= len(xm) {
+		max = len(xm)
+	}
+	return xm[min:max]
+}
 func getTreeNodes(items types.XMaps, pidName string, pkName string) types.XMaps {
 	treeMap := map[string]types.XMaps{}
-	lstMap := types.XMaps{}
 	for _, r := range items {
 		pid := r.GetString(pidName)
 		if _, ok := treeMap[pid]; !ok {
 			treeMap[pid] = make(types.XMaps, 0, 1)
 		}
 		treeMap[pid] = append(treeMap[pid], r)
-		if pid == "0" {
-			lstMap = append(lstMap, r)
-		}
 	}
+	lstMap := getTopNodeMap(treeMap, pidName, pkName)
+	// buff, _ := jsons.Marshal(treeMap)
+	// fmt.Println("lstMap:", string(lstMap))
 	for _, m := range lstMap {
 		setChildren(m, pkName, treeMap)
 	}
 	return lstMap
+}
+
+// {type:"---",value:"status",name:"状态"}
+// {type:"status",value:"0",name:"启用"}
+// {type:"status",value:"1",name:"禁用"}
+
+// {type:"---",value:"pmstatus",name:"用处类型"}
+// {type:"pmstatus",value:"pmstatus-10",name:"用途"}
+// {type:"pmstatus",value:"pmstatus-11",name:"停用"}
+// {type:"pmstatus-10",value:"px-10",name:"日用"}
+// {type:"pmstatus-10",value:"px-11",name:"办公"}
+
+func getTopNodeMap(treeMap map[string]types.XMaps, tpName string, valueName string) types.XMaps {
+	lstMap := types.XMaps{}
+	for _, onemap := range treeMap {
+		endLoop:
+		for _, v := range onemap {
+			tp := v.GetString(tpName)
+			for _, p0 := range treeMap {
+				for _, p := range p0 {
+					value2 := p.GetString(valueName)
+					if tp == value2 {
+						break endLoop
+					}
+				}
+			}
+			lstMap = append(lstMap, v)
+		}
+	}
+	return lstMap
+
 }
 func setChildren(current types.XMap, idName string, treeMap map[string]types.XMaps) {
 	id := current.GetString(idName)
@@ -427,7 +478,7 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 		"{-{$c.Name}-}":"{-{$c.Enum.EnumType}-}",
 		{-{- end}-}
 	}
-	{-{ $binsertColums :=   $table.GetColumnsByName "batisert" -}-}
+	{-{ $binsertColums :=   $table.GetColumnsByTPName "batisert" -}-}
 	{-{- $binsertColum := f_colum_first $binsertColums -}-}
 	cfield := "{-{- $binsertColum.Name}-}"
 	xfm :="{-{- f_string_join ($table.GetKeyParams "batisert") ","}-}"

@@ -1,7 +1,7 @@
 {-{- $xtable := .}-}
 {-{- $table := $xtable.Current}-}
-{-{- $lcols := $table.GetColumnsByName "l"}-}
-{-{- $lecols := $table.GetColumnsByName "le"}-}
+{-{- $lcols := $table.GetColumnsByTPName "l"}-}
+{-{- $lecols := $table.GetColumnsByTPName "le"}-}
 {-{- $leLen := len $lecols}-}
 {-{- $lstopts := $table.ListOpts}-}
 {-{- $optLen := len $lstopts}-}
@@ -18,7 +18,7 @@
     v-loading="conf.loading" stripe {-{if eq true $tmpl }-}
         style="width: 100%;height:300px" {-{else }-} style="width: 100%;height:calc(100vh - 160px)" {-{- end}-}
          empty-text="无数据">le
-        {-{- if gt $leLen 0 }-}
+        {-{- if and (eq $treeNode "" ) (gt $leLen 0) }-}
         {-{- template "le.tmpl.html" $lecols }-}
         {-{- end}-}
         {-{ if and (eq $table.NeedBatchCheck true) (eq false $tmpl)}-}  <el-table-column type="selection" width="22" /> {-{end}-}
@@ -57,7 +57,7 @@
         {-{- else if eq "link" $c.Cmpnt.Type}-}
         <el-table-column {-{if ne "" $show }-} v-if="{-{$show}-}" {-{end}-} {-{if ne "" $c.Style.ListWidth}-} min-width="{-{$c.Style.ListWidth}-}" {-{end}-} {-{if eq true $c.Style.HideOverflow}-} :show-overflow-tooltip="true" {-{end}-}  align="{-{$align}-}" label="{-{$c.Desc.Name}-}">
             <template #default="scope">
-                <el-link target="_blank" type="success" :href="scope.row.{-{$c.Name}-}" :title="scope.row.{-{$c.Name}-}">查看</el-link>
+                <el-link target="_blank" type="success" :href="scope.row.{-{$c.Name}-}" v-if="scope.row.{-{$c.Name}-}" :title="scope.row.{-{$c.Name}-}">查看</el-link>
             </template>
         </el-table-column>
         {-{- else if eq "tag" $c.Cmpnt.Type}-}
@@ -89,6 +89,40 @@
         </el-table-column>
         {-{- end }-}
         {-{- end }-}
+
+        <!-- 甘特图 -->
+        {-{- range $i,$c:= $table.BarOpts.GetByCmptName "list" }-}
+        {-{- $gantt := $c.GetParams "gantt"}-}
+        <el-table-column width="500" align="center" label="甘特图">
+        <template #header>
+            {-{- $ganntFields :=$table.GetColumnsByTPName $gantt}-}
+            {-{- $flen := minus (len $ganntFields)}-}
+            <gantt header :data="dataList_{-{$table.UNQ}-}"
+            :labels="[
+            {-{- range $i,$c:=$ganntFields -}-} 
+               '{-{$c.Label}-}'{-{if lt $i $flen}-},{-{end}-}
+            {-{- end}-}]"
+            :dates="[
+            {-{- range $i,$c:=$ganntFields -}-} 
+               '{-{$c.Name}-}'{-{if lt $i $flen}-},{-{end}-}
+            {-{- end}-}]"></gantt>
+        </template>
+        <template #default="scope">
+            {-{- $ganntFields :=$table.GetColumnsByTPName $gantt}-}
+            {-{- $flen := minus (len $ganntFields)}-}
+            <gantt :data="dataList_{-{$table.UNQ}-}" :row="scope.row.__raw"
+            :labels="[
+            {-{- range $i,$c:= $ganntFields -}-} 
+               '{-{$c.Label}-}'{-{if lt $i $flen}-},{-{end}-}
+            {-{- end}-}]"
+            :dates="[
+            {-{- range $i,$c:=$ganntFields -}-} 
+               '{-{$c.Name}-}'{-{if lt $i $flen}-},{-{end}-}
+            {-{- end}-}]"></gantt>
+        </template>
+        </el-table-column>
+        {-{- end}-}
+
         {-{- template "opts.tmpl.html" $xtable}-}
     </el-table>
     <el-pagination :currentPage="form_{-{$table.UNQ}-}.pi" :page-size="form_{-{$table.UNQ}-}.ps"

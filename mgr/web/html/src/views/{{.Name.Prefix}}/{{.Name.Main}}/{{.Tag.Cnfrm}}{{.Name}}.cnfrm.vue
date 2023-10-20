@@ -10,8 +10,7 @@
       width="30%"
       draggable
       :close-on-click-modal="false"
-      :before-close="hide_{-{$m.UNQ}-}"
-    >
+      :before-close="hide_{-{$m.UNQ}-}">
     {-{- $label:= $m.GetParam "label" ""}-}
       <span 
         >确认{-{$m.Label}-}{-{$label}-}吗?</span
@@ -43,7 +42,7 @@ export default {
      {-{- if eq "CNFRM" $m.Tag }-}
       //{-{$m.Label}-} form by  [{-{$m.RwName}-}]
       form_{-{$m.UNQ}-}:{
-       {-{- $cols:=  $table.GetColumnsByName $m.RwName }-}
+       {-{- $cols:=  $table.GetColumnsByTPName $m.RwName }-}
         {-{- range $i,$c:=$cols }-} 
         {-{$c.Name}-}:"",
         {-{- end}-}

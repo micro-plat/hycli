@@ -64,7 +64,7 @@
       {-{- else if eq "multiselect" $c.Cmpnt.Type}-}
       <!--{-{$c.Label}-} 多选控件 -->
       <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-        <el-select style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{.Name}-}" clearable multiple {-{if ne $span 24}-} collapse-tags {-{end}-}
+        <el-select style="width: 100%"   v-model="{-{$c.Ext.FormName}-}.{-{.Name}-}" clearable multiple {-{if ne $span 24}-} collapse-tags {-{end}-}
         collapse-tags-tooltip
           placeholder="请选择{-{.Desc.Raw}-}">
           <el-option v-for="item in {-{.Name}-}List" :key="item.value" :label="item.name" :value="item.value" />
@@ -128,8 +128,8 @@
       </el-form-item>
       {-{- else if  (eq "radio" $c.Cmpnt.Type)}-}
      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-      <el-radio-group v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}"  
-      {-{if gt (len ( $ucols.GetColumnsByColumName $c.Name)) 0}-} @change="onChange_{-{$c.Name}-}"  {-{end}-}  >
+      <el-radio-group v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}"
+      {-{if gt ( len ($ucols.GetColumnsByTriggerChangeEvent $c.Name)) 0}-} @change="onChange_{-{$c.Name}-}"{-{end}-}  >
         <el-radio-button v-for="item in {-{$c.Name}-}List" :key="item.value" :label="item.value" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}>
             {{item.name}}
         </el-radio-button>
@@ -144,7 +144,7 @@
      {-{- else if eq true $c.Enum.IsEnum}-}
      <!--{-{$c.Label}-} 下拉控件 -->
      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-       <el-select  {-{if gt (len ( $ucols.GetColumnsByColumName $c.Name)) 0}-} @change="onChange_{-{$c.Name}-}"  {-{end}-} v-model="{-{$c.Ext.FormName}-}.{-{.Name}-}" style="width: 100%" filterable clearable
+       <el-select  {-{if gt ( len ($ucols.GetColumnsByTriggerChangeEvent $c.Name)) 0}-} @change="onChange_{-{$c.Name}-}({-{$c.Ext.FormName}-}.{-{.Name}-},'{-{$c.Enum.EnumType}-}')"{-{end}-} v-model="{-{$c.Ext.FormName}-}.{-{.Name}-}" style="width: 100%" filterable clearable
          placeholder="请选择{-{.Desc.Raw}-}" {-{ if eq "readonly" $c.Cmpnt.Type}-}disabled {-{end}-}>
          <el-option v-for="item in {-{.Name}-}List" :key="item.value" :label="item.name" :value="item.value" />
        </el-select>

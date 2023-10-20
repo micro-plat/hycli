@@ -46,11 +46,11 @@ func (tx Columns) GetColumsByCmpnt(cmpnt string, tps ...string) []*Column {
 	return getCmpnt(tx, cmpnt, tps...)
 }
 func (tx *Table) JoinNames(tp string, required bool, start string, end ...string) string {
-	colums := tx.GetColumnsByName(tp)
+	colums := tx.GetColumnsByTPName(tp)
 	return colums.JoinNames(tp, required, start, end...)
 }
 func (tx *TTable) JoinNames(tp string, required bool, start string, end ...string) string {
-	colums := tx.GetColumnsByName(tp)
+	colums := tx.GetColumnsByTPName(tp)
 	return colums.JoinNames(tp, required, start, end...)
 }
 
@@ -73,23 +73,31 @@ func getCmpnt(tx interface{}, cmpnt string, tps ...string) []*Column {
 	return cols
 }
 
-func (tx *Table) GetColumnsByName(tp string, formName ...string) Columns {
-	return getColumnsByName(tx, tp, false, false, formName...)
+func (tx *Table) GetColumnsByTPName(tp string, formName ...string) Columns {
+	return getColumnsByTPName(tx, tp, false, false, formName...)
 }
-func (tx *TTable) GetColumnsByName(tp string, formName ...string) Columns {
-	return getColumnsByName(tx, tp, false, false, formName...)
+func (tx *Table) GetColumnsByName(colName string) *Column {
+	for _, c := range tx.Columns {
+		if strings.EqualFold(c.Name, colName) {
+			return c
+		}
+	}
+	return &Column{}
+}
+func (tx *TTable) GetColumnsByTPName(tp string, formName ...string) Columns {
+	return getColumnsByTPName(tx, tp, false, false, formName...)
 }
 func (tx *Table) GetRequiredColumnsByName(tp string, formName ...string) Columns {
-	return getColumnsByName(tx, tp, true, false, formName...)
+	return getColumnsByTPName(tx, tp, true, false, formName...)
 }
 func (tx *TTable) GetRequiredColumnsByName(tp string, formName ...string) Columns {
-	return getColumnsByName(tx, tp, true, false, formName...)
+	return getColumnsByTPName(tx, tp, true, false, formName...)
 }
 func (tx *Table) GetValidColumnsByName(tp string, formName ...string) Columns {
-	return getColumnsByName(tx, tp, false, true, formName...)
+	return getColumnsByTPName(tx, tp, false, true, formName...)
 }
 
-func getColumnsByName(tx interface{}, tp string, required bool, excludedField bool, formName ...string) Columns {
+func getColumnsByTPName(tx interface{}, tp string, required bool, excludedField bool, formName ...string) Columns {
 	colums := getColumns(tx)
 
 	cols := make(Columns, 0, 1)
@@ -108,25 +116,6 @@ func getColumnsByName(tx interface{}, tp string, required bool, excludedField bo
 		}
 	}
 	sort.Sort(cols)
-	return cols
-}
-
-func (tx *Table) GetColumnsByColumName(colName string) []*Column {
-	return getColumnsByColumName(tx.Columns, colName)
-}
-func (tx *TTable) GetColumnsByColumName(colName string) []*Column {
-	return getColumnsByColumName(tx.Columns, colName)
-}
-func getColumnsByColumName(columns Columns, colName string) []*Column {
-	cols := make(Columns, 0, 1)
-	for _, r := range columns {
-		if r.Enum.AssctColumn == "" {
-			continue
-		}
-		if strings.EqualFold(r.Enum.AssctColumn, colName) {
-			cols = append(cols, r)
-		}
-	}
 	return cols
 }
 

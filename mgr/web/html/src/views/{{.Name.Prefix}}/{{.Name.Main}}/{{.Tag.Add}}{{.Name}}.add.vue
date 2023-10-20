@@ -1,6 +1,6 @@
 {-{- $table := .}-}
-{-{- $cColumns :=  $table.GetColumnsByName "C"}-}
-{-{- $acColumns :=  $table.GetColumnsByName "C-BC"}-}
+{-{- $cColumns :=  $table.GetColumnsByTPName "C"}-}
+{-{- $acColumns :=  $table.GetColumnsByTPName "C-BC"}-}
 {-{- $enumColumns :=$table.EnumColumns}-}
 
 <template tag="{-{.Marker}-}">
@@ -66,9 +66,9 @@ export default {
       {-{- end}-}
       {-{- end}-}
 
-      {-{- range $i,$c:= $cColumns }-}
-      {-{- if and (gt (len ( $cColumns.GetColumnsByColumName $c.Name)) 0) (eq true ( $c.HasConst "rp"))}-} 
-      this.onChange_{-{$c.Name}-}(this.$route.params["{-{$c.Name}-}"]||this.form["{-{$c.Name}-}"])
+      {-{- range $j,$x:=$cColumns}-}
+      {-{- range $i,$c:= $cColumns.GetColumnsByTriggerChangeEvent $x.Name}-}
+      this.onChange_{-{$x.Name}-}(this.$route.params["{-{$x.Name}-}"]||this.form["{-{$x.Name}-}"],"{-{$x.Enum.EnumType}-}")
       {-{- end}-} 
       {-{- end}-}
     },
@@ -141,20 +141,31 @@ export default {
       {-{- end }-}
       {-{- end}-}
     },
-    {-{- range $i,$c:= $cColumns }-}
-    {-{- $aColumns :=  $cColumns.GetColumnsByColumName $c.Name }-}
-    {-{- if gt (len $aColumns) 0}-} 
-    onChange_{-{$c.Name}-}(val){
-      {-{- range $j,$x:= $aColumns  }-}
-      this.{-{$x.Name}-}List = this.$theia.enum.get("{-{$x.Enum.EnumType}-}",val)
-      this.form.{-{$x.Name}-} = null
+    {-{- range $j,$x:=$cColumns}-}
+    {-{- $ctriger := $cColumns.GetColumnsByTriggerChangeEvent $x.Name}-}
+     {-{- if gt (len $ctriger) 0}-}
+    onChange_{-{$x.Name}-}(val,tp){
+      {-{- range $i,$c:= $ctriger}-}
+      {-{- if eq true ($c.IsAssctColumn $x.Name)}-}
+      this.{-{$c.Name}-}List = this.$theia.enum.get("{-{$c.Enum.EnumType}-}",val)
+      this.form.{-{$c.Name}-} = null
       {-{- end}-}
-
+     
+      {-{- end}-}
       //添加联动
-     {-{- range $i,$c:= $table.GetColumnsByName("@change")}-} 
-        
-
-     {-{- end}-}
+      {-{- $p := $x.GetParams "@change"}-}
+      {-{- if gt (len $p) 0}-}
+      let that = this
+      if(tp){
+        let lst= this.$theia.enum.get(tp)
+        lst.forEach(el => {
+          if(el.value == val)
+          {-{- range $i,$c:= $p}-}
+          that.form.{-{$i}-} = that.form.{-{$i}-}?that.form.{-{$i}-}:el.{-{$c}-}
+          {-{- end}-}
+        });
+      }
+      {-{- end}-}
 
     },
     {-{- end}-}

@@ -12,7 +12,7 @@
       draggable
       :before-close="hide_{-{$m.UNQ}-}"
     >
-      {-{- $rows:=  $table.GetColumnsByName $m.RwName (f_string_contact "form_" $m.UNQ)}-}
+      {-{- $rows:=  $table.GetColumnsByTPName $m.RwName (f_string_contact "form_" $m.UNQ)}-}
       <el-form
         :model="form_{-{$m.UNQ}-}"
         
@@ -47,7 +47,7 @@ export default {
   {-{- range $x,$m:=$optCols }-}
      {-{- if eq "DIALOG" $m.Tag}-}
       //{-{$m.Label}-} form by  {-{$m.RwName}-}
-      {-{- $rows:=  $table.GetColumnsByName $m.RwName }-}
+      {-{- $rows:=  $table.GetColumnsByTPName $m.RwName }-}
         {-{- range $i,$c:=$rows }-} 
         {-{- if or (eq true $c.Enum.IsEnum) (eq true (f_string_start $c.Cmpnt.Type "multi"))}-}
     {-{.Name}-}List:this.$theia.enum.get("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}","{-{$c.Enum.Group}-}"),
@@ -61,7 +61,7 @@ export default {
     {-{- range $x,$m:=$optCols }-}
     {-{- if eq "DIALOG" $m.Tag}-}
     rules_{-{$m.UNQ}-}:{
-        {-{- $rows:=  $table.GetColumnsByName $m.RwName }-}
+        {-{- $rows:=  $table.GetColumnsByTPName $m.RwName }-}
          {-{- range $i,$c:=$rows}-} 
           {-{$c.Name}-}:[{required:{-{$c.Field.Required}-}, message:"请输入{-{$c.Label}-}", trigger: 'blur'}],
           {-{- end}-}
@@ -80,7 +80,7 @@ export default {
         {-{- $tbs := $table.Contact $ct }-}
         {-{- $ctable := $tbs.Current }-}
         {-{- $mtable := $tbs.Main }-}
-        {-{- $MLLERows:=  $mtable.GetColumnsByName "l-le"}-}
+        {-{- $MLLERows:=  $mtable.GetColumnsByTPName "l-le"}-}
           
         //处理关联表{-{$m.URL}-}
         let currentForm = {}
@@ -109,7 +109,7 @@ export default {
                 return
             }
         let post_form_{-{$m.UNQ}-} = this.form_{-{$m.UNQ}-}
-        {-{- $rows:=  $table.GetColumnsByName $m.RwName (f_string_contact "form_" $m.UNQ)}-}
+        {-{- $rows:=  $table.GetColumnsByTPName $m.RwName (f_string_contact "form_" $m.UNQ)}-}
         {-{range $i,$c:= $rows }-}
        
          {-{- if eq "password" $c.Cmpnt.Type  }-}

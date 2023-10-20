@@ -22,13 +22,13 @@ show_cmpnt(cmd,row){
     {-{- if and (ne "" $m.RwName) (ne "" $m.FwName)}-}
     query.{-{$m.FwName}-} = fm.{-{$m.RwName}-}|| fm.le_{-{$m.RwName}-}
     {-{- else}-}
-    {-{- $rows:=  $table.GetColumnsByName $m.RwName}-}
+    {-{- $rows:=  $table.GetColumnsByTPName $m.RwName}-}
     {-{- range $i,$c:=$rows}-} 
     query.{-{$c.Name}-} = fm.{-{$c.Name}-}|| fm.le_{-{$c.Name}-}
       {-{- end}-}
     {-{- end}-}
    
-     {-{- $rows:=  $table.GetColumnsByName ($m.GetParam "labelName" "")}-}
+     {-{- $rows:=  $table.GetColumnsByTPName ($m.GetParam "labelName" "")}-}
      {-{- range $i,$c:=$rows}-} 
      query.{-{$c.Name}-} = fm.{-{$c.Name}-}|| fm.le_{-{$c.Name}-}
      {-{- end}-}  
@@ -63,7 +63,7 @@ show_cmpnt(cmd,row){
 {-{- range $x,$m:=$linkcmpnts}-}
   goto_{-{$m.UNQ}-}(fm = {}){
     let query = {}
-    {-{- $rows:=  $table.GetColumnsByName $m.RwName}-}
+    {-{- $rows:=  $table.GetColumnsByTPName $m.RwName}-}
       {-{- range $i,$c:=$rows}-} 
     query.{-{$c.Name}-} = fm.{-{$c.Name}-}
       {-{- end}-}

@@ -103,11 +103,9 @@ func TestRelation2(t *testing.T) {
 	assert.Equal(t, "c", c)
 
 	assert.Equal(t, "name:#id;pwd:#id", md.GetParamByTag("change", "change(name:#id;pwd:#id)"))
-	columnxs := tab.GetColumnsByColumName("price")
-	assert.Equal(t, 1, len(columnxs))
+	columnxs := tab.GetColumnsByName("pricex")
 
-	assert.Equal(t, 1, tab.GetColumnsByName("@change").Len())
-	params := tab.GetColumnsByName("@change")[0].GetParams("@change")
+	params := columnxs.GetParams("@change")
 	assert.Equal(t, 2, len(params))
 	assert.Equal(t, "#id", params["name"])
 	assert.Equal(t, "#id", params["pwd"])

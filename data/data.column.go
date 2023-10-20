@@ -34,11 +34,11 @@ type BaseColumn struct {
 }
 type fieldType struct {
 	Name           string //字段原名称
-	Type           string //strin,um,decimal,date
+	Type           string //string,um,decimal,date
 	Desc           string
 	Required       bool
 	Len            int    //字段原长度
-	DLen           int    //字段第二长度
+	DLen           int    //字段第二长度g
 	DefaultValue   string //默认值
 	IsDate         bool
 	IsNumber       bool
@@ -229,6 +229,13 @@ func newColumns(r []*md.Row) Columns {
 		cs = append(cs, newColum(v))
 	}
 	return cs
+}
+func (col *Column) NeedTriggerChangeEvent(currentColName string) bool {
+	return col.Enum.AssctColumn == currentColName ||
+		md.HasConstraint(col.Constraints, "@change") && col.Name == currentColName
+}
+func (col *Column) IsAssctColumn(assctName string) bool {
+	return col.Enum.AssctColumn != col.Name && strings.EqualFold(col.Enum.AssctColumn, assctName)
 }
 
 func newColum(r *md.Row) *Column {

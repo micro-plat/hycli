@@ -1,5 +1,5 @@
 {-{- $table :=. }-}
-{-{- $vcols :=  $table.GetColumnsByName "v"}-}
+{-{- $vcols :=  $table.GetColumnsByTPName "v"}-}
 {-{- $viewOpts :=$table.ViewOpts}-}
  show(form) {
     this.conf.visible = true
@@ -63,7 +63,7 @@
     show_view_{-{$m.UNQ}-}(){
       let that = this;
       let query={}
-      {-{- $rows:=  $table.GetColumnsByName $m.RwName }-}
+      {-{- $rows:=  $table.GetColumnsByTPName $m.RwName }-}
       {-{- range $i,$c:=$rows}-} 
         query.{-{$c.Name}-} = that.view.{-{$c.Name}-}
       {-{- end}-}
@@ -77,7 +77,7 @@
  {-{- range $i,$c:= $stepOpts}-}
  getStepActive_{-{$c.UNQ}-}(view){
  
-  {-{- $steps :=   $table.GetColumnsByName $c.RwName}-}
+  {-{- $steps :=   $table.GetColumnsByTPName $c.RwName}-}
   {-{- range $j,$s:= $steps}-}
       {-{- if and (ne "" $s.Cmpnt.Format) (eq true $s.Field.IsDate)}-}
         if(!view["{-{$s.Name}-}"]|| new Date(view["{-{$s.Name}-}"]) > new Date()){

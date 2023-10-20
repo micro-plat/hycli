@@ -16,6 +16,16 @@ func (cs Columns) GetColumnsBy(name ...string) Columns {
 	}
 	return cols
 }
+func (cs Columns) GetColumnsByTriggerChangeEvent(colName string) Columns {
+	cls := make(Columns, 0, 1)
+	for _, c := range cs {
+		if c.NeedTriggerChangeEvent(colName) {
+			cls = append(cls, c)
+		}
+	}
+	return cls
+}
+
 func (c *Column) GetOpts(name string) (string, string, string) {
 	f, s, t := md.GetConsByTagIgnorecase(name, c.RawConsts...)
 	return f, s, t
@@ -54,9 +64,7 @@ func (colums Columns) JoinNames(tp string, required bool, start string, end ...s
 	}
 	return start + strings.Join(names, types.GetStringByIndex(end, 0)+start) + types.GetStringByIndex(end, 0)
 }
-func (colums Columns) GetColumnsByColumName(colName string) []*Column {
-	return getColumnsByColumName(colums, colName)
-}
+
 func (colums Columns) GetValidColumns() Columns {
 	vc := make([]*Column, 0, 1)
 	for _, v := range colums {
