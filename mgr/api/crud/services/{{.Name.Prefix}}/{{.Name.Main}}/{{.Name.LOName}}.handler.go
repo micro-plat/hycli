@@ -9,8 +9,9 @@ package {-{.Name.Main}-}
 {-{- $pklen := (len $table.PKColumns)|minus}-}
 {-{- $switchs :=  $table.GetColumsByCmpnt "switch" "l"}-}
 {-{- $slen := (len $switchs)|minus}-}
-{-{- $updator :=  $table.BarOpts.GetByCmptName "lstupdator"}-}
-{-{- $lstinsert :=  $table.BarOpts.GetByCmptName "lstinsert"}-}
+{-{- $barlst := $table.BarOpts.Merge $table.ListOpts }-}
+{-{- $updator :=  $barlst.GetByCmptName "batupdator-lstupdator"}-}
+{-{- $barinsert :=  $table.BarOpts.GetByCmptName "barinsert"}-}
 {-{- $batinserts :=  $table.BarOpts.GetByCmptName  "batinsert"}-}
 {-{- $hasStatic :=   $table.HasStaticColumn "bc-bu-bq" "#"}-}
 
@@ -96,7 +97,8 @@ func (u *{-{.Name.CName}-}Handler) PutHandle(ctx hydra.IContext) (r interface{})
 		return err
 	}
 	{-{- range $i,$v := $memberClus}-}
-	ctx.Request().SetValue("{-{$v.Name}-}",member.{-{f_string_trim $i "#"}-})
+	{-{- $name := f_string_trim $i "#"}-}
+	ctx.Request().SetValue("{-{$v.Name}-}",member.Get("{-{$name}-}"))
 	{-{- end}-}
 	{-{- end}-}
 	rx, err := hydra.C.DB().GetRegularDB().Execute(update{-{.Name.CName}-}, ctx.Request().GetMap())
@@ -138,7 +140,8 @@ func (u *{-{.Name.CName}-}Handler) PostHandle(ctx hydra.IContext) (r interface{}
 		return err
 	}
 	{-{- range $i,$v := $memberClus}-}
-	ctx.Request().SetValue("{-{$v.Name}-}",member.{-{f_string_trim $i "#"}-})
+	{-{- $name := f_string_trim $i "#"}-}
+	ctx.Request().SetValue("{-{$v.Name}-}",member.Get("{-{$name}-}"))
 	{-{- end}-}
 	{-{- end}-}
 	rx, err := hydra.C.DB().GetRegularDB().Execute(insert{-{.Name.CName}-}, ctx.Request().GetMap())
@@ -180,7 +183,8 @@ func (u *{-{.Name.CName}-}Handler) QueryHandle(ctx hydra.IContext) (r interface{
 		return err
 	}
 	{-{- range $i,$v := $memberClus}-}
-	ctx.Request().SetValue("{-{$v.Name}-}",member.{-{f_string_trim $i "#"}-})
+	{-{- $name := f_string_trim $i "#"}-}
+	ctx.Request().SetValue("{-{$v.Name}-}",types.GetString(ctx.Request().GetValue("{-{$v.Name}-}"),member.Get("{-{$name}-}")))
 	{-{- end}-}
 	{-{- end}-}
 	{-{- if eq "" $treeNode}-}
@@ -399,8 +403,8 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 {-{- end}-}
 {-{- end}-}
 
-{-{- if gt (len $lstinsert) 0}-}
-{-{- range $i,$c := $lstinsert}-}
+{-{- if gt (len $barinsert) 0}-}
+{-{- range $i,$c := $barinsert}-}
 //{-{$c.ReqURL|f_string_2cname}-}Handle  保存{-{.Desc}-}数据
 func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(ctx hydra.IContext) (r interface{}) {
 
@@ -425,10 +429,11 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 		return err
 	}
 	{-{- range $i,$v := $memberClus}-}
-	ctx.Request().SetValue("{-{$v.Name}-}",member.{-{f_string_trim $i "#"}-})
+	{-{- $name := f_string_trim $i "#"}-}
+	ctx.Request().SetValue("{-{$v.Name}-}",member.Get("{-{$name}-}"))
 	{-{- end}-}
 	{-{- end}-}
-	rx, err := hydra.C.DB().GetRegularDB().Execute(lstinsert{-{$c.ReqURL|f_string_2cname}-}{-{$table.Name.CName}-}, ctx.Request().GetMap())
+	rx, err := hydra.C.DB().GetRegularDB().Execute(barinsert{-{$c.ReqURL|f_string_2cname}-}{-{$table.Name.CName}-}, ctx.Request().GetMap())
 	if err != nil{
 		if strings.Contains(err.Error(),"Error 1062"){
 			return errs.NewErrorf(909, "数据重复，请修改后提交")

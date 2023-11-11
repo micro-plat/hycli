@@ -63,6 +63,12 @@ func TestSelect4(t *testing.T) {
 	assert.Equal(t, "fabc", f)
 	assert.Equal(t, "*", group)
 }
+func TestSelect5(t *testing.T) {
+	s, f, group := GetSelectName("status", "sl(bool,-,*)")
+	assert.Equal(t, "bool", s)
+	assert.Equal(t, "-", f)
+	assert.Equal(t, "*", group)
+}
 func TestHasConstraint(t *testing.T) {
 	b := HasConstraint([]string{"f"}, "f")
 	assert.Equal(t, true, b)

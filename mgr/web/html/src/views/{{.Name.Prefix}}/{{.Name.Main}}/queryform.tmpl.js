@@ -18,9 +18,15 @@
         {-{- end}-}
         },
     {-{- range $i,$c :=  $table.GetColumnsByTPName "q-l-le" }-}
-    {-{- if or (eq true $c.Enum.IsEnum) (eq true (f_string_start $c.Cmpnt.Type "multi"))}-}
-    {-{.Name}-}List:this.$theia.enum.get("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}","{-{$c.Enum.Group}-}"),
-    {-{.Name}-}Exts:this.$theia.enum.getExts("{-{$c.Enum.EnumType}-}"),
+    {-{- if eq true $c.Enum.IsEnum }-}
+        {-{- if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
+        {-{.Name}-}Exts:this.$theia.enum.getExts("{-{$c.Enum.EnumType}-}"),
+        {-{- end}-}
+        {-{- if eq true (f_string_start $c.Cmpnt.Type "ddmenu")}-}
+        {-{.Name}-}List:this.$theia.enum.getTree("{-{$c.Enum.EnumType}-}","{-{$c.Enum.EnumType}-}","{-{$c.Enum.Group}-}"),
+       {-{- else}-}
+       {-{.Name}-}List:this.$theia.enum.get("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}","{-{$c.Enum.Group}-}"),
+        {-{- end}-}
     {-{- if and (eq "tabs" $c.Cmpnt.Type) (ne "" $c.Cmpnt.Format)}-}
     {-{.Name}-}TabList:this.$theia.enum.get("{-{$c.Cmpnt.Format}-}"),
     {-{- end}-}

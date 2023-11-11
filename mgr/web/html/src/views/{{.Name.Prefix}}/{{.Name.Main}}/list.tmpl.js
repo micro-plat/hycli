@@ -62,6 +62,10 @@
     {-{- end}-}
    
     //发送查询请求
+   
+    if(this.conf.loading){
+      return
+    }
     let that = this
     that.conf.loading = true
     
@@ -96,7 +100,11 @@
       item.__raw = Object.assign({}, item)
       {-{- range $i,$c := $LLERows}-}
     {-{- if eq true $c.Enum.IsEnum}-}
+    {-{- if eq "tree" $c.Cmpnt.Type}-}
+    item.{-{$c.Name}-}_label = that.$theia.enum.getTreeNames("{-{$c.Enum.EnumType}-}",item.{-{$c.Name}-})
+    {-{- else }-}
     item.{-{$c.Name}-}_label = that.$theia.enum.getNames("{-{$c.Enum.EnumType}-}",item.{-{$c.Name}-})
+   {-{- end}-}
       {-{- end}-}
       {-{- if eq "switch" $c.Cmpnt.Type}-}
     item.{-{$c.Name}-}_switch = item.{-{$c.Name}-} == 0
@@ -264,3 +272,4 @@
         const property = column['property']
         return row[property] === value
      },
+    

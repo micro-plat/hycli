@@ -86,7 +86,8 @@
       </el-form-item>
       {-{- else if  (eq "tree" $c.Cmpnt.Type)}-}
       <el-form-item  label="{-{$c.Label}-}" label-width="100px" label-position="right">
-       <el-tree ref="tree_{-{$c.UNQ}-}" style="width: 100%;height:300px;overflow:auto"
+        {-{- $empt:=""}-}
+       <el-tree ref="tree_{-{$c.UNQ}-}" style="width: 100%; {-{if eq  $c.Cmpnt.Format $empt}-} height:100px;{-{else}-} height:{-{$c.Cmpnt.Format}-}px;{-{end}-} overflow:auto"
        show-checkbox
        node-key="id"
        default-expand-all
@@ -94,6 +95,27 @@
        :props="{children: 'children', label: 'name'}"
      />
      </el-form-item>
+     {-{- else if  (eq "cascader" $c.Cmpnt.Type)}-}
+     <el-form-item  label="{-{$c.Label}-}" label-width="100px" label-position="right">
+       {-{- $empt:=""}-}
+       {-{- $Format := $c.Cmpnt.Format}-}
+       {-{- $multiple :=""}-}
+       {-{- if eq "multiple" $Format }-}
+       {-{- $multiple = "multiple:true,"}-}
+       {-{- else}-}
+       {-{- $multiple = "checkStrictly:true,"}-}
+       {-{- end}-}
+      <el-cascader ref="cascader_{-{$c.UNQ}-}" style="width: 100%;"
+      v-model="{-{$c.Ext.FormName}-}.{-{ $c.Name }-}" 
+      placeholder="请选择{-{$c.Desc.Raw}-}"
+      collapse-tags
+      collapse-tags-tooltip
+      clearable
+      :options="{-{.Name}-}List"
+      :props="{ {-{$multiple}-} children: 'children', label: 'name' }"
+    />
+    </el-form-item>
+
       {-{- else if eq "slider" $c.Cmpnt.Type}-}
       <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
         <el-slider  show-input {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}
@@ -182,6 +204,11 @@
           :rows="{-{$c.Style.Rows}-}" {-{if gt $c.Field.Len 33}-} type="textarea" show-word-limit {-{end}-}
           placeholder="请输入{-{$c.Desc.Raw}-}" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}/>
           <template #prepend>Https://</template>
+      </el-form-item>
+      {-{- else if (eq "rtext" $c.Cmpnt.Type )}-}
+      <!--{-{$c.Label}-} 输入控件 -->
+      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
+        <rtext :html="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" @onChange="onRtext{-{$c.Name}-}Change"></rtext>
       </el-form-item>
       {-{- else}-}
       <!--{-{$c.Label}-} 输入控件 -->

@@ -7,11 +7,7 @@
   <el-dialog
     v-model="conf.visible"
     title="添加 {-{.Desc}-}"
-    {-{- if gt (len $cColumns) 14}-}
-    width="70%"
-    {-{- else }-}
-    width="60%"
-  {-{- end  }-}
+   :width="conf.width"
     draggable
     :close-on-click-modal="false"
     :before-close="hide"
@@ -29,11 +25,24 @@
 </template>
 
 <script>
+import rtext from "@/views/cmpnts/rtext.vue"
 export default {
+  components: {
+    rtext
+},
   data() {
     return {
       conf: {
         visible: false,
+        {-{- if gt (len $cColumns) 14}-}
+        width:"70%",
+        {-{- else }-}
+        {-{- $width:= "60%"}-}
+        {-{- range $i,$c:= $table.BarOpts.GetByTag "ADD" }-}
+        {-{- $width = $c.GetParam "width" "60%" }-}
+        {-{- end}-}
+        width:"{-{$width}-}",
+      {-{- end  }-}
         uploadPath:this.$theia.env.join("/file/upload"),
       },
     {-{- template "add.tmpl.js" $cColumns }-}
@@ -92,7 +101,14 @@ export default {
         postForm.{-{$c.Name}-} = this.$theia.crypto.md5(this.form.{-{$c.Name}-})
         {-{- else if eq "tree" $c.Cmpnt.Type  }-}
         postForm.{-{$c.Name}-} = this.$refs.tree_{-{$c.UNQ}-}.getCheckedKeys().join(",")
-        {-{- else if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
+        {-{- else if eq "cascader" $c.Cmpnt.Type  }-}
+        let {-{$c.Name}-} = []
+        let {-{$c.Name}-}Nodes = this.$refs.cascader_{-{$c.UNQ}-}.getCheckedNodes() || []
+        {-{$c.Name}-}Nodes.forEach(v => {
+          {-{$c.Name}-}.push(v.value)
+        })
+        postForm.{-{$c.Name}-} = {-{$c.Name}-}.join(",")
+       {-{- else if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
         postForm.{-{$c.Name}-} = (postForm.{-{$c.Name}-}||[]).join(",")
         {-{- end }-}
         {-{- end}-}
@@ -130,6 +146,13 @@ export default {
       this.conf.visible = false;
       this.$refs.form.resetFields();
     },
+    {-{- range $i,$c:= $cColumns }-}
+    {-{-  if (eq "rtext" $c.Cmpnt.Type )}-}
+    onRtext{-{$c.Name}-}Change(text){
+      this.{-{$c.Ext.FormName}-}.{-{$c.Name}-} = text
+    },
+    {-{- end}-}
+    {-{- end}-}
     onUploadSuccess(response){
       {-{- range $i,$c:= $cColumns }-}
       {-{- if eq "file" $c.Cmpnt.Type  }-}

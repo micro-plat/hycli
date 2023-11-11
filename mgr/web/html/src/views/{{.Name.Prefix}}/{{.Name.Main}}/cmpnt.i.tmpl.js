@@ -11,3 +11,12 @@ import {-{$m.UNQ}-} from "{-{f_string_translate $m.URL (f_table_find_by_name $m.
 import gantt from "@/views/cmpnts/gantt.vue"
 {-{- end}-}
 {-{- end}-}
+
+{-{- $qcols :=  $table.GetColumnsByTPName "q"}-}
+{-{- range $i,$c:= $qcols}-}
+{-{- if and (eq "ddmenu" $c.Cmpnt.Type) (eq true $c.Enum.IsEnum)}-}
+import ddmenu from "@/views/cmpnts/ddMenu.vue"
+{-{- end  }-}
+{-{- end  }-}
+
+

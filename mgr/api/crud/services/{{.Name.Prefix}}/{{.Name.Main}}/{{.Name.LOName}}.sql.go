@@ -147,7 +147,8 @@ where
 {-{- end}-}`
 {-{- end}-}
 
-{-{- $updator :=  $table.BarOpts.GetByCmptName  "lstupdator"}-}
+{-{- $barlst := $table.BarOpts.Merge $table.ListOpts }-}
+{-{- $updator :=  $barlst.GetByCmptName "batupdator-lstupdator"}-}
 {-{- if gt (len $updator) 0}-}
 {-{- range $i,$c := $updator}-}
 
@@ -171,14 +172,14 @@ where 1 = 1
 {-{- end}-}
 {-{- end}-}
 
-{-{- $lstinsert :=  $table.BarOpts.GetByCmptName  "lstinsert"}-}
-{-{- if gt (len $lstinsert) 0}-}
-{-{- range $i,$c := $lstinsert}-}
+{-{- $barinsert :=  $table.BarOpts.GetByCmptName  "barinsert"}-}
+{-{- if gt (len $barinsert) 0}-}
+{-{- range $i,$c := $barinsert}-}
 {-{- $fds := f_string_contact $c.RwName "-" (f_string_contact "b" $c.RwName)}-}
 {-{- $colums:=$table.GetValidColumnsByName $fds}-}
 {-{- $clen :=minus (len $colums)}-}
-// lstinsert{-{$table.Name.CName}-} 保存{-{.Desc}-}数据
-const lstinsert{-{$c.ReqURL|f_string_2cname}-}{-{$table.Name.CName}-} = `
+// barinsert{-{$table.Name.CName}-} 保存{-{.Desc}-}数据
+const barinsert{-{$c.ReqURL|f_string_2cname}-}{-{$table.Name.CName}-} = `
 insert into {-{$table.Name.Raw}-}
 (
 	{-{- range $i,$v :=  $colums}-}

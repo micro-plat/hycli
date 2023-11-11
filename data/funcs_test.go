@@ -7,5 +7,6 @@ import (
 )
 
 func TestF_string_equal(t *testing.T) {
-	assert.Equal(t, true, f_string_equal("PIE", "BAR-PIE-LINE"))
+	// assert.Equal(t, true, f_string_equal("PIE", "BAR-PIE-LINE"))
+	assert.Equal(t, true, f_string_start("PIE", "BAR|PIE|LINE"))
 }

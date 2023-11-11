@@ -10,4 +10,11 @@ components: {
     gantt,
     {-{- end}-}
     {-{- end}-}
+
+    {-{- $qcols :=  $table.GetColumnsByTPName "q"}-}
+    {-{- range $i,$c:= $qcols}-}
+    {-{- if and (eq "ddmenu" $c.Cmpnt.Type) (eq true $c.Enum.IsEnum)}-}
+     ddmenu,
+    {-{- end  }-}
+    {-{- end  }-}
 },

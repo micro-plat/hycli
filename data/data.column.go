@@ -196,6 +196,9 @@ type enumType struct {
 
 func createEnumType(r *md.Row) enumType {
 	tp, pid, group := md.GetSelectName(r.Name, r.Constraints...)
+	if pid == "-" {
+		pid = ""
+	}
 
 	return enumType{
 		IsEnum:      md.HasConstraint(r.Constraints, "sl", "SL"),

@@ -16,6 +16,7 @@ var Funcs = map[string]interface{}{
 	"f_string_translate": f_string_translate,
 	"f_string_trim":      f_string_trim,
 	"f_string_equal":     f_string_equal,
+	"f_string_get":       f_string_get,
 
 	"f_mysql_get_type":      f_mysql_get_type,
 	"f_mysql_get_def_value": f_mysql_get_def_value,
@@ -24,6 +25,7 @@ var Funcs = map[string]interface{}{
 	"f_num_spare":    f_num_spare,
 	"f_num_divide":   f_num_divide,
 	"f_num_multiply": f_num_multiply,
+	"f_num_get":      f_num_get,
 
 	"f_table_cache":        f_table_cache,
 	"f_table_first":        f_table_first,
@@ -66,11 +68,23 @@ func f_colum_idx(ts []*Column, i int, d *Column) *Column {
 	}
 	return d
 }
-func f_string_start(p string, s string) bool {
-	return strings.HasPrefix(p, s)
+func f_string_start(p string, sx string) bool {
+	lst := strings.Split(sx, "|")
+	for _, v := range lst {
+		if strings.HasPrefix(p, v) {
+			return true
+		}
+	}
+	return false
+}
+func f_num_get(p string, v int) int {
+	return types.GetInt(p, v)
 }
 func f_string_contains(p string, s string) bool {
 	return strings.Contains(p, s)
+}
+func f_string_get(p string, s interface{}) string {
+	return types.GetString(p, types.GetString(s))
 }
 func f_string_trim(p string, s string) string {
 	return strings.Trim(p, s)

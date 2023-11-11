@@ -4,11 +4,12 @@
   <div>
     {-{- range $x,$m:=$optCols }-}
     {-{- if eq "DIALOG" $m.Tag }-}
+    {-{- $width:= $m.GetParam "width" "60%" }-}
     <el-dialog
       v-model="conf.{-{$m.UNQ}-}_visible"
       title="{-{.Label}-}"
       :close-on-click-modal="false"
-      width="60%"
+      width="{-{$width}-}"
       draggable
       :before-close="hide_{-{$m.UNQ}-}"
     >
@@ -49,8 +50,11 @@ export default {
       //{-{$m.Label}-} form by  {-{$m.RwName}-}
       {-{- $rows:=  $table.GetColumnsByTPName $m.RwName }-}
         {-{- range $i,$c:=$rows }-} 
-        {-{- if or (eq true $c.Enum.IsEnum) (eq true (f_string_start $c.Cmpnt.Type "multi"))}-}
-    {-{.Name}-}List:this.$theia.enum.get("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}","{-{$c.Enum.Group}-}"),
+        {-{- if and (eq true $c.Enum.IsEnum) (eq true (f_string_start $c.Cmpnt.Type "tree|cascader"))}-}
+        {-{- $deep := f_num_get ($c.GetOpt "deep") 99}-}
+        {-{.Name}-}List:this.$theia.enum.getTree("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}","{-{$c.Enum.Group}-}",{-{$deep}-}),
+        {-{- else if or (eq true $c.Enum.IsEnum) (eq true (f_string_start $c.Cmpnt.Type "multi"))}-}
+        {-{.Name}-}List:this.$theia.enum.get("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}","{-{$c.Enum.Group}-}"),
          {-{- else}-}
     {-{$c.Name}-}:"",
          {-{- end }-}
@@ -114,7 +118,18 @@ export default {
        
          {-{- if eq "password" $c.Cmpnt.Type  }-}
         post_form_{-{$m.UNQ}-}.{-{$c.Name}-} = this.$theia.crypto.md5(this.form_{-{$m.UNQ}-}.{-{$c.Name}-})
-         {-{- end }-}
+        {-{- else if eq "tree" $c.Cmpnt.Type  }-}
+        post_form_{-{$m.UNQ}-}.{-{$c.Name}-} = this.$refs.tree_{-{$c.UNQ}-}.getCheckedKeys().join(",")
+        {-{- else if eq "cascader" $c.Cmpnt.Type  }-}
+        let {-{$c.Name}-} = []
+        let {-{$c.Name}-}Nodes = this.$refs.cascader_{-{$c.UNQ}-}.getCheckedNodes() || []
+        {-{$c.Name}-}Nodes.forEach(v => {
+          {-{$c.Name}-}.push(v.value)
+        })
+        post_form_{-{$m.UNQ}-}.{-{$c.Name}-} = {-{$c.Name}-}.join(",")
+       {-{- else if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
+       post_form_{-{$m.UNQ}-}.{-{$c.Name}-} = (post_form_{-{$m.UNQ}-}.{-{$c.Name}-}||[]).join(",")
+        {-{- end }-}
           {-{end}-}
         this.$theia.http.post("/{-{$table.Name.MainPath|lower}-}/{-{f_string_translate $m.ReqURL (f_table_find_by_name $m.Table)}-}",post_form_{-{$m.UNQ}-}).then(res=>{
             that.$notify.success({title: '成功',message: '提交成功',duration:5000})

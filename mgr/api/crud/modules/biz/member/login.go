@@ -49,7 +49,7 @@ func Login(userName string, pwd string, ident string) (*MemberState, error) {
 	if userInfo.GetInt(field.SystemStatus, -1) != enum.Normal {
 		return nil, errs.NewError(enum.ErrSystemLocked, "系统已锁定暂时无法登录")
 	}
-	m := &MemberState{}
+	m := &MemberState{Raw: userInfo.ToMap()}
 	err = userInfo.ToAnyStruct(m)
 	if err != nil {
 		return nil, errs.NewErrorf(enum.ErrSystemBusy, "系统繁忙无法登录%w", err)

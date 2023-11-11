@@ -93,11 +93,12 @@
         <!-- 甘特图 -->
         {-{- range $i,$c:= $table.BarOpts.GetByCmptName "list" }-}
         {-{- $gantt := $c.GetParams "gantt"}-}
-        <el-table-column width="500" align="center" label="甘特图">
+        {-{- $ganttNoCount := $c.GetParams "ganttNoCount"}-}
+        <el-table-column :width="{-{f_string_get $ganttNoCount 20}-}*20+20" align="center" label="甘特图">
         <template #header>
             {-{- $ganntFields :=$table.GetColumnsByTPName $gantt}-}
             {-{- $flen := minus (len $ganntFields)}-}
-            <gantt header :data="dataList_{-{$table.UNQ}-}"
+            <gantt header :maxNo="{-{f_string_get $ganttNoCount 20}-}" @selectChange="ganttChange" :data="dataList_{-{$table.UNQ}-}"
             :labels="[
             {-{- range $i,$c:=$ganntFields -}-} 
                '{-{$c.Label}-}'{-{if lt $i $flen}-},{-{end}-}
@@ -110,7 +111,7 @@
         <template #default="scope">
             {-{- $ganntFields :=$table.GetColumnsByTPName $gantt}-}
             {-{- $flen := minus (len $ganntFields)}-}
-            <gantt :data="dataList_{-{$table.UNQ}-}" :row="scope.row.__raw"
+            <gantt :maxNo="{-{f_string_get $ganttNoCount 20}-}" :ganttIdx="ganttIdx" :data="dataList_{-{$table.UNQ}-}" :row="scope.row.__raw"
             :labels="[
             {-{- range $i,$c:= $ganntFields -}-} 
                '{-{$c.Label}-}'{-{if lt $i $flen}-},{-{end}-}

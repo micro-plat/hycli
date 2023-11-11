@@ -20,8 +20,9 @@
         {-{- end}-}
         },
         {-{- range $i,$c := $ccols}-}
-        {-{- if and (eq true $c.Enum.IsEnum) (eq true (f_string_start $c.Cmpnt.Type "tree"))}-}
-        {-{.Name}-}List:this.$theia.enum.getTree("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}","{-{$c.Enum.Group}-}"),
+        {-{- if and (eq true $c.Enum.IsEnum) (eq true (f_string_start $c.Cmpnt.Type "tree|cascader"))}-}
+        {-{- $deep := f_num_get ($c.GetOpt "deep") 99}-}
+        {-{.Name}-}List:this.$theia.enum.getTree("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}","{-{$c.Enum.Group}-}",{-{$deep}-}),
         {-{- else if or (eq true $c.Enum.IsEnum) (eq true (f_string_start $c.Cmpnt.Type "multi"))}-}
         {-{.Name}-}List:this.$theia.enum.get("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}","{-{$c.Enum.Group}-}"),
         {-{- end}-}

@@ -6,11 +6,7 @@
   <el-dialog
     v-model="conf.visible"
     title="修改 {-{.Desc}-}"
-    {-{- if gt (len $ucols) 14}-}
-    width="70%"
-    {-{- else }-}
-    width="60%"
-  {-{- end  }-}
+    :width="conf.width"
     draggable
     :close-on-click-modal="false"
     :before-close="hide"
@@ -28,11 +24,24 @@
 </template>
 
 <script>
+import rtext from "@/views/cmpnts/rtext.vue"
 export default {
+  components: {
+    rtext
+},
   data() {
     return {
       conf: {
         visible: false,
+        {-{- if gt (len $ucols) 14}-}
+        width:"70%",
+        {-{- else }-}
+        {-{- $width:= "60%"}-}
+        {-{- range $i,$c:= $table.BarOpts.GetByTag "ADD" }-}
+        {-{- $width = $c.GetParam "width" "60%" }-}
+        {-{- end}-}
+        width:"{-{$width}-}",
+      {-{- end  }-}
         uploadPath:this.$theia.env.join("/file/upload"),
       },
       {-{- template "add.tmpl.js" $ucols}-}
@@ -57,6 +66,10 @@ export default {
         {-{- end}-}
         that.form = Object.assign(that.form, res)
         {-{- range $j,$x:=$ucols}-}
+        {-{- if and (eq true $x.Enum.IsEnum) (eq true (f_string_start $x.Cmpnt.Type "tree|cascader"))}-}
+        let {-{$x.Name}-} = that.form.{-{$x.Name}-}.split(",")
+        that.form.{-{$x.Name}-} = {-{$x.Name}-}
+        {-{- end}-}
       {-{- range $i,$c:= $ucols.GetColumnsByTriggerChangeEvent $x.Name}-}
       that.onChange_{-{$x.Name}-}(that.form["{-{$x.Name}-}"],"{-{$x.Enum.EnumType}-}")
       {-{- end}-} 
@@ -87,6 +100,13 @@ export default {
         postForm.{-{$c.Name}-} = this.$theia.crypto.md5(this.form.{-{$c.Name}-})
         {-{- else if eq "tree" $c.Cmpnt.Type  }-}
         postForm.{-{$c.Name}-} = this.$refs.tree_{-{$c.UNQ}-}.getCheckedKeys().join(",")
+        {-{- else if eq "cascader" $c.Cmpnt.Type  }-}
+        let {-{$c.Name}-} = []
+        let {-{$c.Name}-}Nodes = this.$refs.cascader_{-{$c.UNQ}-}.getCheckedNodes() || []
+        {-{$c.Name}-}Nodes.forEach(v => {
+          {-{$c.Name}-}.push(v.value)
+        })
+        postForm.{-{$c.Name}-} = {-{$c.Name}-}.join(",")
         {-{- else if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
         postForm.{-{$c.Name}-} = (postForm.{-{$c.Name}-}||[]).join(",")
         {-{- end }-}
@@ -121,6 +141,13 @@ export default {
       this.conf.visible = false;
       this.$refs.form.resetFields();
     },
+    {-{- range $i,$c:= $ucols }-}
+    {-{-  if (eq "rtext" $c.Cmpnt.Type )}-}
+    onRtext{-{$c.Name}-}Change(text){
+      this.{-{$c.Ext.FormName}-}.{-{$c.Name}-} = text
+    },
+    {-{- end}-}
+    {-{- end}-}
      onUploadSuccess(response){
       {-{- range $i,$c:= $ucols}-}
       {-{- if eq "file" $c.Cmpnt.Type }-}

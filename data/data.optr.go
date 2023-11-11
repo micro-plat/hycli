@@ -41,7 +41,7 @@ func (o optParams) IsBatchCheck(k string) bool {
 type optrs struct {
 	Tag       string //
 	Name      string //link,dialog,cmpnt,tab,cnfrm,form,view
-	Cmd       string // lstupdator lstbar chart
+	Cmd       string // batupdator lstbar chart
 	Label     string //修改,预览，删除
 	Desc      string //完整说明
 	ICON      string //图标
@@ -70,9 +70,9 @@ type extOptrs = optrslst
 
 var viewOptCmd = []string{"view"}
 var lstatOptCmd = []string{"lstat"}
-var lstBarOptCmd = []string{"lst"}
+var lstBarOptCmd = []string{"lst", "lstupdator"}
 var batchCheck = []string{"bcheck", "@bcheck", "&bcheck"}
-var qBarOptrCmd = []string{"export", "import", "lstbar", "lstupdator", "lstinsert", "batinsert", "list"}
+var qBarOptrCmd = []string{"export", "import", "lstbar", "batupdator", "barinsert", "batinsert", "list"}
 var charOptrCmd = []string{"chart"}
 var extCmptParam = []string{"add", "update", "view"}
 var extOptrsCmd = []string{"tskbar", "xbar"}

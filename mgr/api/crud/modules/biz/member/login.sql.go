@@ -1,8 +1,8 @@
 package member
 
 //sqlUserLogin 用户登录
-const sqlUserLogin = `
-select t.user_id,t.user_name,t.name,t.password,
+var sqlUserLogin = `
+select t.user_id,t.user_name,t.name,t.password,ri.data_authority,
 t.mobile,t.status u_status,ro.status r_status,ri.status ri_status,
 s.status s_status,s.index_url,s.login_url,s.ident,
 s.name sys_name,s.theme,ri.name role_name,

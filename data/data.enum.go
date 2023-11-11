@@ -11,6 +11,7 @@ type EnumType struct {
 	Name      string
 	Type      string
 	PID       string
+	Group     string
 	Status    string //枚举状态字段
 	Expire    string //日期过期字段
 	SortName  string //排序字段
@@ -37,6 +38,9 @@ func newEnumType(enumType string, rs []*md.Row, delColumn Columns) *EnumType {
 		}
 		if md.HasConstraint(r.Constraints, "DP", "dp") {
 			tp.PID = r.Name
+		}
+		if md.HasConstraint(r.Constraints, "DG", "dg") {
+			tp.Group = r.Name
 		}
 		if md.HasConstraint(r.Constraints, "DSN", "dsn") {
 			tp.SortName = r.Name

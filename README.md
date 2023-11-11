@@ -44,7 +44,7 @@
 | lstat(名称,url:接口地址[，样式设置])       | lstat(今日交易,url:/ots/trade/order/lstat1day,style:{span:24})        | 字典类型     |
 | chart(名称,类型:接口地址[，样式设置])      | chart(支付情况,bar:/ots/trade/order/as7d,style:{height:300px})        | 图表         |
 | lstbar(名称,类型:表名[，样式设置])         | lstbar(名称,类型:表名[，样式设置])                                    | 操作栏控件   |
-| lstupdator(名称,dialog:接口名[，样式设置]) | lstupdator(批量完成,dialog:finish,style:{@plan_id:&bcheck})           | 修改操作     |
+| batupdator(名称,dialog:接口名[，样式设置]) | batupdator(批量完成,dialog:finish,style:{@plan_id:&bcheck})           | 修改操作     |
 
 
 | 样式      | 示例                               | 适用范围    | 说明                                                         |
@@ -63,8 +63,8 @@
 *@字段名 值有四种配置方式：1. @开头，同当前this对象中取值 2. #开头，从当前this对象中取值并通过","连接拼接为支付串.3.其它 从当前传入参数中获取
 *&字段名 值有四种配置方式：1. @开头，从用户登录信息中获取 2.其它 从当前传入参数中获取
 
-* rwName，lstbar,lstupdator等批量操作时为字段的标识符，其它时候为字段名
-* fwName,lstbar,lstupdator等批量操作时为条件标识符，其它时候为字段名
+* rwName，lstbar,batupdator等批量操作时为字段的标识符，其它时候为字段名
+* fwName,lstbar,batupdator等批量操作时为条件标识符，其它时候为字段名
 
 ### 数据库
 | 指令 | 格式               | 示例                                  | 说明           |
