@@ -131,6 +131,15 @@ export default {
        post_form_{-{$m.UNQ}-}.{-{$c.Name}-} = (post_form_{-{$m.UNQ}-}.{-{$c.Name}-}||[]).join(",")
         {-{- end }-}
           {-{end}-}
+         
+
+        {-{- $fxname := f_string_contact "f" $m.RwName}-}
+        //{-{$fxname}-}
+          {-{- $memberClus :=  $table.GetStaticColumns $fxname "#"}-}
+      {-{- range $i,$v := $memberClus}-}
+      {-{- $name := f_string_trim $i "#"}-}
+      post_form_{-{$m.UNQ}-}.{-{$v.Name}-} = this.$theia.user.get("{-{$name}-}")
+      {-{- end}-}
         this.$theia.http.post("/{-{$table.Name.MainPath|lower}-}/{-{f_string_translate $m.ReqURL (f_table_find_by_name $m.Table)}-}",post_form_{-{$m.UNQ}-}).then(res=>{
             that.$notify.success({title: '成功',message: '提交成功',duration:5000})
             that.$emit("onsaved")

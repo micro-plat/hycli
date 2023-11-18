@@ -55,7 +55,7 @@ func New{-{.Name.CName}-}Handler() *{-{.Name.CName}-}Handler {
 		switchRequiredFields:[]string{ {-{- range $i,$v :=  $switchs }-}"{-{$v.Name}-}"{-{if lt $i $slen}-},{-{end}-}{-{end}-}},
 	}
 }
-{-{- $leColumns:=  $table.GetValidColumnsByName "l-le" }-}
+{-{- $leColumns:=  $table.GetValidColumnsByName "l-le-bl" }-}
 {-{- if gt (len $leColumns) 0}-}
 
 //GetHandle  查询{-{.Desc}-}数据

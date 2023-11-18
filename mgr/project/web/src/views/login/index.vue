@@ -1,11 +1,5 @@
 <template>
-  <te-login
-    :system="$theia.system"
-    :error="error"
-    mode="up"
-    ref="login"
-    @login="login"
-  ></te-login>
+  <te-login :system="$theia.system" :error="error" mode="up" ref="login" @login="login"></te-login>
 </template>
 
 <script>
@@ -38,8 +32,11 @@ export default {
         .post("/member/login", {
           user_name: u,
           password: this.$theia.crypto.md5(p),
+          "ident": "yfxt",
         })
         .then((data) => {
+          that.$theia.user.save(data)
+         
           if (that.$route.query.returnurl) {
             window.location = that.$route.query.returnurl;
             return;
@@ -64,6 +61,10 @@ export default {
           );
         });
     },
+    getUserInfo() {
+      let data = this.$theia.http.xpost("/user/info/get", {})
+      this.$theia.user.save(data)
+    }
   },
 };
 </script>

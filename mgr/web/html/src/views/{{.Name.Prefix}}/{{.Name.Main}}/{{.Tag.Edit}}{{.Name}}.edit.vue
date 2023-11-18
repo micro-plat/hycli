@@ -49,6 +49,7 @@ export default {
   methods: {
     show(form) {
       this.conf.visible = true;
+      this.loadEnums()
       this.form = Object.assign(form,this.$route.params)
       this.get(form)
     },
@@ -99,7 +100,9 @@ export default {
         {-{- if eq "password" $c.Cmpnt.Type  }-}
         postForm.{-{$c.Name}-} = this.$theia.crypto.md5(this.form.{-{$c.Name}-})
         {-{- else if eq "tree" $c.Cmpnt.Type  }-}
-        postForm.{-{$c.Name}-} = this.$refs.tree_{-{$c.UNQ}-}.getCheckedKeys().join(",")
+        let checkKeys = this.$refs.tree_{-{$c.UNQ}-}.getCheckedKeys()||[]
+        let halfKeys = this.$refs.tree_{-{$c.UNQ}-}.getHalfCheckedKeys()||[]
+        postForm.{-{$c.Name}-} = checkKeys.concat(halfKeys).join(",")
         {-{- else if eq "cascader" $c.Cmpnt.Type  }-}
         let {-{$c.Name}-} = []
         let {-{$c.Name}-}Nodes = this.$refs.cascader_{-{$c.UNQ}-}.getCheckedNodes() || []
@@ -161,7 +164,8 @@ export default {
      {-{- if gt (len $ctriger) 0}-}
     onChange_{-{$x.Name}-}(val,tp){
       {-{- range $i,$c:= $ctriger}-}
-      this.{-{$c.Name}-}List = this.$theia.enum.get("{-{$c.Enum.EnumType}-}",val)
+      {-{- $group:= f_string_trim $c.Enum.Group "#"}-}
+      this.{-{$c.Name}-}List = this.$theia.enum.get("{-{$c.Enum.EnumType}-}",val,{-{if f_string_start $c.Enum.Group "#"}-}this.$theia.user.get("{-{$group}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-})
       {-{- end}-}
       //添加联动
       {-{- $p := $x.GetParams "@change"}-}
@@ -177,10 +181,10 @@ export default {
         });
       }
       {-{- end}-}
-
     },
     {-{- end}-}
     {-{- end}-}
+    {-{- template "enum.tmpl.js" $ucols }-}
   },
 };
 </script>

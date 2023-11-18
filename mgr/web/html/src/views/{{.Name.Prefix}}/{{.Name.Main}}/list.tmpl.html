@@ -98,7 +98,7 @@
         <template #header>
             {-{- $ganntFields :=$table.GetColumnsByTPName $gantt}-}
             {-{- $flen := minus (len $ganntFields)}-}
-            <gantt header :maxNo="{-{f_string_get $ganttNoCount 20}-}" @selectChange="ganttChange" :data="dataList_{-{$table.UNQ}-}"
+            <gantt mode="header" :maxNo="{-{f_string_get $ganttNoCount 20}-}" @selectChange="ganttChange" :data="dataList_{-{$table.UNQ}-}"
             :labels="[
             {-{- range $i,$c:=$ganntFields -}-} 
                '{-{$c.Label}-}'{-{if lt $i $flen}-},{-{end}-}
@@ -111,7 +111,7 @@
         <template #default="scope">
             {-{- $ganntFields :=$table.GetColumnsByTPName $gantt}-}
             {-{- $flen := minus (len $ganntFields)}-}
-            <gantt :maxNo="{-{f_string_get $ganttNoCount 20}-}" :ganttIdx="ganttIdx" :data="dataList_{-{$table.UNQ}-}" :row="scope.row.__raw"
+            <gantt mode="line" :maxNo="{-{f_string_get $ganttNoCount 20}-}" :ganttIdx="ganttIdx" :data="dataList_{-{$table.UNQ}-}" :row="scope.row.__raw"
             :labels="[
             {-{- range $i,$c:= $ganntFields -}-} 
                '{-{$c.Label}-}'{-{if lt $i $flen}-},{-{end}-}

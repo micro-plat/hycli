@@ -66,35 +66,28 @@ data() {
 };
   },
 mounted() {
+  this.loadEnums()
   {-{- range $i,$c:= $qcols}-}
         {-{- if and (eq "ddmenu" $c.Cmpnt.Type) (eq true $c.Enum.IsEnum)}-}
         {-{- $memberClus :=  $table.GetStaticColumns "q" "#"}-}
         {-{- if gt (len $memberClus) 0}-}
         {-{- range $i,$v := $memberClus}-}
       {-{- $name := f_string_trim $i "#"}-}
-      this.form_{-{$table.UNQ}-}.{-{$c.Name}-}=this.$theia.user.get("{-{$c.Name}-}")
+  this.form_{-{$table.UNQ}-}.{-{$c.Name}-} = this.$theia.user.get("{-{$c.Name}-}")
       {-{- end}-}
        {-{- end}-}
         {-{- end}-}
     {-{- end}-}
-
-
   this.form_{-{$table.UNQ}-}.single_date_range_name = (this.multiQueryDateRange[0]||{}).value
   this.form_{-{$table.UNQ}-}.single_text_name = (this.multiQueryText[0]||{}).value
   {-{- $optRow:= $table.ListOpts.Merge $table.BarOpts}-}
   {-{- $cmpnts:=  $optRow.GetByName "CMPNT"}-}
   {-{- range $x,$m:= $cmpnts}-}
-    this.cmpnt_funcs["{-{$m.UNQ}-}"] = this.show_cmpnt_{-{$m.UNQ}-}
+  this.cmpnt_funcs["{-{$m.UNQ}-}"] = this.show_cmpnt_{-{$m.UNQ}-}
   {-{- end}-}
 
   this.form_{-{$table.UNQ}-} = Object.assign(this.form_{-{$table.UNQ}-},this.$route.params)
   this.queryData_{-{ $table.UNQ }-} ()
-      {-{- range $i, $c:=  $table.ChartOpts }-}
-  this.$refs.chart_{-{ $c.UNQ }-}.show(this.form_{-{ $table.UNQ }-})
-{-{- end }-}
-{-{- range $i, $c:=  $table.ExtOpts }-}
-  this.$refs.ext_{-{ $c.UNQ }-}.show(this.form_{-{ $table.UNQ }-})
-{-{- end }-}
 
     },
   {-{- if ne "" ( $table.JoinNames  "rp" false "")}-}
@@ -112,9 +105,8 @@ methods: {
   {-{- template "list.tmpl.js" $tbs }-}
   handleSizeChange(ps){
     this.form_{-{ $table.UNQ }-}.ps = ps
-    this.queryData_{-{ $table.UNQ }-} ()
+    this.onQuery(true)
   },
-
   {-{- range $i,$c:= $qcols}-}
         {-{- if and (eq "ddmenu" $c.Cmpnt.Type) (eq true $c.Enum.IsEnum)}-}
         {-{- $memberClus :=  $table.GetStaticColumns "q" "#"}-}
@@ -123,16 +115,16 @@ methods: {
       {-{- $name := f_string_trim $i "#"}-}
   on{-{$c.Name}-}Change(v){
     this.$theia.user.set("{-{$name}-}",v)
+    this.loadEnums()
     this.onQuery(true)
   },
-      {-{- end}-}
-       {-{- end}-}
-        {-{- end}-}
-    {-{- end}-}
-
+{-{- end}-}
+{-{- end}-}
+{-{- end}-}
+{-{- end}-}
   handleCurrentChange(pi){
     this.form_{-{ $table.UNQ }-}.pi = pi
-    this.queryData_{-{ $table.UNQ }-} ()
+    this.onQuery()
   },
   onQuery(refresh){
     if(refresh){

@@ -63,9 +63,7 @@
    
     //发送查询请求
    
-    if(this.conf.loading){
-      return
-    }
+ 
     let that = this
     that.conf.loading = true
     
@@ -93,6 +91,16 @@
         that.resetItemData_{-{$table.UNQ}-}(that,that.dataList_{-{$table.UNQ}-})
       });
     {-{- end}-}
+
+    {-{- range $i, $c:=  $table.ChartOpts }-}
+    this.$refs.chart_{-{ $c.UNQ }-}.show(this.form_{-{ $table.UNQ }-})
+  {-{- end }-}
+  {-{- range $i, $c:=  $table.ExtOpts }-}
+    this.$refs.ext_{-{ $c.UNQ }-}.show(this.form_{-{ $table.UNQ }-})
+  {-{- end }-}
+  
+
+
   },
 
   resetItemData_{-{$table.UNQ}-}(that,lst){
@@ -272,4 +280,4 @@
         const property = column['property']
         return row[property] === value
      },
-    
+ {-{- template "enum.tmpl.js" $table.GetColumnsByTPName "q-l-le" }-}

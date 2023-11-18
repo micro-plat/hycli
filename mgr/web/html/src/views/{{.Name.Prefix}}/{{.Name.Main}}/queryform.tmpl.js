@@ -20,15 +20,15 @@
     {-{- range $i,$c :=  $table.GetColumnsByTPName "q-l-le" }-}
     {-{- if eq true $c.Enum.IsEnum }-}
         {-{- if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
-        {-{.Name}-}Exts:this.$theia.enum.getExts("{-{$c.Enum.EnumType}-}"),
+        {-{.Name}-}Exts:[],
         {-{- end}-}
         {-{- if eq true (f_string_start $c.Cmpnt.Type "ddmenu")}-}
-        {-{.Name}-}List:this.$theia.enum.getTree("{-{$c.Enum.EnumType}-}","{-{$c.Enum.EnumType}-}","{-{$c.Enum.Group}-}"),
+        {-{.Name}-}List:[],
        {-{- else}-}
-       {-{.Name}-}List:this.$theia.enum.get("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}","{-{$c.Enum.Group}-}"),
+       {-{.Name}-}List:[],
         {-{- end}-}
     {-{- if and (eq "tabs" $c.Cmpnt.Type) (ne "" $c.Cmpnt.Format)}-}
-    {-{.Name}-}TabList:this.$theia.enum.get("{-{$c.Cmpnt.Format}-}"),
+    {-{.Name}-}TabList:[],
     {-{- end}-}
     {-{- end}-}
     {-{- end}-}

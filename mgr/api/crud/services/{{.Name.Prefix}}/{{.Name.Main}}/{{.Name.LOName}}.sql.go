@@ -3,7 +3,7 @@
 package {-{.Name.Main}-}
 
 {-{- $table := .}-}
-{-{- $CColumns:=  $table.GetValidColumnsByName "c-bc"}-}
+{-{- $CColumns:=  $table.GetValidColumnsByName "c-bc-fc"}-}
 {-{- $UColumns:=  $table.GetValidColumnsByName "u"}-}
 {-{- $switchs :=  $table.GetColumsByCmpnt "switch" "l"}-}
 {-{- $clen := (len $CColumns)|minus}-}
@@ -17,7 +17,7 @@ package {-{.Name.Main}-}
 {-{- if gt (len ( $table.GetColumnsByTPName "q-bq")) 0}-}
 
 //get{-{.Name.CName}-}ListCount 获取{-{.Desc}-}列表条数
-const get{-{.Name.CName}-}ListCount = `
+var get{-{.Name.CName}-}ListCount = `
 select 
 	count(1)
 from {-{.Name.Raw}-} t
@@ -39,7 +39,7 @@ where
 {-{- end}-}`
 
 //get{-{.Name.CName}-}List 查询{-{.Desc}-}列表数据
-const get{-{.Name.CName}-}List = `
+var get{-{.Name.CName}-}List = `
 select
 	{-{- range $i,$v :=  $sigleQueryCols}-}
 	t.{-{$v.Name}-},
@@ -74,16 +74,16 @@ limit @ps offset @offset`
 {-{- if gt (len ( $table.GetColumnsByTPName "c-bc")) 0}-}
 
 // insert{-{.Name.CName}-} 保存{-{.Desc}-}数据
-const insert{-{.Name.CName}-} = `
+var insert{-{.Name.CName}-} = `
 insert into {-{.Name.Raw}-}
 (
-	{-{- range $i,$v :=  $table.GetValidColumnsByName "c-bc"}-}
+	{-{- range $i,$v :=  $table.GetValidColumnsByName "c-bc-fc"}-}
 	{-{$v.Name}-}{-{if lt $i $clen}-},{-{end}-}
 	{-{- end}-}
 )
 values
 (
-	{-{- range $i,$v :=   $table.GetValidColumnsByName "c-bc"}-}
+	{-{- range $i,$v :=   $table.GetValidColumnsByName "c-bc-fc"}-}
 	{-{- if eq false $v.Field.Required}-}
 	if(@{-{$v.Name}-}='',{-{if ne "" $v.Field.DefaultValue}-} {-{$v.Field.DefaultValue}-} {-{else}-}NULL{-{end}-},@{-{$v.Name}-}){-{if lt $i $clen}-},{-{end}-}
 	{-{- else}-}
@@ -96,7 +96,7 @@ values
 {-{- if gt (len ( $table.GetValidColumnsByName "u")) 0}-}
 
 //update{-{.Name.CName}-} 修改{-{.Desc}-}数据
-const update{-{.Name.CName}-} = `
+var update{-{.Name.CName}-} = `
 update {-{.Name.Raw}-} t set 
 {-{- range $i,$v := $table.GetValidColumnsByName "u"}-}
 	t.{-{$v.Name}-} = if(@{-{$v.Name}-}='',{-{if ne "" $v.Field.DefaultValue}-} {-{$v.Field.DefaultValue}-} {-{else}-}NULL{-{end}-},@{-{$v.Name}-}){-{if lt $i $ulen}-},{-{end}-}
@@ -110,7 +110,7 @@ where
 {-{- if gt (len  ( $table.GetValidColumnsByName "l-le")) 0}-}
 
 //get{-{.Name.CName}-} 查询单条{-{.Desc}-}数据
-const get{-{.Name.CName}-} = `
+var get{-{.Name.CName}-} = `
 select
 {-{- range $i,$v := $sigleQueryCols}-}
 	t.{-{$v.Name}-}{-{if lt $i $vlen}-},{-{end}-}
@@ -125,7 +125,7 @@ where
 {-{- if gt (len ( $table.GetColumnsByTPName "D")) 0}-}
 
 //delete{-{.Name.CName}-} 删除单条{-{.Desc}-}数据
-const delete{-{.Name.CName}-} = `
+var delete{-{.Name.CName}-} = `
 delete from {-{.Name.Raw}-}
 where 
 {-{- range $i,$v := $table.PKColumns.GetValidColumns}-}
@@ -136,7 +136,7 @@ where
 {-{- if gt (len $switchs) 0}-}
 
 //switch{-{.Name.CName}-} 删除单条{-{.Desc}-}数据
-const switch{-{.Name.CName}-} = `
+var switch{-{.Name.CName}-} = `
 update {-{.Name.Raw}-} t set 
 {-{- range $i,$v := $switchs}-}
 	t.{-{$v.Name}-} = @{-{$v.Name}-}{-{if lt $i $slen}-},{-{end}-}
@@ -153,7 +153,7 @@ where
 {-{- range $i,$c := $updator}-}
 
 //update{-{$table.Name.CName}-} 修改{-{$table.Desc}-}数据
-const updator{-{$table.Name.CName}-}{-{$c.ReqURL}-} = `
+var updator{-{$table.Name.CName}-}{-{$c.ReqURL}-} = `
 update {-{$table.Name.Raw}-} t set 
 {-{- $fds := f_string_contact $c.RwName "-" (f_string_contact "b" $c.RwName)}-}
 {-{- $fields :=  $table.GetColumnsByTPName $fds}-}
@@ -176,10 +176,11 @@ where 1 = 1
 {-{- if gt (len $barinsert) 0}-}
 {-{- range $i,$c := $barinsert}-}
 {-{- $fds := f_string_contact $c.RwName "-" (f_string_contact "b" $c.RwName)}-}
+{-{- $fds = f_string_contact $fds "-" (f_string_contact "f" $c.RwName)}-}
 {-{- $colums:=$table.GetValidColumnsByName $fds}-}
 {-{- $clen :=minus (len $colums)}-}
 // barinsert{-{$table.Name.CName}-} 保存{-{.Desc}-}数据
-const barinsert{-{$c.ReqURL|f_string_2cname}-}{-{$table.Name.CName}-} = `
+var barinsert{-{$c.ReqURL|f_string_2cname}-}{-{$table.Name.CName}-} = `
 insert into {-{$table.Name.Raw}-}
 (
 	{-{- range $i,$v :=  $colums}-}
@@ -206,7 +207,7 @@ values
 {-{- range $i,$c := $batinserts}-}
 
 //batInsert{-{$table.Name.CName}-}{-{$c.ReqURL}-} 修改{-{$table.Desc}-}数据
-const batInsert{-{$table.Name.CName}-}{-{$c.ReqURL}-} = `
+var batInsert{-{$table.Name.CName}-}{-{$c.ReqURL}-} = `
 insert {-{$table.Name.Raw}-} (
 	{-{- $fields :=  $table.GetColumnsByTPName $c.FwName}-}
 	{-{- $flen := minus (len $fields)}-}

@@ -117,8 +117,11 @@ export default {
     form.{-{$k}-} = "{-{$v}-}"
     {-{- end}-}
     {-{- end}-}
-
+    {-{- if eq "CNFRM" $m.Tag }-}
+    this.$refs.cmpnt_{-{$m.UNQ}-}.show_{-{$m.UNQ}-}(form)
+    {-{- else}-}
     this.$refs.cmpnt_{-{$m.UNQ}-}.show(form)
+    {-{- end}-}
   },
 {-{- end}-}
     {-{- template "view.tmpl.js" $table}-}

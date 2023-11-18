@@ -50,6 +50,7 @@ export default {
   methods: {
     show(fm = {}) {
       this.conf.visible = true;
+      this.loadEnums()
       let local = {}
       {-{- range $i,$c:= $table.BarOpts.GetByTag "ADD" }-}
         {-{- $read2window := $c.GetParams "read2window" -}-}
@@ -100,7 +101,9 @@ export default {
         {-{- if eq "password" $c.Cmpnt.Type  }-}
         postForm.{-{$c.Name}-} = this.$theia.crypto.md5(this.form.{-{$c.Name}-})
         {-{- else if eq "tree" $c.Cmpnt.Type  }-}
-        postForm.{-{$c.Name}-} = this.$refs.tree_{-{$c.UNQ}-}.getCheckedKeys().join(",")
+        let checkKeys = this.$refs.tree_{-{$c.UNQ}-}.getCheckedKeys()||[]
+        let halfKeys = this.$refs.tree_{-{$c.UNQ}-}.getHalfCheckedKeys()||[]
+        postForm.{-{$c.Name}-} = checkKeys.concat(halfKeys).join(",")
         {-{- else if eq "cascader" $c.Cmpnt.Type  }-}
         let {-{$c.Name}-} = []
         let {-{$c.Name}-}Nodes = this.$refs.cascader_{-{$c.UNQ}-}.getCheckedNodes() || []
@@ -120,6 +123,13 @@ export default {
         window.{-{$save2window}-} = postForm
         {-{- end -}-}
         {-{- end }-}
+
+
+        {-{- $memberClus :=  $table.GetStaticColumns "fc" "#"}-}
+      {-{- range $i,$v := $memberClus}-}
+      {-{- $name := f_string_trim $i "#"}-}
+        postForm.{-{$v.Name}-} = this.$theia.user.get("{-{$name}-}")
+      {-{- end}-}
 
         //保存数据
         this.$theia.http.post("/{-{.Name.MainPath|lower}-}",postForm).then(res=>{
@@ -170,7 +180,8 @@ export default {
     onChange_{-{$x.Name}-}(val,tp){
       {-{- range $i,$c:= $ctriger}-}
       {-{- if eq true ($c.IsAssctColumn $x.Name)}-}
-      this.{-{$c.Name}-}List = this.$theia.enum.get("{-{$c.Enum.EnumType}-}",val)
+      {-{- $group:= f_string_trim $c.Enum.Group "#"}-}
+      this.{-{$c.Name}-}List = this.$theia.enum.get("{-{$c.Enum.EnumType}-}",val,{-{if f_string_start $c.Enum.Group "#"}-}this.$theia.user.get("{-{$group}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-})
       this.form.{-{$c.Name}-} = null
       {-{- end}-}
      
@@ -193,6 +204,7 @@ export default {
     },
     {-{- end}-}
     {-{- end}-}
+    {-{- template "enum.tmpl.js" $cColumns }-}
 },
 }
 </script>

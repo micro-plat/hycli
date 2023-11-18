@@ -40,19 +40,15 @@ func (u *EnumsHandler) QueryHandle(ctx hydra.IContext) (r interface{}) {
 	return list
 }
 func (u *EnumsHandler) load() {
-
-	sqls := getSQLs("")
-	list := make(types.XMaps, 0, 1)
-	for _, sql := range sqls {
-		items, _ := hydra.C.DB().GetRegularDB().Query(sql, map[string]interface{}{})
-		list = append(list, items...)
-	}
-	enumutil.Append(list)
-}
-func init() {
 	for _, v := range enumSQL {
 		sqls = append(sqls, v)
 	}
 	sqls = append(sqls, unspecifiedEnum...)
-
+	currentSQL := getSQLs("")
+	list := make(types.XMaps, 0, 1)
+	for _, sql := range currentSQL {
+		items, _ := hydra.C.DB().GetRegularDB().Query(sql, map[string]interface{}{})
+		list = append(list, items...)
+	}
+	enumutil.Append(list)
 }

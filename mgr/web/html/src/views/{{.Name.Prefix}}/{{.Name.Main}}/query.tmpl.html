@@ -9,6 +9,12 @@
 {-{- $blist :=  $table.GetColumsByCmpnt "blist" "q"}-}
 {-{- $xlen := f_num_add (len $tabs) (len $qcols)}-}
 {-{- $xlen = f_num_add $xlen  (len $blist)}-}
+{-{- $menucount := 0}-}
+{-{- range $i,$c:= $qcols}-}
+{-{- if and (eq "ddmenu" $c.Cmpnt.Type) (eq true $c.Enum.IsEnum)}-}
+{-{- $menucount = 1}-}
+{-{- end  }-}
+{-{- end  }-}
 
 {-{- if gt $xlen 0}-}
 <div class="query">
@@ -86,7 +92,7 @@
         {-{- if or (eq "select" $c.Cmpnt.Type) (eq "radio" $c.Cmpnt.Type)}-}
         <!--{-{$c.Label}-} 下拉控件 -->
         <el-form-item>
-            <el-select {-{if eq true ($c.NeedTriggerChangeEvent $c.Name)}-} @change="onChange_{-{$c.Name}-}"  {-{end}-} v-model="form_{-{$table.UNQ}-}.{-{.Name}-}" style="width: 100px" clearable placeholder="{-{$c.Label}-}">
+            <el-select {-{if gt ( len ($qcols.GetColumnsByTriggerChangeEvent $c.Name)) 0}-}  @change="onChange_{-{$c.Name}-}"  {-{end}-} v-model="form_{-{$table.UNQ}-}.{-{.Name}-}" style="width: 100px" clearable placeholder="{-{$c.Label}-}">
                 <el-option v-for="item in {-{.Name}-}List" :key="item.value" :label="item.name" :value="item.value" />
             </el-select>
         </el-form-item>
@@ -154,7 +160,7 @@
             {-{- end}-}
             {-{- end}-}
         </span>
-        {-{- if or (gt (len $qcols) 0) (gt $blen 0)}-}
+        {-{- if or (gt (len $qcols) $menucount) (gt $blen 0)}-}
         <el-form-item>
             <el-space wrap>
                 {-{- if gt (len $qOptrs) 0}-}

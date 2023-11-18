@@ -1,5 +1,5 @@
 <template>
-    <div :id="unq" :style="{ margin: margin, height: height, width: width }"></div>
+    <div v-if="isShow" ref="echars" :id="unq" :style="{ margin: margin, height: height, width: width }"></div>
 </template>
 <script>
 import * as echarts from 'echarts';
@@ -50,6 +50,10 @@ export default {
     },
     data() {
         return {
+            isShow: true,
+            myChart: null,
+            chartDom: {},
+            hasInit: false,
             lowerType: this.type.toLowerCase(),
             roseType: {
                 "rose": "radius",
@@ -111,9 +115,15 @@ export default {
     methods: {
         showChart() {
             // 基于准备好的dom，初始化echarts实例
-            var chartDom = document.getElementById(this.unq);
-            var myChart = echarts.init(chartDom, this.theme);
-            this.option && myChart.setOption(this.option);
+            if (this.myChart) {
+                this.myChart.dispose()
+                this.myChart = null
+            }
+            this.$nextTick(()=>{
+                this.myChart = echarts.init(this.$refs.echars, this.theme);
+                this.myChart.setOption(this.option);
+            })
+          
         },
         show(form) {
             if (!this.url) {
@@ -122,7 +132,10 @@ export default {
             let that = this
             this.$theia.http.get(this.url, form).then(res => {
                 if (that.resetData(res || {}, that)) {
+                    that.isShow = true
                     that.showChart()
+                } else {
+                    that.isShow = false
                 }
             });
         },
@@ -134,7 +147,10 @@ export default {
         },
         resetPIE(item, that) {
             let url = that.url
-            that.option.tooltip.formatter = that.formatter.pie
+            if (!this.hasInit) {
+                that.option.tooltip.formatter = that.formatter.pie
+            }
+
             that.option.legend.data = []
             if (item.legend && Array.isArray(item.legend)) {
                 that.option.legend.data = item.legend
@@ -155,12 +171,14 @@ export default {
             //检查输入参数
             if (that.option.legend.data.length == 0) {
                 let msg = `请求(${url})返回数据中未包含lengend或xAxis`
-                that.$notify.error({ title: '失败', message: msg, duration: 5000 })
+                // that.$notify.error({ title: '失败', message: msg, duration: 5000 })
+                console.info(msg)
                 return false
             }
             if (that.option.yAxis.data.length == 0) {
                 let msg = `请求(${url})返回数据中未包含data或yAxis`
-                that.$notify.error({ title: '失败', message: msg, duration: 5000 })
+                // that.$notify.error({ title: '失败', message: msg, duration: 5000 })
+                console.info(msg)
                 return false
             }
 
@@ -171,11 +189,12 @@ export default {
             let currentYAxis = Array.isArray(that.option.yAxis.data[0]) ? that.option.yAxis.data[0] : that.option.yAxis.data
             if (currentYAxis.length == 0) {
                 let msg = `请求(${url})返回数据(data或yAxis)数据为空`
-                that.$notify.error({ title: '失败', message: msg, duration: 5000 })
-                return
+                // that.$notify.error({ title: '失败', message: msg, duration: 5000 })
+                console.info(msg)
+                return false
             }
             //将 [320,332,301,334,390,330,320] 转为：[{"name":"2023-3","value":100}]
-            if (!(currentYAxis[0]||{}).hasOwnProperty("name")) {
+            if (!(currentYAxis[0] || {}).hasOwnProperty("name")) {
                 currentYAxis = that.fullYAxis(that.option.legend.data, currentYAxis)
             }
 
@@ -207,12 +226,14 @@ export default {
             }
             if (!item.xAxis || !Array.isArray(item.xAxis) || item.xAxis.length == 0) {
                 let msg = `请求(${url})返回数据中未包含xAxis或不是数组`
-                that.$notify.error({ title: '失败', message: msg, duration: 5000 })
+                // that.$notify.error({ title: '失败', message: msg, duration: 5000 })
+                console.info(msg)
                 return false
             }
             if (!item.yAxis || !Array.isArray(item.yAxis) || item.yAxis.length == 0) {
                 let msg = `请求(${url})返回数据中未包含yAxis或不是数组`
-                that.$notify.error({ title: '失败', message: msg, duration: 5000 })
+                // that.$notify.error({ title: '失败', message: msg, duration: 5000 })
+                console.info(msg)
                 return false
 
             }

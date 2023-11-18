@@ -203,8 +203,8 @@ func createEnumType(r *md.Row) enumType {
 	return enumType{
 		IsEnum:      md.HasConstraint(r.Constraints, "sl", "SL"),
 		EnumType:    tp,
-		AssctColumn: types.DecodeString(strings.HasPrefix(pid, "#"), true, strings.Trim(pid, "#"), ""),
-		PID:         types.DecodeString(strings.HasPrefix(pid, "#"), false, pid, ""),
+		AssctColumn: types.DecodeString(strings.HasPrefix(pid, "@"), true, strings.Trim(pid, "@"), ""),
+		PID:         types.DecodeString(strings.HasPrefix(pid, "@"), false, pid, ""),
 		Group:       group,
 		IsDEColumn:  md.HasConstraint(r.Constraints, "DE", "de"),
 	}
