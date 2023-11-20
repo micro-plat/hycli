@@ -63,7 +63,8 @@ func getViewExtCmptOpts(table string, parentUNQID string, params map[string]stri
 			nv := &optrs{}
 			types.DeepCopyByGob(nv, v)
 			nv.ParentUNQ = parentUNQID
-			nv.UNQ = defFids.Next()
+			// nv.UNQ = defFids.Next() 11/18
+			nv.UNQ = defFids.Get(nv)
 			nv.Params.Append(params)
 			viewExtOpts.BarOptrs = append(viewExtOpts.BarOptrs, nv)
 		}
@@ -72,7 +73,8 @@ func getViewExtCmptOpts(table string, parentUNQID string, params map[string]stri
 		if strings.EqualFold(v.Params["@showInView"], "true") {
 			nv := &optrs{}
 			types.DeepCopyByGob(nv, v)
-			nv.UNQ = defFids.Next()
+			// nv.UNQ = defFids.Next() 11/18
+			nv.UNQ = defFids.Get(nv)
 			nv.Params.Append(params)
 			viewExtOpts.LstOptrs = append(viewExtOpts.LstOptrs, nv)
 		}

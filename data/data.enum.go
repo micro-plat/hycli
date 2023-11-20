@@ -9,6 +9,7 @@ type EnumType struct {
 	EnumType  string
 	Id        string
 	Name      string
+	ExtName   string
 	Type      string
 	PID       string
 	Group     string
@@ -28,6 +29,9 @@ func newEnumType(enumType string, rs []*md.Row, delColumn Columns) *EnumType {
 		}
 		if md.HasConstraint(r.Constraints, "DN") {
 			tp.Name = types.GetString(md.GetConsNameByTagIgnorecase("DN", r.Constraints...), r.Name)
+		}
+		if md.HasConstraint(r.Constraints, "DNE") {
+			tp.ExtName = types.GetString(md.GetConsNameByTagIgnorecase("DNE", r.Constraints...), r.Name)
 		}
 		if md.HasConstraint(r.Constraints, "DT") {
 			tp.Type = types.GetString(md.GetConsNameByTagIgnorecase("DT", r.Constraints...), r.Name)

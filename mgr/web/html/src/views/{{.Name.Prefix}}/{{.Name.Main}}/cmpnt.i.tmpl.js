@@ -15,6 +15,7 @@ import gantt from "@/views/cmpnts/gantt.vue"
 {-{- $qcols :=  $table.GetColumnsByTPName "q"}-}
 {-{- range $i,$c:= $qcols}-}
 {-{- if and (eq "ddmenu" $c.Cmpnt.Type) (eq true $c.Enum.IsEnum)}-}
+// {-{$c.Label}-}
 import ddmenu from "@/views/cmpnts/ddMenu.vue"
 {-{- end  }-}
 {-{- end  }-}

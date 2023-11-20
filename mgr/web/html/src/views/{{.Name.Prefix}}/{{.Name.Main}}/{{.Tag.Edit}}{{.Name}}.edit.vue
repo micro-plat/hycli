@@ -1,13 +1,18 @@
 {-{- $table := .}-}
 {-{- $ucols :=  $table.GetColumnsByTPName "U"}-}
 {-{- $enumColumns :=$table.EnumColumns}-}
-
+{-{- $editOpts :=$table.BarOpts.GetEditOpt }-}
+{-{- $title := f_string_contact "修改" $table.Desc}-}
+{-{- if ne "" $editOpts.Label}-}
+{-{- $title = $editOpts.Label}-}
+{-{- end}-}
 <template tag="{-{.Marker}-}">
   <el-dialog
     v-model="conf.visible"
-    title="修改 {-{.Desc}-}"
+    title="{-{$title}-}"
     :width="conf.width"
     draggable
+    align-center="true"
     :close-on-click-modal="false"
     :before-close="hide"
   >
@@ -55,6 +60,7 @@ export default {
     },
       get(form){
         let that = this
+        this.conf.loading = true
         this.$theia.http.get("/{-{.Name.MainPath|lower}-}",form).then(res=>{
         {-{- range $i,$c := $ucols}-}
         {-{- if eq "switch" $c.Cmpnt.Type}-}
@@ -71,10 +77,10 @@ export default {
         let {-{$x.Name}-} = that.form.{-{$x.Name}-}.split(",")
         that.form.{-{$x.Name}-} = {-{$x.Name}-}
         {-{- end}-}
-      {-{- range $i,$c:= $ucols.GetColumnsByTriggerChangeEvent $x.Name}-}
-      that.onChange_{-{$x.Name}-}(that.form["{-{$x.Name}-}"],"{-{$x.Enum.EnumType}-}")
-      {-{- end}-} 
       {-{- end}-}
+      //处理枚举重新绑定
+      that.loadEnums()
+      that.conf.loading = false
         }).catch(res=>{
           let code = ((res||{}).response||{}).status||0
           let msg = `{-{.Desc}-}查询失败(${code})`
@@ -163,9 +169,26 @@ export default {
     {-{- $ctriger := $ucols.GetColumnsByTriggerChangeEvent $x.Name}-}
      {-{- if gt (len $ctriger) 0}-}
     onChange_{-{$x.Name}-}(val,tp){
+      if(this.conf.loading || !val||!this.form.{-{$x.Name}-}){
+        return
+      }
       {-{- range $i,$c:= $ctriger}-}
+      {-{- if eq true ($c.IsAssctColumn $x.Name)}-}
       {-{- $group:= f_string_trim $c.Enum.Group "#"}-}
-      this.{-{$c.Name}-}List = this.$theia.enum.get("{-{$c.Enum.EnumType}-}",val,{-{if f_string_start $c.Enum.Group "#"}-}this.$theia.user.get("{-{$group}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-})
+      if (!val) {
+        this.{-{$c.Name}-}List = []
+        // this.form.{-{$c.Name}-} = null
+        return
+      }
+      this.{-{$c.Name}-}List = this.$theia.enum.get("{-{$c.Enum.EnumType}-}",val,{-{if f_string_start $c.Enum.Group "#"}-}this.$theia.user.get("{-{$group}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-})||[]
+      // this.form.{-{$c.Name}-} =this.{-{$c.Name}-}List.length>0?(this.{-{$c.Name}-}List[0]||{}).value:null
+      {-{- $cxtriger := $ucols.GetColumnsByTriggerChangeEvent $c.Name}-}
+      {-{- if gt (len $cxtriger) 0}-}
+      {-{- range $mx,$cx := $cxtriger}-}
+      this.onChange_{-{$c.Name}-}(this.form.{-{$c.Name}-},"{-{$cx.Enum.EnumType}-}")
+      {-{- end}-}
+      {-{- end}-}
+      {-{- end}-}
       {-{- end}-}
       //添加联动
       {-{- $p := $x.GetParams "@change"}-}
@@ -173,14 +196,25 @@ export default {
       let that = this
       if(tp){
         let lst= this.$theia.enum.get(tp)
+        var hasValues = {}
         lst.forEach(el => {
           if(el.value == val)
           {-{- range $i,$c:= $p}-}
-          that.form.{-{$i}-} = that.form.{-{$i}-}==""?el.{-{$c}-}:that.form.{-{$i}-}
+          if (!that.form.{-{$i}-} || that.form._{-{$i}-} == that.form.{-{$i}-}) {
+            hasValues.{-{$i}-} = true
+            that.form.{-{$i}-} = el.{-{$c}-}
+            that.form._{-{$i}-} = el.{-{$c}-}
+          }
           {-{- end}-}
         });
+        {-{- range $i,$c:= $p}-}
+        if(!hasValues.{-{$i}-}){
+          that.form._{-{$i}-} = that.form.{-{$i}-}
+        }
+        {-{- end}-}
       }
       {-{- end}-}
+
     },
     {-{- end}-}
     {-{- end}-}

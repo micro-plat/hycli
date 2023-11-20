@@ -2,13 +2,20 @@
 {-{- $cColumns :=  $table.GetColumnsByTPName "C"}-}
 {-{- $acColumns :=  $table.GetColumnsByTPName "C-BC"}-}
 {-{- $enumColumns :=$table.EnumColumns}-}
+{-{- $addOpts :=$table.BarOpts.GetAddOpt }-}
+{-{- $title := f_string_contact "添加" $table.Desc}-}
+{-{- if ne "" $addOpts.Label}-}
+{-{- $title = $addOpts.Label}-}
+{-{- end}-}
+
 
 <template tag="{-{.Marker}-}">
   <el-dialog
     v-model="conf.visible"
-    title="添加 {-{.Desc}-}"
+    title="{-{$title}-}"
    :width="conf.width"
     draggable
+    {-{ if gt (len $cColumns) 9 }-}  align-center="true" {-{ else}-} top="10vh" {-{ end }-}
     :close-on-click-modal="false"
     :before-close="hide"
   >
@@ -181,10 +188,21 @@ export default {
       {-{- range $i,$c:= $ctriger}-}
       {-{- if eq true ($c.IsAssctColumn $x.Name)}-}
       {-{- $group:= f_string_trim $c.Enum.Group "#"}-}
-      this.{-{$c.Name}-}List = this.$theia.enum.get("{-{$c.Enum.EnumType}-}",val,{-{if f_string_start $c.Enum.Group "#"}-}this.$theia.user.get("{-{$group}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-})
-      this.form.{-{$c.Name}-} = null
+      if (!val) {
+        this.{-{$c.Name}-}List = []
+        this.form.{-{$c.Name}-} = null
+        return
+      }
+      this.{-{$c.Name}-}List = this.$theia.enum.get("{-{$c.Enum.EnumType}-}",val,{-{if f_string_start $c.Enum.Group "#"}-}this.$theia.user.get("{-{$group}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-})||[]
+      this.form.{-{$c.Name}-} =this.{-{$c.Name}-}List.length>0?(this.{-{$c.Name}-}List[0]||{}).value:null
+      {-{- $cxtriger := $cColumns.GetColumnsByTriggerChangeEvent $c.Name}-}
+      //cxtriger:{-{ $cxtriger}-}
+      {-{- if gt (len $cxtriger) 0}-}
+      {-{- range $mx,$cx := $cxtriger}-}
+      this.onChange_{-{$c.Name}-}(this.form.{-{$c.Name}-},"{-{$cx.Enum.EnumType}-}")
       {-{- end}-}
-     
+      {-{- end}-}
+      {-{- end}-}
       {-{- end}-}
       //添加联动
       {-{- $p := $x.GetParams "@change"}-}
@@ -192,12 +210,23 @@ export default {
       let that = this
       if(tp){
         let lst= this.$theia.enum.get(tp)
+        var hasValues = {}
         lst.forEach(el => {
           if(el.value == val)
           {-{- range $i,$c:= $p}-}
-          that.form.{-{$i}-} = that.form.{-{$i}-}?that.form.{-{$i}-}:el.{-{$c}-}
+          if (!that.form.{-{$i}-} || that.form._{-{$i}-} == that.form.{-{$i}-}) {
+            hasValues.{-{$i}-} = true
+            that.form.{-{$i}-} = el.{-{$c}-}
+            that.form._{-{$i}-} = el.{-{$c}-}
+          }
           {-{- end}-}
         });
+        {-{- range $i,$c:= $p}-}
+        if(!hasValues.{-{$i}-}){
+          that.form.{-{$i}-} = ""
+          that.form._{-{$i}-} = ""
+        }
+        {-{- end}-}
       }
       {-{- end}-}
 

@@ -1,6 +1,7 @@
 package data
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/micro-plat/hycli/data/internal/md"
@@ -88,7 +89,7 @@ var addOpts = &optrs{Tag: ADD_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.add",
 var queryOpts = &optrs{Tag: QUERY_TAG, URL: "", Name: "FORM", ICON: "Search", RwName: QUERY_COLUMN, Label: "查询", Desc: "查询", UNQ: defFids.Next(), index: 1}
 var detailOpts = &optrs{Tag: VIEW_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.view", Name: "CMPNT", Label: "详情", Desc: "详情", RwName: "V", UNQ: defFids.Next(), index: 1}
 var updateOpts = &optrs{Tag: UPDATE_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.edit", Name: "CMPNT", Label: "修改", Desc: "修改", RwName: "U", UNQ: defFids.Next(), index: 2}
-var delOpts = &optrs{Tag: DELETE_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.cnfrm", ReqURL: "/{@mainPath}/del", Name: "CMPNT", Label: "删除", Desc: "删除", RwName: "D", UNQ: defFids.Next(), IsMux: true, index: 99}
+var delOpts = &optrs{Tag: DELETE_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.cnfrm", ReqURL: "/{@mainPath}/del", Name: "CMPNT", Label: "删除", Desc: "删除", RwName: "D", IsMux: true, index: 99}
 var dialogOpts = &optrs{Tag: "DIALOG", URL: "@/views/{@prefix}/{@main}/{@name}.dialog", Name: "CMPNT", IsMux: true, index: 99}
 var cnfrmOpts = &optrs{Tag: "CNFRM", URL: "@/views/{@prefix}/{@main}/{@name}.cnfrm", Name: "CMPNT", IsMux: true, index: 99}
 var chartLinePieBarOpts = &optrs{Tag: "CHART", URL: "@/views/cmpnts/chart.base.vue", Name: "CMPNT"}
@@ -98,14 +99,16 @@ var xBarOpts = &optrs{Tag: "XBAR", URL: "@/views/cmpnts/xbar.vue", Name: "CMPNT"
 func (s *optrs) Get(tableName string) *optrs {
 	nopts := *s
 	nopts.Table = tableName
-	nopts.UNQ = defFids.Next()
+	// nopts.UNQ = defFids.Next()  11/18
+	nopts.UNQ = defFids.Get(&nopts)
 	return &nopts
 }
 func (s *optrs) GetAndSetTag(tableName string, tagName string) *optrs {
 	nopts := *s
 	nopts.Table = tableName
-	nopts.UNQ = defFids.Next()
 	nopts.Tag = tagName
+	// nopts.UNQ = defFids.Next() 11/18
+	nopts.UNQ = defFids.Get((&nopts))
 	return &nopts
 }
 func (s *optrs) NeedBatchCheck() bool {
@@ -123,6 +126,12 @@ func (s *optrs) GetParams(p string) string {
 func (s *optrs) String() string {
 	buff, _ := jsons.Marshal(s)
 	return string(buff)
+}
+func (s *optrs) UNQKey() string {
+	return fmt.Sprintf("%s/%s/%s/%s/%s/%s/%s",
+		s.Table, s.ReqURL, s.URL,
+		s.Name, s.RwName, s.FwName,
+		s.Cmd)
 }
 func (s optrslst) Len() int           { return len(s) }
 func (s optrslst) Less(i, j int) bool { return s[i].index < s[j].index }
@@ -254,13 +263,14 @@ func creatExtCmptOpts(opts ...*optrs) []*optrs {
 			if ok && okOptr {
 				xview := *op
 				// xview.UNQ = view.UNQ
-				xview.UNQ = defFids.Next()
 				xview.Label = types.DecodeString(types.GetBool(v), true, view.Label, v)
 				xview.Desc = xview.Label
 				xview.Params = view.Params
 				xview.Params["table"] = view.URL
 				xview.Table = view.URL
 				xview.ParentUNQ = view.UNQ
+				// xview.UNQ = defFids.Next() 11/18
+				xview.UNQ = defFids.Get(&xview)
 				nopts = append(nopts, &xview)
 			}
 		}
@@ -333,7 +343,8 @@ func createOptrs(tableName string, extInfo string, tag string) []*optrs {
 
 		opt.Cmd = tag
 		opt.Label = types.GetStringByIndex(lst, 0)
-		opt.UNQ = defFids.Next()
+		// opt.UNQ = defFids.Next() 11/18
+		opt.UNQ = defFids.Get(&opt)
 		opt.Params = make(map[string]string)
 		rwName := types.GetStringByIndex(lst, 3)
 		fwName := types.GetStringByIndex(lst, 4)

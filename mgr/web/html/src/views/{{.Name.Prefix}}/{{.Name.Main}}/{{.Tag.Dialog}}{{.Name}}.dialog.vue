@@ -5,15 +5,17 @@
     {-{- range $x,$m:=$optCols }-}
     {-{- if eq "DIALOG" $m.Tag }-}
     {-{- $width:= $m.GetParam "width" "60%" }-}
+    {-{- $rows:=  $table.GetColumnsByTPName $m.RwName (f_string_contact "form_" $m.UNQ)}-}
     <el-dialog
       v-model="conf.{-{$m.UNQ}-}_visible"
       title="{-{.Label}-}"
       :close-on-click-modal="false"
       width="{-{$width}-}"
       draggable
+    {-{ if gt (len $rows) 9 }-}  align-center="true" {-{ else}-} top="10vh" {-{ end }-}
       :before-close="hide_{-{$m.UNQ}-}"
     >
-      {-{- $rows:=  $table.GetColumnsByTPName $m.RwName (f_string_contact "form_" $m.UNQ)}-}
+      
       <el-form
         :model="form_{-{$m.UNQ}-}"
         

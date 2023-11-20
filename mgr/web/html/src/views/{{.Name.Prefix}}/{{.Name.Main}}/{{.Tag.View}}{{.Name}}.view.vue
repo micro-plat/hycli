@@ -7,6 +7,7 @@
     v-model="conf.visible"
     title="{-{.Desc}-}详情"
     draggable
+    align-center="true"
     width="68%"
     :close-on-click-modal="false"
     :before-close="hide"

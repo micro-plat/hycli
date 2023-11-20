@@ -1,12 +1,16 @@
 package data
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 const (
 	chars = "abcdefghijklmnopqrstuvwxyz"
 )
 
 var defFids = newFids(3)
+var defFidsmp = map[string]string{}
 
 type fids struct {
 	len       int
@@ -29,6 +33,18 @@ func (f *fids) Current() string {
 func (f *fids) Next() string {
 	add(f.charIndex)
 	return f.Current()
+}
+func (f *fids) Get(o *optrs) string {
+	if strings.EqualFold(o.Tag, "DEL") || strings.EqualFold(o.Tag, "CNFRM") {
+		var key = fmt.Sprintf("%s/%s/%s", o.Table, o.Label, o.URL)
+		_, ok := defFidsmp[key]
+		if !ok {
+			defFidsmp[key] = f.Next()
+		}
+		return defFidsmp[key]
+	}
+	return f.Next()
+
 }
 func add(idxs []int) {
 	lenx := len(idxs)

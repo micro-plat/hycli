@@ -87,8 +87,9 @@ mounted() {
   {-{- end}-}
 
   this.form_{-{$table.UNQ}-} = Object.assign(this.form_{-{$table.UNQ}-},this.$route.params)
+  {-{- if eq "" ( $table.JoinNames  "rp" false "")}-}
   this.queryData_{-{ $table.UNQ }-} ()
-
+  {-{- end}-}
     },
   {-{- if ne "" ( $table.JoinNames  "rp" false "")}-}
  watch: {
@@ -159,6 +160,11 @@ methods: {
 },
 };
 </script>
+<style>
+.el-dialog{
+  border-radius:5px !important
+}
+</style>
 <style scoped>
 .el-form-item {
   margin-right: 10px !important;
