@@ -148,8 +148,7 @@ where
 {-{- end}-}`
 {-{- end}-}
 
-{-{- $barlst := $table.Optrs.BarOpts.Merge $table.Optrs.ListOpts }-}
-{-{- $updator :=  $barlst.GetByCmptName "batupdator-lstupdator"}-}
+{-{- $updator :=  $table.Optrs.All.GetByCmptName "batupdator-lstupdator"}-}
 {-{- if gt (len $updator) 0}-}
 {-{- range $i,$c := $updator}-}
 
@@ -202,7 +201,7 @@ values
 {-{- end}-}
 
 //批量添加数据
-{-{- $batinserts :=  $table.Optrs.BarOpts.GetByCmptName  "batinsert"}-}
+{-{- $batinserts :=  $table.Optrs.All.GetByCmptName  "batinsert"}-}
 {-{- $uplen := minus (len $batinserts)}-}
 {-{- if gt (len $batinserts) 0}-}
 {-{- range $i,$c := $batinserts}-}

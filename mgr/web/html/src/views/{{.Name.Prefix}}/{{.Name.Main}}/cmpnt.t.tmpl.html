@@ -1,8 +1,8 @@
 {-{- $table := .}-}
-{-{- $opts:=  $table.Optrs.ListOpts.Merge $table.Optrs.BarOpts}-}
+{-{- $opts:=  $table.Optrs.All.GetCompnents}-}
 {-{- if gt (len $opts) 0}-}
 <div>
-    {-{- range $x,$m:=  $opts.GetByName "CMPNT"}-}
+    {-{- range $x,$m:=  $opts}-}
    <{-{$m.UNQ}-} ref="cmpnt_{-{$m.UNQ}-}" @onsaved="onQuery"></{-{$m.UNQ}-}>
    {-{- end}-}
 </div>

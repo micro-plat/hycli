@@ -41,32 +41,6 @@ func (opts optrslst) GetByName(tps string) optrslst {
 	sort.Sort(nopts)
 	return nopts
 }
-func (opts optrslst) GetAddOpt(tb ...string) *optrs {
-	for _, v := range opts {
-		if v.Tag == ADD_TAG {
-			if len(tb) == 0 {
-				return v
-			}
-			if types.StringContains(tb, v.Table) {
-				return v
-			}
-		}
-	}
-	return &optrs{}
-}
-func (opts optrslst) GetEditOpt(tb ...string) *optrs {
-	for _, v := range opts {
-		if v.Tag == UPDATE_TAG {
-			if len(tb) == 0 {
-				return v
-			}
-			if types.StringContains(tb, v.Table) {
-				return v
-			}
-		}
-	}
-	return &optrs{}
-}
 func (opts optrslst) GetByExternalTable(tb string) optrslst {
 	nopts := make(optrslst, 0, 1)
 	for _, v := range opts {

@@ -274,30 +274,3 @@ func (c *Column) NIndex(i int) *Column {
 	ncol.index = i
 	return &ncol
 }
-func (c Columns) GetPKColumns() Columns {
-	cols := make(Columns, 0, 1)
-	for _, v := range c {
-		if v.Field.IsPK {
-			cols = append(cols, v)
-		}
-	}
-	return cols
-}
-func (c Columns) GetEnumColumns() Columns {
-	cols := make(Columns, 0, 1)
-	for _, v := range c {
-		if v.Enum.IsEnum {
-			cols = append(cols, v)
-		}
-	}
-	return cols
-}
-func (c Columns) GetEnumDelColumns() Columns {
-	cols := make(Columns, 0, 1)
-	for _, v := range c {
-		if v.Enum.IsDEColumn {
-			cols = append(cols, v)
-		}
-	}
-	return cols
-}

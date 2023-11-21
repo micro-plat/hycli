@@ -45,9 +45,8 @@ export default {
         width:"70%",
         {-{- else }-}
         {-{- $width:= "60%"}-}
-        {-{- range $i,$c:= $table.Optrs.All.GetByTag "ADD" }-}
+        {-{- $c :=$table.Optrs.BarOpts.GetAddOpt}-}
         {-{- $width = $c.GetParam "width" "60%" }-}
-        {-{- end}-}
         width:"{-{$width}-}",
       {-{- end  }-}
         uploadPath:this.$theia.env.join("/file/upload"),
@@ -59,14 +58,12 @@ export default {
       this.conf.visible = true;
       this.loadEnums()
       let local = {}
-      {-{- range $i,$c:= $table.Optrs.BarOpts.GetByTag "ADD" }-}
+      {-{- $c :=$table.Optrs.BarOpts.GetAddOpt}-}
         {-{- $read2window := $c.GetParams "read2window" -}-}
         {-{- if ne "" $read2window}-}
-        
         //将数据保存到window缓存中
       local = window.{-{$read2window}-} || {}
-        {-{- end -}-}
-        {-{- end }-}
+        {-{- end}-}
       let cache =  Object.assign(local,fm)
       this.form = Object.assign(cache,this.$route.params)
 
@@ -122,16 +119,12 @@ export default {
         postForm.{-{$c.Name}-} = (postForm.{-{$c.Name}-}||[]).join(",")
         {-{- end }-}
         {-{- end}-}
-        {-{- range $i,$c:= $table.Optrs.BarOpts.GetByTag "ADD" }-}
+        {-{- $c:= $table.Optrs.BarOpts.GetAddOpt }-}
         {-{- $save2window := $c.GetParams "save2window" -}-}
         {-{- if ne "" $save2window}-}
-        
         //将数据保存到window缓存中
         window.{-{$save2window}-} = postForm
-        {-{- end -}-}
-        {-{- end }-}
-
-
+        {-{- end}-}
         {-{- $memberClus :=  $table.GetStaticColumns "fc" "#"}-}
       {-{- range $i,$v := $memberClus}-}
       {-{- $name := f_string_trim $i "#"}-}

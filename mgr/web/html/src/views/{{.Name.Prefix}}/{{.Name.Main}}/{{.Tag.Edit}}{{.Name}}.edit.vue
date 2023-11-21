@@ -42,9 +42,8 @@ export default {
         width:"70%",
         {-{- else }-}
         {-{- $width:= "60%"}-}
-        {-{- range $i,$c:= $table.Optrs.BarOpts.GetByTag "ADD" }-}
+        {-{- $c:= $table.Optrs.ListOpts.GetEditOpt }-}
         {-{- $width = $c.GetParam "width" "60%" }-}
-        {-{- end}-}
         width:"{-{$width}-}",
       {-{- end  }-}
         uploadPath:this.$theia.env.join("/file/upload"),
@@ -120,16 +119,16 @@ export default {
         postForm.{-{$c.Name}-} = (postForm.{-{$c.Name}-}||[]).join(",")
         {-{- end }-}
         {-{- end}-}
-        {-{- range $i,$c:=  $table.Optrs.ListOpts.GetByTag "UPDATE" }-}
+        {-{- $c:=  $table.Optrs.All.GetEditOpt }-}
+        {-{- if ne "" $c.Tag}-}
         {-{- $save2window := $c.GetParams "save2window" -}-}
         {-{- if ne "" $save2window}-}
-        
         //将数据保存到window缓存中
         window.{-{$save2window}-} = postForm
         {-{- range $i,$v := $table.PKColumns.GetValidColumns}-}
         window.{-{$v.Name}-} = null
-      {-{- end}-}
-        {-{- end -}-}
+        {-{- end}-}
+        {-{- end}-}
         {-{- end }-}
 
         this.$theia.http.put("/{-{.Name.MainPath|lower}-}",postForm).then(res=>{

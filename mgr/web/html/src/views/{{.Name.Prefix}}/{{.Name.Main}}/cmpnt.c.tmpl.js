@@ -1,7 +1,7 @@
 {-{- $table := .}-}
-{-{- $opts:= $table.Optrs.ListOpts.Merge $table.Optrs.BarOpts $table.Optrs.ChartOpts $table.Optrs.ExtOpts}-}
+{-{- $opts:= $table.Optrs.All.GetCompnents}-}
 components: {
-    {-{- range $x,$m:= $opts.GetByName "CMPNT"}-}
+    {-{- range $x,$m:= $opts}-}
     {-{$m.UNQ}-},
     {-{- end}-}
     {-{- range $i,$c:= $table.Optrs.BarOpts.GetByCmptName "list" }-}

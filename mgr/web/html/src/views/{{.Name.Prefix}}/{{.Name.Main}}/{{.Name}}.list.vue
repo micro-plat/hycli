@@ -80,9 +80,7 @@ mounted() {
     {-{- end}-}
   this.form_{-{$table.UNQ}-}.single_date_range_name = (this.multiQueryDateRange[0]||{}).value
   this.form_{-{$table.UNQ}-}.single_text_name = (this.multiQueryText[0]||{}).value
-  {-{- $optRow:= $table.Optrs.ListOpts.Merge $table.Optrs.BarOpts}-}
-  {-{- $cmpnts:=  $optRow.GetByName "CMPNT"}-}
-  {-{- range $x,$m:= $cmpnts}-}
+  {-{- range $x,$m:= $table.Optrs.All.GetCompnents}-}
   this.cmpnt_funcs["{-{$m.UNQ}-}"] = this.show_cmpnt_{-{$m.UNQ}-}
   {-{- end}-}
 

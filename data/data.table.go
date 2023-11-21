@@ -61,7 +61,7 @@ func NewTable(t *md.Table) *Table {
 		PKColumns:   columns.GetPKColumns(),
 		EnumColumns: columns.GetEnumColumns(),
 		Enum:        newEnumType(t.Name.Short, t.Rows, columns.GetEnumDelColumns()),
-		Optrs:       &tableOptrs{},
+		Optrs:       NewTableOptrs(),
 	}
 	t.Cache = table
 	table.Optrs.ViewExtCmptOpts = &viewExtOptrsMap{}
@@ -78,7 +78,6 @@ func NewTable(t *md.Table) *Table {
 	return table
 }
 func (t *Table) LoadExtOptrs() {
-	t.Optrs.ViewExtCmptOpts = getViewExtCmptOptsByTable(t)
-	t.Optrs.ViewExtCmptOpts.ALL.Sort()
+	t.Optrs.SetViewExtCmptOpt(getViewExtCmptOptsByTable(t))
 	t.Tag = newTag(t)
 }

@@ -1,5 +1,7 @@
 package data
 
+import "github.com/micro-plat/lib4go/types"
+
 type tableOptrs struct {
 
 	//ViewOpts 预览操作
@@ -20,6 +22,9 @@ type tableOptrs struct {
 	//ExtOpts 扩展组件(显示到图标组件的下方)
 	ExtOpts extOptrs
 
+	//图表组件,包含LStatOpts，ChartOpts，ExtOpts
+	GraphOpts optrslst
+
 	//BarOpts 工具栏操作(显示表格上方)
 	BarOpts barOptrs
 
@@ -27,10 +32,18 @@ type tableOptrs struct {
 	QueryOptrs queryOptrs
 
 	All optrslst
+
+	OptrtMap map[string]*optrs
 }
 
+func NewTableOptrs() *tableOptrs {
+	return &tableOptrs{
+		OptrtMap: make(map[string]*optrs),
+		All:      make(optrslst, 0),
+	}
+}
 func (t *tableOptrs) Sort() {
-	t.ListOpts.Merge(t.BarOpts)
+	// t.ListOpts.Merge(t.BarOpts)
 	t.BarOpts.Sort()
 	t.ViewOpts.Sort()
 	t.ListOpts.Sort()
@@ -40,13 +53,69 @@ func (t *tableOptrs) Sort() {
 	t.QueryOptrs.Sort()
 	t.ViewExtCmptOpts.ALL.Sort()
 
-	t.All = make(optrslst, 0)
-	t.All = append(t.All, t.BarOpts...)
-	t.All = append(t.All, t.ViewOpts...)
-	t.All = append(t.All, t.ListOpts...)
-	t.All = append(t.All, t.LStatOpts...)
-	t.All = append(t.All, t.ChartOpts...)
-	t.All = append(t.All, t.ExtOpts...)
-	t.All = append(t.All, t.QueryOptrs...)
-	t.All = append(t.All, t.ViewExtCmptOpts.ALL...)
+	all := make(optrslst, 0)
+	all = append(all, t.BarOpts...)
+	all = append(all, t.ViewOpts...)
+	all = append(all, t.ListOpts...)
+	all = append(all, t.LStatOpts...)
+	all = append(all, t.ChartOpts...)
+	all = append(all, t.ExtOpts...)
+	all = append(all, t.QueryOptrs...)
+	all = append(all, t.ViewExtCmptOpts.ALL...)
+	for _, v := range all {
+		if _, ok := t.OptrtMap[v.UNQ]; !ok {
+			t.OptrtMap[v.UNQ] = v
+			t.All = append(t.All, v)
+		}
+	}
+	t.GraphOpts = append(t.GraphOpts, t.LStatOpts...)
+	t.GraphOpts = append(t.GraphOpts, t.ChartOpts...)
+	t.GraphOpts = append(t.GraphOpts, t.ExtOpts...)
+	t.GraphOpts.Sort()
+}
+func (s optrslst) GetCompnents() optrslst {
+	return s.GetByName("CMPNT")
+}
+func (s optrslst) GetConfirm() optrslst {
+	return s.GetByTag("CNFRM")
+}
+func (s optrslst) GetDialog() optrslst {
+	return s.GetByTag("DIALOG")
+}
+func (opts optrslst) GetAddOpt(tb ...string) *optrs {
+	for _, v := range opts {
+		if v.Tag == ADD_TAG {
+			if len(tb) == 0 {
+				return v
+			}
+			if types.StringContains(tb, v.Table) {
+				return v
+			}
+		}
+	}
+	return &optrs{}
+}
+func (opts optrslst) GetEditOpt(tb ...string) *optrs {
+	for _, v := range opts {
+		if v.Tag == UPDATE_TAG {
+			if len(tb) == 0 {
+				return v
+			}
+			if types.StringContains(tb, v.Table) {
+				return v
+			}
+		}
+	}
+	return &optrs{}
+}
+func (t *tableOptrs) SetViewExtCmptOpt(v *viewExtOptrsMap) {
+	v.ALL.Sort()
+	t.ViewExtCmptOpts = v
+	for _, v := range t.ViewExtCmptOpts.ALL {
+		if _, ok := t.OptrtMap[v.UNQ]; !ok {
+			t.OptrtMap[v.UNQ] = v
+			t.All = append(t.All, v)
+		}
+	}
+
 }

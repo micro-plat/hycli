@@ -9,8 +9,7 @@ package {-{.Name.Main}-}
 {-{- $pklen := (len $table.PKColumns)|minus}-}
 {-{- $switchs :=  $table.GetColumsByCmpnt "switch" "l"}-}
 {-{- $slen := (len $switchs)|minus}-}
-{-{- $barlst := $table.Optrs.BarOpts.Merge $table.Optrs.ListOpts }-}
-{-{- $updator :=  $barlst.GetByCmptName "batupdator-lstupdator"}-}
+{-{- $updator :=  $table.Optrs.All.GetByCmptName "batupdator-lstupdator"}-}
 {-{- $barinsert :=  $table.Optrs.BarOpts.GetByCmptName "barinsert"}-}
 {-{- $batinserts :=  $table.Optrs.BarOpts.GetByCmptName  "batinsert"}-}
 {-{- $hasStatic :=   $table.HasStaticColumn "bc-bu-bq" "#"}-}

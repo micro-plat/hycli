@@ -1,9 +1,8 @@
 {-{- $table := .}-}
-{-{- $opts := $table.Optrs.ListOpts.Merge $table.Optrs.BarOpts}-}
+{-{- $opts := $table.Optrs.All.GetConfirm}-}
 <template tag="{-{.Marker}-}">
   <div>
     {-{- range $x,$m:=$opts }-}
-    {-{- if eq "CNFRM" $m.Tag }-}
     <el-dialog
       v-model="conf.{-{$m.UNQ}-}_visible"
       title="{-{$m.Label}-}"
@@ -23,7 +22,6 @@
       </template>
     </el-dialog>
     {-{- end }-}
-    {-{- end }-}
   </div>
 </template>
 
@@ -33,13 +31,10 @@ export default {
     return{
       conf:{
         {-{- range $x,$m:=$opts }-}
-        {-{- if eq "CNFRM" $m.Tag }-}
         {-{$m.UNQ}-}_visible:false,
-        {-{- end}-}
         {-{- end}-}
       },
   {-{- range $x,$m:=$opts }-}
-     {-{- if eq "CNFRM" $m.Tag }-}
       //{-{$m.Label}-} form by  [{-{$m.RwName}-}]
       form_{-{$m.UNQ}-}:{
        {-{- $cols:=  $table.GetColumnsByTPName $m.RwName }-}
@@ -48,12 +43,10 @@ export default {
         {-{- end}-}
          },
    {-{- end}-}
-   {-{- end}-}
     }
   },
   methods:{
      {-{- range $x,$m:=$opts }-}
-     {-{- if eq "CNFRM" $m.Tag }-}
      //--------------------{-{$m.Label}-}---------------------------------
       //显示 {-{$m.Label}-} 弹出框
       show_{-{$m.UNQ}-}(fm){
@@ -86,7 +79,6 @@ export default {
     },
     //-----------------------------------------------------------
     {-{- end }-}
-      {-{- end}-}
   },
 }
 </script>

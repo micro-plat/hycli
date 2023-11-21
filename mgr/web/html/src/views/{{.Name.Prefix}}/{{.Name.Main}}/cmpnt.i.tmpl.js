@@ -1,6 +1,6 @@
 {-{- $table := .}-}
-{-{- $opts:=$table.Optrs.ListOpts.Merge $table.Optrs.BarOpts $table.Optrs.ChartOpts $table.Optrs.ExtOpts}-}
-{-{- range $x,$m:=  $opts.GetByName "CMPNT"}-}
+{-{- $opts:=$table.Optrs.All.GetCompnents}-}
+{-{- range $x,$m:=  $opts}-}
 // {-{$m.Label}-}
 import {-{$m.UNQ}-} from "{-{f_string_translate $m.URL (f_table_find_by_name $m.Table)}-}"
 {-{- end}-}

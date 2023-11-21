@@ -1,9 +1,8 @@
 {-{- $table := .}-}
-{-{- $optCols:=  $table.Optrs.ListOpts.Merge $table.Optrs.BarOpts}-}
+{-{- $optCols:=  $table.Optrs.All.GetDialog}-}
 <template tag="{-{.Marker}-}">
   <div>
     {-{- range $x,$m:=$optCols }-}
-    {-{- if eq "DIALOG" $m.Tag }-}
     {-{- $width:= $m.GetParam "width" "60%" }-}
     {-{- $rows:=  $table.GetColumnsByTPName $m.RwName (f_string_contact "form_" $m.UNQ)}-}
     <el-dialog
@@ -32,7 +31,6 @@
       </template>
     </el-dialog>
     {-{- end }-}
-    {-{- end }-}
   </div>
 </template>
 
@@ -42,13 +40,10 @@ export default {
     return{
       conf:{
         {-{- range $x,$m:=$optCols }-}
-        {-{- if eq "DIALOG" $m.Tag }-}
         {-{$m.UNQ}-}_visible:false,
-        {-{- end}-}
         {-{- end}-}
       },
   {-{- range $x,$m:=$optCols }-}
-     {-{- if eq "DIALOG" $m.Tag}-}
       //{-{$m.Label}-} form by  {-{$m.RwName}-}
       {-{- $rows:=  $table.GetColumnsByTPName $m.RwName }-}
         {-{- range $i,$c:=$rows }-} 
@@ -64,9 +59,8 @@ export default {
         {-{- end}-}
     form_{-{$m.UNQ}-}:{},
    {-{- end}-}
-   {-{- end}-}
+
     {-{- range $x,$m:=$optCols }-}
-    {-{- if eq "DIALOG" $m.Tag}-}
     rules_{-{$m.UNQ}-}:{
         {-{- $rows:=  $table.GetColumnsByTPName $m.RwName }-}
          {-{- range $i,$c:=$rows}-} 
@@ -74,12 +68,10 @@ export default {
           {-{- end}-}
         },
       {-{- end}-}
-      {-{- end}-}
     }
   },
   methods:{
      {-{- range $x,$m:=$optCols }-}
-     {-{- if eq "DIALOG" $m.Tag}-}
      //--------------------{-{$m.Label}-}---------------------------------
       //显示 {-{$m.Label}-} 弹出框 {-{$m}-}
       show_{-{$m.UNQ}-}(fm){
@@ -157,7 +149,6 @@ export default {
     },
     //-----------------------------------------------------------
     {-{- end }-}
-      {-{- end}-}
   },
 }
 </script>

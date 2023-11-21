@@ -54,18 +54,15 @@
     <template #footer>
       <span style="height: 60px"> </span>
     </template>
-    {-{- range $x,$m:= $table.Optrs.ViewExtCmptOpts.ALL}-}
-    {-{- if eq "CMPNT" $m.Name  }-}
+    {-{- range $x,$m:= $table.Optrs.ViewExtCmptOpts.ALL.GetCompnents}-}
     <{-{$m.UNQ}-} ref="cmpnt_{-{$m.UNQ}-}" @onsaved="show(form)"></{-{$m.UNQ}-}>
     {-{- end}-}
-    {-{- end}-}
- 
   </el-dialog>
 </div>
 </template>
 <script>
 {-{- $vaopts := $viewOpts.Merge $table.Optrs.ViewExtCmptOpts.ALL}-}
-{-{- $vaCmpntOpts :=  $vaopts.GetByName "CMPNT"}-}
+{-{- $vaCmpntOpts :=  $vaopts.GetCompnents}-}
  {-{- range $x,$m := $vaCmpntOpts}-}
 import {-{$m.UNQ}-} from "{-{f_string_translate $m.URL (f_table_find_by_name $m.Table)}-}"
 {-{- end}-}
@@ -101,7 +98,7 @@ export default {
       }
   },
   methods: {
-   {-{- range $x,$m:= $table.Optrs.All.GetByName "CMPNT"}-}
+   {-{- range $x,$m:= $table.Optrs.All.GetCompnents}-}
   show_cmpnt_{-{$m.UNQ}-}(fm = {}){
     let form = Object.assign({},this.form)
     form = Object.assign(form,fm)
