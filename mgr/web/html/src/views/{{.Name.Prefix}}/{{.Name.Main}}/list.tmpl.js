@@ -280,4 +280,5 @@
         const property = column['property']
         return row[property] === value
      },
- {-{- template "enum.tmpl.js" $table.GetColumnsByTPName "q-l-le" }-}
+ {-{- $st := $table.NewSceneByList ($table.GetColumnsByTPName "q-l-le")}-}
+ {-{- template "enum.tmpl.js" $st }-}

@@ -8,7 +8,7 @@
     {-{- $rows:=  $table.GetColumnsByTPName $m.RwName (f_string_contact "form_" $m.UNQ)}-}
     <el-dialog
       v-model="conf.{-{$m.UNQ}-}_visible"
-      title="{-{.Label}-}"
+      title="{-{$m.Label}-}"
       :close-on-click-modal="false"
       width="{-{$width}-}"
       draggable
@@ -52,11 +52,12 @@ export default {
       //{-{$m.Label}-} form by  {-{$m.RwName}-}
       {-{- $rows:=  $table.GetColumnsByTPName $m.RwName }-}
         {-{- range $i,$c:=$rows }-} 
+        {-{- $group:= f_string_trim $c.Enum.Group "#"}-}
         {-{- if and (eq true $c.Enum.IsEnum) (eq true (f_string_start $c.Cmpnt.Type "tree|cascader"))}-}
         {-{- $deep := f_num_get ($c.GetOpt "deep") 99}-}
-        {-{.Name}-}List:this.$theia.enum.getTree("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}","{-{$c.Enum.Group}-}",{-{$deep}-}),
+        {-{.Name}-}List:this.$theia.enum.getTree("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}",{-{if f_string_start $c.Enum.Group "#"}-}this.$theia.user.get("{-{$group}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-},{-{$deep}-}),
         {-{- else if or (eq true $c.Enum.IsEnum) (eq true (f_string_start $c.Cmpnt.Type "multi"))}-}
-        {-{.Name}-}List:this.$theia.enum.get("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}","{-{$c.Enum.Group}-}"),
+        {-{.Name}-}List:this.$theia.enum.get("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}",{-{if f_string_start $c.Enum.Group "#"}-}this.$theia.user.get("{-{$group}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-}),
          {-{- else}-}
     {-{$c.Name}-}:"",
          {-{- end }-}

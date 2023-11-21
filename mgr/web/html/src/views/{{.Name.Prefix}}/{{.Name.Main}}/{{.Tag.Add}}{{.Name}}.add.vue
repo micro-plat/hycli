@@ -229,11 +229,11 @@ export default {
         {-{- end}-}
       }
       {-{- end}-}
-
     },
     {-{- end}-}
     {-{- end}-}
-    {-{- template "enum.tmpl.js" $cColumns }-}
+    {-{- $st := $table.NewScene $cColumns}-}
+    {-{- template "enum.tmpl.js" $st }-}
 },
 }
 </script>

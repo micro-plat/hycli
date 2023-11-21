@@ -214,7 +214,7 @@ func (u *{-{.Name.CName}-}Handler) QueryHandle(ctx hydra.IContext) (r interface{
 	}
 
 	ctx.Log().Info("2.查询数据列表")
-	items, err := hydra.C.DB().GetRegularDB().Query(get{-{.Name.CName}-}List, m)
+	items, err := hydra.C.DB().GetRegularDB().QueryBatch(get{-{.Name.CName}-}List, m)
 	if err != nil {
 		return errs.NewErrorf(http.StatusNotExtended, "查询数据出错:%+v", err)
 	}

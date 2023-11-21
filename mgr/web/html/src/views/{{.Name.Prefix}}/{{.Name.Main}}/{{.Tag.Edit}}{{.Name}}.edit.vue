@@ -200,7 +200,7 @@ export default {
         lst.forEach(el => {
           if(el.value == val)
           {-{- range $i,$c:= $p}-}
-          if (!that.form.{-{$i}-} || that.form._{-{$i}-} == that.form.{-{$i}-}) {
+          if (!that.form.{-{$i}-} || !that.form._{-{$i}-} || that.form._{-{$i}-} == that.form.{-{$i}-}) {
             hasValues.{-{$i}-} = true
             that.form.{-{$i}-} = el.{-{$c}-}
             that.form._{-{$i}-} = el.{-{$c}-}
@@ -218,7 +218,8 @@ export default {
     },
     {-{- end}-}
     {-{- end}-}
-    {-{- template "enum.tmpl.js" $ucols }-}
+    {-{- $st := $table.NewScene $ucols}-}
+    {-{- template "enum.tmpl.js" $st }-}
   },
 };
 </script>

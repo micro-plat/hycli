@@ -25,7 +25,7 @@ func (u *EnumsHandler) QueryHandle(ctx hydra.IContext) (r interface{}) {
 
 	ctx.Log().Info("--------获取枚举数据列表--------")
 	u.once.Do(u.load)
-	ctx.Log().Info("1.查询数据列表")
+	ctx.Log().Info("1.查询数据列表",ctx.Request().GetString("type"))
 	sqls := getSQLs(ctx.Request().GetString("type"))
 	list := make(types.XMaps, 0, 1)
 	for _, sql := range sqls {

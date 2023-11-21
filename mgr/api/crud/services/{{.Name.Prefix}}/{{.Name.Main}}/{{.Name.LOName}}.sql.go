@@ -39,7 +39,7 @@ where
 {-{- end}-}`
 
 //get{-{.Name.CName}-}List 查询{-{.Desc}-}列表数据
-var get{-{.Name.CName}-}List = `
+var get{-{.Name.CName}-}List =[]string{ `
 select
 	{-{- range $i,$v :=  $sigleQueryCols}-}
 	t.{-{$v.Name}-},
@@ -68,7 +68,8 @@ order by {-{ range $i,$m := $orders}-}
 {-{- range $i,$v := $table.PKColumns.GetValidColumns}-}
 	t.{-{$v.Name}-} desc
 {-{- end}-}
-limit @ps offset @offset`
+limit @ps offset @offset`,
+}
 {-{- end}-}
 
 {-{- if gt (len ( $table.GetColumnsByTPName "c-bc")) 0}-}

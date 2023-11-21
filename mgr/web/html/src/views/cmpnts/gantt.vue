@@ -176,11 +176,11 @@ export default {
                 let finish = row["finish_" + v]
 
                 if (start && finish) {
-                    let left = that.getOffset(ranges, new Date(start))
-                    let right = that.getOffset(ranges, new Date(finish))
+                    let left = that.getOffset(ranges, new Date(start), true)
+                    let right = that.getOffset(ranges, new Date(finish), false)
 
                     left = left < 0 ? 0 : left
-                    console.log("start.finish:", left, right)
+                    console.log("start.finish:", row, left, right)
                     right = right < 0 ? left : right
                     if (right >= left && left >= 0) {
                         let idx = { end: left }
@@ -219,7 +219,7 @@ export default {
             return { min: min, max: max }
         },
         //指定日期数组，判断开始结束日期在数组中的位置
-        getOffset(dateRange, current) {
+        getOffset(dateRange, current, fmin = true) {
             let offset = -1
             if (
                 dateRange.length == 0 ||
@@ -227,12 +227,21 @@ export default {
             ) {
                 return offset;
             }
-
+            let min = dateRange.length
+            let max = 0
             dateRange.forEach((v, i) => {
-                if (this.$theia.xdate.diffDay(this.$theia.xdate.toDay(v), this.$theia.xdate.toDay(current)) == 0) {
+                let vidx = this.$theia.xdate.diffDay(this.$theia.xdate.toDay(v),
+                    this.$theia.xdate.toDay(current))
+                min = vidx < min ? vidx : min
+                max = vidx > max ? vidx : max
+
+                if (vidx == 0) {
                     offset = i;
                 }
             });
+            if (offset == -1) {
+                return fmin ? min : (max >= dateRange.length ? dateRange.length - 1 : max)
+            }
             return offset;
         }
 

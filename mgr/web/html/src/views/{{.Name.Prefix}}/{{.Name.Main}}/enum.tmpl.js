@@ -1,11 +1,18 @@
-{-{- $ccols := .}-}
+{-{- $st := .}-}
+{-{- $table := $st.Table}-}
+{-{- $ccols := $st.Cols}-}
     loadEnums(){
         {-{- range $i,$c := $ccols}-}
         {-{- if eq true $c.Enum.IsEnum }-}
         // {-{$c.Enum.AssctColumn}-}
         {-{- $pid := f_string_contact `"` $c.Enum.PID `"`}-}
         {-{- if ne "" $c.Enum.AssctColumn}-}
-        {-{- $pid = f_string_contact "this.form." $c.Enum.AssctColumn}-}
+        {-{- if eq "" $st.FormUNQ}-}
+        {-{- $pid = f_string_contact "this.form." $c.Enum.AssctColumn `+""`}-}
+        {-{- else}-}
+        {-{- $pid = f_string_contact "this.form_" $st.FormUNQ "." $c.Enum.AssctColumn `+""`}-}
+        {-{- end}-}
+       
         {-{- end}-}
         {-{- if eq true (f_string_start $c.Cmpnt.Type "tree|cascader")}-}
         {-{- $deep := f_num_get ($c.GetOpt "deep") 99}-}
