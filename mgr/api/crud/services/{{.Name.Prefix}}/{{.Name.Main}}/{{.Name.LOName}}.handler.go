@@ -9,10 +9,10 @@ package {-{.Name.Main}-}
 {-{- $pklen := (len $table.PKColumns)|minus}-}
 {-{- $switchs :=  $table.GetColumsByCmpnt "switch" "l"}-}
 {-{- $slen := (len $switchs)|minus}-}
-{-{- $barlst := $table.BarOpts.Merge $table.ListOpts }-}
+{-{- $barlst := $table.Optrs.BarOpts.Merge $table.Optrs.ListOpts }-}
 {-{- $updator :=  $barlst.GetByCmptName "batupdator-lstupdator"}-}
-{-{- $barinsert :=  $table.BarOpts.GetByCmptName "barinsert"}-}
-{-{- $batinserts :=  $table.BarOpts.GetByCmptName  "batinsert"}-}
+{-{- $barinsert :=  $table.Optrs.BarOpts.GetByCmptName "barinsert"}-}
+{-{- $batinserts :=  $table.Optrs.BarOpts.GetByCmptName  "batinsert"}-}
 {-{- $hasStatic :=   $table.HasStaticColumn "bc-bu-bq" "#"}-}
 
 import (
@@ -165,7 +165,7 @@ func (u *{-{.Name.CName}-}Handler) PostHandle(ctx hydra.IContext) (r interface{}
 
 {-{- $qColumns :=  $table.GetValidColumnsByName "q-bq"}-}
 {-{- if gt (len $qColumns) 0}-}
-{-{- $qbar:=$table.QueryOptrs|f_optr_first}-}
+{-{- $qbar:=$table.Optrs.QueryOptrs|f_optr_first}-}
 {-{- $pkName := $table.PKColumns|f_colum_first}-}
 {-{- $treeNode :=  $qbar.GetParam "treeNode" ""}-}
 {-{- $treeId :=  $qbar.GetParam "treeId" $pkName.Name}-}

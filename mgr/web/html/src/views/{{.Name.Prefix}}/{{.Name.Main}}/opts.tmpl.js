@@ -2,9 +2,9 @@
 {-{- $table := $xtable.Current }-}
 {-{- $mtable := $xtable.Main}-}
 {-{- $tmpl := f_table_is_tmp $xtable}-}
-{-{- $optRow:=  $table.ListOpts.Merge $table.BarOpts}-}
+{-{- $optRow:=  $table.Optrs.ListOpts.Merge $table.Optrs.BarOpts}-}
 {-{- if eq true $tmpl}-}
-{-{- $optRow = $mtable.ViewExtCmptOpts.GetLstOptrs  $table.Name.Raw}-}
+{-{- $optRow = $mtable.Optrs.ViewExtCmptOpts.GetLstOptrs  $table.Name.Raw}-}
 {-{- end}-}
 {-{- $cmpnts:=  $optRow.GetByName "CMPNT"}-}
 {-{- if gt (len $cmpnts) 0}-}

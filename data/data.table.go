@@ -24,29 +24,8 @@ type Table struct {
 	//EnumColumns 枚举列
 	EnumColumns Columns
 
-	//ViewOpts 预览操作
-	ViewOpts viewOptrs
-
-	//ViewExtCmptOpts 预览页扩展组件
-	ViewExtCmptOpts *viewExtOptrsMap
-
-	//ListOpts 列表组件(显示在每行数据操作栏)
-	ListOpts lstOptrs
-
-	//LStatOpts 统计组件(显示在查询条件与表格之间)
-	LStatOpts lstatOptrs
-
-	//ChartOpts 图表组件(显示到统计组件下方)
-	ChartOpts chartOptrs
-
-	//ExtOpts 扩展组件(显示到图标组件的下方)
-	ExtOpts extOptrs
-
-	//BarOpts 工具栏操作(显示表格上方)
-	BarOpts barOptrs
-
-	//QueryOptrs 查询操作组件(显示在查询条件最后)
-	QueryOptrs queryOptrs
+	//Optrs 所有操作栏
+	Optrs *tableOptrs
 
 	//NeedBatchCheck 是否需要批量选择
 	NeedBatchCheck bool
@@ -65,15 +44,8 @@ type Table struct {
 }
 
 func (t *Table) Sort() {
-	t.ListOpts.Merge(t.BarOpts)
 	sort.Sort(t.Columns)
-	sort.Sort(optrslst(t.BarOpts))
-	sort.Sort(optrslst(t.ViewOpts))
-	sort.Sort(optrslst(t.ListOpts))
-	sort.Sort(optrslst(t.LStatOpts))
-	sort.Sort(optrslst(t.ChartOpts))
-	sort.Sort(optrslst(t.ExtOpts))
-	sort.Sort(optrslst(t.BarOpts))
+	t.Optrs.Sort()
 }
 func NewTable(t *md.Table) *Table {
 	if t.Cache != nil {
@@ -89,22 +61,24 @@ func NewTable(t *md.Table) *Table {
 		PKColumns:   columns.GetPKColumns(),
 		EnumColumns: columns.GetEnumColumns(),
 		Enum:        newEnumType(t.Name.Short, t.Rows, columns.GetEnumDelColumns()),
+		Optrs:       &tableOptrs{},
 	}
 	t.Cache = table
-	table.ListOpts = createLstBarOptrs(table, t.ExtInfo)
-	table.BarOpts, table.NeedBatchCheck = createQBarOptrs(table, t.ExtInfo)
-	table.ViewOpts, _ = createViewOptrs(table, t.ExtInfo)
-	table.LStatOpts, table.ChartOpts = createLStatChartOptrs(table.Name.Raw, t.ExtInfo)
-	table.ExtOpts = createExtOptrs(table.Name.Raw, t.ExtInfo)
-	table.QueryOptrs = createQueryOptrs(table, t.ExtInfo)
+	table.Optrs.ViewExtCmptOpts = &viewExtOptrsMap{}
+	table.Optrs.ListOpts = createLstBarOptrs(table, t.ExtInfo)
+	table.Optrs.BarOpts, table.NeedBatchCheck = createQBarOptrs(table, t.ExtInfo)
+	table.Optrs.ViewOpts, _ = createViewOptrs(table, t.ExtInfo)
+	table.Optrs.LStatOpts, table.Optrs.ChartOpts = createLStatChartOptrs(table.Name.Raw, t.ExtInfo)
+	table.Optrs.ExtOpts = createExtOptrs(table.Name.Raw, t.ExtInfo)
+	table.Optrs.QueryOptrs = createQueryOptrs(table, t.ExtInfo)
 	table.NormalIdx = createNormalIdx(table)
 	table.UNQIndex = createUNQIdx(table)
 	table.Conf = newConfig(t.Settings)
 	table.Sort()
-	table.ViewExtCmptOpts = &viewExtOptrsMap{}
 	return table
 }
 func (t *Table) LoadExtOptrs() {
-	t.ViewExtCmptOpts = getViewExtCmptOptsByTable(t)
+	t.Optrs.ViewExtCmptOpts = getViewExtCmptOptsByTable(t)
+	t.Optrs.ViewExtCmptOpts.ALL.Sort()
 	t.Tag = newTag(t)
 }

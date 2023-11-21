@@ -1,6 +1,6 @@
 <template tag="{-{.Marker}-}">
   {-{- $table := .}-}
-  {-{- $opts :=$table.ListOpts }-}
+  {-{- $opts :=$table.Optrs.ListOpts }-}
   {-{- $tbs := $table.Contact $table }-}
   {-{- $qcols :=  $table.GetColumnsByTPName "q"}-}
   <div style="height: 100%">
@@ -80,7 +80,7 @@ mounted() {
     {-{- end}-}
   this.form_{-{$table.UNQ}-}.single_date_range_name = (this.multiQueryDateRange[0]||{}).value
   this.form_{-{$table.UNQ}-}.single_text_name = (this.multiQueryText[0]||{}).value
-  {-{- $optRow:= $table.ListOpts.Merge $table.BarOpts}-}
+  {-{- $optRow:= $table.Optrs.ListOpts.Merge $table.Optrs.BarOpts}-}
   {-{- $cmpnts:=  $optRow.GetByName "CMPNT"}-}
   {-{- range $x,$m:= $cmpnts}-}
   this.cmpnt_funcs["{-{$m.UNQ}-}"] = this.show_cmpnt_{-{$m.UNQ}-}

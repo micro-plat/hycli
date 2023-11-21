@@ -1,6 +1,6 @@
 {-{- $table := . }-}
 {-{- $vcols :=  $table.GetColumnsByTPName "v" }-}
-{-{- $viewOpts :=$table.ViewOpts}-}
+{-{- $viewOpts :=$table.Optrs.ViewOpts}-}
 <template tag="{-{.Marker}-}">
   <div>
   <el-dialog
@@ -33,7 +33,7 @@
      </el-tab-pane>
        {-{- else if eq "TAB" $c.Name}-}
         <el-tab-pane label="{-{$c.Label}-}" name="{-{$c.UNQ}-}"  @tab-click="show_view_{-{$c.UNQ}-}">
-          {-{- $tlbar := $table.ViewExtCmptOpts.GetBarOptrs  $c.Table $c.UNQ}-}
+          {-{- $tlbar := $table.Optrs.ViewExtCmptOpts.GetBarOptrs  $c.Table $c.UNQ}-}
           {-{- if gt (len $tlbar) 0}-}
           <el-row>
             <el-col :span="24" class="text-right">
@@ -54,7 +54,7 @@
     <template #footer>
       <span style="height: 60px"> </span>
     </template>
-    {-{- range $x,$m:= $table.ViewExtCmptOpts.ALL}-}
+    {-{- range $x,$m:= $table.Optrs.ViewExtCmptOpts.ALL}-}
     {-{- if eq "CMPNT" $m.Name  }-}
     <{-{$m.UNQ}-} ref="cmpnt_{-{$m.UNQ}-}" @onsaved="show(form)"></{-{$m.UNQ}-}>
     {-{- end}-}
@@ -64,7 +64,7 @@
 </div>
 </template>
 <script>
-{-{- $vaopts := $viewOpts.Merge $table.ViewExtCmptOpts.ALL}-}
+{-{- $vaopts := $viewOpts.Merge $table.Optrs.ViewExtCmptOpts.ALL}-}
 {-{- $vaCmpntOpts :=  $vaopts.GetByName "CMPNT"}-}
  {-{- range $x,$m := $vaCmpntOpts}-}
 import {-{$m.UNQ}-} from "{-{f_string_translate $m.URL (f_table_find_by_name $m.Table)}-}"
@@ -101,7 +101,7 @@ export default {
       }
   },
   methods: {
-   {-{- range $x,$m:= $table.ViewExtCmptOpts.ALL.GetByName "CMPNT"}-}
+   {-{- range $x,$m:= $table.Optrs.All.GetByName "CMPNT"}-}
   show_cmpnt_{-{$m.UNQ}-}(fm = {}){
     let form = Object.assign({},this.form)
     form = Object.assign(form,fm)

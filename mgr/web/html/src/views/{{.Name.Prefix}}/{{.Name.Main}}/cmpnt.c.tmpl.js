@@ -1,10 +1,10 @@
 {-{- $table := .}-}
-{-{- $opts:= $table.ListOpts.Merge $table.BarOpts $table.ChartOpts $table.ExtOpts}-}
+{-{- $opts:= $table.Optrs.ListOpts.Merge $table.Optrs.BarOpts $table.Optrs.ChartOpts $table.Optrs.ExtOpts}-}
 components: {
     {-{- range $x,$m:= $opts.GetByName "CMPNT"}-}
     {-{$m.UNQ}-},
     {-{- end}-}
-    {-{- range $i,$c:= $table.BarOpts.GetByCmptName "list" }-}
+    {-{- range $i,$c:= $table.Optrs.BarOpts.GetByCmptName "list" }-}
     {-{- $gantt := $c.GetParams "gantt" -}-}
     {-{- if ne $gantt ""}-}
     gantt,

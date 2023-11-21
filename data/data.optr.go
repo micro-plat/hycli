@@ -2,6 +2,7 @@ package data
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/micro-plat/hycli/data/internal/md"
@@ -163,6 +164,9 @@ func (s optrslst) FindName(name string) bool {
 func (s optrslst) String() string {
 	buff, _ := jsons.Marshal(s)
 	return string(buff)
+}
+func (s optrslst) Sort() {
+	sort.Sort(s)
 }
 func (s optrslst) Gets(tableName string) optrslst {
 	optrslst := make(optrslst, 0, len(s))

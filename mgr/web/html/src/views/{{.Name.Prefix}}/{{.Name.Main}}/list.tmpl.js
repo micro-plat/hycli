@@ -41,7 +41,7 @@
     //处理关联表{-{$table.Name}-} {-{$xtable.Main.Name}-} {-{$table.Enum.EnumType}-}
     {-{- $exit := false}-}
     {-{- if eq true $xtable.IsTmpl}-}
-    {-{- range $x,$v := $xtable.Main.ViewOpts}-}
+    {-{- range $x,$v := $xtable.Main.Optrs.ViewOpts}-}
     {-{- if eq $v.URL $table.Name.Raw}-}
     {-{- if and (ne "" $v.RwName) (ne "" $v.FwName)}-}
     {-{- $exit = true}-}
@@ -68,7 +68,7 @@
     that.conf.loading = true
     
     //构建统计查询
-    {-{- range $i,$v:= $table.LStatOpts}-}
+    {-{- range $i,$v:= $table.Optrs.LStatOpts}-}
       this.$theia.http.get("{-{$v.URL|lower}-}",queryForm).then(res=>{
         let item = res||{}
         {-{- $uxcols :=  $table.GetColumnsByTPName $v.RwName}-}
@@ -92,10 +92,10 @@
       });
     {-{- end}-}
 
-    {-{- range $i, $c:=  $table.ChartOpts }-}
+    {-{- range $i, $c:=  $table.Optrs.ChartOpts }-}
     this.$refs.chart_{-{ $c.UNQ }-}.show(this.form_{-{ $table.UNQ }-})
   {-{- end }-}
-  {-{- range $i, $c:=  $table.ExtOpts }-}
+  {-{- range $i, $c:=  $table.Optrs.ExtOpts }-}
     this.$refs.ext_{-{ $c.UNQ }-}.show(this.form_{-{ $table.UNQ }-})
   {-{- end }-}
   

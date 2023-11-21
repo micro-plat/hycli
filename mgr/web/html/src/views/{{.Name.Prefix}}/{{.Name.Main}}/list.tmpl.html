@@ -3,10 +3,10 @@
 {-{- $lcols := $table.GetColumnsByTPName "l"}-}
 {-{- $lecols := $table.GetColumnsByTPName "le"}-}
 {-{- $leLen := len $lecols}-}
-{-{- $lstopts := $table.ListOpts}-}
+{-{- $lstopts := $table.Optrs.ListOpts}-}
 {-{- $optLen := len $lstopts}-}
 {-{- $tmpl := f_table_is_tmp $xtable}-}
-{-{- $queryOpts:=$table.QueryOptrs|f_optr_first}-}
+{-{- $queryOpts:=$table.Optrs.QueryOptrs|f_optr_first}-}
 {-{- $pkName := $table.PKColumns|f_colum_first}-}
 {-{- $treeNode := $queryOpts.GetParam "treeNode" ""}-}
 
@@ -91,7 +91,7 @@
         {-{- end }-}
 
         <!-- 甘特图 -->
-        {-{- range $i,$c:= $table.BarOpts.GetByCmptName "list" }-}
+        {-{- range $i,$c:= $table.Optrs.BarOpts.GetByCmptName "list" }-}
         {-{- $gantt := $c.GetParams "gantt"}-}
         {-{- $ganttNoCount := $c.GetParams "ganttNoCount"}-}
         <el-table-column :width="{-{f_string_get $ganttNoCount 20}-}*20+20" align="center" label="甘特图">

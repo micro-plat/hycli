@@ -11,7 +11,7 @@
     "table":"{-{$c.Name.Raw}-}",
     "path":"../views/{-{$c.Name.Prefix}-}/{-{$c.Name.Main}-}/{-{$c.Name}-}.list.vue",
     "funcs":[
-        {-{- $opts :=  $c.ListOpts.Merge $c.BarOpts $c.ViewOpts $c.ViewExtCmptOpts.ALL $c.LStatOpts $c.ChartOpts $c.ExtOpts $c.QueryOptrs}-}
+        {-{- $opts :=  $c.Optrs.All}-}
         {-{- $vax := (len $opts)|minus}-}
         {-{- range $j,$k := $opts}-}
         {"id":"{-{$k.UNQ}-}","name":"{-{$k.Label}-}","desc":"{-{$k.Desc}-}"}{-{if lt $j $vax}-},{-{end}-}

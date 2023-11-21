@@ -1,6 +1,6 @@
 {-{- $table :=. }-}
 {-{- $vcols :=  $table.GetColumnsByTPName "v"}-}
-{-{- $viewOpts :=$table.ViewOpts}-}
+{-{- $viewOpts :=$table.Optrs.ViewOpts}-}
  show(form) {
     this.conf.visible = true
     this.form = form

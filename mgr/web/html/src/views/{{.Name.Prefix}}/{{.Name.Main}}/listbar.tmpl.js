@@ -1,5 +1,5 @@
 {-{- $table :=.}-}
-{-{- range $i,$c:= $table.LStatOpts }-}
+{-{- range $i,$c:= $table.Optrs.LStatOpts }-}
 {-{- $ucols :=  $table.GetColumnsByTPName $c.RwName}-}
 stat_{-{$c.UNQ}-}:{
     {-{- range $j,$m:= $ucols}-}

@@ -1,10 +1,10 @@
 {-{- $xtable :=.}-}
 {-{- $table :=.Current}-}
 {-{- $mtable :=.Main}-}
-{-{- $optrs :=$table.ListOpts}-}
+{-{- $optrs :=$table.Optrs.ListOpts}-}
 {-{- $tmpl :=f_table_is_tmp $xtable}-}
 {-{- if eq true $tmpl}-}
-{-{- $optrs = $mtable.ViewExtCmptOpts.GetLstOptrs  $table.Name.Raw}-}
+{-{- $optrs = $mtable.Optrs.ViewExtCmptOpts.GetLstOptrs  $table.Name.Raw}-}
 {-{- end}-}
 {-{-  $optrs =  $optrs.GetByName "CMPNT"}-}
 {-{- $words:=""}-}

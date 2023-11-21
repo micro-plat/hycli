@@ -148,7 +148,7 @@ where
 {-{- end}-}`
 {-{- end}-}
 
-{-{- $barlst := $table.BarOpts.Merge $table.ListOpts }-}
+{-{- $barlst := $table.Optrs.BarOpts.Merge $table.Optrs.ListOpts }-}
 {-{- $updator :=  $barlst.GetByCmptName "batupdator-lstupdator"}-}
 {-{- if gt (len $updator) 0}-}
 {-{- range $i,$c := $updator}-}
@@ -173,7 +173,7 @@ where 1 = 1
 {-{- end}-}
 {-{- end}-}
 
-{-{- $barinsert :=  $table.BarOpts.GetByCmptName  "barinsert"}-}
+{-{- $barinsert :=  $table.Optrs.All.GetByCmptName  "barinsert"}-}
 {-{- if gt (len $barinsert) 0}-}
 {-{- range $i,$c := $barinsert}-}
 {-{- $fds := f_string_contact $c.RwName "-" (f_string_contact "b" $c.RwName)}-}
@@ -202,7 +202,7 @@ values
 {-{- end}-}
 
 //批量添加数据
-{-{- $batinserts :=  $table.BarOpts.GetByCmptName  "batinsert"}-}
+{-{- $batinserts :=  $table.Optrs.BarOpts.GetByCmptName  "batinsert"}-}
 {-{- $uplen := minus (len $batinserts)}-}
 {-{- if gt (len $batinserts) 0}-}
 {-{- range $i,$c := $batinserts}-}

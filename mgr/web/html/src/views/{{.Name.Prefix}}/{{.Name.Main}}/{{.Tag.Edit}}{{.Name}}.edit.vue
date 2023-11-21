@@ -1,7 +1,7 @@
 {-{- $table := .}-}
 {-{- $ucols :=  $table.GetColumnsByTPName "U"}-}
 {-{- $enumColumns :=$table.EnumColumns}-}
-{-{- $editOpts :=$table.BarOpts.GetEditOpt }-}
+{-{- $editOpts :=$table.Optrs.BarOpts.GetEditOpt }-}
 {-{- $title := f_string_contact "修改" $table.Desc}-}
 {-{- if ne "" $editOpts.Label}-}
 {-{- $title = $editOpts.Label}-}
@@ -42,7 +42,7 @@ export default {
         width:"70%",
         {-{- else }-}
         {-{- $width:= "60%"}-}
-        {-{- range $i,$c:= $table.BarOpts.GetByTag "ADD" }-}
+        {-{- range $i,$c:= $table.Optrs.BarOpts.GetByTag "ADD" }-}
         {-{- $width = $c.GetParam "width" "60%" }-}
         {-{- end}-}
         width:"{-{$width}-}",
@@ -120,7 +120,7 @@ export default {
         postForm.{-{$c.Name}-} = (postForm.{-{$c.Name}-}||[]).join(",")
         {-{- end }-}
         {-{- end}-}
-        {-{- range $i,$c:=  $table.ListOpts.GetByTag "UPDATE" }-}
+        {-{- range $i,$c:=  $table.Optrs.ListOpts.GetByTag "UPDATE" }-}
         {-{- $save2window := $c.GetParams "save2window" -}-}
         {-{- if ne "" $save2window}-}
         

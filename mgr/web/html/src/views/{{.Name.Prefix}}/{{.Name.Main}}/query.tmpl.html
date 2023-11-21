@@ -1,9 +1,9 @@
 {-{- $table :=.}-}
-{-{- $qOptrs:= $table.QueryOptrs}-}
+{-{- $qOptrs:= $table.Optrs.QueryOptrs}-}
 {-{- $qcols :=  $table.GetColumnsByTPName "q"}-}
 {-{- $crow := $table.GetColumnsByTPName "c"}-}
 {-{- $clen := len $crow}-}
-{-{- $blen :=len $table.BarOpts}-}
+{-{- $blen :=len $table.Optrs.BarOpts}-}
 {-{- $tabs :=  $table.GetColumsByCmpnt "tabs" "q"}-}
 {-{- $xtabs :=  $table.GetColumsByCmpnt "xtabs" "q"}-}
 {-{- $blist :=  $table.GetColumsByCmpnt "blist" "q"}-}
@@ -169,7 +169,7 @@
                 {-{- end}-}
                 {-{- end}-}
             {-{- if eq $blen 1}-}
-                {-{- range $i,$c:= $table.BarOpts.GetByName "CMPNT" }-}
+                {-{- range $i,$c:= $table.Optrs.BarOpts.GetByName "CMPNT" }-}
                 <el-button :type="tagColor({-{f_num_spare $i 3}-})" {-{if ne "" $c.ICON}-} icon="{-{$c.ICON}-}" {-{end}-} @click="show_cmpnt_{-{$c.UNQ}-}">{-{$c.Label}-}</el-button>
                 {-{- end}-}
             {-{- end}-}
@@ -180,7 +180,7 @@
         <div class="blist"> 
             {-{- if gt $blen 1}-}
             <el-button-group>
-                {-{- range $i,$c:= $table.BarOpts.GetByName "CMPNT" }-}
+                {-{- range $i,$c:= $table.Optrs.BarOpts.GetByName "CMPNT" }-}
                 {-{- $exprs := $c.GetExprs "showExpr" ""}-}
                 <el-button :type="tagColor({-{f_num_spare $i 3}-})"
                 {-{- if gt (len $exprs)  0}-} v-if='

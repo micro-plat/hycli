@@ -21,7 +21,9 @@ func newTag(table *Table) *Tag {
 		Dialog: "~",
 		Cnfrm:  "~",
 	}
-	opts := table.ListOpts.Merge(table.BarOpts, table.ViewOpts, table.ViewExtCmptOpts.ALL)
+	opts := table.Optrs.ListOpts.Merge(table.Optrs.BarOpts,
+		table.Optrs.ViewOpts,
+		table.Optrs.ViewExtCmptOpts.ALL)
 	for _, opt := range opts {
 		if opt.Tag == "DIALOG" {
 			tag.Dialog = ""

@@ -35,7 +35,7 @@ func (v viewExtOptrsMap) GetLstOptrs(tb string) optrslst {
 }
 func getViewExtCmptOptsByTable(t *Table) *viewExtOptrsMap {
 	xtp := &viewExtOptrsMap{ALL: make(optrslst, 0, 1), Map: make(map[string]*viewExtOptrs)}
-	for _, v := range t.ViewOpts {
+	for _, v := range t.Optrs.ViewOpts {
 		if strings.EqualFold(t.Name.Raw, v.Table) {
 			continue
 		}
@@ -58,7 +58,7 @@ func getViewExtCmptOpts(table string, parentUNQID string, params map[string]stri
 	if tb.Table == nil {
 		return viewExtOpts
 	}
-	for _, v := range tb.BarOpts {
+	for _, v := range tb.Optrs.BarOpts {
 		if strings.EqualFold(v.Params["@showInView"], "true") {
 			nv := &optrs{}
 			types.DeepCopyByGob(nv, v)
@@ -69,7 +69,7 @@ func getViewExtCmptOpts(table string, parentUNQID string, params map[string]stri
 			viewExtOpts.BarOptrs = append(viewExtOpts.BarOptrs, nv)
 		}
 	}
-	for _, v := range tb.ListOpts {
+	for _, v := range tb.Optrs.ListOpts {
 		if strings.EqualFold(v.Params["@showInView"], "true") {
 			nv := &optrs{}
 			types.DeepCopyByGob(nv, v)

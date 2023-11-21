@@ -1,5 +1,5 @@
 {-{- $table := .}-}
-{-{- $optCols:=  $table.ListOpts.Merge $table.BarOpts}-}
+{-{- $optCols:=  $table.Optrs.ListOpts.Merge $table.Optrs.BarOpts}-}
 <template tag="{-{.Marker}-}">
   <div>
     {-{- range $x,$m:=$optCols }-}

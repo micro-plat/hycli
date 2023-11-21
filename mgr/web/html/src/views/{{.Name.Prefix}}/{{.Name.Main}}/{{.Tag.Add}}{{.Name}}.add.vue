@@ -2,7 +2,7 @@
 {-{- $cColumns :=  $table.GetColumnsByTPName "C"}-}
 {-{- $acColumns :=  $table.GetColumnsByTPName "C-BC"}-}
 {-{- $enumColumns :=$table.EnumColumns}-}
-{-{- $addOpts :=$table.BarOpts.GetAddOpt }-}
+{-{- $addOpts :=$table.Optrs.BarOpts.GetAddOpt }-}
 {-{- $title := f_string_contact "添加" $table.Desc}-}
 {-{- if ne "" $addOpts.Label}-}
 {-{- $title = $addOpts.Label}-}
@@ -45,7 +45,7 @@ export default {
         width:"70%",
         {-{- else }-}
         {-{- $width:= "60%"}-}
-        {-{- range $i,$c:= $table.BarOpts.GetByTag "ADD" }-}
+        {-{- range $i,$c:= $table.Optrs.All.GetByTag "ADD" }-}
         {-{- $width = $c.GetParam "width" "60%" }-}
         {-{- end}-}
         width:"{-{$width}-}",
@@ -59,7 +59,7 @@ export default {
       this.conf.visible = true;
       this.loadEnums()
       let local = {}
-      {-{- range $i,$c:= $table.BarOpts.GetByTag "ADD" }-}
+      {-{- range $i,$c:= $table.Optrs.BarOpts.GetByTag "ADD" }-}
         {-{- $read2window := $c.GetParams "read2window" -}-}
         {-{- if ne "" $read2window}-}
         
@@ -122,7 +122,7 @@ export default {
         postForm.{-{$c.Name}-} = (postForm.{-{$c.Name}-}||[]).join(",")
         {-{- end }-}
         {-{- end}-}
-        {-{- range $i,$c:= $table.BarOpts.GetByTag "ADD" }-}
+        {-{- range $i,$c:= $table.Optrs.BarOpts.GetByTag "ADD" }-}
         {-{- $save2window := $c.GetParams "save2window" -}-}
         {-{- if ne "" $save2window}-}
         
