@@ -103,7 +103,7 @@ func TestRelation2(t *testing.T) {
 	assert.Equal(t, "c", c)
 
 	assert.Equal(t, "name:#id;pwd:#id", md.GetParamByTag("change", "change(name:#id;pwd:#id)"))
-	columnxs := tab.GetColumnsByName("pricex")
+	columnxs := tab.Columns.GetColumns("pricex")
 
 	params := columnxs.GetParams("@change")
 	assert.Equal(t, 2, len(params))
@@ -132,7 +132,7 @@ func TestSplitConst2(t *testing.T) {
 	REQ090702	审批改造（客户单位可以发起审批）	陈艳	王春禹
 	REQ090703	供应商修改商品审核	黄一航、杨兢	王佳妮
 	REQ090704	积分发放优化	运营伙伴	王春禹
-	REQ090705	优惠券需求	杨航镔	陈丽君
+	REQ090705	优惠券需求	杨xx	陈丽君
 	REQ090706	淘金需求	李建明	王春禹
 	REQ090707	选品优化	黄一航	陈丽君
 	SYS090708	小程序用户登录频繁掉线优化	汪海军	无

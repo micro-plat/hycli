@@ -15,10 +15,8 @@ var Funcs = map[string]interface{}{
 	"f_string_2cname":    md.ToCName,
 	"f_string_translate": f_string_translate,
 	"f_string_trim":      f_string_trim,
-	"f_string_equal":     f_string_equal,
 	"f_string_get":       f_string_get,
 
-	"f_mysql_get_type":      f_mysql_get_type,
 	"f_mysql_get_def_value": f_mysql_get_def_value,
 
 	"f_num_add":      f_num_add,
@@ -31,29 +29,19 @@ var Funcs = map[string]interface{}{
 	"f_table_first":        f_table_first,
 	"f_table_get_ttable":   f_table_get_ttable,
 	"f_table_find_by_name": f_table_find_by_name,
-	"f_table_is_tmp":       f_table_is_tmp,
-
-	"f_colum_idx":   f_colum_idx,
-	"f_colum_first": f_colum_first,
-	"f_optr_first":  f_optr_first,
+	"f_colum_idx":          f_colum_idx,
 }
 
 func f_num_divide(x, y interface{}) int {
 	return types.GetInt(x, 0) / types.GetInt(y, 1)
 }
 
-func f_num_add(x, y interface{}) int {
-	return types.GetInt(x) + types.GetInt(y)
-}
-
-func f_table_is_tmp(o interface{}) bool {
-	if v, ok := o.(*TTable); ok {
-		return v.IsTmpl
+func f_num_add(x interface{}, y ...interface{}) int {
+	result := types.GetInt(x)
+	for _, v := range y {
+		result += types.GetInt(v)
 	}
-	if v, ok := o.(*BUITable); ok {
-		return v.IsTmpl
-	}
-	return false
+	return result
 }
 
 func f_table_first(ts []*Table) *Table {
@@ -108,17 +96,6 @@ func f_num_spare(x int, y int) int {
 func f_num_multiply(v int, b int) int {
 	return v * b
 }
-
-func f_string_equal(v string, bb string) bool {
-	bs := strings.Split(bb, "-")
-	for _, b := range bs {
-		if strings.EqualFold(v, b) {
-			return true
-		}
-	}
-	return false
-}
-
 func f_string_contact(v ...string) string {
 	return strings.Join(v, "")
 }
@@ -149,22 +126,6 @@ func getTable(tx interface{}) *Table {
 		return t.Table
 	}
 	return &Table{}
-}
-
-func f_mysql_get_type(c *md.Row) string {
-	return mySQLType(c.Type.Name, c.Type.Len, c.Type.DLen)
-}
-func f_optr_first(opts []*optrs) *optrs {
-	if len(opts) > 0 {
-		return opts[0]
-	}
-	return &optrs{}
-}
-func f_colum_first(columns []*Column) *Column {
-	if len(columns) > 0 {
-		return columns[0]
-	}
-	return &Column{}
 }
 func f_table_get_ttable(uname string) *TTable {
 	ut := f_table_find_by_name(uname)

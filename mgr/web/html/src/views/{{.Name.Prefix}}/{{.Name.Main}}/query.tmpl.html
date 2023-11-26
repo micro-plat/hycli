@@ -1,24 +1,18 @@
 {-{- $table :=.}-}
 {-{- $qOptrs:= $table.Optrs.QueryOptrs}-}
-{-{- $qcols :=  $table.GetColumnsByTPName "q"}-}
-{-{- $crow := $table.GetColumnsByTPName "c"}-}
-{-{- $clen := len $crow}-}
+{-{- $qcols :=  $table.Columns.GetFontQueryColumns}-}
+{-{- $crow := $table.Columns.GetFontCreateColumns}-}
 {-{- $blen :=len $table.Optrs.BarOpts}-}
-{-{- $tabs :=  $table.GetColumsByCmpnt "tabs" "q"}-}
-{-{- $xtabs :=  $table.GetColumsByCmpnt "xtabs" "q"}-}
-{-{- $blist :=  $table.GetColumsByCmpnt "blist" "q"}-}
-{-{- $xlen := f_num_add (len $tabs) (len $qcols)}-}
-{-{- $xlen = f_num_add $xlen  (len $blist)}-}
-{-{- $menucount := 0}-}
-{-{- range $i,$c:= $qcols}-}
-{-{- if and (eq "ddmenu" $c.Cmpnt.Type) (eq true $c.Enum.IsEnum)}-}
-{-{- $menucount = 1}-}
-{-{- end  }-}
-{-{- end  }-}
+{-{- $tabs :=  $table.Columns.GetFontQueryColumns.GetByCmpnt "tabs"}-}
+{-{- $xtabs :=  $table.Columns.GetFontQueryColumns.GetByCmpnt "xtabs"}-}
+{-{- $blist :=  $table.Columns.GetFontQueryColumns.GetByCmpnt "blist"}-}
+{-{- $xlen := f_num_add $tabs.Len $qcols.Len  $blist.Len}-}
+{-{- $menucount := ($qcols.GetEnumColumns.GetByCmpnt "ddmenu").Len}-}
+
 
 {-{- if gt $xlen 0}-}
 <div class="query">
-    {-{ if gt (len $tabs) 0}-}
+    {-{ if gt $tabs.Len 0}-}
     <div class="tabs">
         {-{- range $i,$c:= $tabs}-}
         <el-tabs v-model="form_{-{$table.UNQ}-}.{-{.Name}-}"  @tab-change="onQuery">
@@ -28,10 +22,10 @@
         {-{- end}-}
     </div>
     {-{- end}-}
-    {-{- if or (gt (len $qcols) 0 ) (gt (len $blist) 0)}-}
+    {-{- if or (gt $qcols.Len 0 ) (gt $blist.Len 0)}-}
     <el-form :model="form_{-{$table.UNQ}-}" inline >
         {-{- range $i,$c:= $qcols}-}
-        {-{- if eq "year" $c.Cmpnt.Type}-}
+        {-{- if $c.Cmpnt.Equal "year"}-}
         <!--{-{$c.Label}-} 年控件 -->
         <el-form-item>
             <el-date-picker style="width: 120px" v-model="form_{-{$table.UNQ}-}.{-{$c.Name}-}" clearable type="year"
@@ -41,7 +35,7 @@
         {-{- end}-}
 
         {-{- range $i,$c:= $qcols}-}
-        {-{- if eq "month" $c.Cmpnt.Type}-}
+        {-{- if $c.Cmpnt.Equal "month"}-}
         <!--{-{$c.Label}-} 月控件 -->
         <el-form-item>
             <el-date-picker style="width: 120px" v-model="form_{-{$table.UNQ}-}.{-{$c.Name}-}" clearable type="month"
@@ -51,7 +45,7 @@
         {-{- end}-}
 
         {-{- range $i,$c:= $qcols}-}
-        {-{- if eq "monthrange" $c.Cmpnt.Type}-}
+        {-{- if $c.Cmpnt.Equal "monthrange"}-}
         <!--{-{$c.Label}-} 月份控件 -->
         <el-form-item>
             <el-date-picker style="width: 150px" v-model="form_{-{$table.UNQ}-}.{-{$c.Name}-}" clearable type="monthrange"
@@ -60,9 +54,9 @@
         {-{- end}-}
         {-{- end}-}
 
-        {-{- $cmpnts :=$table.GetColumsByCmpnt "daterange" "q"}-}
+        {-{- $cmpnts := $table.Columns.GetFontQueryColumns.GetByCmpnt "daterange"}-}
         <!-- 日期控件个数： {-{ len $cmpnts}-} -->
-        {-{- if gt (len $cmpnts) 0}-}
+        {-{- if gt $cmpnts.Len 0}-}
         <el-form-item>
             <!--多日期范围控件 -->
             <el-select v-model="form_{-{$table.UNQ}-}.single_date_range_name" placeholder="日期类型" style="width:100px;" class="prepend">
@@ -79,7 +73,7 @@
         {-{- end}-}
 
         {-{- range $i,$c:= $qcols}-}
-        {-{- if eq "date" $c.Cmpnt.Type}-}
+        {-{- if $c.Cmpnt.Equal "date"}-}
         <!--{-{$c.Label}-} 日期控件 -->
         <el-form-item>
             <el-date-picker  style="width: 120px" v-model="form_{-{$table.UNQ}-}.{-{$c.Name}-}" clearable type="date"
@@ -89,7 +83,7 @@
         {-{- end}-}
 
         {-{- range $i,$c:= $qcols}-}
-        {-{- if or (eq "select" $c.Cmpnt.Type) (eq "radio" $c.Cmpnt.Type)}-}
+        {-{- if $c.Cmpnt.Equal "select|radio"}-}
         <!--{-{$c.Label}-} 下拉控件 -->
         <el-form-item>
             <el-select {-{if gt ( len ($qcols.GetColumnsByTriggerChangeEvent $c.Name)) 0}-}  @change="onChange_{-{$c.Name}-}"  {-{end}-} v-model="form_{-{$table.UNQ}-}.{-{.Name}-}" style="width: 100px" clearable placeholder="{-{$c.Label}-}">
@@ -100,7 +94,7 @@
         {-{- end}-}
 
         {-{- range $i,$c:= $qcols}-}
-        {-{- if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
+        {-{- if $c.Cmpnt.StartWith "multi"}-}
         <!--{-{$c.Label}-} 下拉控件多选 -->
         <el-form-item>
             <el-select v-model="form_{-{$table.UNQ}-}.{-{.Name}-}" filterable clearable multiple collapse-tags  style="width: 140px"
@@ -112,7 +106,7 @@
         {-{- end}-}
 
         {-{- range $i,$c:= $qcols}-}
-        {-{- if eq "number" $c.Cmpnt.Type}-}
+        {-{- if $c.Cmpnt.Equal "number"}-}
         <!--{-{$c.Label}-}  数字控件 -->
         <el-form-item label="{-{$c.Label}-}">
             <el-input-number  controls-position="right" v-model="form_{-{$table.UNQ}-}.{-{ $c.Name}-}" {-{ if ne 0 $c.Style.Min}-}
@@ -123,9 +117,9 @@
         {-{- end}-} 
         {-{- end}-}
 
-        {-{- $cmpnts :=$table.GetColumsByCmpnt "input-text" "q"}-}
+        {-{- $cmpnts := $table.Columns.GetFontQueryColumns.GetByCmpnt "input-text"}-}
         <!-- 控件个数：{-{$cmpnts}-} -->
-        {-{- if gt (len $cmpnts) 0}-}
+        {-{- if gt $cmpnts.Len 0}-}
          <el-form-item>
             <el-input clearable style="width: 220px" v-model="form_{-{$table.UNQ}-}.single_text_value" maxlength="32"
                 placeholder="关键字" >
@@ -145,7 +139,7 @@
 
         <span class="ddl">
             {-{- range $i,$c:= $qcols}-}
-            {-{- if eq "ddl" $c.Cmpnt.Type}-}
+            {-{- if $c.Cmpnt.Equal "ddl"}-}
             <el-dropdown >
                 <el-button plain >{-{$c.Label}-}
                   {{form_{-{$table.UNQ}-}.{-{.Name}-}_label}}<el-icon class="el-icon--right"><arrow-down /></el-icon>
@@ -160,10 +154,10 @@
             {-{- end}-}
             {-{- end}-}
         </span>
-        {-{- if or (gt (len $qcols) $menucount) (gt $blen 0)}-}
+        {-{- if or (gt $qcols.Len $menucount) (gt $blen 0)}-}
         <el-form-item>
             <el-space wrap>
-                {-{- if gt (len $qOptrs) 0}-}
+                {-{- if gt $qOptrs.Len 0}-}
                 {-{- range $i,$x:=$qOptrs}-}
                 <el-button type="primary" icon="{-{$x.ICON}-}" @click="onQuery(true)">{-{$x.Label}-}</el-button>
                 {-{- end}-}
@@ -176,7 +170,7 @@
             </el-space>
         </el-form-item>
         {-{- end}-}
-        {-{ if or (gt (len $blist) 0) (gt $blen 1)}-}
+        {-{ if or (gt $blist.Len 0) (gt $blen 1)}-}
         <div class="blist"> 
             {-{- if gt $blen 1}-}
             <el-button-group>

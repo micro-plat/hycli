@@ -45,6 +45,10 @@ func CreatePage(mdpath string, tbs string, outpath string, cover bool) error {
 	if err = createRouter(outpath, ntbs, cover); err != nil {
 		return err
 	}
+
+	if err = createjspkg(outpath, ntbs, cover); err != nil {
+		return err
+	}
 	return nil
 }
 

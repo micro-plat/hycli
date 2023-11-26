@@ -1,5 +1,5 @@
 {-{- $table := . }-}
-{-{- $vcols :=  $table.GetColumnsByTPName "v" }-}
+{-{- $vcols :=  $table.Columns.GetViewColumns }-}
 {-{- $viewOpts :=$table.Optrs.ViewOpts}-}
 <template tag="{-{.Marker}-}">
   <div>
@@ -14,24 +14,24 @@
   >
   {-{- range $i,$c:= $viewOpts.GetByName "step"}-}
   <el-steps class="steps" :active="conf.stepActive_{-{$c.UNQ}-}" align-center  finish-status="success">
-    {-{- range $j,$s:=  $table.GetColumnsByTPName $c.RwName}-}
+    {-{- range $j,$s:=  $table.Columns.GetColumns $c.RwName}-}
     <el-step title="{-{$s.Label}-}" :description="view.{-{$s.Name}-}||'未设置'" />
     {-{- end }-}
   </el-steps>
   {-{- end}-}
     <el-tabs v-model="conf.selected">
       {-{- range $i,$c:= $viewOpts}-}
-      {-{- if eq "view" $c.Name}-}
+      {-{- if $c.Equal "view|detail"}-}
       {-{- $currentTable := f_table_get_ttable  $c.Table }-}
-      {-{- $vxcols :=  $currentTable.GetColumnsByTPName "v" }-}
+      {-{- $vxcols :=  $currentTable.Columns.GetViewColumns }-}
       <el-tab-pane label="详情" name="{-{$c.UNQ}-}">
        {-{- template "view.tmpl.html" $vxcols}-}
       </el-tab-pane>
-      {-{- else if eq "CMPNT" $c.Name}-}
+      {-{- else if $c.Equal "CMPNT"}-}
       <el-tab-pane label="{-{$c.Label}-}" name="{-{$c.UNQ}-}"  @tab-click="show_view_{-{$c.UNQ}-}">
         <{-{$c.UNQ}-} ref="view_{-{$c.UNQ}-}"></{-{$c.UNQ}-}>
      </el-tab-pane>
-       {-{- else if eq "TAB" $c.Name}-}
+       {-{- else if $c.Equal "TAB|list"}-}
         <el-tab-pane label="{-{$c.Label}-}" name="{-{$c.UNQ}-}"  @tab-click="show_view_{-{$c.UNQ}-}">
           {-{- $tlbar := $table.Optrs.ViewExtCmptOpts.GetBarOptrs  $c.Table $c.UNQ}-}
           {-{- if gt (len $tlbar) 0}-}
@@ -69,7 +69,6 @@ import {-{$m.UNQ}-} from "{-{f_string_translate $m.URL (f_table_find_by_name $m.
 
 export default {
    components: {
-
     {-{- range $x,$m:= $vaCmpntOpts}-}
     {-{$m.UNQ}-},
     {-{- end }-}
@@ -85,7 +84,7 @@ export default {
       },
       form:{},
        {-{- range $i,$c:=  $viewOpts }-}
-       {-{- if eq "TAB" $c.Name}-}
+       {-{- if $c.Equal "TAB|list"}-}
           {-{- $ct:=   $c.GetAssociatedTable true}-}
         {-{- template "queryform.tmpl.js" $ct}-}
       {-{- end}-}
@@ -124,7 +123,7 @@ export default {
 {-{- end}-}
     {-{- template "view.tmpl.js" $table}-}
      {-{- range $i,$c:= $viewOpts }-}
-       {-{- if eq "TAB" $c.Name }-}
+       {-{- if $c.Equal "TAB|list"}-}
           {-{- $ct:=   $c.GetAssociatedTable true }-}
           {-{- $tbs := $ct.Contact $table }-}
         {-{- template "list.tmpl.js" $tbs}-}

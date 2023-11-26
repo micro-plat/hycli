@@ -1,22 +1,21 @@
 {-{- $table :=.}-}
 {-{- $cmptopts := $table.Optrs.GraphOpts}-}
-{-{- $len := len $cmptopts}-}
 
-{-{- if gt $len 0}-}
+{-{- if gt $cmptopts.Len 0}-}
 <div class="listbar">
   <el-row>
   {-{- range $i,$c:= $cmptopts }-}
 
-    {-{- if f_string_equal $c.Tag "lstat"}-}
+    {-{- if $c.HasTag "lstat"}-}
       <!-- lstat {-{$c.Tag}-} - {-{- $c.Name}-}-->
     <el-col :span="24">
       <el-row>
-    {-{- $ucols :=  $table.GetColumnsByTPName $c.RwName }-}
+    {-{- $ucols :=  $table.Columns.GetColumns $c.RwName }-}
     {-{- $span :=  $c.GetParam "span" "24" }-}
-    {-{- $l := len $ucols}-}
+    {-{- $l := $ucols.Len}-}
     {-{- if ne 0 $l}-}
 
-    {-{- if eq "true" (  $c.GetParam "showLabel" "true")}-}
+    {-{- if eq "true" ($c.GetParam "showLabel" "true")}-}
     {-{- $span = f_num_add  $span -2}-}
     <el-col :span="2" style="font-size: 0.9rem;font-weight:600;margin-bottom: 16px;">
       {-{$c.Label}-}
@@ -32,7 +31,7 @@
   </el-col>
  
 
-      {-{- else if f_string_equal $c.Tag "BAR-PIE-LINE"}-}
+      {-{- else if $c.HasTag "BAR-PIE-LINE"}-}
       <!-- ChartOpts {-{$c.Tag}-} - {-{- $c.Name}-}-->
     <el-col :span='{-{ $c.GetParam "span" "24"}-}'>
       <{-{$c.UNQ}-} ref="chart_{-{$c.UNQ}-}" height='{-{ $c.GetParam "height" "200px"}-}' title="{-{$c.Label}-}"
@@ -42,7 +41,7 @@
     </el-col>
 
     
-    {-{- else if f_string_equal $c.Tag "tskbar"}-}
+    {-{- else if $c.HasTag "tskbar"}-}
     <!-- tskbar {-{$c.Tag}-} - {-{- $c.Name}-}-->
     <el-col :span='{-{ $c.GetParam "span" "24"}-}'>
       <{-{$c.UNQ}-} ref="ext_{-{$c.UNQ}-}" height='{-{ $c.GetParam "height" "200px"}-}' title="{-{$c.Label}-}"
@@ -50,7 +49,7 @@
         ></{-{$c.UNQ}-}>
     </el-col>
 
-    {-{- else if f_string_equal $c.Tag "img"}-}
+    {-{- else if $c.HasTag "img"}-}
      <!-- img {-{$c.Tag}-} - {-{- $c.Name}-}-->
     <el-col :span='{-{ $c.GetParam "span" "24"}-}'>
       <{-{$c.UNQ}-} ref="ext_{-{$c.UNQ}-}" height='{-{ $c.GetParam "height" "auto"}-}' type="{-{$c.Tag}-}"
@@ -58,7 +57,7 @@
         ></{-{$c.UNQ}-}>
     </el-col>
     {-{- else}-}
-    <!-- no "{-{$c.Tag}-}" - {-{- $c.Name}-}  {-{f_string_equal "PIE" "BAR-PIE-LINE"}-}-->
+   
     {-{- end}-}
   {-{- end}-}
 </el-row>

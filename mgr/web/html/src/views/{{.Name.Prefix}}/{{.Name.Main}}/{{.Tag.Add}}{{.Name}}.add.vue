@@ -1,21 +1,19 @@
 {-{- $table := .}-}
-{-{- $cColumns :=  $table.GetColumnsByTPName "C"}-}
-{-{- $acColumns :=  $table.GetColumnsByTPName "C-BC"}-}
-{-{- $enumColumns :=$table.EnumColumns}-}
+{-{- $cColumns :=  $table.Columns.GetFontCreateColumns}-}
+{-{- $acColumns :=  $table.Columns.GetAllCreateColumns}-}
+{-{- $enumColumns :=$table.Columns.GetEnumColumns}-}
 {-{- $addOpts :=$table.Optrs.BarOpts.GetAddOpt }-}
 {-{- $title := f_string_contact "添加" $table.Desc}-}
 {-{- if ne "" $addOpts.Label}-}
 {-{- $title = $addOpts.Label}-}
 {-{- end}-}
-
-
 <template tag="{-{.Marker}-}">
   <el-dialog
     v-model="conf.visible"
     title="{-{$title}-}"
    :width="conf.width"
     draggable
-    {-{ if gt (len $cColumns) 9 }-}  align-center="true" {-{ else}-} top="10vh" {-{ end }-}
+    {-{ if gt $cColumns.Len 9 }-}  align-center="true" {-{ else}-} top="10vh" {-{ end }-}
     :close-on-click-modal="false"
     :before-close="hide"
   >
@@ -41,7 +39,7 @@ export default {
     return {
       conf: {
         visible: false,
-        {-{- if gt (len $cColumns) 14}-}
+        {-{- if gt $cColumns.Len 14}-}
         width:"70%",
         {-{- else }-}
         {-{- $width:= "60%"}-}
@@ -64,7 +62,7 @@ export default {
         //将数据保存到window缓存中
       local = window.{-{$read2window}-} || {}
         {-{- end}-}
-      let cache =  Object.assign(local,fm)
+      let cache = Object.assign(local,fm)
       this.form = Object.assign(cache,this.$route.params)
 
       {-{- range $i,$c := $acColumns.GetColumnsBy "alias"}-}
@@ -74,10 +72,8 @@ export default {
       {-{- end -}-}
       {-{- end -}-}
 
-      {-{- range $i,$c := $cColumns}-}
-      {-{- if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
+      {-{- range $i,$c := $cColumns.GetStartColumns "multi"}-}
       this.form.{-{$c.Name}-} = this.form.{-{$c.Name}-}?this.form.{-{$c.Name}-}:[];
-      {-{- end}-}
       {-{- end}-}
 
       {-{- range $j,$x:=$cColumns}-}
@@ -87,11 +83,9 @@ export default {
       {-{- end}-}
     },
     save(){
-       {-{- range $i,$c:= $cColumns }-}
-         {-{- if eq "switch" $c.Cmpnt.Type  }-}
+       {-{- range $i,$c:= $cColumns.GetByCmpnt "switch" }-}
         this.form.{-{$c.Name}-} = this.form.{-{$c.Name}-}_switch?0:1;
-         {-{- end }-}
-          {-{- end}-}
+      {-{- end }-}
         this.$refs.form.validate((v=>{
             if(v){
                 this.onSave()
@@ -115,7 +109,7 @@ export default {
           {-{$c.Name}-}.push(v.value)
         })
         postForm.{-{$c.Name}-} = {-{$c.Name}-}.join(",")
-       {-{- else if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
+       {-{- else if $c.Cmpnt.StartWith "multi"}-}
         postForm.{-{$c.Name}-} = (postForm.{-{$c.Name}-}||[]).join(",")
         {-{- end }-}
         {-{- end}-}
@@ -125,23 +119,20 @@ export default {
         //将数据保存到window缓存中
         window.{-{$save2window}-} = postForm
         {-{- end}-}
-        {-{- $memberClus :=  $table.GetStaticColumns "fc" "#"}-}
+        {-{- $memberClus := $table.Columns.GetFontBackCreateColumns.GetStaticColumns}-}
       {-{- range $i,$v := $memberClus}-}
-      {-{- $name := f_string_trim $i "#"}-}
-        postForm.{-{$v.Name}-} = this.$theia.user.get("{-{$name}-}")
+        postForm.{-{$v.Name}-} = this.$theia.user.get("{-{$v.Ext.Name}-}")
       {-{- end}-}
 
         //保存数据
         this.$theia.http.post("/{-{.Name.MainPath|lower}-}",postForm).then(res=>{
             that.$notify.success({title: '成功',message: '{-{.Desc}-}保存成功',duration:5000})
             that.hide()
-            {-{- if ne "" $table.Enum.EnumType}-}
-            {-{- if eq true $table.Enum.Multiple}-}
+            {-{- if $table.Enum.IsEnumAndMuti}-}
             that.$theia.enum.clear()
             {-{- else}-}
             that.$theia.enum.clear("{-{$table.Enum.EnumType}-}")
             that.$theia.enum.get("{-{$table.Enum.EnumType}-}")
-            {-{- end}-}
             {-{- end}-}
             
             that.$emit("onsaved")
@@ -156,18 +147,16 @@ export default {
       this.conf.visible = false;
       this.$refs.form.resetFields();
     },
-    {-{- range $i,$c:= $cColumns }-}
-    {-{-  if (eq "rtext" $c.Cmpnt.Type )}-}
+    {-{- range $i,$c:= $cColumns.GetByCmpnt "rtext"}-}
     onRtext{-{$c.Name}-}Change(text){
       this.{-{$c.Ext.FormName}-}.{-{$c.Name}-} = text
     },
     {-{- end}-}
-    {-{- end}-}
     onUploadSuccess(response){
       {-{- range $i,$c:= $cColumns }-}
       {-{- if eq "file" $c.Cmpnt.Type  }-}
-      {-{- if eq true (f_string_start $c.Cmpnt.Format "#")}-}
-      this.form.{-{f_string_trim $c.Cmpnt.Format "#"}-} = response.path
+      {-{- if eq true $c.Cmpnt.IsStatic}-}
+      this.form.{-{$c.Cmpnt.StaticValue}-} = response.path
       {-{- else}-}
       this.form.{-{$c.Name}-} = response.path
       {-{- end}-}
@@ -180,13 +169,12 @@ export default {
     onChange_{-{$x.Name}-}(val,tp){
       {-{- range $i,$c:= $ctriger}-}
       {-{- if eq true ($c.IsAssctColumn $x.Name)}-}
-      {-{- $group:= f_string_trim $c.Enum.Group "#"}-}
       if (!val) {
         this.{-{$c.Name}-}List = []
         this.form.{-{$c.Name}-} = null
         return
       }
-      this.{-{$c.Name}-}List = this.$theia.enum.get("{-{$c.Enum.EnumType}-}",val,{-{if f_string_start $c.Enum.Group "#"}-}this.$theia.user.get("{-{$group}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-})||[]
+      this.{-{$c.Name}-}List = this.$theia.enum.get("{-{$c.Enum.EnumType}-}",val,{-{if $c.Enum.GroupIsStatic}-} this.$theia.user.get("{-{$c.Enum.GetGroupValue}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-})||[]
       this.form.{-{$c.Name}-} =this.{-{$c.Name}-}List.length>0?(this.{-{$c.Name}-}List[0]||{}).value:null
       {-{- $cxtriger := $cColumns.GetColumnsByTriggerChangeEvent $c.Name}-}
       //cxtriger:{-{ $cxtriger}-}
@@ -198,7 +186,7 @@ export default {
       {-{- end}-}
       {-{- end}-}
       //添加联动
-      {-{- $p := $x.GetParams "@change"}-}
+      {-{- $p := $x.GetParamMap "@change"}-}
       {-{- if gt (len $p) 0}-}
       let that = this
       if(tp){

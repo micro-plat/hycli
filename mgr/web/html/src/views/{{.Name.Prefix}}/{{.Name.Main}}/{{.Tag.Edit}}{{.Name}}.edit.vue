@@ -1,6 +1,6 @@
 {-{- $table := .}-}
-{-{- $ucols :=  $table.GetColumnsByTPName "U"}-}
-{-{- $enumColumns :=$table.EnumColumns}-}
+{-{- $ucols :=  $table.Columns.GetFontUpdateColumns}-}
+{-{- $enumColumns :=$table.Columns.GetEnumColumns}-}
 {-{- $editOpts :=$table.Optrs.BarOpts.GetEditOpt }-}
 {-{- $title := f_string_contact "修改" $table.Desc}-}
 {-{- if ne "" $editOpts.Label}-}
@@ -62,17 +62,17 @@ export default {
         this.conf.loading = true
         this.$theia.http.get("/{-{.Name.MainPath|lower}-}",form).then(res=>{
         {-{- range $i,$c := $ucols}-}
-        {-{- if eq "switch" $c.Cmpnt.Type}-}
+        {-{- if $c.Cmpnt.Equal "switch"}-}
           res.{-{$c.Name}-}_switch = res.{-{$c.Name}-} == 0
-        {-{- else if eq "tree" $c.Cmpnt.Type  }-}
+        {-{- else if $c.Cmpnt.Equal "tree" }-}
         that.$refs.tree_{-{$c.UNQ}-}.setCheckedKeys(res.{-{$c.Name}-}.split(","))
-        {-{- else if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
+        {-{- else if $c.Cmpnt.StartWith "multi"}-}
           res.{-{$c.Name}-} = (res.{-{$c.Name}-}+"").split(",")
         {-{- end}-}
         {-{- end}-}
         that.form = Object.assign(that.form, res)
         {-{- range $j,$x:=$ucols}-}
-        {-{- if and (eq true $x.Enum.IsEnum) (eq true (f_string_start $x.Cmpnt.Type "tree|cascader"))}-}
+        {-{- if and (eq true $x.Enum.IsEnum) ($x.Cmpnt.StartWith "tree|cascader")}-}
         let {-{$x.Name}-} = that.form.{-{$x.Name}-}.split(",")
         that.form.{-{$x.Name}-} = {-{$x.Name}-}
         {-{- end}-}
@@ -88,7 +88,7 @@ export default {
     },
     save(){
        {-{- range $i,$c:= $ucols}-}
-         {-{- if eq "switch" $c.Cmpnt.Type }-}
+         {-{- if $c.Cmpnt.Equal "switch"}-}
         this.form.{-{$c.Name}-} = this.form.{-{$c.Name}-}_switch?0:1;
          {-{- end}-}
         {-{- end}-}
@@ -102,20 +102,20 @@ export default {
       let that = this
         let postForm = Object.assign({},this.form)
         {-{- range $i,$c:= $ucols }-}
-        {-{- if eq "password" $c.Cmpnt.Type  }-}
+        {-{- if $c.Cmpnt.Equal "password"}-}
         postForm.{-{$c.Name}-} = this.$theia.crypto.md5(this.form.{-{$c.Name}-})
-        {-{- else if eq "tree" $c.Cmpnt.Type  }-}
+        {-{- else if  $c.Cmpnt.Equal "tree"}-}
         let checkKeys = this.$refs.tree_{-{$c.UNQ}-}.getCheckedKeys()||[]
         let halfKeys = this.$refs.tree_{-{$c.UNQ}-}.getHalfCheckedKeys()||[]
         postForm.{-{$c.Name}-} = checkKeys.concat(halfKeys).join(",")
-        {-{- else if eq "cascader" $c.Cmpnt.Type  }-}
+        {-{- else if $c.Cmpnt.Equal "cascader"}-}
         let {-{$c.Name}-} = []
         let {-{$c.Name}-}Nodes = this.$refs.cascader_{-{$c.UNQ}-}.getCheckedNodes() || []
         {-{$c.Name}-}Nodes.forEach(v => {
           {-{$c.Name}-}.push(v.value)
         })
         postForm.{-{$c.Name}-} = {-{$c.Name}-}.join(",")
-        {-{- else if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
+        {-{- else if $c.Cmpnt.StartWith "multi"}-}
         postForm.{-{$c.Name}-} = (postForm.{-{$c.Name}-}||[]).join(",")
         {-{- end }-}
         {-{- end}-}
@@ -125,7 +125,7 @@ export default {
         {-{- if ne "" $save2window}-}
         //将数据保存到window缓存中
         window.{-{$save2window}-} = postForm
-        {-{- range $i,$v := $table.PKColumns.GetValidColumns}-}
+        {-{- range $i,$v := $table.Columns.GetPKColumns.GetValidColumns}-}
         window.{-{$v.Name}-} = null
         {-{- end}-}
         {-{- end}-}
@@ -150,7 +150,7 @@ export default {
       this.$refs.form.resetFields();
     },
     {-{- range $i,$c:= $ucols }-}
-    {-{-  if (eq "rtext" $c.Cmpnt.Type )}-}
+    {-{-  if $c.Cmpnt.Equal "rtext"}-}
     onRtext{-{$c.Name}-}Change(text){
       this.{-{$c.Ext.FormName}-}.{-{$c.Name}-} = text
     },
@@ -158,7 +158,7 @@ export default {
     {-{- end}-}
      onUploadSuccess(response){
       {-{- range $i,$c:= $ucols}-}
-      {-{- if eq "file" $c.Cmpnt.Type }-}
+      {-{- if $c.Cmpnt.Equal "file"}-}
       this.form.{-{$c.Name}-} = response.path
       {-{- end}-}
       {-{- end}-}
@@ -173,14 +173,11 @@ export default {
       }
       {-{- range $i,$c:= $ctriger}-}
       {-{- if eq true ($c.IsAssctColumn $x.Name)}-}
-      {-{- $group:= f_string_trim $c.Enum.Group "#"}-}
       if (!val) {
         this.{-{$c.Name}-}List = []
-        // this.form.{-{$c.Name}-} = null
         return
       }
-      this.{-{$c.Name}-}List = this.$theia.enum.get("{-{$c.Enum.EnumType}-}",val,{-{if f_string_start $c.Enum.Group "#"}-}this.$theia.user.get("{-{$group}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-})||[]
-      // this.form.{-{$c.Name}-} =this.{-{$c.Name}-}List.length>0?(this.{-{$c.Name}-}List[0]||{}).value:null
+      this.{-{$c.Name}-}List = this.$theia.enum.get("{-{$c.Enum.EnumType}-}",val,{-{if $c.Enum.GroupIsStatic}-}this.$theia.user.get("{-{$c.Enum.GetGroupValue}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-})||[]
       {-{- $cxtriger := $ucols.GetColumnsByTriggerChangeEvent $c.Name}-}
       {-{- if gt (len $cxtriger) 0}-}
       {-{- range $mx,$cx := $cxtriger}-}
@@ -190,7 +187,7 @@ export default {
       {-{- end}-}
       {-{- end}-}
       //添加联动
-      {-{- $p := $x.GetParams "@change"}-}
+      {-{- $p := $x.GetParamMap "@change"}-}
       {-{- if gt (len $p) 0}-}
       let that = this
       if(tp){
@@ -213,7 +210,6 @@ export default {
         {-{- end}-}
       }
       {-{- end}-}
-
     },
     {-{- end}-}
     {-{- end}-}

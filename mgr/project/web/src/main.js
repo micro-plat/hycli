@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from '@/App.vue'
 import router from '@/router'
 
+import jspkg from "./jspkg/index.js"
 import  "font-awesome/css/font-awesome.min.css";
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
@@ -15,6 +16,8 @@ var app=createApp(App)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
   }
+
+
 app.use(theia, { env: process.env });
 if (document.documentElement.clientWidth <= 1280) {
   app.use(ElementPlus, { size: "small", locale });
@@ -33,4 +36,5 @@ window.onresize = () => {
   }
 }
 app.use(router);
+app.use(jspkg,{ env: process.env });
 app.mount("#app");

@@ -1,6 +1,6 @@
 {-{- $table := .}-}
 {-{- $opts:=  $table.Optrs.All.GetCompnents}-}
-{-{- if gt (len $opts) 0}-}
+{-{- if gt $opts.Len 0}-}
 <div>
     {-{- range $x,$m:=  $opts}-}
    <{-{$m.UNQ}-} ref="cmpnt_{-{$m.UNQ}-}" @onsaved="onQuery"></{-{$m.UNQ}-}>

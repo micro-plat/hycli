@@ -43,7 +43,6 @@ func NewTableOptrs() *tableOptrs {
 	}
 }
 func (t *tableOptrs) Sort() {
-	// t.ListOpts.Merge(t.BarOpts)
 	t.BarOpts.Sort()
 	t.ViewOpts.Sort()
 	t.ListOpts.Sort()
@@ -108,6 +107,16 @@ func (opts optrslst) GetEditOpt(tb ...string) *optrs {
 	}
 	return &optrs{}
 }
+func (opts optrslst) GetParamsOptrs(p string) optrslst {
+	cols := make(optrslst, 0, 1)
+	for _, r := range opts {
+		if v := r.GetParam(p, ""); v != "" {
+			cols = append(cols, r)
+		}
+	}
+	return cols
+}
+
 func (t *tableOptrs) SetViewExtCmptOpt(v *viewExtOptrsMap) {
 	v.ALL.Sort()
 	t.ViewExtCmptOpts = v
@@ -118,4 +127,10 @@ func (t *tableOptrs) SetViewExtCmptOpt(v *viewExtOptrsMap) {
 		}
 	}
 
+}
+func (opts optrslst) First() *optrs {
+	if len(opts) > 0 {
+		return opts[0]
+	}
+	return &optrs{}
 }

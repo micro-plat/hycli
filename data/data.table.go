@@ -12,19 +12,10 @@ type Table struct {
 	//Columns 所有列
 	Columns Columns
 
-	//PKColumns 主键列
-	PKColumns Columns
+	//数据库索引
+	DBIdx *DbIdx
 
-	//UNQIndex 唯一索引
-	UNQIndex dbIdxs
-
-	//NormalIdx 普通索引
-	NormalIdx dbIdxs
-
-	//EnumColumns 枚举列
-	EnumColumns Columns
-
-	//Optrs 所有操作栏
+	//Optrs 操作栏组件
 	Optrs *tableOptrs
 
 	//NeedBatchCheck 是否需要批量选择
@@ -41,6 +32,9 @@ type Table struct {
 
 	//Tag 系统功能标签
 	Tag *Tag
+
+	//是否是临时表
+	IsTmpl bool
 }
 
 func (t *Table) Sort() {
@@ -55,13 +49,11 @@ func NewTable(t *md.Table) *Table {
 	//构建列
 	columns := newColumns(t.Rows)
 	table := &Table{
-		Table:       t,
-		UNQ:         defFids.Next(),
-		Columns:     columns,
-		PKColumns:   columns.GetPKColumns(),
-		EnumColumns: columns.GetEnumColumns(),
-		Enum:        newEnumType(t.Name.Short, t.Rows, columns.GetEnumDelColumns()),
-		Optrs:       NewTableOptrs(),
+		Table:   t,
+		UNQ:     defFids.Next(),
+		Columns: columns,
+		Enum:    newEnumType(t.Name.Short, t.Rows, columns.GetEnumDelColumns()),
+		Optrs:   NewTableOptrs(),
 	}
 	t.Cache = table
 	table.Optrs.ViewExtCmptOpts = &viewExtOptrsMap{}
@@ -71,8 +63,7 @@ func NewTable(t *md.Table) *Table {
 	table.Optrs.LStatOpts, table.Optrs.ChartOpts = createLStatChartOptrs(table.Name.Raw, t.ExtInfo)
 	table.Optrs.ExtOpts = createExtOptrs(table.Name.Raw, t.ExtInfo)
 	table.Optrs.QueryOptrs = createQueryOptrs(table, t.ExtInfo)
-	table.NormalIdx = createNormalIdx(table)
-	table.UNQIndex = createUNQIdx(table)
+	table.DBIdx = NewDbIdx(createUNQIdx(table), createNormalIdx(table))
 	table.Conf = newConfig(t.Settings)
 	table.Sort()
 	return table

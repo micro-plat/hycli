@@ -37,7 +37,7 @@ export default {
   {-{- range $x,$m:=$opts }-}
       //{-{$m.Label}-} form by  [{-{$m.RwName}-}]
       form_{-{$m.UNQ}-}:{
-       {-{- $cols:=  $table.GetColumnsByTPName $m.RwName }-}
+       {-{- $cols:=  $table.Columns.GetColumns $m.RwName }-}
         {-{- range $i,$c:=$cols }-} 
         {-{$c.Name}-}:"",
         {-{- end}-}

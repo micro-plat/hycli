@@ -8,9 +8,9 @@ import (
 	"github.com/micro-plat/lib4go/types"
 )
 
-func (colums Columns) JoinNames(tp string, required bool, start string, end ...string) string {
+func (Columns Columns) JoinNames(tp string, required bool, start string, end ...string) string {
 	names := make([]string, 0, 1)
-	for _, v := range colums {
+	for _, v := range Columns {
 		if required && v.Field.Required || !required {
 			names = append(names, v.Name)
 		}
@@ -20,17 +20,22 @@ func (colums Columns) JoinNames(tp string, required bool, start string, end ...s
 	}
 	return start + strings.Join(names, types.GetStringByIndex(end, 0)+start) + types.GetStringByIndex(end, 0)
 }
-
-func (colums Columns) GetValidColumns() Columns {
+func (Columns Columns) First() *Column {
+	if len(Columns) > 0 {
+		return Columns[0]
+	}
+	return &Column{}
+}
+func (Columns Columns) GetValidColumns() Columns {
 	vc := make([]*Column, 0, 1)
-	for _, v := range colums {
+	for _, v := range Columns {
 		if !v.Field.IsExtFuncField {
 			vc = append(vc, v)
 		}
 	}
 	return vc
 }
-func (rs Columns) GetRequiedColums() []*Column {
+func (rs Columns) GetRequiedColumns() Columns {
 	r := make([]*Column, 0, 1)
 	for _, v := range rs {
 		if v.Field.Required {
@@ -86,15 +91,106 @@ func (c Columns) GetEnumDelColumns() Columns {
 	}
 	return cols
 }
-func (c Columns) GetQueryColums() Columns {
+func (c Columns) GetAll() Columns {
+	return c.GetColumns("q-bq-c-bc-fc-l-le-u-bu-d-v")
+}
+func (c Columns) GetFontQueryColumns() Columns {
+	return c.GetColumns("q")
+}
+func (c Columns) GetAllQueryColumns() Columns {
+	return c.GetColumns("q-bq")
+}
+func (c Columns) GetFontCreateColumns() Columns {
+	return c.GetColumns("c")
+}
+func (c Columns) GetFontBackCreateColumns() Columns {
+	return c.GetColumns("fc")
+}
+func (c Columns) GetAllCreateColumns() Columns {
+	return c.GetColumns("c-bc-fc")
+}
+func (c Columns) GetOnlyListColumns() Columns {
+	return c.GetColumns("l")
+}
+func (c Columns) GetOnlyListExtColumns() Columns {
+	return c.GetColumns("le")
+}
+func (c Columns) GetFontListColumns() Columns {
+	return c.GetColumns("l-le")
+}
+func (c Columns) GetAllListColumns() Columns {
+	return c.GetColumns("q-l-le-bl")
+}
+func (c Columns) GetDelColumns() Columns {
+	return c.GetColumns("D")
+}
+func (c Columns) GetFontUpdateColumns() Columns {
+	return c.GetColumns("U")
+}
+func (c Columns) GetAllUpdateColumns() Columns {
+	return c.GetColumns("U-BU")
+}
+func (c Columns) GetViewColumns() Columns {
+	return c.GetColumns("v")
+}
+
+func (c Columns) GetColumns(tp string, formName ...string) Columns {
 	cols := make(Columns, 0, 1)
-	tps := []string{"q"}
+	tps := getTPS(tp)
 	for _, r := range c {
 		if md.HasConstraint(r.RawConsts, tps...) {
 			r.ResetCmpnt(tps...) //重置扩展组件
+			r.Ext.FormName = types.GetStringByIndex(formName, 0, "form")
+			r.Ext.TP = tps
 			cols = append(cols, r.Index(types.GetStringByIndex(tps, 0), len(cols)))
 		}
 	}
 	sort.Sort(cols)
 	return cols
+}
+func (c Columns) GetByCmpnt(cmpnt string) Columns {
+	cols := make(Columns, 0, 1)
+	cmpnts := strings.Split(cmpnt, "-")
+	for _, r := range c {
+		cmp := r.allCmpnt.getCmpnt(r.Row, r.Ext.TP...)
+		if types.StringContains(cmpnts, cmp.Type) {
+			r.ResetCmpnt(r.Ext.TP...)
+			cols = append(cols, r)
+		}
+	}
+	sort.Sort(cols)
+	return cols
+}
+func (cs Columns) GetStaticColumns() Columns {
+	prefix := "#"
+	return cs.GetStartColumns(prefix)
+}
+func (cs Columns) GetCmpntValues(tp string) []string {
+	for _, c := range cs {
+		if md.HasConstraint(c.Constraints, tp) {
+			return md.GetConstrainValues(tp, c.Constraints...)
+		}
+	}
+	return nil
+}
+func (cs Columns) HasCmpnt(tp string) bool {
+	for _, c := range cs {
+		if md.HasConstraint(c.Constraints, tp) {
+			return true
+		}
+	}
+	return false
+}
+func (cs Columns) GetStartColumns(prefix string) Columns {
+	cls := make(Columns, 0, 1)
+	for _, c := range cs {
+		for _, tp := range c.Ext.TP {
+			f := md.GetFormat(tp, c.Constraints...)
+			if strings.HasPrefix(f, prefix) {
+				c.Ext.Name = strings.Trim(f, prefix)
+				cls = append(cls, c)
+			}
+		}
+	}
+	return cls
 }

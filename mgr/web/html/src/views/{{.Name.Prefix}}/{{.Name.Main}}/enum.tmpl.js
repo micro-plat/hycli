@@ -1,10 +1,8 @@
 {-{- $st := .}-}
-{-{- $table := $st.Table}-}
-{-{- $ccols := $st.Cols}-}
     loadEnums(){
-        {-{- range $i,$c := $ccols}-}
-        {-{- if eq true $c.Enum.IsEnum }-}
-        // {-{$c.Enum.AssctColumn}-}
+        {-{- range $i,$c := $st.Columns.GetEnumColumns}-}
+        {-{- $deep := $c.GetOptInt "deep" 99}-}
+        {-{- $group:= $c.Enum.GetGroupValue}-}
         {-{- $pid := f_string_contact `"` $c.Enum.PID `"`}-}
         {-{- if ne "" $c.Enum.AssctColumn}-}
         {-{- if eq "" $st.FormUNQ}-}
@@ -12,21 +10,16 @@
         {-{- else}-}
         {-{- $pid = f_string_contact "this.form_" $st.FormUNQ "." $c.Enum.AssctColumn `+""`}-}
         {-{- end}-}
-       
         {-{- end}-}
-        {-{- if eq true (f_string_start $c.Cmpnt.Type "tree|cascader")}-}
-        {-{- $deep := f_num_get ($c.GetOpt "deep") 99}-}
-        {-{- $group:= f_string_trim $c.Enum.Group "#"}-}
-        this.{-{.Name}-}List = this.$theia.enum.getTree("{-{$c.Enum.EnumType}-}",{-{$pid}-},{-{if f_string_start $c.Enum.Group "#"}-}this.$theia.user.get("{-{$group}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-},{-{$deep}-})
-        {-{- else if eq true (f_string_start $c.Cmpnt.Type "ddmenu")}-}
+        //{-{$c.Label}-}
+        {-{- if $c.Cmpnt.StartWith "tree|cascader"}-}
+        this.{-{.Name}-}List = this.$theia.enum.getTree("{-{$c.Enum.EnumType}-}",{-{$pid}-},{-{if $c.Enum.GroupIsStatic}-}this.$theia.user.get("{-{$group}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-},{-{$deep}-})
+        {-{- else if $c.Cmpnt.Equal "ddmenu"}-}
         this.{-{.Name}-}List = this.$theia.enum.getTree("{-{$c.Enum.EnumType}-}","{-{$c.Enum.EnumType}-}","")
-        {-{- else if or (eq true $c.Enum.IsEnum) (eq true (f_string_start $c.Cmpnt.Type "multi"))}-}
-        {-{- $group:= f_string_trim $c.Enum.Group "#"}-}
-        this.{-{.Name}-}List = this.$theia.enum.get("{-{$c.Enum.EnumType}-}",{-{$pid}-},{-{if f_string_start $c.Enum.Group "#"}-}this.$theia.user.get("{-{$group}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-})
-        {-{- end}-}
-        {-{- if and (eq "tabs" $c.Cmpnt.Type) (ne "" $c.Cmpnt.Format)}-}
+        {-{- else if and ( $c.Cmpnt.Equal "tabs" ) ($c.Cmpnt.HasFormat)}-}
         this.{-{.Name}-}TabList = this.$theia.enum.get("{-{$c.Cmpnt.Format}-}")
-        {-{- end}-}
+        {-{- else}-}
+        this.{-{.Name}-}List = this.$theia.enum.get("{-{$c.Enum.EnumType}-}",{-{$pid}-},{-{if $c.Enum.GroupIsStatic}-}this.$theia.user.get("{-{$group}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-})
         {-{- end}-}
         {-{- end}-}
     },

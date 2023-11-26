@@ -11,7 +11,8 @@ func (c *Column) GetOpts(name string) (string, string, string) {
 	f, s, t := md.GetConsByTagIgnorecase(name, c.RawConsts...)
 	return f, s, t
 }
-func (c *Column) GetParams(name string) map[string]string {
+
+func (c *Column) GetParamMap(name string) map[string]string {
 	s := md.GetParamByTag(name, c.RawConsts...)
 	item := strings.Split(s, ";")
 	param := make(map[string]string)
@@ -33,15 +34,27 @@ func (c *Column) GetOpt(name string) string {
 	v, _, _ := c.GetOpts(name)
 	return v
 }
+func (c *Column) GetOptInt(name string, i ...int) int {
+	return types.GetInt(c.GetOpt(name), i...)
+}
 
-func (c *Column) HasConst(p string) bool {
+func (c *Column) HasCmpnt(p string) bool {
 	return md.HasConstraint(c.Constraints, strings.ToLower(p), strings.ToUpper(p))
 }
-func (c *Column) GetConst(p string, name string, def string) string {
+
+// GetCmpntValue
+func (c *Column) GetCmpntValue(name string, def string) string {
 	v, page, _ := md.GetConsByTagIgnorecase(name, c.Constraints...)
 	pages := strings.Split(page, "-")
-	if len(pages) == 0 || types.StringContains(pages, p) {
+	if len(pages) == 0 {
 		return v
+	}
+	for _, p := range pages {
+		for _, p1 := range c.Ext.TP {
+			if strings.EqualFold(p1, p) {
+				return v
+			}
+		}
 	}
 	return def
 

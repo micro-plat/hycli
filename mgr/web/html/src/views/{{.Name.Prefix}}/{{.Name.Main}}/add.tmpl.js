@@ -10,18 +10,16 @@
     },
     form:{
         {-{- range $i,$c := $ccols}-}
-        {-{- if eq "switch" $c.Cmpnt.Type}-}
+        {-{- if $c.Cmpnt.Equal "switch"}-}
         {-{$c.Name}-}_switch:false,
-        {-{- else if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
+        {-{- else if $c.Cmpnt.StartWith "multi"}-}
         {-{$c.Name}-}:[],
         {-{- else}-}
         {-{$c.Name}-}:"",
         {-{- end}-}
         {-{- end}-}
         },
-        {-{- range $i,$c := $ccols}-}
-        {-{- if eq true $c.Enum.IsEnum}-}
+        {-{- range $i,$c := $ccols.GetEnumColumns}-}
         {-{.Name}-}List:[],
-        {-{- end}-}
         {-{- end}-}
       }

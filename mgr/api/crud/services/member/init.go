@@ -10,5 +10,3 @@ func init() {
 	hydra.S.Micro("/user/info/get", getUserHandle)
 	hydra.S.Micro("/system/info/get", getSystemHandle)
 }
-
-// exp = append(exp, "/*/file/upload", "/*/member/login", "/*/system/info/get")

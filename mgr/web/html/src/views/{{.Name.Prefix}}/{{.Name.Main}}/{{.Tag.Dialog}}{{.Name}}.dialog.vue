@@ -4,7 +4,7 @@
   <div>
     {-{- range $x,$m:=$optCols }-}
     {-{- $width:= $m.GetParam "width" "60%" }-}
-    {-{- $rows:=  $table.GetColumnsByTPName $m.RwName (f_string_contact "form_" $m.UNQ)}-}
+    {-{- $rows:=  $table.Columns.GetColumns $m.RwName (f_string_contact "form_" $m.UNQ)}-}
     <el-dialog
       v-model="conf.{-{$m.UNQ}-}_visible"
       title="{-{$m.Label}-}"
@@ -45,14 +45,13 @@ export default {
       },
   {-{- range $x,$m:=$optCols }-}
       //{-{$m.Label}-} form by  {-{$m.RwName}-}
-      {-{- $rows:=  $table.GetColumnsByTPName $m.RwName }-}
+      {-{- $rows:=  $table.Columns.GetColumns $m.RwName }-}
         {-{- range $i,$c:=$rows }-} 
-        {-{- $group:= f_string_trim $c.Enum.Group "#"}-}
-        {-{- if and (eq true $c.Enum.IsEnum) (eq true (f_string_start $c.Cmpnt.Type "tree|cascader"))}-}
+        {-{- if and $c.Enum.IsEnum ($c.Cmpnt.StartWith "tree|cascader")}-}
         {-{- $deep := f_num_get ($c.GetOpt "deep") 99}-}
-        {-{.Name}-}List:this.$theia.enum.getTree("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}",{-{if f_string_start $c.Enum.Group "#"}-}this.$theia.user.get("{-{$group}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-},{-{$deep}-}),
-        {-{- else if or (eq true $c.Enum.IsEnum) (eq true (f_string_start $c.Cmpnt.Type "multi"))}-}
-        {-{.Name}-}List:this.$theia.enum.get("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}",{-{if f_string_start $c.Enum.Group "#"}-}this.$theia.user.get("{-{$group}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-}),
+        {-{.Name}-}List:this.$theia.enum.getTree("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}",{-{if $c.Enum.GroupIsStatic}-}this.$theia.user.get("{-{$c.Enum.GetGroupValue}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-},{-{$deep}-}),
+        {-{- else if and $c.Enum.IsEnum ($c.Cmpnt.StartWith "multi")}-}
+        {-{.Name}-}List:this.$theia.enum.get("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}",{-{if $c.Enum.GroupIsStatic}-}this.$theia.user.get("{-{$c.Enum.GetGroupValue}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-}),
          {-{- else}-}
     {-{$c.Name}-}:"",
          {-{- end }-}
@@ -62,7 +61,7 @@ export default {
 
     {-{- range $x,$m:=$optCols }-}
     rules_{-{$m.UNQ}-}:{
-        {-{- $rows:=  $table.GetColumnsByTPName $m.RwName }-}
+        {-{- $rows:=  $table.Columns.GetColumns $m.RwName }-}
          {-{- range $i,$c:=$rows}-} 
           {-{$c.Name}-}:[{required:{-{$c.Field.Required}-}, message:"请输入{-{$c.Label}-}", trigger: 'blur'}],
           {-{- end}-}
@@ -79,12 +78,12 @@ export default {
         {-{- $tbs := $table.Contact $ct }-}
         {-{- $ctable := $tbs.Current }-}
         {-{- $mtable := $tbs.Main }-}
-        {-{- $MLLERows:=  $mtable.GetColumnsByTPName "l-le"}-}
+        {-{- $MLLERows:=  $mtable.Columns.GetFontListColumns}-}
           
         //处理关联表{-{$m.URL}-}
         let currentForm = {}
         {-{- range $i,$c := $MLLERows }-}
-          {-{- if eq true $c.Enum.IsEnum }-}
+          {-{- if $c.Enum.IsEnum }-}
             {-{- if eq $ctable.Enum.EnumType $c.Enum.EnumType}-}
         currentForm.{-{$table.Enum.Id}-} = fm.{-{$c.Name}-}
             {-{- end }-}
@@ -108,21 +107,21 @@ export default {
                 return
             }
         let post_form_{-{$m.UNQ}-} = this.form_{-{$m.UNQ}-}
-        {-{- $rows:=  $table.GetColumnsByTPName $m.RwName (f_string_contact "form_" $m.UNQ)}-}
+        {-{- $rows:=  $table.Columns.GetColumns $m.RwName (f_string_contact "form_" $m.UNQ)}-}
         {-{range $i,$c:= $rows }-}
        
-         {-{- if eq "password" $c.Cmpnt.Type  }-}
+         {-{- if $c.Cmpnt.Equal "password" }-}
         post_form_{-{$m.UNQ}-}.{-{$c.Name}-} = this.$theia.crypto.md5(this.form_{-{$m.UNQ}-}.{-{$c.Name}-})
-        {-{- else if eq "tree" $c.Cmpnt.Type  }-}
+        {-{- else if $c.Cmpnt.Equal "tree" }-}
         post_form_{-{$m.UNQ}-}.{-{$c.Name}-} = this.$refs.tree_{-{$c.UNQ}-}.getCheckedKeys().join(",")
-        {-{- else if eq "cascader" $c.Cmpnt.Type  }-}
+        {-{- else if $c.Cmpnt.Equal "cascader" }-}
         let {-{$c.Name}-} = []
         let {-{$c.Name}-}Nodes = this.$refs.cascader_{-{$c.UNQ}-}.getCheckedNodes() || []
         {-{$c.Name}-}Nodes.forEach(v => {
           {-{$c.Name}-}.push(v.value)
         })
         post_form_{-{$m.UNQ}-}.{-{$c.Name}-} = {-{$c.Name}-}.join(",")
-       {-{- else if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
+       {-{- else if $c.Cmpnt.StartWith "multi"}-}
        post_form_{-{$m.UNQ}-}.{-{$c.Name}-} = (post_form_{-{$m.UNQ}-}.{-{$c.Name}-}||[]).join(",")
         {-{- end }-}
           {-{end}-}
@@ -130,10 +129,9 @@ export default {
 
         {-{- $fxname := f_string_contact "f" $m.RwName}-}
         //{-{$fxname}-}
-          {-{- $memberClus :=  $table.GetStaticColumns $fxname "#"}-}
+          {-{- $memberClus :=  ($table.Columns.GetColumns $fxname).GetStaticColumns}-}
       {-{- range $i,$v := $memberClus}-}
-      {-{- $name := f_string_trim $i "#"}-}
-      post_form_{-{$m.UNQ}-}.{-{$v.Name}-} = this.$theia.user.get("{-{$name}-}")
+      post_form_{-{$m.UNQ}-}.{-{$v.Name}-} = this.$theia.user.get("{-{$v.Ext.Name}-}")
       {-{- end}-}
         this.$theia.http.post("/{-{$table.Name.MainPath|lower}-}/{-{f_string_translate $m.ReqURL (f_table_find_by_name $m.Table)}-}",post_form_{-{$m.UNQ}-}).then(res=>{
             that.$notify.success({title: '成功',message: '提交成功',duration:5000})

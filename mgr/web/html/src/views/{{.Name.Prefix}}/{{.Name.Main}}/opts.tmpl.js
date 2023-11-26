@@ -1,13 +1,12 @@
 {-{- $xtable := . }-}
 {-{- $table := $xtable.Current }-}
 {-{- $mtable := $xtable.Main}-}
-{-{- $tmpl := f_table_is_tmp $xtable}-}
 {-{- $optRow:=  $table.Optrs.ListOpts.Merge $table.Optrs.BarOpts}-}
-{-{- if eq true $tmpl}-}
+{-{- if $xtable.IsTmpl}-}
 {-{- $optRow = $mtable.Optrs.ViewExtCmptOpts.GetLstOptrs  $table.Name.Raw}-}
 {-{- end}-}
-{-{- $cmpnts:=  $optRow.GetByName "CMPNT"}-}
-{-{- if gt (len $cmpnts) 0}-}
+{-{- $cmpnts:=  $optRow.GetCompnents}-}
+{-{- if gt $cmpnts.Len 0}-}
 show_cmpnt(cmd,row){
   if(this.cmpnt_funcs[cmd]){
     this.cmpnt_funcs[cmd](row)
@@ -15,25 +14,24 @@ show_cmpnt(cmd,row){
 },
 {-{- end}-}
 {-{- range $x,$m:= $cmpnts}-}
-
   //{-{$m.Label}-}
   show_cmpnt_{-{$m.UNQ}-}(fm = {}){
     let query = {}
     {-{- if and (ne "" $m.RwName) (ne "" $m.FwName)}-}
     query.{-{$m.FwName}-} = fm.{-{$m.RwName}-}|| fm.le_{-{$m.RwName}-}
     {-{- else}-}
-    {-{- $rows:=  $table.GetColumnsByTPName $m.RwName}-}
+    {-{- $rows:=  $table.Columns.GetColumns $m.RwName}-}
     {-{- range $i,$c:=$rows}-} 
     query.{-{$c.Name}-} = fm.{-{$c.Name}-}|| fm.le_{-{$c.Name}-}
       {-{- end}-}
     {-{- end}-}
    
-     {-{- $rows:=  $table.GetColumnsByTPName ($m.GetParam "labelName" "")}-}
+     {-{- $rows:=  $table.Columns.GetColumns ($m.GetParam "labelName" "")}-}
      {-{- range $i,$c:=$rows}-} 
      query.{-{$c.Name}-} = fm.{-{$c.Name}-}|| fm.le_{-{$c.Name}-}
      {-{- end}-}  
 
-    {-{- $pkrows:=  $table.PKColumns}-}
+    {-{- $pkrows:=  $table.Columns.GetPKColumns}-}
       {-{- range $i,$c:=$pkrows}-} 
     query.{-{$c.Name}-} = fm.{-{$c.Name}-}
       {-{- end}-}
@@ -52,7 +50,7 @@ show_cmpnt(cmd,row){
     {-{- end}-}
     {-{- end}-}
 
-    {-{- if eq true $m.IsMux }-}
+    {-{- if $m.IsMux }-}
     this.$refs.cmpnt_{-{$m.UNQ}-}.show_{-{$m.UNQ}-}(query)
     {-{- else}-}
     this.$refs.cmpnt_{-{$m.UNQ}-}.show(query)
@@ -63,7 +61,7 @@ show_cmpnt(cmd,row){
 {-{- range $x,$m:=$linkcmpnts}-}
   goto_{-{$m.UNQ}-}(fm = {}){
     let query = {}
-    {-{- $rows:=  $table.GetColumnsByTPName $m.RwName}-}
+    {-{- $rows:=  $table.Columns.GetColumns $m.RwName}-}
       {-{- range $i,$c:=$rows}-} 
     query.{-{$c.Name}-} = fm.{-{$c.Name}-}
       {-{- end}-}

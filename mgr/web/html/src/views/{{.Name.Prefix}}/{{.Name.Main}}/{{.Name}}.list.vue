@@ -2,14 +2,13 @@
   {-{- $table := .}-}
   {-{- $opts :=$table.Optrs.ListOpts }-}
   {-{- $tbs := $table.Contact $table }-}
-  {-{- $qcols :=  $table.GetColumnsByTPName "q"}-}
+  {-{- $qcols :=  $table.Columns.GetFontQueryColumns}-}
+  {-{- $ddmenuCols :=  $table.Columns.GetFontQueryColumns.GetEnumColumns.GetByCmpnt "ddmenu"}-}
   <div style="height: 100%">
     <div style="margin:0.8rem;"><h5 style="display:inline">{-{$table.Desc}-}</h5><span style="margin-left: 0.5rem; color:#999"> {-{$table.Conf.Get "desc"}-}</span>
-      {-{- range $i,$c:= $qcols}-}
-        {-{- if and (eq "ddmenu" $c.Cmpnt.Type) (eq true $c.Enum.IsEnum)}-}
+      {-{- range $i,$c:= $ddmenuCols}-}
         <ddmenu :menuList="{-{.Name}-}List" @valueChanged="on{-{$c.Name}-}Change" v-model="form_{-{$table.UNQ}-}.{-{$c.Name}-}" menuType="{-{$c.Enum.EnumType}-}" ></ddmenu>
         {-{- end  }-}
-      {-{- end  }-}
     </div>
     <hr style="margin-top:0;color:#999"/>
     {-{- template "query.tmpl.html" $table }-}
@@ -67,17 +66,14 @@ data() {
   },
 mounted() {
   this.loadEnums()
-  {-{- range $i,$c:= $qcols}-}
-        {-{- if and (eq "ddmenu" $c.Cmpnt.Type) (eq true $c.Enum.IsEnum)}-}
-        {-{- $memberClus :=  $table.GetStaticColumns "q" "#"}-}
-        {-{- if gt (len $memberClus) 0}-}
-        {-{- range $i,$v := $memberClus}-}
-      {-{- $name := f_string_trim $i "#"}-}
-  this.form_{-{$table.UNQ}-}.{-{$c.Name}-} = this.$theia.user.get("{-{$c.Name}-}")
-      {-{- end}-}
-       {-{- end}-}
-        {-{- end}-}
-    {-{- end}-}
+  {-{- range $i,$c:= $ddmenuCols}-}
+  {-{- $memberClus := $table.Columns.GetFontQueryColumns.GetStaticColumns}-}
+  {-{- if gt $memberClus.Len 0}-}
+  {-{- range $i,$v := $memberClus}-}
+  this.form_{-{$table.UNQ}-}.{-{$c.Name}-} = this.$theia.user.get("{-{$v.Ext.Name}-}")
+  {-{- end}-}
+  {-{- end}-}
+  {-{- end}-}
   this.form_{-{$table.UNQ}-}.single_date_range_name = (this.multiQueryDateRange[0]||{}).value
   this.form_{-{$table.UNQ}-}.single_text_name = (this.multiQueryText[0]||{}).value
   {-{- range $x,$m:= $table.Optrs.All.GetCompnents}-}
@@ -85,11 +81,12 @@ mounted() {
   {-{- end}-}
 
   this.form_{-{$table.UNQ}-} = Object.assign(this.form_{-{$table.UNQ}-},this.$route.params)
-  {-{- if eq "" ( $table.JoinNames  "rp" false "")}-}
+  {-{- $rpColumns := $table.Columns.GetColumns "rp"}-}
+  {-{- if eq $rpColumns.Len 0}-}
   this.queryData_{-{ $table.UNQ }-} ()
   {-{- end}-}
     },
-  {-{- if ne "" ( $table.JoinNames  "rp" false "")}-}
+  {-{- if gt $rpColumns.Len 0}-}
  watch: {
     '$route' () {
       this.form_{-{$table.UNQ}-} = Object.assign(this.form_{-{$table.UNQ}-},this.$route.params)
@@ -106,18 +103,15 @@ methods: {
     this.form_{-{ $table.UNQ }-}.ps = ps
     this.onQuery(true)
   },
-  {-{- range $i,$c:= $qcols}-}
-        {-{- if and (eq "ddmenu" $c.Cmpnt.Type) (eq true $c.Enum.IsEnum)}-}
-        {-{- $memberClus :=  $table.GetStaticColumns "q" "#"}-}
-        {-{- if gt (len $memberClus) 0}-}
+  {-{- range $i,$c:= $ddmenuCols}-}
+        {-{- $memberClus := $table.Columns.GetFontQueryColumns.GetStaticColumns}-}
+        {-{- if gt $memberClus.Len 0}-}
         {-{- range $i,$v := $memberClus}-}
-      {-{- $name := f_string_trim $i "#"}-}
   on{-{$c.Name}-}Change(v){
-    this.$theia.user.set("{-{$name}-}",v)
+    this.$theia.user.set("{-{$v.Ext.Name}-}",v)
     this.loadEnums()
     this.onQuery(true)
   },
-{-{- end}-}
 {-{- end}-}
 {-{- end}-}
 {-{- end}-}

@@ -2,27 +2,20 @@
 
 package {-{.Name.Main}-}
 {-{- $table := .}-}
-{-{- $ccols :=  $table.GetRequiredColumnsByName "c"}-}
-{-{- $clen := (len $ccols)|minus}-}
-{-{- $ucols :=  $table.GetRequiredColumnsByName "u"}-}
-{-{- $ulen := (len $ucols)|minus}-}
-{-{- $pklen := (len $table.PKColumns)|minus}-}
-{-{- $switchs :=  $table.GetColumsByCmpnt "switch" "l"}-}
-{-{- $slen := (len $switchs)|minus}-}
-{-{- $updator :=  $table.Optrs.All.GetByCmptName "batupdator-lstupdator"}-}
-{-{- $barinsert :=  $table.Optrs.BarOpts.GetByCmptName "barinsert"}-}
+{-{- $ccols :=  $table.Columns.GetFontCreateColumns.GetRequiedColumns}-}
+{-{- $ucols :=  $table.Columns.GetFontUpdateColumns.GetRequiedColumns}-}
+{-{- $switchs :=$table.Columns.GetAllListColumns.GetValidColumns.GetByCmpnt "switch"}-}
 {-{- $batinserts :=  $table.Optrs.BarOpts.GetByCmptName  "batinsert"}-}
-{-{- $hasStatic :=   $table.HasStaticColumn "bc-bu-bq" "#"}-}
+{-{- $hasStatic :=  gt $table.Columns.GetAll.GetStaticColumns.Len 0}-}
 
 import (
 	"net/http"
-	{-{- if or (gt (len ( $table.GetColumnsByTPName "c-bc")) 0) (gt (len ( $table.GetValidColumnsByName "u")) 0)}-}
+	{-{- if or (gt $table.Columns.GetAllCreateColumns.Len 0) (gt $table.Columns.GetAllUpdateColumns.Len 0)}-}
 	"strings"
 	{-{- end}-}
-
 	"github.com/micro-plat/hydra"
 	"github.com/micro-plat/lib4go/errs"
-	{-{- if gt (len ( $table.GetColumnsByTPName "q-bq")) 0}-}
+	{-{- if gt $table.Columns.GetAllQueryColumns.Len 0}-}
 	"github.com/micro-plat/lib4go/types"
 	{-{- end}-}
 	{-{- if eq true $hasStatic}-}
@@ -32,7 +25,7 @@ import (
 	"{-{$table.PkgName}-}/modules/biz/system"
 	"fmt"
 	{-{- end}-}
-	{-{- if gt (len $batinserts) 0}-}
+	{-{- if gt $batinserts.Len 0}-}
 	"{-{$table.PkgName}-}/services/utils"
 	{-{- end}-}
 )
@@ -48,14 +41,14 @@ type {-{.Name.CName}-}Handler struct {
 
 func New{-{.Name.CName}-}Handler() *{-{.Name.CName}-}Handler {
 	return &{-{.Name.CName}-}Handler{
-		insertRequiredFields:[]string{ {-{- range $i,$v := $ccols}-}"{-{$v.Name}-}"{-{if lt $i $clen}-},{-{end}-}{-{end}-}},
-		updateRequiredFields:[]string{ {-{- range $i,$v :=  $ucols}-}"{-{$v.Name}-}"{-{if lt $i $ulen}-},{-{end}-}{-{end}-}},
-		pkRequiredFields:[]string{ {-{- range $i,$v :=  $table.PKColumns}-}"{-{$v.Name}-}"{-{if lt $i $pklen}-},{-{end}-}{-{end}-}},
-		switchRequiredFields:[]string{ {-{- range $i,$v :=  $switchs }-}"{-{$v.Name}-}"{-{if lt $i $slen}-},{-{end}-}{-{end}-}},
+		insertRequiredFields:[]string{ {-{- range $i,$v := $ccols}-}"{-{$v.Name}-}"{-{if lt $i $ccols.SLen}-},{-{end}-}{-{end}-}},
+		updateRequiredFields:[]string{ {-{- range $i,$v :=  $ucols}-}"{-{$v.Name}-}"{-{if lt $i $ucols.SLen}-},{-{end}-}{-{end}-}},
+		pkRequiredFields:[]string{ {-{- range $i,$v :=  $table.Columns.GetPKColumns}-}"{-{$v.Name}-}"{-{if lt $i  $table.Columns.GetPKColumns.SLen}-},{-{end}-}{-{end}-}},
+		switchRequiredFields:[]string{ {-{- range $i,$v :=  $switchs }-}"{-{$v.Name}-}"{-{if lt $i $switchs.SLen}-},{-{end}-}{-{end}-}},
 	}
 }
-{-{- $leColumns:=  $table.GetValidColumnsByName "l-le-bl" }-}
-{-{- if gt (len $leColumns) 0}-}
+{-{- $leColumns:=  $table.Columns.GetAllListColumns }-}
+{-{- if gt $leColumns.Len 0}-}
 
 //GetHandle  查询{-{.Desc}-}数据
 func (u *{-{.Name.CName}-}Handler) GetHandle(ctx hydra.IContext) (r interface{}) {
@@ -75,8 +68,7 @@ func (u *{-{.Name.CName}-}Handler) GetHandle(ctx hydra.IContext) (r interface{})
 }
 {-{- end}-}
 
-{-{- $uColumns :=  $table.GetValidColumnsByName "u-bu"}-}
-{-{- if gt (len $uColumns) 0}-}
+{-{- if gt $table.Columns.GetAllUpdateColumns.GetValidColumns.Len 0}-}
 
 //PutHandle  修改{-{.Desc}-}数据
 func (u *{-{.Name.CName}-}Handler) PutHandle(ctx hydra.IContext) (r interface{}) {
@@ -89,15 +81,14 @@ func (u *{-{.Name.CName}-}Handler) PutHandle(ctx hydra.IContext) (r interface{})
 	}
 	
 	ctx.Log().Info("2.修改数据")
-	{-{- $memberClus :=  $table.GetStaticColumns "bu" "#"}-}
-	{-{- if gt (len $memberClus) 0}-}
+	{-{- $memberClus :=  $table.Columns.GetAllUpdateColumns.GetStaticColumns}-}
+	{-{- if gt $memberClus.Len 0}-}
 	member, err := member.GetMemberState(ctx)
 	if err != nil {
 		return err
 	}
 	{-{- range $i,$v := $memberClus}-}
-	{-{- $name := f_string_trim $i "#"}-}
-	ctx.Request().SetValue("{-{$v.Name}-}",member.Get("{-{$name}-}"))
+	ctx.Request().SetValue("{-{$v.Name}-}",member.Get("{-{$v.Ext.Name}-}"))
 	{-{- end}-}
 	{-{- end}-}
 	rx, err := hydra.C.DB().GetRegularDB().Execute(update{-{.Name.CName}-}, ctx.Request().GetMap())
@@ -119,8 +110,8 @@ func (u *{-{.Name.CName}-}Handler) PutHandle(ctx hydra.IContext) (r interface{})
 }
 {-{- end}-}
 
-{-{- $cColumns :=   $table.GetValidColumnsByName "c-bc"}-}
-{-{- if gt (len $cColumns) 0}-}
+{-{- if gt $table.Columns.GetAllCreateColumns.GetValidColumns.Len 0}-}
+
 //PostHandle  保存{-{.Desc}-}数据
 func (u *{-{.Name.CName}-}Handler) PostHandle(ctx hydra.IContext) (r interface{}) {
 
@@ -132,15 +123,14 @@ func (u *{-{.Name.CName}-}Handler) PostHandle(ctx hydra.IContext) (r interface{}
 	}
 	
 	ctx.Log().Info("2.添加新数据")
-	{-{- $memberClus :=  $table.GetStaticColumns "bc" "#"}-}
-	{-{- if gt (len $memberClus) 0}-}
+	{-{- $memberClus :=  $table.Columns.GetAllCreateColumns.GetStaticColumns}-}
+	{-{- if gt $memberClus.Len 0}-}
 	member, err := member.GetMemberState(ctx)
 	if err != nil {
 		return err
 	}
 	{-{- range $i,$v := $memberClus}-}
-	{-{- $name := f_string_trim $i "#"}-}
-	ctx.Request().SetValue("{-{$v.Name}-}",member.Get("{-{$name}-}"))
+	ctx.Request().SetValue("{-{$v.Name}-}",member.Get("{-{$v.Ext.Name}-}"))
 	{-{- end}-}
 	{-{- end}-}
 	rx, err := hydra.C.DB().GetRegularDB().Execute(insert{-{.Name.CName}-}, ctx.Request().GetMap())
@@ -162,28 +152,27 @@ func (u *{-{.Name.CName}-}Handler) PostHandle(ctx hydra.IContext) (r interface{}
 }
 {-{- end}-}
 
-{-{- $qColumns :=  $table.GetValidColumnsByName "q-bq"}-}
-{-{- if gt (len $qColumns) 0}-}
-{-{- $qbar:=$table.Optrs.QueryOptrs|f_optr_first}-}
-{-{- $pkName := $table.PKColumns|f_colum_first}-}
+{-{- if gt $table.Columns.GetAllQueryColumns.Len 0}-}
+{-{- $qbar:=$table.Optrs.QueryOptrs.First}-}
+{-{- $pkName := $table.Columns.GetPKColumns.First}-}
 {-{- $treeNode :=  $qbar.GetParam "treeNode" ""}-}
 {-{- $treeId :=  $qbar.GetParam "treeId" $pkName.Name}-}
 {-{- $treeDef :=  $qbar.GetParam "firstNodeValue" "0"}-}
+
 //QueryHandle  获取{-{.Desc}-}列表数据
 func (u *{-{.Name.CName}-}Handler) QueryHandle(ctx hydra.IContext) (r interface{}) {
 
 	ctx.Log().Info("--------获取{-{.Desc}-}数据列表--------")
 
 	ctx.Log().Info("1.查询数据条数")
-	{-{- $memberClus :=  $table.GetStaticColumns "bq" "#"}-}
-	{-{- if gt (len $memberClus) 0}-}
+	{-{- $memberClus :=  $table.Columns.GetAllQueryColumns.GetStaticColumns}-}
+	{-{- if gt $memberClus.Len 0}-}
 	member, err := member.GetMemberState(ctx)
 	if err != nil {
 		return err
 	}
 	{-{- range $i,$v := $memberClus}-}
-	{-{- $name := f_string_trim $i "#"}-}
-	ctx.Request().SetValue("{-{$v.Name}-}",types.GetString(ctx.Request().GetValue("{-{$v.Name}-}"),member.Get("{-{$name}-}")))
+	ctx.Request().SetValue("{-{$v.Name}-}",types.GetString(ctx.Request().GetValue("{-{$v.Name}-}"),member.Get("{-{$v.Ext.Name}-}")))
 	{-{- end}-}
 	{-{- end}-}
 	{-{- if eq "" $treeNode}-}
@@ -198,7 +187,6 @@ func (u *{-{.Name.CName}-}Handler) QueryHandle(ctx hydra.IContext) (r interface{
 	m["ps"] = 10000
 	m["offset"] = 0
 	{-{end}-}
-	
 	
 	count, err := hydra.C.DB().GetRegularDB().Scalar(get{-{.Name.CName}-}ListCount, m)
 	if err != nil {
@@ -253,8 +241,6 @@ func getTreeNodes(items types.XMaps, pidName string, pkName string) types.XMaps 
 		treeMap[pid] = append(treeMap[pid], r)
 	}
 	lstMap := getTopNodeMap(treeMap, pidName, pkName)
-	// buff, _ := jsons.Marshal(treeMap)
-	// fmt.Println("lstMap:", string(lstMap))
 	for _, m := range lstMap {
 		setChildren(m, pkName, treeMap)
 	}
@@ -302,12 +288,11 @@ func setChildren(current types.XMap, idName string, treeMap map[string]types.XMa
 		setChildren(v, idName, treeMap)
 	}
 }
-
 {-{- end}-}
 {-{- end}-}
+{-{- $dColumns :=  $table.Columns.GetDelColumns}-}
+{-{- if gt $dColumns.Len 0}-}
 
-{-{- $dColumns :=  $table.GetValidColumnsByName "d"}-}
-{-{- if gt  (len $dColumns) 0}-}
 //DeleteHandle  删除{-{.Desc}-}数据
 func (u *{-{.Name.CName}-}Handler) DelHandle(ctx hydra.IContext) (r interface{}) {
 
@@ -366,8 +351,10 @@ func (u *{-{.Name.CName}-}Handler) SwitchHandle(ctx hydra.IContext) (r interface
 }
 {-{- end}-}
 
-{-{- if gt (len $updator) 0}-}
+{-{- $updator :=  $table.Optrs.All.GetByCmptName "batupdator-lstupdator"}-}
+{-{- if gt $updator.Len 0}-}
 {-{- range $i,$c := $updator}-}
+
 //{-{$c.ReqURL|f_string_2cname}-}Handle  {-{$c.Label}-}
 func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(ctx hydra.IContext) (r interface{}) {
 
@@ -402,8 +389,10 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 {-{- end}-}
 {-{- end}-}
 
-{-{- if gt (len $barinsert) 0}-}
+{-{- $barinsert :=  $table.Optrs.BarOpts.GetByCmptName "barinsert"}-}
+{-{- if gt $barinsert.Len 0}-}
 {-{- range $i,$c := $barinsert}-}
+
 //{-{$c.ReqURL|f_string_2cname}-}Handle  保存{-{.Desc}-}数据
 func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(ctx hydra.IContext) (r interface{}) {
 
@@ -421,17 +410,17 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 	}
 	
 	ctx.Log().Info("2.添加新数据")
-	{-{- $memberClus :=  $table.GetStaticColumns "bc" "#"}-}
-	{-{- if gt (len $memberClus) 0}-}
+	{-{- $memberClus :=  $table.Columns.GetAllCreateColumns.GetStaticColumns}-}
+	{-{- if gt $memberClus.Len 0}-}
 	member, err := member.GetMemberState(ctx)
 	if err != nil {
 		return err
 	}
 	{-{- range $i,$v := $memberClus}-}
-	{-{- $name := f_string_trim $i "#"}-}
-	ctx.Request().SetValue("{-{$v.Name}-}",member.Get("{-{$name}-}"))
+	ctx.Request().SetValue("{-{$v.Name}-}",member.Get("{-{$v.Ext.Name}-}"))
 	{-{- end}-}
 	{-{- end}-}
+
 	rx, err := hydra.C.DB().GetRegularDB().Execute(barinsert{-{$c.ReqURL|f_string_2cname}-}{-{$table.Name.CName}-}, ctx.Request().GetMap())
 	if err != nil{
 		if strings.Contains(err.Error(),"Error 1062"){
@@ -449,16 +438,13 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 	{-{- end}-}
 	return
 }
-
-
-
 {-{- end}-}
 {-{- end}-}
 
-
-
-{-{- if gt (len $batinserts) 0}-}
+{-{- $batinserts :=  $table.Optrs.BarOpts.GetByCmptName  "batinsert"}-}
+{-{- if gt $batinserts.Len 0}-}
 {-{- range $i,$c := $batinserts}-}
+
 //{-{$c.ReqURL|f_string_2cname}-}Handle  {-{$c.Label}-}
 func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(ctx hydra.IContext) (r interface{}) {
 
@@ -478,14 +464,14 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 		{-{ $table.JoinNames $c.FwName true `"` `",`}-}
 	}
 	enumsMap := map[string]interface{}{
-		{-{- range $i,$c := $table.EnumColumns}-}
+		{-{- range $i,$c := $table.Columns.GetEnumColumns}-}
 		"{-{$c.Name}-}":"{-{$c.Enum.EnumType}-}",
 		{-{- end}-}
 	}
-	{-{ $binsertColums :=   $table.GetColumnsByTPName "batisert" -}-}
-	{-{- $binsertColum := f_colum_first $binsertColums -}-}
+	{-{ $binsertColumns := $table.Columns.GetColumns "batisert" -}-}
+	{-{- $binsertColum := $binsertColumns.First -}-}
 	cfield := "{-{- $binsertColum.Name}-}"
-	xfm :="{-{- f_string_join ($table.GetKeyParams "batisert") ","}-}"
+	xfm :="{-{- f_string_join ($table.Columns.GetCmpntValues "batisert") ","}-}"
 	xms,err := utils.TransformBatchContent(fileds,enumsMap, cfield, xfm, ctx.Request().GetMap())
 	if err != nil{
 		return err

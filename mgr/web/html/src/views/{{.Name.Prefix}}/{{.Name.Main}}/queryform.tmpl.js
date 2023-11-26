@@ -1,7 +1,6 @@
 {-{- $table := .}-}
-{-{- $dateRangeCmpnts :=$table.GetColumsByCmpnt "daterange" "q" -}-}
-{-{- $textcmpnts :=$table.GetColumsByCmpnt "text" "q" -}-}
-{-{- $qcols :=  $table.GetColumnsByTPName "q"}-}
+{-{- $dateRangeCmpnts := $table.Columns.GetFontQueryColumns.GetByCmpnt "daterange" -}-}
+{-{- $textcmpnts := $table.Columns.GetFontQueryColumns.GetByCmpnt "text" -}-}
     form_{-{.UNQ}-}: {
         pi: 1,
         ps: 15,
@@ -9,27 +8,25 @@
         single_date_range_value:[],
         single_text_name:"",
         single_text_value:"",
-        {-{- range $i,$c := $qcols}-}
-        {-{- if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
+        {-{- range $i,$c := $table.Columns.GetFontQueryColumns}-}
+        {-{- if  $c.Cmpnt.StartWith "multi"}-}
         {-{$c.Name}-}:[],
         {-{- else}-}
         {-{$c.Name}-}:"",
         {-{- end}-}
         {-{- end}-}
         },
-    {-{- range $i,$c :=  $table.GetColumnsByTPName "q-l-le" }-}
-    {-{- if eq true $c.Enum.IsEnum }-}
-        {-{- if eq true (f_string_start $c.Cmpnt.Type "multi")}-}
+    {-{- range $i,$c :=  $table.Columns.GetAllListColumns.GetEnumColumns}-}
+        {-{- if $c.Cmpnt.StartWith "multi"}-}
         {-{.Name}-}Exts:[],
         {-{- end}-}
-        {-{- if eq true (f_string_start $c.Cmpnt.Type "ddmenu")}-}
+        {-{- if $c.Cmpnt.StartWith "ddmenu"}-}
         {-{.Name}-}List:[],
        {-{- else}-}
        {-{.Name}-}List:[],
         {-{- end}-}
-    {-{- if and (eq "tabs" $c.Cmpnt.Type) (ne "" $c.Cmpnt.Format)}-}
+    {-{- if and ($c.Cmpnt.Equal "tabs") ($c.Cmpnt.HasFormat)}-}
     {-{.Name}-}TabList:[],
-    {-{- end}-}
     {-{- end}-}
     {-{- end}-}
     dataList_{-{.UNQ}-}:[],

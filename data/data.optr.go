@@ -70,9 +70,9 @@ type viewExtCmptOpts = optrslst
 type queryOptrs = optrslst
 type extOptrs = optrslst
 
-var viewOptCmd = []string{"view"}
+var viewOptCmd = []string{"view", "vwPg"}
 var lstatOptCmd = []string{"lstat"}
-var lstBarOptCmd = []string{"lst", "lstupdator"}
+var lstBarOptCmd = []string{"lst", "lstActn", "lstupdator"}
 var batchCheck = []string{"bcheck", "@bcheck", "&bcheck"}
 var qBarOptrCmd = []string{"export", "import", "lstbar", "batupdator", "barinsert", "batinsert", "list"}
 var charOptrCmd = []string{"chart"}
@@ -100,7 +100,6 @@ var xBarOpts = &optrs{Tag: "XBAR", URL: "@/views/cmpnts/xbar.vue", Name: "CMPNT"
 func (s *optrs) Get(tableName string) *optrs {
 	nopts := *s
 	nopts.Table = tableName
-	// nopts.UNQ = defFids.Next()  11/18
 	nopts.UNQ = defFids.Get(&nopts)
 	return &nopts
 }
@@ -108,7 +107,6 @@ func (s *optrs) GetAndSetTag(tableName string, tagName string) *optrs {
 	nopts := *s
 	nopts.Table = tableName
 	nopts.Tag = tagName
-	// nopts.UNQ = defFids.Next() 11/18
 	nopts.UNQ = defFids.Get((&nopts))
 	return &nopts
 }
@@ -128,15 +126,46 @@ func (s *optrs) String() string {
 	buff, _ := jsons.Marshal(s)
 	return string(buff)
 }
+func (s *optrs) Equal(name string) bool {
+	ns := strings.Split(name, "|")
+	for _, b := range ns {
+		if strings.EqualFold(s.Name, b) {
+			return true
+		}
+	}
+	return false
+}
+func (s *optrs) HasTag(bb string) bool {
+	bs := strings.Split(bb, "-")
+	for _, b := range bs {
+		if strings.EqualFold(s.Tag, b) {
+			return true
+		}
+	}
+	return false
+}
 func (s *optrs) UNQKey() string {
 	return fmt.Sprintf("%s/%s/%s/%s/%s/%s/%s",
 		s.Table, s.ReqURL, s.URL,
 		s.Name, s.RwName, s.FwName,
 		s.Cmd)
 }
+
+func (optr *optrs) IsMutilValue(name string, cs Columns) bool {
+	if optr.Params.IsBatchCheck(name) {
+		return true
+	}
+	for _, r := range cs {
+		if strings.HasPrefix(r.Cmpnt.Type, "multi") {
+			return true
+		}
+	}
+	return false
+}
 func (s optrslst) Len() int           { return len(s) }
 func (s optrslst) Less(i, j int) bool { return s[i].index < s[j].index }
 func (s optrslst) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
+func (s optrslst) SLen() int          { return len(s) - 1 }
 func (s optrslst) Find(tag string) bool {
 	for _, v := range s {
 		if strings.EqualFold(v.Tag, tag) {
@@ -197,14 +226,14 @@ func (b barOptrs) NeedCheck(tb string) bool {
 func createLstBarOptrs(table *Table, t string) lstOptrs {
 	optrs := createCmdsOptrs(table.Name.Raw, t, lstBarOptCmd)
 	//构建操作
-	if !optrslst(optrs).Find(VIEW_TAG) && len(table.GetColumnsByTPName(VIEW_COLUMN)) > 0 {
+	if !optrslst(optrs).Find(VIEW_TAG) && len(table.Columns.GetViewColumns()) > 0 {
 		optrs = append(optrs, detailOpts.Get(table.Name.Raw))
 	}
-	if !optrslst(optrs).Find(UPDATE_TAG) && len(table.GetColumnsByTPName(UPDATE_COLUMN)) > 0 {
+	if !optrslst(optrs).Find(UPDATE_TAG) && len(table.Columns.GetAllUpdateColumns()) > 0 {
 		optrs = append(optrs, updateOpts.Get(table.Name.Raw))
 	}
 
-	if !optrslst(optrs).Find(DELETE_TAG) && len(table.GetColumnsByTPName(DELETE_COLUMN)) > 0 {
+	if !optrslst(optrs).Find(DELETE_TAG) && len(table.Columns.GetDelColumns()) > 0 {
 		optrs = append(optrs, delOpts.GetAndSetTag(table.Name.Raw, CNFRM))
 	}
 	if tag, ok := optrslst(optrs).Get(DELETE_TAG); ok {
@@ -216,7 +245,7 @@ func createLstBarOptrs(table *Table, t string) lstOptrs {
 func createViewOptrs(table *Table, t string) (viewOptrs, viewExtCmptOpts) {
 	viewOpts := createCmdsOptrs(table.Name.Raw, t, viewOptCmd)
 	//构建操作
-	if !optrslst(viewOpts).FindName(VIEW_TAG) && len(table.GetColumnsByTPName(VIEW_COLUMN)) > 0 {
+	if !optrslst(viewOpts).FindName(VIEW_TAG) && len(table.Columns.GetViewColumns()) > 0 {
 		view := detailOpts.Get(table.Name.Raw)
 		view.Name = "view"
 		viewOpts = append(viewOpts, view)
@@ -226,7 +255,7 @@ func createViewOptrs(table *Table, t string) (viewOptrs, viewExtCmptOpts) {
 }
 func createQueryOptrs(table *Table, t string) queryOptrs {
 	opts := createCmdsOptrs(table.Name.Raw, t, queryOptrCmd)
-	if !optrslst(opts).Find(QUERY_TAG) && len(table.GetColumnsByTPName(QUERY_COLUMN)) > 0 {
+	if !optrslst(opts).Find(QUERY_TAG) && len(table.Columns.GetAllQueryColumns()) > 0 {
 		opts = append(opts, queryOpts.Get(table.Name.Raw))
 	}
 	return opts
@@ -244,7 +273,7 @@ func createExtOptrs(tableName string, t string) extOptrs {
 }
 func createQBarOptrs(table *Table, t string) (barOptrs, bool) {
 	opts := createCmdsOptrs(table.Name.Raw, t, qBarOptrCmd)
-	if !optrslst(opts).Find(ADD_TAG) && len(table.GetColumnsByTPName(ADD_COLUMN)) > 0 {
+	if !optrslst(opts).Find(ADD_TAG) && len(table.Columns.GetAllCreateColumns()) > 0 {
 		opts = append(opts, addOpts.Get(table.Name.Raw))
 	}
 	return opts, barOptrs(opts).NeedCheck(table.Name.Raw)
@@ -252,8 +281,9 @@ func createQBarOptrs(table *Table, t string) (barOptrs, bool) {
 func createCmdsOptrs(tableName string, t string, cmds []string) []*optrs {
 	optrs := make([]*optrs, 0, 1)
 	for _, v := range cmds {
-		optrs = append(optrs, createOptrs(tableName, t, strings.ToLower(v))...)
-		optrs = append(optrs, createOptrs(tableName, t, strings.ToUpper(v))...)
+		optrs = append(optrs, createOptrs(tableName, t, v)...)
+		// optrs = append(optrs, createOptrs(tableName, t, strings.ToLower(v))...)
+		// optrs = append(optrs, createOptrs(tableName, t, strings.ToUpper(v))...)
 	}
 	return optrs
 }
@@ -266,14 +296,12 @@ func creatExtCmptOpts(opts ...*optrs) []*optrs {
 			v, ok := view.Params[cmd]
 			if ok && okOptr {
 				xview := *op
-				// xview.UNQ = view.UNQ
 				xview.Label = types.DecodeString(types.GetBool(v), true, view.Label, v)
 				xview.Desc = xview.Label
 				xview.Params = view.Params
 				xview.Params["table"] = view.URL
 				xview.Table = view.URL
 				xview.ParentUNQ = view.UNQ
-				// xview.UNQ = defFids.Next() 11/18
 				xview.UNQ = defFids.Get(&xview)
 				nopts = append(nopts, &xview)
 			}
@@ -347,7 +375,6 @@ func createOptrs(tableName string, extInfo string, tag string) []*optrs {
 
 		opt.Cmd = tag
 		opt.Label = types.GetStringByIndex(lst, 0)
-		// opt.UNQ = defFids.Next() 11/18
 		opt.UNQ = defFids.Get(&opt)
 		opt.Params = make(map[string]string)
 		rwName := types.GetStringByIndex(lst, 3)

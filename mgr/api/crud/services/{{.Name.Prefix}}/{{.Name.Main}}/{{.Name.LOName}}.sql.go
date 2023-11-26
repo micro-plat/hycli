@@ -3,18 +3,8 @@
 package {-{.Name.Main}-}
 
 {-{- $table := .}-}
-{-{- $CColumns:=  $table.GetValidColumnsByName "c-bc-fc"}-}
-{-{- $UColumns:=  $table.GetValidColumnsByName "u"}-}
-{-{- $switchs :=  $table.GetColumsByCmpnt "switch" "l"}-}
-{-{- $clen := (len $CColumns)|minus}-}
-{-{- $ulen := (len $UColumns)|minus}-}
-{-{- $slen := (len $switchs)|minus}-}
-{-{- $sigleQueryCols:=  $table.GetValidColumnsByName "l-le-bl"}-}
-{-{- $totalQCols:=   $table.GetValidColumnsByName "q-bq"}-}
-{-{- $vlen := (len $sigleQueryCols)|minus}-}
-{-{- $orders :=  $table.GetValidColumnsByName "ord"}-}
-
-{-{- if gt (len ( $table.GetColumnsByTPName "q-bq")) 0}-}
+{-{- $QColumns:=   $table.Columns.GetAllQueryColumns.GetValidColumns}-}
+{-{- if gt $QColumns.Len 0}-}
 
 //get{-{.Name.CName}-}ListCount 获取{-{.Desc}-}列表条数
 var get{-{.Name.CName}-}ListCount = `
@@ -22,41 +12,43 @@ select
 	count(1)
 from {-{.Name.Raw}-} t
 where
-{-{- range $i,$v := $totalQCols}-}
-{-{- if or (eq true $v.Field.LikeQuery) (eq "input" $v.Cmpnt.Type)}-}
+{-{- range $i,$v := $QColumns}-}
+{-{- if or ($v.Field.LikeQuery) ($v.Cmpnt.Equal "input")}-}
 	?t.{-{$v.Name}-}
-{-{- else if eq "daterange" $v.Cmpnt.Type}-}
+{-{- else if $v.Cmpnt.Equal "daterange"}-}
 	and ((@start_{-{$v.Name}-}='' and @end_{-{$v.Name}-}='') or (t.{-{$v.Name}-} >=  if(@start_{-{$v.Name}-}='', t.{-{$v.Name}-},@start_{-{$v.Name}-})
 	and t.{-{$v.Name}-} <  date_add(if(@end_{-{$v.Name}-}='',t.{-{$v.Name}-},@end_{-{$v.Name}-}), interval 1 day)))
-{-{- else if eq "date" $v.Cmpnt.Type}-}
+{-{- else if $v.Cmpnt.Equal "date"}-}
 	and ((@start_{-{$v.Name}-}='' and @end_{-{$v.Name}-}='') or (t.{-{$v.Name}-} >=  if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-})
 	and t.{-{$v.Name}-} <  date_add(if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-}),interval 1 day)))	
-{-{- else if eq true (f_string_start $v.Cmpnt.Type "multi")}-}
+{-{- else if $v.Cmpnt.StartWith "multi"}-}
 	and (if(@{-{$v.Name}-} = '',NULL,@{-{$v.Name}-}) is null or  FIND_IN_SET(t.{-{$v.Name}-},@{-{$v.Name}-}))
 {-{- else}-}
 	&t.{-{$v.Name}-}
 {-{- end}-}
 {-{- end}-}`
 
+{-{- $LColumns:=  $table.Columns.GetAllListColumns.GetValidColumns}-}
+{-{- $orders :=  $table.Columns.GetValidColumns.GetColumns "ord"}-}
+
 //get{-{.Name.CName}-}List 查询{-{.Desc}-}列表数据
 var get{-{.Name.CName}-}List =[]string{ `
 select
-	{-{- range $i,$v :=  $sigleQueryCols}-}
-	t.{-{$v.Name}-},
+	{-{- range $i,$v :=  $LColumns}-}
+	t.{-{$v.Name}-}{-{if lt $i $LColumns.SLen}-},{-{end}-}
 	{-{- end}-}
-	1
 from {-{.Name.Raw}-} t
 where
-	{-{- range $i,$v := $totalQCols}-}
-	{-{- if or (eq true $v.Field.LikeQuery) (eq "input" $v.Cmpnt.Type)}-}
+	{-{- range $i,$v := $QColumns}-}
+	{-{- if or ($v.Field.LikeQuery) ($v.Cmpnt.Equal "input")}-}
 	?t.{-{$v.Name}-}
-	{-{- else if eq "daterange" $v.Cmpnt.Type}-}
+	{-{- else if $v.Cmpnt.Equal "daterange"}-}
 	and ((@start_{-{$v.Name}-}='' and @end_{-{$v.Name}-}='') or (t.{-{$v.Name}-} >=  if(@start_{-{$v.Name}-}='', t.{-{$v.Name}-},@start_{-{$v.Name}-})
 	and t.{-{$v.Name}-} <  date_add(if(@end_{-{$v.Name}-}='',t.{-{$v.Name}-},@end_{-{$v.Name}-}), interval 1 day)))
-	{-{- else if eq "date" $v.Cmpnt.Type}-}
+	{-{- else if $v.Cmpnt.Equal "date"}-}
 	and ((@start_{-{$v.Name}-}='' and @end_{-{$v.Name}-}='') or (t.{-{$v.Name}-} >=  if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-})
 	and t.{-{$v.Name}-} <  date_add(if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-}),interval 1 day)))	
-	{-{- else if eq true (f_string_start $v.Cmpnt.Type "multi")}-}
+	{-{- else if $v.Cmpnt.StartWith "multi"}-}
 	and (if(@{-{$v.Name}-} = '',NULL,@{-{$v.Name}-}) is null or  FIND_IN_SET(t.{-{$v.Name}-},@{-{$v.Name}-}))
 	{-{- else}-}
 	&t.{-{$v.Name}-}
@@ -65,105 +57,108 @@ where
 order by {-{ range $i,$m := $orders}-}
 	t.{-{$m.Name}-}{-{if eq "asc" $m.Cmpnt.Format}-} asc {-{else}-} desc {-{end}-},
 {-{- end}-}
-{-{- range $i,$v := $table.PKColumns.GetValidColumns}-}
+{-{- range $i,$v := $table.Columns.GetPKColumns.GetValidColumns}-}
 	t.{-{$v.Name}-} desc
 {-{- end}-}
 limit @ps offset @offset`,
 }
 {-{- end}-}
 
-{-{- if gt (len ( $table.GetColumnsByTPName "c-bc")) 0}-}
+{-{- $CColumns:=  $table.Columns.GetAllCreateColumns.GetValidColumns}-}
+{-{- if gt $CColumns.Len 0}-}
 
 // insert{-{.Name.CName}-} 保存{-{.Desc}-}数据
 var insert{-{.Name.CName}-} = `
 insert into {-{.Name.Raw}-}
 (
-	{-{- range $i,$v :=  $table.GetValidColumnsByName "c-bc-fc"}-}
-	{-{$v.Name}-}{-{if lt $i $clen}-},{-{end}-}
+	{-{- range $i,$v := $CColumns}-}
+	{-{$v.Name}-}{-{if lt $i $CColumns.SLen}-},{-{end}-}
 	{-{- end}-}
 )
 values
 (
-	{-{- range $i,$v :=   $table.GetValidColumnsByName "c-bc-fc"}-}
+	{-{- range $i,$v := $CColumns}-}
 	{-{- if eq false $v.Field.Required}-}
-	if(@{-{$v.Name}-}='',{-{if ne "" $v.Field.DefaultValue}-} {-{$v.Field.DefaultValue}-} {-{else}-}NULL{-{end}-},@{-{$v.Name}-}){-{if lt $i $clen}-},{-{end}-}
+	if(@{-{$v.Name}-}='',{-{if ne "" $v.Field.DefaultValue}-} {-{$v.Field.DefaultValue}-} {-{else}-}NULL{-{end}-},@{-{$v.Name}-}){-{if lt $i $CColumns.SLen}-},{-{end}-}
 	{-{- else}-}
-	@{-{$v.Name}-}{-{if lt $i $clen}-},{-{end}-}
+	@{-{$v.Name}-}{-{if lt $i $CColumns.SLen}-},{-{end}-}
 	{-{- end}-}
 	{-{- end}-}
 )`
 {-{- end}-}
 
-{-{- if gt (len ( $table.GetValidColumnsByName "u")) 0}-}
+{-{- $UColumns:=  $table.Columns.GetAllUpdateColumns.GetValidColumns}-}
+{-{- if gt $UColumns.Len 0}-}
 
 //update{-{.Name.CName}-} 修改{-{.Desc}-}数据
 var update{-{.Name.CName}-} = `
 update {-{.Name.Raw}-} t set 
-{-{- range $i,$v := $table.GetValidColumnsByName "u"}-}
-	t.{-{$v.Name}-} = if(@{-{$v.Name}-}='',{-{if ne "" $v.Field.DefaultValue}-} {-{$v.Field.DefaultValue}-} {-{else}-}NULL{-{end}-},@{-{$v.Name}-}){-{if lt $i $ulen}-},{-{end}-}
+{-{- range $i,$v := $UColumns}-}
+	t.{-{$v.Name}-} = if(@{-{$v.Name}-}='',{-{if ne "" $v.Field.DefaultValue}-} {-{$v.Field.DefaultValue}-} {-{else}-}NULL{-{end}-},@{-{$v.Name}-}){-{if lt $i $UColumns.SLen}-},{-{end}-}
 {-{- end}-}
 where 
-{-{- range $i,$v := $table.PKColumns.GetValidColumns}-}
+{-{- range $i,$v := $table.Columns.GetPKColumns.GetValidColumns}-}
 	&{-{$v.Name}-}
 {-{- end}-}`
 {-{- end}-}
 
-{-{- if gt (len  ( $table.GetValidColumnsByName "l-le")) 0}-}
+{-{- $LColumns:=  $table.Columns.GetAllListColumns.GetValidColumns}-}
+{-{- if gt $LColumns.Len 0}-}
 
 //get{-{.Name.CName}-} 查询单条{-{.Desc}-}数据
 var get{-{.Name.CName}-} = `
 select
-{-{- range $i,$v := $sigleQueryCols}-}
-	t.{-{$v.Name}-}{-{if lt $i $vlen}-},{-{end}-}
+{-{- range $i,$v := $LColumns}-}
+	t.{-{$v.Name}-}{-{if lt $i $LColumns.SLen}-},{-{end}-}
 {-{- end}-}
 from {-{.Name.Raw}-} t
 where 
-{-{- range $i,$v := $table.PKColumns.GetValidColumns}-}
+{-{- range $i,$v := $table.Columns.GetPKColumns.GetValidColumns}-}
 	&{-{$v.Name}-}
 {-{- end}-}`
 {-{- end}-}
 
-{-{- if gt (len ( $table.GetColumnsByTPName "D")) 0}-}
+{-{- if gt $table.Columns.GetDelColumns.Len 0}-}
 
 //delete{-{.Name.CName}-} 删除单条{-{.Desc}-}数据
 var delete{-{.Name.CName}-} = `
 delete from {-{.Name.Raw}-}
 where 
-{-{- range $i,$v := $table.PKColumns.GetValidColumns}-}
+{-{- range $i,$v := $table.Columns.GetPKColumns.GetValidColumns}-}
 	&{-{$v.Name}-}
 {-{- end}-}`
 {-{- end}-}
 
-{-{- if gt (len $switchs) 0}-}
+{-{- $switchs :=  $table.Columns.GetAllListColumns.GetValidColumns.GetByCmpnt "switch"}-}
+{-{- if gt $switchs.Len 0}-}
 
 //switch{-{.Name.CName}-} 删除单条{-{.Desc}-}数据
 var switch{-{.Name.CName}-} = `
 update {-{.Name.Raw}-} t set 
 {-{- range $i,$v := $switchs}-}
-	t.{-{$v.Name}-} = @{-{$v.Name}-}{-{if lt $i $slen}-},{-{end}-}
+	t.{-{$v.Name}-} = @{-{$v.Name}-}{-{if lt $i $switchs.SLen}-},{-{end}-}
 {-{- end}-}
 where 
-{-{- range $i,$v := $table.PKColumns.GetValidColumns}-}
+{-{- range $i,$v := $table.Columns.GetPKColumns.GetValidColumns}-}
 	&{-{$v.Name}-}
 {-{- end}-}`
 {-{- end}-}
 
 {-{- $updator :=  $table.Optrs.All.GetByCmptName "batupdator-lstupdator"}-}
-{-{- if gt (len $updator) 0}-}
+{-{- if gt $updator.Len 0}-}
 {-{- range $i,$c := $updator}-}
+{-{- $fds := f_string_contact $c.RwName "-" (f_string_contact "b" $c.RwName)}-}
+{-{- $fields :=  $table.Columns.GetColumns $fds}-}
 
 //update{-{$table.Name.CName}-} 修改{-{$table.Desc}-}数据
 var updator{-{$table.Name.CName}-}{-{$c.ReqURL}-} = `
 update {-{$table.Name.Raw}-} t set 
-{-{- $fds := f_string_contact $c.RwName "-" (f_string_contact "b" $c.RwName)}-}
-{-{- $fields :=  $table.GetColumnsByTPName $fds}-}
-{-{- $uplen := minus (len $fields)}-}
 {-{- range $i,$v := $fields}-}
-	t.{-{$v.Name}-} = if(@{-{$v.Name}-}='',{-{if ne "" $v.Field.DefaultValue}-} {-{$v.Field.DefaultValue}-} {-{else}-}t.{-{$v.Name}-}{-{end}-},@{-{$v.Name}-}){-{if lt $i $uplen}-},{-{end}-}
+	t.{-{$v.Name}-} = if(@{-{$v.Name}-}='',{-{if ne "" $v.Field.DefaultValue}-} {-{$v.Field.DefaultValue}-} {-{else}-}t.{-{$v.Name}-}{-{end}-},@{-{$v.Name}-}){-{if lt $i $fields.SLen}-},{-{end}-}
 {-{- end}-}
-where 1 = 1
-{-{- range $i,$v :=  $table.GetColumnsByTPName $c.FwName -}-}
-	{-{- if  $table.IsMutilValue $c $v.Name}-}
+where
+{-{- range $i,$v :=  $table.Columns.GetColumns $c.FwName -}-}
+	{-{- if  $c.IsMutilValue $v.Name $table.Columns}-}
 	and FIND_IN_SET(t.{-{$v.Name}-},@{-{$v.Name}-})
 	{-{- else}-}
 	&{-{$v.Name}-}
@@ -173,49 +168,47 @@ where 1 = 1
 {-{- end}-}
 
 {-{- $barinsert :=  $table.Optrs.All.GetByCmptName  "barinsert"}-}
-{-{- if gt (len $barinsert) 0}-}
+{-{- if gt $barinsert.Len 0}-}
 {-{- range $i,$c := $barinsert}-}
 {-{- $fds := f_string_contact $c.RwName "-" (f_string_contact "b" $c.RwName)}-}
 {-{- $fds = f_string_contact $fds "-" (f_string_contact "f" $c.RwName)}-}
-{-{- $colums:=$table.GetValidColumnsByName $fds}-}
-{-{- $clen :=minus (len $colums)}-}
+{-{- $Columns:=$table.Columns.GetValidColumns.GetColumns $fds}-}
+
 // barinsert{-{$table.Name.CName}-} 保存{-{.Desc}-}数据
 var barinsert{-{$c.ReqURL|f_string_2cname}-}{-{$table.Name.CName}-} = `
 insert into {-{$table.Name.Raw}-}
 (
-	{-{- range $i,$v :=  $colums}-}
-	{-{$v.Name}-}{-{if lt $i $clen}-},{-{end}-}
+	{-{- range $i,$v :=  $Columns}-}
+	{-{$v.Name}-}{-{if lt $i $Columns.SLen}-},{-{end}-}
 	{-{- end}-}
 )
 values
 (
-	{-{- range $i,$v := $colums}-}
+	{-{- range $i,$v := $Columns}-}
 	{-{- if eq false $v.Field.Required}-}
-	if(@{-{$v.Name}-}='',{-{if ne "" $v.Field.DefaultValue}-} {-{$v.Field.DefaultValue}-} {-{else}-}NULL{-{end}-},@{-{$v.Name}-}){-{if lt $i $clen}-},{-{end}-}
+	if(@{-{$v.Name}-}='',{-{if ne "" $v.Field.DefaultValue}-} {-{$v.Field.DefaultValue}-} {-{else}-}NULL{-{end}-},@{-{$v.Name}-}){-{if lt $i $Columns.SLen}-},{-{end}-}
 	{-{- else}-}
-	@{-{$v.Name}-}{-{if lt $i $clen}-},{-{end}-}
+	@{-{$v.Name}-}{-{if lt $i $Columns.SLen}-},{-{end}-}
 	{-{- end}-}
 	{-{- end}-}
 )`
 {-{- end}-}
 {-{- end}-}
 
-//批量添加数据
+
 {-{- $batinserts :=  $table.Optrs.All.GetByCmptName  "batinsert"}-}
-{-{- $uplen := minus (len $batinserts)}-}
-{-{- if gt (len $batinserts) 0}-}
+{-{- if gt $batinserts.Len 0}-}
 {-{- range $i,$c := $batinserts}-}
 
-//batInsert{-{$table.Name.CName}-}{-{$c.ReqURL}-} 修改{-{$table.Desc}-}数据
+//batInsert{-{$table.Name.CName}-}{-{$c.ReqURL}-} 批量添加{-{$table.Desc}-}数据
 var batInsert{-{$table.Name.CName}-}{-{$c.ReqURL}-} = `
 insert {-{$table.Name.Raw}-} (
-	{-{- $fields :=  $table.GetColumnsByTPName $c.FwName}-}
-	{-{- $flen := minus (len $fields)}-}
+	{-{- $fields :=  $table.Columns.GetColumns $c.FwName}-}
 {-{- range $i,$v := $fields}-}
-	{-{$v.Name}-}{-{if lt $i $flen}-},{-{end}-}
+	{-{$v.Name}-}{-{if lt $i $fields.SLen}-},{-{end}-}
 {-{- end}-})values(
 	{-{- range $i,$v := $fields}-}
-	@{-{$v.Name}-}{-{if lt $i $flen}-},{-{end}-}
+	@{-{$v.Name}-}{-{if lt $i $fields.SLen}-},{-{end}-}
 {-{- end}-}
 )`
 {-{- end}-}

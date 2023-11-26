@@ -1,12 +1,11 @@
 {-{- $table :=. }-}
-{-{- $vcols :=  $table.GetColumnsByTPName "v"}-}
+{-{- $vcols :=  $table.Columns.GetViewColumns}-}
 {-{- $viewOpts :=$table.Optrs.ViewOpts}-}
  show(form) {
     this.conf.visible = true
     this.form = form
     {-{- range $i,$c:= $viewOpts}-}
-      {-{- if eq "TAB" $c.Name}-}
-     
+      {-{- if $c.Equal "TAB"}-}
       //{-{ $c.Label}-}查询
       let nform_{-{$c.UNQ}-} = {}
       {-{- $ct:=  $c.GetAssociatedTable true}-}
@@ -24,29 +23,28 @@
       .then((res) => {
         let item = Object.assign({}, res)
     {-{- range $i,$c := $vcols }-}
-    {-{- if eq true $c.Enum.IsEnum}-}
+      {-{- if $c.Enum.IsEnum}-}
         item.{-{$c.Name}-}_label = that.$theia.enum.getNames("{-{$c.Enum.EnumType}-}",item.{-{$c.Name}-})
       {-{- end }-}
-      {-{- if eq "switch" $c.Cmpnt.Type}-}
+      {-{- if $c.Cmpnt.Equal "switch"}-}
         item.{-{$c.Name}-}_switch = item.{-{$c.Name}-} == 0
       {-{- end}-}
     {-{- end}-}
     
     {-{- range $i,$c := $vcols}-}
-        {-{- if and (ne "" $c.Cmpnt.Format) (eq true $c.Field.IsDate)}-}
+        {-{- if and ($c.Cmpnt.HasFormat) ($c.Field.IsDate)}-}
         item.{-{$c.Name}-} = that.$theia.str.dateFormat(item.{-{$c.Name}-},'{-{$c.Cmpnt.Format}-}')
-      {-{- else if and (ne "" $c.Cmpnt.Format) (eq true $c.Field.IsNumber)}-}
+      {-{- else if and ($c.Cmpnt.HasFormat) ($c.Field.IsNumber)}-}
         item.{-{$c.Name}-} = that.$theia.str.numberFormat(item.{-{$c.Name}-},'{-{$c.Cmpnt.Format}-}')
-      {-{- else if eq "mobile" $c.Cmpnt.Type}-}
+      {-{- else if $c.Cmpnt.Equal "mobile"}-}
         item.{-{$c.Name}-} = that.$theia.str.phoneFormat(item.{-{$c.Name}-})
-      {-{- else if eq "cut" $c.Cmpnt.Type}-}
+      {-{- else if $c.Cmpnt.Equal "cut"}-}
         item.{-{$c.Name}-} = that.$theia.str.cut(item.{-{$c.Name}-},{-{$c.Cmpnt.Format}-})
       {-{- else if gt $c.Field.Len 32}-}  
         item.{-{$c.Name}-} = (item.{-{$c.Name}-}||"")
       {-{- end}-}
       {-{- end }-}
-      {-{- $steps :=  $viewOpts.GetByName "step"}-}
-      {-{- range $i,$m := $steps}-}
+      {-{- range $i,$m :=  $viewOpts.GetByName "step"}-}
         that.conf.stepActive_{-{$m.UNQ}-} = that.getStepActive_{-{$m.UNQ}-}(res)
       {-{- end}-}
         that.view = item
@@ -58,28 +56,24 @@
         that.$notify.error({ title: "失败", message: msg, duration: 5000 });
       });
   },
-  {-{- range $x,$m:=$viewOpts }-}
-    {-{- if eq "CMPNT" $m.Name }-}
+  {-{- range $x,$m:=$viewOpts.GetCompnents }-}
     show_view_{-{$m.UNQ}-}(){
       let that = this;
       let query={}
-      {-{- $rows:=  $table.GetColumnsByTPName $m.RwName }-}
-      {-{- range $i,$c:=$rows}-} 
+      {-{- range $i,$c:= $table.Columns.GetColumns $m.RwName}-} 
         query.{-{$c.Name}-} = that.view.{-{$c.Name}-}
       {-{- end}-}
       that.$refs.view_{-{$m.UNQ}-}.show(query)
     },
     {-{- end}-}
- {-{- end}-}
 
  {-{- $stepOpts:= $viewOpts.GetByName "step"}-}
- {-{- if gt (len $stepOpts) 0}-}
+ {-{- if gt $stepOpts.Len 0}-}
  {-{- range $i,$c:= $stepOpts}-}
  getStepActive_{-{$c.UNQ}-}(view){
- 
-  {-{- $steps :=   $table.GetColumnsByTPName $c.RwName}-}
+  {-{- $steps := $table.Columns.GetColumns $c.RwName}-}
   {-{- range $j,$s:= $steps}-}
-      {-{- if and (ne "" $s.Cmpnt.Format) (eq true $s.Field.IsDate)}-}
+      {-{- if and ($s.Cmpnt.HasFormat) ($s.Field.IsDate)}-}
         if(!view["{-{$s.Name}-}"]|| new Date(view["{-{$s.Name}-}"]) > new Date()){
           return {-{$j}-}
         }
@@ -89,7 +83,7 @@
       }
       {-{- end}-}
   {-{- end }-}
-        return {-{(len $steps)|minus}-}
+      return {-{$steps.SLen}-}
  },
  {-{- end}-}
  {-{- end}-}

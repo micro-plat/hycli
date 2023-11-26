@@ -1,10 +1,10 @@
+{-{- $lecols := .}-}
 <el-table-column width="24px" type="expand">
     <template #default="view">
         <el-row :gutter="24">
-            {-{- $lecols := .}-}
             {-{- range $i,$c:=$lecols}-}
             <el-col :span="5" class="text-right" style="min-height:26px">{-{ $c.Label }-}:</el-col>
-            {-{- if eq "img" $c.Cmpnt.Type}-}
+            {-{- if $c.Cmpnt.Equal "img"}-}
             <el-col :span="7" style="min-height:26px">
                 <el-image style="width:48px" :src="view.row.le_{-{$c.Name}-}" preview-teleported :fit="contain"  :preview-src-list="[view.row.le_{-{$c.Name}-}]">
                     <template #error>
@@ -14,17 +14,17 @@
                       </template>
                 </el-image>
             </el-col>
-            {-{- else if eq true $c.Enum.IsEnum}-}
+            {-{- else if $c.Enum.IsEnum}-}
             <el-col :span="7" v-text="view.row.{-{$c.Name}-}_label" style="min-height:26px"
                 :class="'{-{$c.Style.CLR.BgColor}-}'==''?'':{-{$c.Style.CLR.BgColor}-}(view.row.{-{$c.Name}-},'{-{$c.Name}-}')"></el-col>
-            {-{- else if eq "link" $c.Cmpnt.Type}-}
+            {-{- else if $c.Cmpnt.Equal "link"}-}
             <el-col :span="7" style="min-height:26px"
                 :class="'{-{$c.Style.CLR.BgColor}-}'==''?'':{-{$c.Style.CLR.BgColor}-}(view.row.le_{-{$c.Name}-},'{-{$c.Name}-}')">
                 <el-link target="_blank" type="primary" :href="view.row.le_{-{$c.Name}-}" v-if="view.row.le_{-{$c.Name}-}" :title="view.row.le_{-{$c.Name}-}">查看</el-link>
             </el-col>
-            {-{- else if eq "cut" $c.Cmpnt.Type}-}
+            {-{- else if $c.Cmpnt.Equal "cut"}-}
             <el-col :span="7" v-text="view.row.le_{-{$c.Name}-}" style="min-height:26px"></el-col>
-            {-{- else if eq "icon" $c.Cmpnt.Type}-}
+            {-{- else if $c.Cmpnt.Equal "icon"}-}
             <el-col :span="7"  style="min-height:26px"><i :class="view.row.le_{-{$c.Name}-}"></i></el-col>
             {-{- else}-}
             <el-col :span="7" v-text="view.row.le_{-{$c.Name}-}" style="min-height:26px"></el-col>
