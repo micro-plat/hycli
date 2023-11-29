@@ -180,7 +180,6 @@ export default {
                     let right = that.getOffset(ranges, new Date(finish), false)
 
                     left = left < 0 ? 0 : left
-                    console.log("start.finish:", row, left, right)
                     right = right < 0 ? left : right
                     if (right >= left && left >= 0) {
                         let idx = { end: left }

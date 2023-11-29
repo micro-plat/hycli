@@ -41,7 +41,7 @@ export default {
         {-{- range $i,$c:=$cols }-} 
         {-{$c.Name}-}:"",
         {-{- end}-}
-         },
+        },
    {-{- end}-}
     }
   },

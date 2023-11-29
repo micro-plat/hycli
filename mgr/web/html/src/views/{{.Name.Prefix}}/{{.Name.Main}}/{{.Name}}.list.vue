@@ -23,34 +23,7 @@ export default {
   {-{- template "cmpnt.c.tmpl.js" $table }-}
 data() {
   return {
-    shortcuts: [
-        {
-          text: '今天',
-          value: [new Date(),new Date()],
-        },
-        {
-          text: '昨天',
-          value: () => {
-            const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24)
-            return [date,new Date()]
-          },
-        },
-        {
-          text: '本周',
-          value: () => {
-            const now = new Date()
-            return [new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay()),new Date()]
-          },
-        },
-        {
-          text: '本月',
-          value: () => {
-            const now = new Date()
-            return [new Date(now.getFullYear(), now.getMonth(), 1),new Date()]
-          },
-        },
-      ],
+    shortcuts: this.$js.page.latestDays(),
     cmpnt_funcs:{},
     {-{- if eq $table.NeedBatchCheck true}-}
     bcheck:[],
@@ -60,12 +33,12 @@ data() {
       progressColor: this.$theia.env.conf.progress || []
     },
     ganttIdx: -1,
-      {-{- template "queryform.tmpl.js" $table }-}
-  {-{- template "listbar.tmpl.js" $table }-}
+    {-{- template "queryform.tmpl.js" $table }-}
+    {-{- template "listbar.tmpl.js" $table }-}
 };
   },
 mounted() {
-  this.loadEnums()
+  this.loadEnums_{-{$table.UNQ}-}()
   {-{- range $i,$c:= $ddmenuCols}-}
   {-{- $memberClus := $table.Columns.GetFontQueryColumns.GetStaticColumns}-}
   {-{- if gt $memberClus.Len 0}-}
@@ -109,7 +82,7 @@ methods: {
         {-{- range $i,$v := $memberClus}-}
   on{-{$c.Name}-}Change(v){
     this.$theia.user.set("{-{$v.Ext.Name}-}",v)
-    this.loadEnums()
+    this.loadEnums_{-{$table.UNQ}-}()
     this.onQuery(true)
   },
 {-{- end}-}
@@ -124,29 +97,6 @@ methods: {
       this.form_{-{ $table.UNQ }-}.pi = 1
     }
     this.queryData_{-{ $table.UNQ }-} ()
-  },
-  colorful(r, name){
-    if (this.$theia.env.conf.colorful[name]) {
-      return this.$theia.env.conf.colorful[name][r] || ""
-    }
-    return this.$theia.env.conf.colorful[r] || ""
-  },
-  tagColor(r, name){
-    if (this.$theia.env.conf.colorTag[name]) {
-      return this.$theia.env.conf.colorTag[name][r] || ""
-    }
-    return this.$theia.env.conf.colorTag[r] || ""
-  },
-  goto(url, param){
-    if (!url) {
-      return;
-    }
-    if (!url.indexOf("://")) {
-      this.$router.push({ path: url, query: param });
-      return;
-    }
-    let p = this.$theia.url.encode(param)
-    window.location = `${url}?${p}`
   },
   {-{- template "opts.tmpl.js" $tbs }-}
 },

@@ -136,7 +136,7 @@ func (s *optrs) Equal(name string) bool {
 	return false
 }
 func (s *optrs) HasTag(bb string) bool {
-	bs := strings.Split(bb, "-")
+	bs := strings.Split(bb, "|")
 	for _, b := range bs {
 		if strings.EqualFold(s.Tag, b) {
 			return true
@@ -150,7 +150,12 @@ func (s *optrs) UNQKey() string {
 		s.Name, s.RwName, s.FwName,
 		s.Cmd)
 }
-
+func (t *optrs) NewScene(c Columns) *Scene {
+	return &Scene{
+		Columns: c,
+		FormUNQ: t.UNQ,
+	}
+}
 func (optr *optrs) IsMutilValue(name string, cs Columns) bool {
 	if optr.Params.IsBatchCheck(name) {
 		return true
@@ -355,7 +360,7 @@ func createOptrs(tableName string, extInfo string, tag string) []*optrs {
 			opt.Tag = name
 			opt.ReqURL = types.GetStringByIndex(lst, 2)
 			opt.Table = tableName
-		case TAB_TAG:
+		case "LST", "TAB":
 			opt = optrs{
 				Tag:   tag,
 				Name:  name,

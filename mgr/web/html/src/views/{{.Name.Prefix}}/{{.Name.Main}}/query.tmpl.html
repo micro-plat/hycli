@@ -164,7 +164,7 @@
                 {-{- end}-}
             {-{- if eq $blen 1}-}
                 {-{- range $i,$c:= $table.Optrs.BarOpts.GetCompnents}-}
-                <el-button :type="tagColor({-{f_num_spare $i 3}-})" {-{if ne "" $c.ICON}-} icon="{-{$c.ICON}-}" {-{end}-} @click="show_cmpnt_{-{$c.UNQ}-}">{-{$c.Label}-}</el-button>
+                <el-button :type="$js.page.tagColor({-{f_num_spare $i 3}-})" {-{if ne "" $c.ICON}-} icon="{-{$c.ICON}-}" {-{end}-} @click="show_cmpnt_{-{$c.UNQ}-}">{-{$c.Label}-}</el-button>
                 {-{- end}-}
             {-{- end}-}
             </el-space>
@@ -176,7 +176,7 @@
             <el-button-group>
                 {-{- range $i,$c:= $table.Optrs.BarOpts.GetCompnents }-}
                 {-{- $exprs := $c.GetExprs "showExpr" ""}-}
-                <el-button :type="tagColor({-{f_num_spare $i 3}-})"
+                <el-button :type="$js.page.tagColor({-{f_num_spare $i 3}-})"
                 {-{- if gt (len $exprs)  0}-} v-if='
                 {-{- range $i,$expr := $exprs}-}
                 {-{- if ne "" $expr.Name}-}{-{$expr.Name}-}{-{$expr.Symbol}-}{-{$expr.Value}-} 

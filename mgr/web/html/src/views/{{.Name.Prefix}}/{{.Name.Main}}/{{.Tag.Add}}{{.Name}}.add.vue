@@ -10,7 +10,7 @@
 <template tag="{-{.Marker}-}">
   <el-dialog
     v-model="conf.visible"
-    title="{-{$title}-}"
+    :title="title"
    :width="conf.width"
     draggable
     {-{ if gt $cColumns.Len 9 }-}  align-center="true" {-{ else}-} top="10vh" {-{ end }-}
@@ -38,6 +38,7 @@ export default {
   data() {
     return {
       conf: {
+        title:"{-{$title}-}",
         visible: false,
         {-{- if gt $cColumns.Len 14}-}
         width:"70%",
@@ -53,8 +54,9 @@ export default {
   },
   methods: {
     show(fm = {}) {
+      this.title = fm.$title || this.title
       this.conf.visible = true;
-      this.loadEnums()
+      this.loadEnums_{-{$table.UNQ}-}()
       let local = {}
       {-{- $c :=$table.Optrs.BarOpts.GetAddOpt}-}
         {-{- $read2window := $c.GetParams "read2window" -}-}
@@ -177,17 +179,18 @@ export default {
       this.{-{$c.Name}-}List = this.$theia.enum.get("{-{$c.Enum.EnumType}-}",val,{-{if $c.Enum.GroupIsStatic}-} this.$theia.user.get("{-{$c.Enum.GetGroupValue}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-})||[]
       this.form.{-{$c.Name}-} =this.{-{$c.Name}-}List.length>0?(this.{-{$c.Name}-}List[0]||{}).value:null
       {-{- $cxtriger := $cColumns.GetColumnsByTriggerChangeEvent $c.Name}-}
-      //cxtriger:{-{ $cxtriger}-}
       {-{- if gt (len $cxtriger) 0}-}
+      //cxtriger:{-{ $cxtriger}-}
       {-{- range $mx,$cx := $cxtriger}-}
       this.onChange_{-{$c.Name}-}(this.form.{-{$c.Name}-},"{-{$cx.Enum.EnumType}-}")
       {-{- end}-}
       {-{- end}-}
       {-{- end}-}
       {-{- end}-}
-      //添加联动
+      
       {-{- $p := $x.GetParamMap "@change"}-}
       {-{- if gt (len $p) 0}-}
+      //添加联动
       let that = this
       if(tp){
         let lst= this.$theia.enum.get(tp)

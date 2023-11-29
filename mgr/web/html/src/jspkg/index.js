@@ -12,6 +12,9 @@ const install = function (app, p) {
     app.config.globalProperties.$js = register.load(p.env || {},
         app.config.globalProperties.$router,
         app.config.globalProperties.$theia)
+        
+    //注册组件
+    register.directive(app)
 
 }
 

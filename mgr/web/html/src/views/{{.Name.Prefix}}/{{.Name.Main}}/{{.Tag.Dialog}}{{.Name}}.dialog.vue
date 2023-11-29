@@ -5,6 +5,7 @@
     {-{- range $x,$m:=$optCols }-}
     {-{- $width:= $m.GetParam "width" "60%" }-}
     {-{- $rows:=  $table.Columns.GetColumns $m.RwName (f_string_contact "form_" $m.UNQ)}-}
+    <!--{-{$m}-}  -->
     <el-dialog
       v-model="conf.{-{$m.UNQ}-}_visible"
       title="{-{$m.Label}-}"
@@ -45,15 +46,16 @@ export default {
       },
   {-{- range $x,$m:=$optCols }-}
       //{-{$m.Label}-} form by  {-{$m.RwName}-}
-      {-{- $rows:=  $table.Columns.GetColumns $m.RwName }-}
+      {-{- $rows:=  $table.Columns.GetEnumColumns.GetColumns $m.RwName }-}
         {-{- range $i,$c:=$rows }-} 
-        {-{- if and $c.Enum.IsEnum ($c.Cmpnt.StartWith "tree|cascader")}-}
+        {-{- if $c.Cmpnt.StartWith "tree|cascader"}-}
         {-{- $deep := f_num_get ($c.GetOpt "deep") 99}-}
         {-{.Name}-}List:this.$theia.enum.getTree("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}",{-{if $c.Enum.GroupIsStatic}-}this.$theia.user.get("{-{$c.Enum.GetGroupValue}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-},{-{$deep}-}),
         {-{- else if and $c.Enum.IsEnum ($c.Cmpnt.StartWith "multi")}-}
         {-{.Name}-}List:this.$theia.enum.get("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}",{-{if $c.Enum.GroupIsStatic}-}this.$theia.user.get("{-{$c.Enum.GetGroupValue}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-}),
          {-{- else}-}
-    {-{$c.Name}-}:"",
+         {-{.Name}-}List:this.$theia.enum.get("{-{$c.Enum.EnumType}-}","{-{$c.Enum.PID}-}",{-{if $c.Enum.GroupIsStatic}-}this.$theia.user.get("{-{$c.Enum.GetGroupValue}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-}),
+        {-{$c.Name}-}:"",
          {-{- end }-}
         {-{- end}-}
     form_{-{$m.UNQ}-}:{},
@@ -124,7 +126,7 @@ export default {
        {-{- else if $c.Cmpnt.StartWith "multi"}-}
        post_form_{-{$m.UNQ}-}.{-{$c.Name}-} = (post_form_{-{$m.UNQ}-}.{-{$c.Name}-}||[]).join(",")
         {-{- end }-}
-          {-{end}-}
+        {-{end}-}
          
 
         {-{- $fxname := f_string_contact "f" $m.RwName}-}

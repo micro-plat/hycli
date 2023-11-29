@@ -1,20 +1,18 @@
 package data
 
-type SceneTable struct {
-	Table   *Table
+type Scene struct {
 	Columns Columns
 	FormUNQ string
 }
 
-func (t *Table) NewScene(c Columns) *SceneTable {
-	return &SceneTable{
-		Table:   t,
+func (t *Table) NewScene(c Columns) *Scene {
+	return &Scene{
 		Columns: c,
+		FormUNQ: t.UNQ,
 	}
 }
-func (t *Table) NewSceneByList(c Columns) *SceneTable {
-	return &SceneTable{
-		Table:   t,
+func (t *Table) NewSceneByList(c Columns) *Scene {
+	return &Scene{
 		Columns: c,
 		FormUNQ: t.UNQ,
 	}

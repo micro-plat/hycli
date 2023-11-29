@@ -2,10 +2,14 @@
 {-{- $vcols :=  $table.Columns.GetViewColumns}-}
 {-{- $viewOpts :=$table.Optrs.ViewOpts}-}
  show(form) {
+    {-{- $titles := $table.Columns.GetColumns "vwtitle" }-}
+    {-{- if gt $titles.Len 0}-}
+    this.title = form.{-{$titles.First.Name}-}||this.title
+    {-{- end}-}
     this.conf.visible = true
     this.form = form
     {-{- range $i,$c:= $viewOpts}-}
-      {-{- if $c.Equal "TAB"}-}
+      {-{- if $c.Equal "TAB|LST"}-}
       //{-{ $c.Label}-}查询
       let nform_{-{$c.UNQ}-} = {}
       {-{- $ct:=  $c.GetAssociatedTable true}-}
@@ -24,7 +28,7 @@
         let item = Object.assign({}, res)
     {-{- range $i,$c := $vcols }-}
       {-{- if $c.Enum.IsEnum}-}
-        item.{-{$c.Name}-}_label = that.$theia.enum.getNames("{-{$c.Enum.EnumType}-}",item.{-{$c.Name}-})
+        item.{-{$c.Name}-}_label = that.$theia.enum.getName("{-{$c.Enum.EnumType}-}",item.{-{$c.Name}-})
       {-{- end }-}
       {-{- if $c.Cmpnt.Equal "switch"}-}
         item.{-{$c.Name}-}_switch = item.{-{$c.Name}-} == 0
@@ -87,12 +91,3 @@
  },
  {-{- end}-}
  {-{- end}-}
-   colorful(r){
-     return this.$theia.env.conf.colorful[r]
-  },
-  tagColor(r,name){
-    if(this.$theia.env.conf.colorTag[name]){
-          return this.$theia.env.conf.colorTag[name][r]||""
-      }
-     return this.$theia.env.conf.colorTag[r]||""
-  },

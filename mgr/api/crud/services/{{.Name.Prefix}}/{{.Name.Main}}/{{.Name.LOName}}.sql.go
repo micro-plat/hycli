@@ -50,6 +50,8 @@ where
 	and t.{-{$v.Name}-} <  date_add(if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-}),interval 1 day)))	
 	{-{- else if $v.Cmpnt.StartWith "multi"}-}
 	and (if(@{-{$v.Name}-} = '',NULL,@{-{$v.Name}-}) is null or  FIND_IN_SET(t.{-{$v.Name}-},@{-{$v.Name}-}))
+	{-{- else if $v.Cmpnt.StartWith "ddmenu"}-}
+	and (if(@{-{$v.Name}-} = '',NULL,@{-{$v.Name}-}) is null or  FIND_IN_SET(@{-{$v.Name}-},t.{-{$v.Name}-}))
 	{-{- else}-}
 	&t.{-{$v.Name}-}
 	{-{- end}-}

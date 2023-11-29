@@ -52,7 +52,7 @@ func NewTable(t *md.Table) *Table {
 		Table:   t,
 		UNQ:     defFids.Next(),
 		Columns: columns,
-		Enum:    newEnumType(t.Name.Short, t.Rows, columns.GetEnumDelColumns()),
+		Enum:    newEnumType(t.Name.Short, columns),
 		Optrs:   NewTableOptrs(),
 	}
 	t.Cache = table

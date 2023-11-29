@@ -35,7 +35,7 @@ func (f *fids) Next() string {
 	return f.Current()
 }
 func (f *fids) Get(o *optrs) string {
-	if strings.EqualFold(o.Tag, "DEL") || strings.EqualFold(o.Tag, "CNFRM") {
+	if strings.EqualFold(o.Tag, "DEL") || strings.EqualFold(o.Tag, "CNFRM") || strings.EqualFold(o.Tag, "DIALOG") {
 		var key = fmt.Sprintf("%s/%s/%s", o.Table, o.Label, o.URL)
 		_, ok := defFidsmp[key]
 		if !ok {

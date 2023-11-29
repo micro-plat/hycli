@@ -8,23 +8,25 @@ import (
 )
 
 type EnumType struct {
-	EnumType  string
-	Id        string
-	Name      string
-	ExtName   string
-	Type      string
-	PID       string
-	Group     string
-	Status    string //枚举状态字段
-	Expire    string //日期过期字段
-	SortName  string //排序字段
-	SortType  string //排序方式
-	Multiple  bool
-	DEColumns []*Column
+	EnumType      string
+	Id            string
+	Name          string
+	ExtName       string
+	Type          string
+	PID           string
+	Group         string
+	Status        string //枚举状态字段
+	Expire        string //日期过期字段
+	SortName      string //排序字段
+	SortType      string //排序方式
+	Multiple      bool
+	DEColumns     Columns
+	FilterColumns Columns
 }
 
-func newEnumType(enumType string, rs []*md.Row, delColumn Columns) *EnumType {
-	tp := &EnumType{EnumType: enumType, DEColumns: delColumn}
+func newEnumType(enumType string, rs Columns) *EnumType {
+	tp := &EnumType{EnumType: enumType, DEColumns: rs.GetEnumDelColumns()}
+	tp.FilterColumns = rs.GetByCmpnt("DV")
 	for _, r := range rs {
 		if md.HasConstraint(r.Constraints, "DI") {
 			tp.Id = types.GetString(md.GetConsNameByTagIgnorecase("DI", r.Constraints...), r.Name)

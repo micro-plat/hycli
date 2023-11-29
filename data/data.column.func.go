@@ -39,7 +39,13 @@ func (c *Column) GetOptInt(name string, i ...int) int {
 }
 
 func (c *Column) HasCmpnt(p string) bool {
-	return md.HasConstraint(c.Constraints, strings.ToLower(p), strings.ToUpper(p))
+	pages := strings.Split(p, "-")
+	for _, p := range pages {
+		if md.HasConstraint(c.Constraints, strings.ToLower(p), strings.ToUpper(p)) {
+			return true
+		}
+	}
+	return false
 }
 
 // GetCmpntValue

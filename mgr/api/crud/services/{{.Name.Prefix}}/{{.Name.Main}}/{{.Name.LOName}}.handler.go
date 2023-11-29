@@ -130,7 +130,11 @@ func (u *{-{.Name.CName}-}Handler) PostHandle(ctx hydra.IContext) (r interface{}
 		return err
 	}
 	{-{- range $i,$v := $memberClus}-}
+	{-{- if $v.HasCmpnt "fc"}-}
+	ctx.Request().SetValue("{-{$v.Name}-}",types.GetString(ctx.Request().GetValue("{-{$v.Name}-}"),member.Get("{-{$v.Ext.Name}-}")))
+	{-{- else}-}
 	ctx.Request().SetValue("{-{$v.Name}-}",member.Get("{-{$v.Ext.Name}-}"))
+	{-{- end}-}
 	{-{- end}-}
 	{-{- end}-}
 	rx, err := hydra.C.DB().GetRegularDB().Execute(insert{-{.Name.CName}-}, ctx.Request().GetMap())

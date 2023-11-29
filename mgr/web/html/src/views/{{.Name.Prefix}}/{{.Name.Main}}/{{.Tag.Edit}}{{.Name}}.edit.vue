@@ -53,14 +53,18 @@ export default {
   methods: {
     show(form) {
       this.conf.visible = true;
-      this.loadEnums()
+      this.loadEnums_{-{$table.UNQ}-}()
       this.form = Object.assign(form,this.$route.params)
       this.get(form)
     },
       get(form){
         let that = this
         this.conf.loading = true
-        this.$theia.http.get("/{-{.Name.MainPath|lower}-}",form).then(res=>{
+        let postForm = {}
+        {-{- range $i,$f := $table.Columns.GetPKColumns}-}
+        postForm.{-{$f.Name}-} = form.{-{$f.Name}-}
+        {-{- end}-}
+        this.$theia.http.get("/{-{.Name.MainPath|lower}-}",postForm).then(res=>{
         {-{- range $i,$c := $ucols}-}
         {-{- if $c.Cmpnt.Equal "switch"}-}
           res.{-{$c.Name}-}_switch = res.{-{$c.Name}-} == 0
@@ -72,13 +76,20 @@ export default {
         {-{- end}-}
         that.form = Object.assign(that.form, res)
         {-{- range $j,$x:=$ucols}-}
-        {-{- if and (eq true $x.Enum.IsEnum) ($x.Cmpnt.StartWith "tree|cascader")}-}
+        {-{- if and (eq true $x.Enum.IsEnum) ($x.Cmpnt.StartWith "tree")}-}
         let {-{$x.Name}-} = that.form.{-{$x.Name}-}.split(",")
         that.form.{-{$x.Name}-} = {-{$x.Name}-}
+        {-{- else if and (eq true $x.Enum.IsEnum) ($x.Cmpnt.StartWith "cascader")}-}
+        {-{- if eq $x.Cmpnt.Format "multiple"}-}
+        let {-{$x.Name}-} = that.form.{-{$x.Name}-}.split(",")
+        that.form.{-{$x.Name}-} = {-{$x.Name}-}
+        {-{- else}-}
+        that.form.{-{$x.Name}-} = that.form.{-{$x.Name}-}
+        {-{- end}-}
         {-{- end}-}
       {-{- end}-}
       //处理枚举重新绑定
-      that.loadEnums()
+      this.loadEnums_{-{$table.UNQ}-}()
       that.conf.loading = false
         }).catch(res=>{
           let code = ((res||{}).response||{}).status||0

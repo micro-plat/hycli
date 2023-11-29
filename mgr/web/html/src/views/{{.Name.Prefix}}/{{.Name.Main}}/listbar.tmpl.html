@@ -31,7 +31,7 @@
   </el-col>
  
 
-      {-{- else if $c.HasTag "BAR-PIE-LINE"}-}
+      {-{- else if $c.HasTag "BAR|PIE|LINE"}-}
       <!-- ChartOpts {-{$c.Tag}-} - {-{- $c.Name}-}-->
     <el-col :span='{-{ $c.GetParam "span" "24"}-}'>
       <{-{$c.UNQ}-} ref="chart_{-{$c.UNQ}-}" height='{-{ $c.GetParam "height" "200px"}-}' title="{-{$c.Label}-}"

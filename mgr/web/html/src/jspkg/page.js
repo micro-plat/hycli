@@ -26,3 +26,47 @@ page.prototype.goto = function (url, param) {
   let p = this.$theia.url.encode(param);
   window.location = `${url}?${p}`;
 };
+
+page.prototype.latestDays=function(){
+  return [
+      {
+        text: '今天',
+        value: [new Date(),new Date()],
+      },
+      {
+        text: '昨天',
+        value: () => {
+          const date = new Date()
+          date.setTime(date.getTime() - 3600 * 1000 * 24)
+          return [date,new Date()]
+        },
+      },
+      {
+        text: '前天',
+        value: () => {
+          const date = new Date()
+          date.setTime(date.getTime() - 3600 * 1000 * 48)
+          return [date,new Date()]
+        },
+      },
+      {
+        text: '本周',
+        value: () => {
+          const now = new Date()
+          return [new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay()),new Date()]
+        },
+      },
+      {
+        text: '本月',
+        value: () => {
+          const now = new Date()
+          return [new Date(now.getFullYear(), now.getMonth(), 1),new Date()]
+        },
+      },
+    ]
+}
+
+page.prototype.columnfilter=function(value,row,column){
+    const property = column['property']
+    return row[property] === value
+}

@@ -9,9 +9,9 @@
   {-{- end}-}
   {-{- end}-}
   {-{- $span = f_num_add $span 1}-}
-  <el-col :span="4" class="text-right" style="min-height:26px">{-{ $c.Label }-}:</el-col>
+  <el-col :span="4" class="text-right" style="min-height:26px">{-{ $c.Label}-}:</el-col>
   {-{- if $c.Enum.IsEnum}-}
-  <el-col :span="8" v-text="view.{-{$c.Name}-}_label" style="min-height:26px" :class="'{-{$c.Style.CLR.BgColor}-}'==''?'':{-{$c.Style.CLR.BgColor}-}(view.{-{$c.Name}-},'{-{$c.Name}-}')"></el-col>
+  <el-col :span="8" v-text="view.{-{$c.Name}-}_label" style="min-height:26px" {-{if $c.Style.HasBgColor}-}:class="$js.page.colorful(view.{-{$c.Name}-},'{-{$c.Name}-}')" {-{end}-}></el-col>
   {-{- else if $c.Cmpnt.Equal "img"}-}
   <el-col :span="8" style="min-height:26px">
   <el-image style="width:48px" :src="view.{-{$c.Name}-}" preview-teleported :fit="contain" :preview-src-list="[view.{-{$c.Name}-}]" /></el-col>
@@ -21,11 +21,11 @@
   </el-col>
   {-{- else if $c.Field.IsLongText }-}
   {-{- $span = f_num_add $span 1}-}
-  <el-col :span="20" style="min-height:26px" v-html="'<pre>'+view.{-{$c.Name}-}+'</pre>'" :class="'{-{$c.Style.CLR.BgColor}-}'==''?'':{-{$c.Style.CLR.BgColor}-}(view.{-{$c.Name}-},'{-{$c.Name}-}')"></el-col>
+  <el-col :span="20" style="min-height:26px" v-html="'<pre>'+view.{-{$c.Name}-}+'</pre>'" {-{if $c.Style.HasBgColor}-}:class="$js.page.colorful(view.{-{$c.Name}-},'{-{$c.Name}-}')" {-{end}-}></el-col>
   {-{- else if gt $c.Field.Len 32}-}
-  <el-col :span="8" v-html="view.{-{$c.Name}-}" style="min-height:26px" :class="'{-{$c.Style.CLR.BgColor}-}'==''?'':{-{$c.Style.CLR.BgColor}-}(view.{-{$c.Name}-},'{-{$c.Name}-}')"></el-col>
+  <el-col :span="8" v-html="view.{-{$c.Name}-}||'-'" style="min-height:26px" {-{if $c.Style.HasBgColor}-}:class="$js.page.colorful(view.{-{$c.Name}-},'{-{$c.Name}-}')" {-{end}-}></el-col>
   {-{- else}-}
-  <el-col :span="8" v-text="view.{-{$c.Name}-}" style="min-height:26px" :class="'{-{$c.Style.CLR.BgColor}-}'==''?'':{-{$c.Style.CLR.BgColor}-}(view.{-{$c.Name}-},'{-{$c.Name}-}')"></el-col>
+  <el-col :span="8" v-text="view.{-{$c.Name}-}||'-'" style="min-height:26px" {-{if $c.Style.HasBgColor}-}:class="$js.page.colorful(view.{-{$c.Name}-},'{-{$c.Name}-}')" {-{end}-}></el-col>
   {-{- end}-}
   {-{- end}-}
 </el-row>

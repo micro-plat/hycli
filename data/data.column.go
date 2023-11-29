@@ -17,10 +17,10 @@ const (
 	UPDATE_TAG    = "UPDATE"
 	DELETE_COLUMN = "D"
 	DELETE_TAG    = "DEL"
-	TAB_TAG       = "TAB"
-	QUERY_COLUMN  = "Q"
-	QUERY_TAG     = "QBAR"
-	CNFRM         = "CNFRM"
+	// TAB_TAG       = "TAB"
+	QUERY_COLUMN = "Q"
+	QUERY_TAG    = "QBAR"
+	CNFRM        = "CNFRM"
 )
 
 type BaseColumn struct {

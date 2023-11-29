@@ -5,7 +5,7 @@
   <div>
   <el-dialog
     v-model="conf.visible"
-    title="{-{.Desc}-}详情"
+    :title="title"
     draggable
     align-center="true"
     width="68%"
@@ -31,10 +31,10 @@
       <el-tab-pane label="{-{$c.Label}-}" name="{-{$c.UNQ}-}"  @tab-click="show_view_{-{$c.UNQ}-}">
         <{-{$c.UNQ}-} ref="view_{-{$c.UNQ}-}"></{-{$c.UNQ}-}>
      </el-tab-pane>
-       {-{- else if $c.Equal "TAB|list"}-}
+       {-{- else if $c.Equal "TAB|LST"}-}
         <el-tab-pane label="{-{$c.Label}-}" name="{-{$c.UNQ}-}"  @tab-click="show_view_{-{$c.UNQ}-}">
           {-{- $tlbar := $table.Optrs.ViewExtCmptOpts.GetBarOptrs  $c.Table $c.UNQ}-}
-          {-{- if gt (len $tlbar) 0}-}
+          {-{- if gt $tlbar.Len 0}-}
           <el-row>
             <el-col :span="24" class="text-right">
           {-{- range $i,$x:= $tlbar}-}
@@ -61,14 +61,15 @@
 </div>
 </template>
 <script>
+import gantt from "@/views/cmpnts/gantt.vue"
 {-{- $vaopts := $viewOpts.Merge $table.Optrs.ViewExtCmptOpts.ALL}-}
 {-{- $vaCmpntOpts :=  $vaopts.GetCompnents}-}
  {-{- range $x,$m := $vaCmpntOpts}-}
 import {-{$m.UNQ}-} from "{-{f_string_translate $m.URL (f_table_find_by_name $m.Table)}-}"
 {-{- end}-}
-
 export default {
    components: {
+    gantt,
     {-{- range $x,$m:= $vaCmpntOpts}-}
     {-{$m.UNQ}-},
     {-{- end }-}
@@ -77,14 +78,16 @@ export default {
     return {
         conf:{
         visible:false,
+        
         selected:"{-{($viewOpts.GetSelected).UNQ}-}",
         {-{- range $i,$c:= $viewOpts.GetByName "step"}-}
         stepActive_{-{$c.UNQ}-}:0,
         {-{- end}-}
       },
+      title:"{-{$table.Desc}-}详情",
       form:{},
        {-{- range $i,$c:=  $viewOpts }-}
-       {-{- if $c.Equal "TAB|list"}-}
+       {-{- if $c.Equal "TAB|LST"}-}
           {-{- $ct:=   $c.GetAssociatedTable true}-}
         {-{- template "queryform.tmpl.js" $ct}-}
       {-{- end}-}
@@ -114,7 +117,8 @@ export default {
     form.{-{$k}-} = "{-{$v}-}"
     {-{- end}-}
     {-{- end}-}
-    {-{- if eq "CNFRM" $m.Tag }-}
+    {-{- if $m.HasTag "CNFRM|DIALOG"}-}
+    // {-{- $m}-}
     this.$refs.cmpnt_{-{$m.UNQ}-}.show_{-{$m.UNQ}-}(form)
     {-{- else}-}
     this.$refs.cmpnt_{-{$m.UNQ}-}.show(form)
@@ -123,7 +127,7 @@ export default {
 {-{- end}-}
     {-{- template "view.tmpl.js" $table}-}
      {-{- range $i,$c:= $viewOpts }-}
-       {-{- if $c.Equal "TAB|list"}-}
+       {-{- if $c.Equal "TAB|LST"}-}
           {-{- $ct:=   $c.GetAssociatedTable true }-}
           {-{- $tbs := $ct.Contact $table }-}
         {-{- template "list.tmpl.js" $tbs}-}

@@ -50,6 +50,7 @@ show_cmpnt(cmd,row){
     {-{- end}-}
     {-{- end}-}
 
+    query.$title="{-{$m.Label}-}"
     {-{- if $m.IsMux }-}
     this.$refs.cmpnt_{-{$m.UNQ}-}.show_{-{$m.UNQ}-}(query)
     {-{- else}-}
@@ -65,6 +66,6 @@ show_cmpnt(cmd,row){
       {-{- range $i,$c:=$rows}-} 
     query.{-{$c.Name}-} = fm.{-{$c.Name}-}
       {-{- end}-}
-    this.goto('{-{$m.URL}-}',query)
+    this.$js.page.goto('{-{$m.URL}-}',query)
   },
 {-{- end}-}

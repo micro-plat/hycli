@@ -17,19 +17,18 @@ type displayStyle struct {
 	Rows         int    //显示的行数，如textArea行数
 	Position     string //位置 default,默认，换行newline
 	HideOverflow bool   //超出隐藏
-	CLR          color  //颜色信息
-	Min          int    //最小值
-	Max          int    //最大值
+	// CLR          color  //颜色信息
+	HasBgColor bool
+	Min        int //最小值
+	Max        int //最大值
 }
 
 // 解析列表样式
 func createStyle(r *md.Row) displayStyle {
 	min, max := md.GetRanges(r.Constraints...)
-	fc, bc, _ := md.GetConsByTagIgnorecase("color", r.Constraints...)
-	bgcolor := md.HasConstraint(r.Constraints, "color")
-	if bgcolor && bc == "" {
-		bc = "colorful"
-	}
+	// fc, bc, _ := md.GetConsByTagIgnorecase("color", r.Constraints...)
+	hasBGcolor := md.HasConstraint(r.Constraints, "color")
+
 	return displayStyle{
 		ListWidth:    md.GetConsNameByTagIgnorecase("lw", r.Constraints...),
 		Rows:         types.GetInt(md.GetConsNameByTagIgnorecase("row", r.Constraints...)),
@@ -37,10 +36,11 @@ func createStyle(r *md.Row) displayStyle {
 		HideOverflow: md.HasConstraint(r.Constraints, "hof", "HOF"),
 		Min:          types.GetInt(min),
 		Max:          types.GetInt(max),
-		CLR: color{
-			Name:      "colorful",
-			FontColor: fc,
-			BgColor:   bc,
-		},
+		HasBgColor:   hasBGcolor,
+		// CLR: color{
+		// 	Name:      "colorful",
+		// 	FontColor: fc,
+		// 	BgColor:   bc,
+		// },
 	}
 }

@@ -59,9 +59,9 @@
             </template>
         </el-table-column>
         {-{- else if $c.Cmpnt.Equal "tag"}-}
-        <el-table-column {-{if and (eq false $tmpl) ($c.HasCmpnt "fq")}-} :filters="{-{$c.Name}-}List" :filter-method="columnfilterHandler" column-key="{-{$c.Name}-}" {-{end}-} {-{if ne "" $show }-} v-if="{-{$show}-}" {-{end}-} {-{if ne "" $c.Style.ListWidth}-} min-width="{-{$c.Style.ListWidth}-}" {-{end}-} prop="{-{$c.Name}-}" align="{-{$align}-}" label="{-{$c.Desc.Name}-}">
+        <el-table-column {-{if and (eq false $tmpl) ($c.HasCmpnt "fq")}-} :filters="{-{$c.Name}-}List" :filter-method="$js.page.columnfilter" column-key="{-{$c.Name}-}" {-{end}-} {-{if ne "" $show }-} v-if="{-{$show}-}" {-{end}-} {-{if ne "" $c.Style.ListWidth}-} min-width="{-{$c.Style.ListWidth}-}" {-{end}-} prop="{-{$c.Name}-}" align="{-{$align}-}" label="{-{$c.Desc.Name}-}">
             <template #default="scope">
-                <el-tag :type="tagColor(scope.row.{-{$c.Name}-},'{-{$c.Name}-}')" round 
+                <el-tag :type="$js.page.tagColor(scope.row.{-{$c.Name}-},'{-{$c.Name}-}')" round 
                 {-{- if eq true $c.Enum.IsEnum}-} v-text="scope.row.{-{$c.Name}-}_label" {-{else}-}
                 v-text="scope.row.{-{$c.Name}-}"  {-{end}-} ></el-tag>
             </template>
@@ -73,9 +73,9 @@
             </template>
         </el-table-column>
         {-{- else if  $c.Enum.IsEnum}-}
-        <el-table-column {-{if and ($c.HasCmpnt "fq") (ne true $tmpl)}-} :filters="{-{$c.Name}-}List" :filter-method="columnfilterHandler" column-key="{-{$c.Name}-}" {-{end}-} {-{if ne "" $show }-} v-if="{-{$show}-}" {-{end}-} {-{if ne "" $c.Style.ListWidth}-} min-width="{-{$c.Style.ListWidth}-}" {-{end}-} {-{if eq true $c.Style.HideOverflow}-} :show-overflow-tooltip="true" {-{end}-} prop="{-{$c.Name}-}" align="{-{$align}-}" label="{-{$c.Desc.Name}-}">
+        <el-table-column {-{if and ($c.HasCmpnt "fq") (ne true $tmpl)}-} :filters="{-{$c.Name}-}List" :filter-method="$js.page.columnfilter" column-key="{-{$c.Name}-}" {-{end}-} {-{if ne "" $show }-} v-if="{-{$show}-}" {-{end}-} {-{if ne "" $c.Style.ListWidth}-} min-width="{-{$c.Style.ListWidth}-}" {-{end}-} {-{if eq true $c.Style.HideOverflow}-} :show-overflow-tooltip="true" {-{end}-} prop="{-{$c.Name}-}" align="{-{$align}-}" label="{-{$c.Desc.Name}-}">
             <template #default="scope">
-                <span :class="'{-{$c.Style.CLR.BgColor}-}'==''?'':{-{$c.Style.CLR.BgColor}-}(scope.row.{-{$c.Name}-},'{-{$c.Name}-}')"
+                <span {-{if $c.Style.HasBgColor}-}:class="$js.page.colorful(scope.row.{-{$c.Name}-},'{-{$c.Name}-}')" {-{end}-}
                     v-text="scope.row.{-{$c.Name}-}_label"></span>
             </template>
         </el-table-column>
@@ -121,12 +121,13 @@
         </template>
         </el-table-column>
         {-{- end}-}
-
         {-{- template "opts.tmpl.html" $xtable}-}
     </el-table>
+    {-{- if ne true $tmpl}-}
     <el-pagination :currentPage="form_{-{$table.UNQ}-}.pi" :page-size="form_{-{$table.UNQ}-}.ps"
         style="position: absolute; right: 30px;bottom:6px;" :page-sizes="[10,15,20,30, 50, 100]" :background="false" small
         layout="total,sizes,prev, pager, next, jumper" :total="total_{-{$table.UNQ}-}" @size-change="handleSizeChange"
         @current-change="handleCurrentChange" />
+     {-{- end}-}
 </div>
 {-{- end}-}

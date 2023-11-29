@@ -7,7 +7,7 @@
 {-{- $LLERows:=  $table.Columns.GetFontListColumns}-}
 {-{- $MLLERows:=  $mtable.Columns.GetFontListColumns.GetEnumColumns}-}
 
-    queryData_{-{$table.UNQ}-}(mform = {},nform={}){
+queryData_{-{$table.UNQ}-}(mform = {},nform={}){
     //构建查询参数
     let queryForm = Object.assign({},this.form_{-{$table.UNQ}-})
     queryForm = Object.assign(queryForm,nform||{})
@@ -61,7 +61,9 @@
     //发送查询请求
     let that = this
     that.conf.loading = true
-    
+    {-{- if $xtable.IsTmpl}-}
+    queryForm.ps = 100
+    {-{- end}-}
     //构建统计查询
     {-{- range $i,$v:= $table.Optrs.LStatOpts}-}
       this.$theia.http.get("{-{$v.URL|lower}-}",queryForm).then(res=>{
@@ -80,6 +82,9 @@
   {-{- if gt $lstRow.Len 0}-}
   //数据查询
   this.$theia.http.get("/{-{$table.Name.MainPath|lower}-}/query",queryForm).then(res=>{
+      if((res.items||[]).length < (queryForm.ps||10)){
+        that.form_{-{$table.UNQ}-}.disabled = true
+      }
       that.conf.loading = false
       that.dataList_{-{$table.UNQ}-} = res.items||[]
       that.total_{-{$table.UNQ}-} = res.count
@@ -101,7 +106,7 @@
     {-{- if $c.Cmpnt.Equal "tree"}-}
     item.{-{$c.Name}-}_label = that.$theia.enum.getTreeNames("{-{$c.Enum.EnumType}-}",item.{-{$c.Name}-})
     {-{- else }-}
-    item.{-{$c.Name}-}_label = that.$theia.enum.getNames("{-{$c.Enum.EnumType}-}",item.{-{$c.Name}-})
+    item.{-{$c.Name}-}_label = that.$theia.enum.getName("{-{$c.Enum.EnumType}-}",item.{-{$c.Name}-})
     {-{- end}-}
     
     {-{- if $c.Cmpnt.Equal "switch"}-}
@@ -148,7 +153,6 @@
       that.resetItemData_{-{$table.UNQ}-}(that,item.children)
     }
   });
-
   },
 
   {-{- range $i,$c:= $qrow}-}
@@ -204,9 +208,5 @@
       })
     },
      {-{- end}-}
-     columnfilterHandler(value,row,column){
-        const property = column['property']
-        return row[property] === value
-     },
  {-{- $st := $table.NewSceneByList $table.Columns.GetAll}-}
  {-{- template "enum.tmpl.js" $st }-}
