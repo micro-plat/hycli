@@ -156,12 +156,20 @@ where
 var updator{-{$table.Name.CName}-}{-{$c.ReqURL}-} = `
 update {-{$table.Name.Raw}-} t set 
 {-{- range $i,$v := $fields}-}
-	t.{-{$v.Name}-} = if(@{-{$v.Name}-}='',{-{if ne "" $v.Field.DefaultValue}-} {-{$v.Field.DefaultValue}-} {-{else}-}t.{-{$v.Name}-}{-{end}-},@{-{$v.Name}-}){-{if lt $i $fields.SLen}-},{-{end}-}
+	{-{- $name := $v.GetOpt "alias" -}-}
+	{-{- if eq "" $name}-}
+	{-{- $name = $v.Name}-}
+	{-{- end}-}
+	t.{-{$name}-} = if(@{-{$name}-}='',{-{if ne "" $v.Field.DefaultValue}-} {-{$v.Field.DefaultValue}-} {-{else}-}t.{-{$name}-}{-{end}-},@{-{$v.Name}-}){-{if lt $i $fields.SLen}-},{-{end}-}
 {-{- end}-}
 where
 {-{- range $i,$v :=  $table.Columns.GetColumns $c.FwName -}-}
-	{-{- if  $c.IsMutilValue $v.Name $table.Columns}-}
-	and FIND_IN_SET(t.{-{$v.Name}-},@{-{$v.Name}-})
+	{-{- $name := $v.GetOpt "alias" -}-}
+	{-{- if eq "" $name}-}
+	{-{- $name = $v.Name}-}
+	{-{- end}-}
+	{-{- if  $c.IsMutilValue $name $table.Columns}-}
+	and FIND_IN_SET(t.{-{$name}-},@{-{$v.Name}-})
 	{-{- else}-}
 	&{-{$v.Name}-}
 	{-{- end}-}

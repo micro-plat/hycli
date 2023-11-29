@@ -4,6 +4,7 @@ import (
 	"sort"
 
 	"github.com/micro-plat/hycli/data/internal/md"
+	"github.com/micro-plat/lib4go/jsons"
 )
 
 type Table struct {
@@ -71,4 +72,8 @@ func NewTable(t *md.Table) *Table {
 func (t *Table) LoadExtOptrs() {
 	t.Optrs.SetViewExtCmptOpt(getViewExtCmptOptsByTable(t))
 	t.Tag = newTag(t)
+}
+func (s Table) String() string {
+	buff, _ := jsons.Marshal(s)
+	return string(buff)
 }

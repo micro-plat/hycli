@@ -366,10 +366,10 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 
 	ctx.Log().Info("1.检查必须字段")
 	reqFields :=[]string{
-		{-{ $table.JoinNames $c.FwName true `"` `",`}-}
+		{-{ $table.Columns.JoinNames $c.FwName true `"` `",`}-}
 	}
 	if len(reqFields) == 0 {
-		return errs.NewError(601, "FwName字段未配置")
+		return errs.NewErrorf(601, "FwName(%s)字段未配置","{-{$c.FwName}-}")
 	}
 	if err := ctx.Request().Check(reqFields...); err != nil {
 		return err
@@ -404,7 +404,7 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 
 	ctx.Log().Info("1.检查必须字段")
 	reqFields :=[]string{
-		{-{ $table.JoinNames $c.RwName true `"` `",`}-}
+		{-{ $table.Columns.JoinNames $c.RwName true `"` `",`}-}
 	}
 	if len(reqFields) == 0 {
 		return errs.NewError(601, "RwName字段未配置")
@@ -456,7 +456,7 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 
 	ctx.Log().Info("1.检查必须字段")
 	reqFields :=[]string{
-		{-{ $table.JoinNames $c.RwName true `"` `",`}-}
+		{-{ $table.Columns.JoinNames $c.RwName true `"` `",`}-}
 	}
 	if len(reqFields) == 0 {
 		return errs.NewError(601, "RwName字段未配置")
@@ -465,7 +465,7 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 		return err
 	}
 	fileds := []string{
-		{-{ $table.JoinNames $c.FwName true `"` `",`}-}
+		{-{ $table.Columns.JoinNames $c.FwName true `"` `",`}-}
 	}
 	enumsMap := map[string]interface{}{
 		{-{- range $i,$c := $table.Columns.GetEnumColumns}-}

@@ -107,7 +107,7 @@ export default {
  
     {-{- $c :=  $m.GetParamsByAtPrefix }-}
     {-{- range $k,$v := $c}-}
-    {-{- if eq true (f_string_start $v "@")}-}
+    {-{- if f_string_start $v "@"}-}
     form.{-{$k}-} = this.{-{f_string_trim $v "@"}-}
     {-{- else if eq true (f_string_start $v "&")}-}
     form.{-{$k}-} = (this.{-{f_string_trim $v "&"}-}||[]).join(",")

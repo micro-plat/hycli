@@ -47,7 +47,7 @@ export default {
         {-{- $c :=$table.Optrs.BarOpts.GetAddOpt}-}
         {-{- $width = $c.GetParam "width" "60%" }-}
         width:"{-{$width}-}",
-      {-{- end  }-}
+        {-{- end  }-}
         uploadPath:this.$theia.env.join("/file/upload"),
       },
     {-{- template "add.tmpl.js" $cColumns }-}
@@ -59,11 +59,11 @@ export default {
       this.loadEnums_{-{$table.UNQ}-}()
       let local = {}
       {-{- $c :=$table.Optrs.BarOpts.GetAddOpt}-}
-        {-{- $read2window := $c.GetParams "read2window" -}-}
-        {-{- if ne "" $read2window}-}
+      {-{- $read2window := $c.GetParams "read2window" -}-}
+      {-{- if ne "" $read2window}-}
         //将数据保存到window缓存中
       local = window.{-{$read2window}-} || {}
-        {-{- end}-}
+      {-{- end}-}
       let cache = Object.assign(local,fm)
       this.form = Object.assign(cache,this.$route.params)
 
@@ -85,14 +85,14 @@ export default {
       {-{- end}-}
     },
     save(){
-       {-{- range $i,$c:= $cColumns.GetByCmpnt "switch" }-}
-        this.form.{-{$c.Name}-} = this.form.{-{$c.Name}-}_switch?0:1;
+      {-{- range $i,$c:= $cColumns.GetByCmpnt "switch" }-}
+      this.form.{-{$c.Name}-} = this.form.{-{$c.Name}-}_switch?0:1;
       {-{- end }-}
-        this.$refs.form.validate((v=>{
-            if(v){
-                this.onSave()
-            }
-        }))
+      this.$refs.form.validate((v=>{
+          if(v){
+              this.onSave()
+          }
+      }))
     },
     onSave(){
         let that = this

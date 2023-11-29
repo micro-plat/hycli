@@ -10,15 +10,32 @@ import (
 
 func (Columns Columns) JoinNames(tp string, required bool, start string, end ...string) string {
 	names := make([]string, 0, 1)
-	for _, v := range Columns {
-		if required && v.Field.Required || !required {
-			names = append(names, v.Name)
+	tpColumn := Columns.GetColumns(tp)
+	for _, v := range tpColumn {
+		field := v
+		alias := v.GetOpt("alias")
+		name := v.Field.Name
+		if alias != "" {
+			field = Columns.GetColumnByFieldName(alias)
 		}
+		if !required || (field != nil && required && field.Field.Required) {
+			names = append(names, name)
+		}
+		continue
+
 	}
 	if len(names) == 0 {
 		return ""
 	}
 	return start + strings.Join(names, types.GetStringByIndex(end, 0)+start) + types.GetStringByIndex(end, 0)
+}
+func (Columns Columns) GetColumnByFieldName(name string) *Column {
+	for _, c := range Columns {
+		if strings.EqualFold(c.Field.Name, name) {
+			return c
+		}
+	}
+	return nil
 }
 func (Columns Columns) First() *Column {
 	if len(Columns) > 0 {

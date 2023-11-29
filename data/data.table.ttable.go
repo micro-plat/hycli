@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/micro-plat/hycli/data/internal/md"
+	"github.com/micro-plat/lib4go/jsons"
 	"github.com/micro-plat/lib4go/types"
 )
 
@@ -18,7 +19,7 @@ func NewTables(tbs md.Tables) Tables {
 	return nt
 }
 func (name *optrs) GetAssociatedTable(v ...bool) *TTable {
-	ut := f_table_find_by_name(name.URL)
+	ut := f_table_find_by_name(name.Table)
 	if types.GetBoolByIndex(v, 0, false) {
 		ut.UNQ = name.UNQ
 	}
@@ -34,4 +35,9 @@ func f_table_find_by_name(uname string) *Table {
 type TTable struct {
 	*Table
 	IsTmpl bool
+}
+
+func (t *TTable) String() string {
+	buff, _ := jsons.Marshal(t)
+	return string(buff)
 }
