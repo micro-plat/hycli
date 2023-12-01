@@ -13,7 +13,7 @@ func (Columns Columns) JoinNames(tp string, required bool, start string, end ...
 	tpColumn := Columns.GetColumns(tp)
 	for _, v := range tpColumn {
 		field := v
-		alias := v.GetOpt("alias")
+		alias := v.GetOtherCmpntValue("alias")
 		name := v.Field.Name
 		if alias != "" {
 			field = Columns.GetColumnByFieldName(alias)

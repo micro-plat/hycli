@@ -1,13 +1,13 @@
 {-{- $st := .}-}
     loadEnums_{-{$st.FormUNQ}-}(){
         {-{- range $i,$c := $st.Columns.GetEnumColumns}-}
-        {-{- $deep := $c.GetOptInt "deep" 99}-}
+        {-{- $deep := $c.GetOtherCmpntValueInt "deep" 99}-}
         {-{- $group:= $c.Enum.GetGroupValue}-}
         {-{- $pid := f_string_contact `"` $c.Enum.PID `"`}-}
         {-{- if ne "" $c.Enum.AssctColumn}-}
         {-{- $pid = f_string_contact "(this.form_" $st.FormUNQ "||this.form)." $c.Enum.AssctColumn `+""`}-}
         {-{- end}-}
-        {-{- $url := $c.GetOpt "enumurl"}-}
+        {-{- $url := $c.GetOtherCmpntValue "enumurl"}-}
         //{-{$c.Label}-}
         {-{- if $c.Cmpnt.StartWith "tree|cascader"}-}
         this.{-{.Name}-}List = this.$theia.enum.getTree("{-{$c.Enum.EnumType}-}",{-{$pid}-},{-{if $c.Enum.GroupIsStatic}-}this.$theia.user.get("{-{$group}-}"){-{else}-}"{-{$c.Enum.Group}-}" {-{end}-},{-{$deep}-})

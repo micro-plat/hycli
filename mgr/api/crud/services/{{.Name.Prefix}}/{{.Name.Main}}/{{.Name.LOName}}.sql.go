@@ -156,7 +156,7 @@ where
 var updator{-{$table.Name.CName}-}{-{$c.ReqURL}-} = `
 update {-{$table.Name.Raw}-} t set 
 {-{- range $i,$v := $fields}-}
-	{-{- $name := $v.GetOpt "alias" -}-}
+	{-{- $name := $v.GetOtherCmpntValue "alias" -}-}
 	{-{- if eq "" $name}-}
 	{-{- $name = $v.Name}-}
 	{-{- end}-}
@@ -164,7 +164,7 @@ update {-{$table.Name.Raw}-} t set
 {-{- end}-}
 where
 {-{- range $i,$v :=  $table.Columns.GetColumns $c.FwName -}-}
-	{-{- $name := $v.GetOpt "alias" -}-}
+	{-{- $name := $v.GetOtherCmpntValue "alias" -}-}
 	{-{- if eq "" $name}-}
 	{-{- $name = $v.Name}-}
 	{-{- end}-}

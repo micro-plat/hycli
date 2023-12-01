@@ -7,7 +7,7 @@ import (
 	"github.com/micro-plat/lib4go/types"
 )
 
-func (c *Column) GetOpts(name string) (string, string, string) {
+func (c *Column) GetOtherCmpntValues(name string) (string, string, string) {
 	f, s, t := md.GetConsByTagIgnorecase(name, c.RawConsts...)
 	return f, s, t
 }
@@ -30,12 +30,12 @@ func (c *Column) GetParamMap(name string) map[string]string {
 	return param
 
 }
-func (c *Column) GetOpt(name string) string {
-	v, _, _ := c.GetOpts(name)
+func (c *Column) GetOtherCmpntValue(name string) string {
+	v, _, _ := c.GetOtherCmpntValues(name)
 	return v
 }
-func (c *Column) GetOptInt(name string, i ...int) int {
-	return types.GetInt(c.GetOpt(name), i...)
+func (c *Column) GetOtherCmpntValueInt(name string, i ...int) int {
+	return types.GetInt(c.GetOtherCmpntValue(name), i...)
 }
 
 func (c *Column) HasCmpnt(p string) bool {

@@ -111,12 +111,23 @@ func (opts *optrs) GetEventByAtPrefix() map[string]string {
 	}
 	return outs
 }
+
 func (opt *optrs) GetParam(name string, def string) string {
 	if v, ok := opt.Params[name]; ok {
 		return v
 	}
 	return def
 }
+func (opt *optrs) HasParam(name string) bool {
+	names := strings.Split(name, "|")
+	for _, nm := range names {
+		if _, ok := opt.Params[nm]; ok {
+			return ok
+		}
+	}
+	return false
+}
+
 func (opt *optrs) GetExprs(name string, def string) []*expr {
 	p := opt.GetParam(name, def)
 	return str2Expr(p)

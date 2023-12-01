@@ -9,6 +9,7 @@
 <template tag="{-{.Marker}-}">
   <el-dialog
     v-model="conf.visible"
+    {-{ if $table.Enum.IsEnum  }-}v-if="conf.visible" {-{ end }-}
     title="{-{$title}-}"
     :width="conf.width"
     draggable
@@ -104,9 +105,7 @@ export default {
          {-{- end}-}
         {-{- end}-}
         this.$refs.form.validate((v=>{
-            if(v){
-                this.onSave()
-            }
+            if(v) this.onSave()
         }))
     },
     onSave(){
@@ -140,8 +139,7 @@ export default {
         window.{-{$v.Name}-} = null
         {-{- end}-}
         {-{- end}-}
-        {-{- end }-}
-
+        {-{- end}-}
         this.$theia.http.put("/{-{.Name.MainPath|lower}-}",postForm).then(res=>{
             that.$notify.success({title: '成功',message: '{-{.Desc}-}保存成功',duration:5000})
             {-{- if ne "" $table.Enum.EnumType}-}
@@ -151,9 +149,9 @@ export default {
             that.hide()
             that.$emit("onsaved")
         }).catch(res=>{
-          let code = ((res||{}).response||{}).status||0
-          let msg = `{-{.Desc}-}修改失败(${code})`
-          that.$notify.error({title: '失败',message: msg,duration:5000})
+            let code = ((res||{}).response||{}).status||0
+            let msg = `{-{.Desc}-}修改失败(${code})`
+            that.$notify.error({title: '失败',message: msg,duration:5000})
         })
     },
     hide() {

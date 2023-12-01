@@ -10,6 +10,7 @@
 <template tag="{-{.Marker}-}">
   <el-dialog
     v-model="conf.visible"
+    {-{ if $table.Enum.IsEnum  }-}v-if="conf.visible" {-{ end }-}
     :title="title"
    :width="conf.width"
     draggable
@@ -45,7 +46,7 @@ export default {
         {-{- else }-}
         {-{- $width:= "60%"}-}
         {-{- $c :=$table.Optrs.BarOpts.GetAddOpt}-}
-        {-{- $width = $c.GetParam "width" "60%" }-}
+        {-{- $width = $addOpts.GetParam "width" "60%" }-}
         width:"{-{$width}-}",
         {-{- end  }-}
         uploadPath:this.$theia.env.join("/file/upload"),
@@ -58,8 +59,7 @@ export default {
       this.conf.visible = true;
       this.loadEnums_{-{$table.UNQ}-}()
       let local = {}
-      {-{- $c :=$table.Optrs.BarOpts.GetAddOpt}-}
-      {-{- $read2window := $c.GetParams "read2window" -}-}
+      {-{- $read2window := $addOpts.GetParams "read2window" -}-}
       {-{- if ne "" $read2window}-}
         //将数据保存到window缓存中
       local = window.{-{$read2window}-} || {}
@@ -68,7 +68,7 @@ export default {
       this.form = Object.assign(cache,this.$route.params)
 
       {-{- range $i,$c := $acColumns.GetColumnsBy "alias"}-}
-      {-{- $name := $c.GetOpt "alias" -}-}
+      {-{- $name := $c.GetOtherCmpntValue "alias" -}-}
       {-{- if ne "" $name}-}
       this.form.{-{$c.Name}-} = cache["{-{$name}-}"]
       {-{- end -}-}
@@ -89,9 +89,7 @@ export default {
       this.form.{-{$c.Name}-} = this.form.{-{$c.Name}-}_switch?0:1;
       {-{- end }-}
       this.$refs.form.validate((v=>{
-          if(v){
-              this.onSave()
-          }
+          if(v) this.onSave()
       }))
     },
     onSave(){
@@ -125,7 +123,6 @@ export default {
       {-{- range $i,$v := $memberClus}-}
         postForm.{-{$v.Name}-} = this.$theia.user.get("{-{$v.Ext.Name}-}")
       {-{- end}-}
-
         //保存数据
         this.$theia.http.post("/{-{.Name.MainPath|lower}-}",postForm).then(res=>{
             that.$notify.success({title: '成功',message: '{-{.Desc}-}保存成功',duration:5000})
@@ -134,15 +131,13 @@ export default {
             that.$theia.enum.clear()
             {-{- else}-}
             that.$theia.enum.clear("{-{$table.Enum.EnumType}-}")
-            that.$theia.enum.get("{-{$table.Enum.EnumType}-}")
             {-{- end}-}
-            
             that.$emit("onsaved")
         }).catch(res=>{
-          let code = ((res||{}).response||{}).status||0
-          let msg= `{-{.Desc}-}保存失败(${code})`
-          msg = code == 909? msg+"数据重复，请修改后重试":msg
-          that.$notify.error({title: '失败',message:msg,duration:5000})
+            let code = ((res||{}).response||{}).status||0
+            let msg= `{-{.Desc}-}保存失败(${code})`
+            msg = code == 909? msg+"数据重复，请修改后重试":msg
+            that.$notify.error({title: '失败',message:msg,duration:5000})
         })
     },
     hide() {
@@ -187,7 +182,6 @@ export default {
       {-{- end}-}
       {-{- end}-}
       {-{- end}-}
-      
       {-{- $p := $x.GetParamMap "@change"}-}
       {-{- if gt (len $p) 0}-}
       //添加联动

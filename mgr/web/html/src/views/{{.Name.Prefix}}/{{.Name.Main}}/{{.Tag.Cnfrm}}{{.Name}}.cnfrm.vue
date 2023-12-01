@@ -5,15 +5,10 @@
     {-{- range $x,$m:=$opts }-}
     <el-dialog
       v-model="conf.{-{$m.UNQ}-}_visible"
-      title="{-{$m.Label}-}"
-      width="30%"
-      draggable
-      :close-on-click-modal="false"
-      :before-close="hide_{-{$m.UNQ}-}">
+      title="{-{$m.Label}-}"  width="30%"  draggable
+      :close-on-click-modal="false"  :before-close="hide_{-{$m.UNQ}-}">
     {-{- $label:= $m.GetParam "label" ""}-}
-      <span 
-        >确认{-{$m.Label}-}{-{$label}-}吗?</span
-      >
+      <span>确认{-{$m.Label}-}{-{$label}-}吗?</span>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="hide_{-{$m.UNQ}-}" icon="close">取消</el-button>
@@ -30,18 +25,18 @@ export default {
   data(){
     return{
       conf:{
-        {-{- range $x,$m:=$opts }-}
-        {-{$m.UNQ}-}_visible:false,
-        {-{- end}-}
+          {-{- range $x,$m:=$opts }-}
+          {-{$m.UNQ}-}_visible:false, //{-{$m.Label}-}
+          {-{- end}-}
       },
-  {-{- range $x,$m:=$opts }-}
-      //{-{$m.Label}-} form by  [{-{$m.RwName}-}]
+      {-{- range $x,$m:=$opts }-}
+      //{-{$m.Label}-}
       form_{-{$m.UNQ}-}:{
-       {-{- $cols:=  $table.Columns.GetColumns $m.RwName }-}
+        {-{- $cols:=  $table.Columns.GetColumns $m.RwName }-}
         {-{- range $i,$c:=$cols }-} 
         {-{$c.Name}-}:"",
         {-{- end}-}
-        },
+      },
    {-{- end}-}
     }
   },
@@ -56,7 +51,6 @@ export default {
       //隐藏 {-{$m.Label}-} 弹出框
       hide_{-{$m.UNQ}-}(){
         this.conf.{-{$m.UNQ}-}_visible = false;
-        // this.$refs.fm_{-{$m.UNQ}-}.resetFields();
       },
       //保存 {-{$m.Label}-} 弹出框数据
       save_{-{$m.UNQ}-}(){

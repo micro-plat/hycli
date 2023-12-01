@@ -1,101 +1,96 @@
 {-{- $ucols := .  }-}
 {-{- $m := 0}-}
 {-{- $span:=24}-}
-  <el-row>
-  {-{- range $i,$c:= $ucols }-}
-  {-{- if eq true $c.Field.IsLongText }-}
-    {-{$m =  0}-}
-        <el-col :span="24">
-          {-{- $span = 24}-}
-   {-{- else if eq "full" $c.Style.Position}-}
-          {-{- if ne 0 (f_num_spare $m 24)}-}
-          <el-col :span="12"></el-col>
-          {-{$m = f_num_add $m 12 }-}
-          {-{- end}-}
-          <el-col :span="24">
-          {-{- $span = 24}-}
-          {-{$m = f_num_add $m 24 }-}
-  {-{- else if eq "newline" $c.Style.Position}-}
-        {-{- if ne 0 (f_num_spare $m 24)}-}
-        <el-col :span="12"></el-col>
-        {-{- $span = 12}-}
-        {-{$m = f_num_add $m 12 }-}
-        {-{- end}-}
-      <el-col :span="12">
-      {-{- $span = 12}-}
-      {-{$m = f_num_add $m 12 }-}
-      {-{- else }-}
-        <el-col :span="12">
-        {-{- $span = 12}-}
-        {-{$m = f_num_add $m 12}-}
-  {-{- end }-}
-      {-{- if $c.Cmpnt.Equal "password"}-}
+    <el-row>
+    {-{- range $i,$c:= $ucols }-}
+    {-{- if eq true $c.Field.IsLongText }-}
+    {-{- $m =  0}-}
+    <el-col :span="24">
+    {-{- $span = 24}-}
+    {-{- else if eq "full" $c.Style.Position}-}
+    {-{- if ne 0 (f_num_spare $m 24)}-}
+    <el-col :span="12"></el-col>
+    {-{- $m = f_num_add $m 12 }-}
+    {-{- end}-}
+    <el-col :span="24">
+    {-{- $span = 24}-}
+    {-{- $m = f_num_add $m 24 }-}
+    {-{- else if eq "newline" $c.Style.Position}-}
+    {-{- if ne 0 (f_num_spare $m 24)}-}
+    <el-col :span="12"></el-col>
+    {-{- $span = 12}-}
+    {-{- $m = f_num_add $m 12 }-}
+    {-{- end}-}
+    <el-col :span="12">
+    {-{- $span = 12}-}
+    {-{- $m = f_num_add $m 12 }-}
+    {-{- else }-}
+    <el-col :span="12">
+    {-{- $span = 12}-}
+    {-{- $m = f_num_add $m 12}-}
+    {-{- end }-}
+    {-{- if $c.Cmpnt.Equal "password"}-}
       <!--{-{$c.Label}-} 密码控件 -->
-      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-        <el-input clearable type="password" show-password style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}"
-          maxlength="{-{$c.Field.Len}-}" placeholder="请输入{-{$c.Desc.Raw}-}" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}/>
-         
-        </el-form-item>
-
-      {-{- else if $c.Cmpnt.Equal "switch"}-}
-      <!--{-{$c.Label}-} switch控件 -->
-      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-        <el-switch v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}_switch" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}/>
-        {-{- if ne $c.Label $c.Desc.Raw}-}
-        <el-tooltip raw-content="true" content="{-{$c.Desc.Raw}-}" placement="bottom" effect="light">
-          <i class="form_item_info fa fa-info-circle"  aria-hidden="true" />
-        </el-tooltip>
+    <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
+      <el-input clearable type="password" show-password style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}"
+        maxlength="{-{$c.Field.Len}-}" placeholder="请输入{-{$c.Desc.Raw}-}" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}/>
+    </el-form-item>
+    {-{- else if $c.Cmpnt.Equal "switch"}-}
+    <!--{-{$c.Label}-} switch控件 -->
+    <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
+      <el-switch v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}_switch" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}/>
+      {-{- if ne $c.Label $c.Desc.Raw}-}
+      <el-tooltip raw-content="true" content="{-{$c.Desc.Raw}-}" placement="bottom" effect="light">
+      <i class="form_item_info fa fa-info-circle"  aria-hidden="true" />
+      </el-tooltip>
       {-{- end}-}
-      </el-form-item>
-
-      {-{- else if $c.Cmpnt.Equal "date|daterange"}-}
-      <!--{-{$c.Label}-} 日期控件 -->
-      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-        <el-date-picker style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" clearable type="date"
+    </el-form-item>
+    {-{- else if $c.Cmpnt.Equal "date|daterange"}-}
+    <!--{-{$c.Label}-} 日期控件 -->
+    <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
+      <el-date-picker style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" clearable type="date"
           placeholder="请选择{-{.Desc.Raw}-}" format="YYYY-MM-DD" value-format="YYYY-MM-DD" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{else if ne "" $c.Cmpnt.Format}-} :default-time="new Date($theia.str.dateFormat(new Date(),'{-{$c.Cmpnt.Format}-}'))"{-{end}-}/>
-      </el-form-item>
-      {-{- else if $c.Cmpnt.Equal "datetime"}-}
-      <!--{-{$c.Label}-} 日期控件 -->
-      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-        <el-date-picker style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" clearable type="datetime"
-          placeholder="请选择{-{.Label}-}" format="YYYY-MM-DD HH:mm:ss" value-format="YYYY-MM-DD HH:mm:ss" 
-          {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{else if ne "" $c.Cmpnt.Format}-} :default-time="new Date($theia.str.dateFormat(new Date(),'{-{$c.Cmpnt.Format}-}'))"{-{end}-}/>
-      </el-form-item>
-      {-{- else if  $c.Cmpnt.Equal "multiselect"}-}
-      <!--{-{$c.Label}-} 多选控件 -->
-      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-        <el-select style="width: 100%"   v-model="{-{$c.Ext.FormName}-}.{-{.Name}-}" clearable multiple {-{if ne $span 24}-} collapse-tags {-{end}-}
-        collapse-tags-tooltip
-          placeholder="请选择{-{.Desc.Raw}-}">
-          <el-option v-for="item in {-{.Name}-}List" :key="item.value" :label="item.name" :value="item.value" />
-        </el-select>
-      </el-form-item>
-      {-{- else if $c.Cmpnt.Equal "multicheck"}-}
-      <!--{-{$c.Label}-} chckbox-group -->
-      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-        <el-checkbox-group v-model="{-{$c.Ext.FormName}-}.{-{.Name}-}"  {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}>
-          <el-checkbox-button v-for="item in {-{.Name}-}List" :key="item.value" :label="item.value"  :value="item.value">
-            {{item.name}}
-          </el-checkbox-button>
-        </el-checkbox-group>
-        {-{- if ne $c.Label $c.Desc.Raw}-}
+    </el-form-item>
+    {-{- else if $c.Cmpnt.Equal "datetime"}-}
+    <!--{-{$c.Label}-} 日期控件 -->
+    <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
+      <el-date-picker style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" clearable type="datetime"
+        placeholder="请选择{-{.Label}-}" format="YYYY-MM-DD HH:mm:ss" value-format="YYYY-MM-DD HH:mm:ss" 
+        {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{else if ne "" $c.Cmpnt.Format}-} :default-time="new Date($theia.str.dateFormat(new Date(),'{-{$c.Cmpnt.Format}-}'))"{-{end}-}/>
+    </el-form-item>
+    {-{- else if  $c.Cmpnt.Equal "multiselect"}-}
+    <!--{-{$c.Label}-} 多选控件 -->
+    <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
+      <el-select style="width: 100%"   v-model="{-{$c.Ext.FormName}-}.{-{.Name}-}" clearable multiple {-{if ne $span 24}-} collapse-tags {-{end}-}
+      collapse-tags-tooltip
+        placeholder="请选择{-{.Desc.Raw}-}">
+        <el-option v-for="item in {-{.Name}-}List" :key="item.value" :label="item.name" :value="item.value" />
+      </el-select>
+    </el-form-item>
+    {-{- else if $c.Cmpnt.Equal "multicheck"}-}
+    <!--{-{$c.Label}-} chckbox-group -->
+    <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
+      <el-checkbox-group v-model="{-{$c.Ext.FormName}-}.{-{.Name}-}"  {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}>
+      <el-checkbox-button v-for="item in {-{.Name}-}List" :key="item.value" :label="item.value"  :value="item.value">
+        {{item.name}}
+        </el-checkbox-button>
+      </el-checkbox-group>
+      {-{- if ne $c.Label $c.Desc.Raw}-}
         <el-tooltip raw-content="true" content="{-{$c.Desc.Raw}-}" placement="bottom" effect="light">
           <i class="form_item_info fa fa-info-circle"  aria-hidden="true" />
         </el-tooltip>
-      {-{- end}-}
+        {-{- end}-}
       </el-form-item>
       {-{- else if  ($c.Cmpnt.Equal "tree")}-}
+      <!--{-{$c.Label}-} 页面树 -->
       <el-form-item  label="{-{$c.Label}-}" label-width="100px" label-position="right">
         {-{- $empt:=""}-}
-       <el-tree ref="tree_{-{$c.UNQ}-}" style="width: 100%; {-{if eq  $c.Cmpnt.Format $empt}-} height:100px;{-{else}-} height:{-{$c.Cmpnt.Format}-}px;{-{end}-} overflow:auto"
-       show-checkbox
-       node-key="id"
-       default-expand-all
-       :data="{-{.Name}-}List"
-       :props="{children: 'children', label: 'name'}"
-     />
+        <el-tree ref="tree_{-{$c.UNQ}-}" style="width: 100%; {-{if eq  $c.Cmpnt.Format $empt}-} height:100px;{-{else}-} height:{-{$c.Cmpnt.Format}-}px;{-{end}-} overflow:auto"
+        show-checkbox  node-key="id" default-expand-all :data="{-{.Name}-}List"
+        :props="{children: 'children', label: 'name'}"/>
      </el-form-item>
      {-{- else if $c.Cmpnt.Equal "cascader"}-}
+     <!--{-{$c.Label}-} 选择树 -->
      <el-form-item  label="{-{$c.Label}-}" label-width="100px" label-position="right">
        {-{- $empt:=""}-}
        {-{- $Format := $c.Cmpnt.Format}-}
@@ -103,119 +98,115 @@
        {-{- if eq "multiple" $Format }-}
        {-{- $multiple = "multiple:true,"}-}
        {-{- end}-}
-      <el-cascader ref="cascader_{-{$c.UNQ}-}" style="width: 100%;"
-      v-model="{-{$c.Ext.FormName}-}.{-{ $c.Name }-}" 
-      placeholder="请选择{-{$c.Desc.Raw}-}"
-      collapse-tags
-      collapse-tags-tooltip
-      clearable
-      :options="{-{.Name}-}List"
-      :props="{ {-{$multiple}-} children: 'children', label: 'name' }"
-    />
+        <el-cascader ref="cascader_{-{$c.UNQ}-}" style="width: 100%;"
+        v-model="{-{$c.Ext.FormName}-}.{-{ $c.Name }-}" 
+        placeholder="请选择{-{$c.Desc.Raw}-}"
+        collapse-tags  collapse-tags-tooltip  clearable   :options="{-{.Name}-}List"
+        :props="{ {-{$multiple}-} children: 'children', label: 'name' }" />
     </el-form-item>
-
-      {-{- else if $c.Cmpnt.Equal "slider" }-}
-      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
+    {-{- else if $c.Cmpnt.Equal "slider" }-}
+    <!--{-{$c.Label}-} 拖拽进度控件 -->
+    <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
         <el-slider  show-input {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}
         placement="right" style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{ $c.Name }-}" 
         {-{- if ne 0 $c.Style.Min}-}
          :min="{-{ $c.Style.Min }-}" {-{- end }-} 
          {-{- if ne 0 $c.Style.Max }-}  :max="{-{ $c.Style.Max }-}" {-{- end }-} />
-      </el-form-item>
-      {-{- else if $c.Cmpnt.Equal "number"}-}
-      <!--{-{$c.Label}-} 数字控件 -->
-      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-        <el-input-number {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}
-        {-{if le 0 $c.Field.DLen }-} :precision="{-{$c.Field.DLen}-}" {-{end}-} 
-        {-{ if eq "right" $c.Cmpnt.Format}-} controls-position="right" {-{end}-}
-         style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{ $c.Name }-}" 
-        {-{- if ne 0 $c.Style.Min}-}
-         :min="{-{ $c.Style.Min }-}" {-{- end }-} {-{- if ne 0 $c.Style.Max}-}  :max="{-{ $c.Style.Max }-}" {-{- end }-} />
-      </el-form-item>
-
-      {-{- else if $c.Cmpnt.Equal "file|img"}-}
-      <!--{-{$c.Label}-} 文件控件 -->
-      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-        <el-input clearable style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" {-{ if ne 0 $c.Field.Len}-} maxlength="{-{$c.Field.Len}-}" {-{end}-}
-          :rows="{-{$c.Style.Rows}-}" {-{if eq true $c.Field.IsLongText}-}  show-word-limit {-{end}-}
-          placeholder="请输入{-{$c.Desc.Raw}-}地址或上传文件" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-} >
-          <template #append>
-            <el-upload multiple :show-file-list="false" :action="conf.uploadPath" :limit="100" :on-success="onUploadSuccess" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}>
-              <el-button type="primary">选择文件</el-button>
-            </el-upload>
-          </template>
-        </el-input>
-      </el-form-item>
-      {-{- else if $c.Cmpnt.Equal "radio"}-}
-     <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-      <el-radio-group v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}"
-      {-{if gt ( len ($ucols.GetColumnsByTriggerChangeEvent $c.Name)) 0}-} @change="onChange_{-{$c.Name}-}"{-{end}-}  >
+    </el-form-item>
+    {-{- else if $c.Cmpnt.Equal "number"}-}
+    <!--{-{$c.Label}-} 数字控件 -->
+    <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
+      <el-input-number {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}
+      {-{if le 0 $c.Field.DLen }-} :precision="{-{$c.Field.DLen}-}" {-{end}-} 
+      {-{ if eq "right" $c.Cmpnt.Format}-} controls-position="right" {-{end}-}
+        style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{ $c.Name }-}" 
+      {-{- if ne 0 $c.Style.Min}-}
+        :min="{-{ $c.Style.Min }-}" {-{- end }-} {-{- if ne 0 $c.Style.Max}-}  :max="{-{ $c.Style.Max }-}" {-{- end }-} />
+    </el-form-item>
+    {-{- else if $c.Cmpnt.Equal "file|img"}-}
+    <!--{-{$c.Label}-} 文件控件 -->
+    <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
+      <el-input clearable style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" {-{ if ne 0 $c.Field.Len}-} maxlength="{-{$c.Field.Len}-}" {-{end}-}
+        :rows="{-{$c.Style.Rows}-}" {-{if eq true $c.Field.IsLongText}-}  show-word-limit {-{end}-}
+        placeholder="请输入{-{$c.Desc.Raw}-}地址或上传文件" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-} >
+        <template #append>
+          <el-upload multiple :show-file-list="false" :action="conf.uploadPath" :limit="100" :on-success="onUploadSuccess" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}>
+            <el-button type="primary">选择文件</el-button>
+          </el-upload>
+        </template>
+      </el-input>
+    </el-form-item>
+    {-{- else if $c.Cmpnt.Equal "radio"}-}
+    <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
+      <el-radio-group v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" {-{if gt ( len ($ucols.GetColumnsByTriggerChangeEvent $c.Name)) 0}-} @change="onChange_{-{$c.Name}-}"{-{end}-}  >
         <el-radio-button v-for="item in {-{$c.Name}-}List" :key="item.value" :label="item.value" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}>
             {{item.name}}
         </el-radio-button>
-    </el-radio-group>
-    {-{- if ne $c.Label $c.Desc.Raw}-}
-    <el-tooltip raw-content="true" content="{-{$c.Desc.Raw}-}" placement="bottom" effect="light">
+      </el-radio-group>
+      {-{- if ne $c.Label $c.Desc.Raw}-}
+      <el-tooltip raw-content="true" content="{-{$c.Desc.Raw}-}" placement="bottom" effect="light">
       <i class="form_item_info fa fa-info-circle"  aria-hidden="true" />
-    </el-tooltip>
-  {-{- end}-}
-     </el-form-item>
-    
+      </el-tooltip>
+      {-{- end}-}
+    </el-form-item>
      {-{- else if $c.Enum.IsEnum}-}
      <!--{-{$c.Label}-} 下拉控件 -->
-     <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-       <el-select  {-{if gt ( len ($ucols.GetColumnsByTriggerChangeEvent $c.Name)) 0}-} @change="onChange_{-{$c.Name}-}({-{$c.Ext.FormName}-}.{-{.Name}-},'{-{$c.Enum.EnumType}-}')"{-{end}-} v-model="{-{$c.Ext.FormName}-}.{-{.Name}-}" style="width: 100%" filterable clearable
-         placeholder="请选择{-{.Desc.Raw}-}" {-{ if eq "readonly" $c.Cmpnt.Type}-}disabled {-{end}-}>
-         <el-option v-for="item in {-{.Name}-}List" :key="item.value" :label="item.name" :value="item.value" />
-       </el-select>
-       {-{- if ne $c.Label $c.Desc.Raw}-}
-       <el-tooltip raw-content="true" content="{-{$c.Desc.Raw}-}" placement="bottom" effect="light">
-         <i class="form_item_info fa fa-info-circle"  aria-hidden="true" />
-       </el-tooltip>
-     {-{- end}-}
-     </el-form-item>
-      {-{- else if $c.Cmpnt.Equal "readonly"}-}
-      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-        <el-input disabled  style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}"
-          :rows="{-{$c.Style.Rows}-}" {-{if gt $c.Field.Len 33}-} type="textarea" show-word-limit {-{end}-} />
-      </el-form-item>
-      {-{- else if $c.Cmpnt.Equal  "label" }-}
-      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-        <span v-text="{-{$c.Ext.FormName}-}.{-{$c.Name}-}"></span>
-      </el-form-item>
-      {-{- else if  $c.Cmpnt.Equal "color-picker"}-}
-      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-        <el-color-picker v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}/>
-      </el-form-item>
-      {-{- else if $c.Cmpnt.Equal "http"}-}
-      <!--{-{$c.Label}-} 输入控件 -->
-      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-        <el-input clearable style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" maxlength="{-{$c.Field.Len}-}"
-          :rows="{-{$c.Style.Rows}-}" {-{if gt $c.Field.Len 33}-} type="textarea" show-word-limit {-{end}-}
-          placeholder="请输入{-{$c.Desc.Raw}-}" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-} />
-          <template #prepend>Http://</template>
-      </el-form-item>
-      {-{- else if $c.Cmpnt.Equal "https"}-}
-      <!--{-{$c.Label}-} 输入控件 -->
-      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-        <el-input clearable style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" maxlength="{-{$c.Field.Len}-}"
-          :rows="{-{$c.Style.Rows}-}" {-{if gt $c.Field.Len 33}-} type="textarea" show-word-limit {-{end}-}
-          placeholder="请输入{-{$c.Desc.Raw}-}" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}/>
-          <template #prepend>Https://</template>
-      </el-form-item>
-      {-{- else if $c.Cmpnt.Equal "rtext"}-}
-      <!--{-{$c.Label}-} 输入控件 -->
-      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-        <rtext :html="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" @onChange="onRtext{-{$c.Name}-}Change"></rtext>
-      </el-form-item>
-      {-{- else}-}
-      <!--{-{$c.Label}-} 输入控件 -->
-      <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-        <el-input clearable style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" {-{ if ne 0 $c.Field.Len}-} maxlength="{-{$c.Field.Len}-}" {-{end}-}
-        :rows="{-{$c.Style.Rows}-}" {-{if eq true $c.Field.IsLongText}-} type="textarea" show-word-limit {-{end}-}
-          placeholder="请输入{-{$c.Desc.Raw}-}" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-} />
-      </el-form-item>
-      {-{- end }-}
+    <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
+      <el-select  {-{if gt ( len ($ucols.GetColumnsByTriggerChangeEvent $c.Name)) 0}-} @change="onChange_{-{$c.Name}-}({-{$c.Ext.FormName}-}.{-{.Name}-},'{-{$c.Enum.EnumType}-}')"{-{end}-} v-model="{-{$c.Ext.FormName}-}.{-{.Name}-}" style="width: 100%" filterable clearable
+        placeholder="请选择{-{.Desc.Raw}-}" {-{ if eq "readonly" $c.Cmpnt.Type}-}disabled {-{end}-}>
+        <el-option v-for="item in {-{.Name}-}List" :key="item.value" :label="item.name" :value="item.value" />
+      </el-select>
+      {-{- if ne $c.Label $c.Desc.Raw}-}
+      <el-tooltip raw-content="true" content="{-{$c.Desc.Raw}-}" placement="bottom" effect="light">
+        <i class="form_item_info fa fa-info-circle"  aria-hidden="true" />
+      </el-tooltip>
+    {-{- end}-}
+    </el-form-item>
+    {-{- else if $c.Cmpnt.Equal "readonly"}-}
+     <!--{-{$c.Label}-} 输入只读控件 -->
+    <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
+      <el-input disabled  style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}"
+        :rows="{-{$c.Style.Rows}-}" {-{if gt $c.Field.Len 33}-} type="textarea" show-word-limit {-{end}-} />
+    </el-form-item>
+    {-{- else if $c.Cmpnt.Equal  "label" }-}
+     <!--{-{$c.Label}-} 文字展示控件 -->
+    <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
+      <span v-text="{-{$c.Ext.FormName}-}.{-{$c.Name}-}"></span>
+    </el-form-item>
+    {-{- else if  $c.Cmpnt.Equal "color-picker"}-}
+     <!--{-{$c.Label}-} 颜色选择控件 -->
+    <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
+      <el-color-picker v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}/>
+    </el-form-item>
+    {-{- else if $c.Cmpnt.Equal "http"}-}
+    <!--{-{$c.Label}-} 输入控件 -->
+    <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
+      <el-input clearable style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" maxlength="{-{$c.Field.Len}-}"
+        :rows="{-{$c.Style.Rows}-}" {-{if gt $c.Field.Len 33}-} type="textarea" show-word-limit {-{end}-}
+        placeholder="请输入{-{$c.Desc.Raw}-}" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-} />
+        <template #prepend>Http://</template>
+    </el-form-item>
+    {-{- else if $c.Cmpnt.Equal "https"}-}
+    <!--{-{$c.Label}-} 输入控件 -->
+    <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
+      <el-input clearable style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" maxlength="{-{$c.Field.Len}-}"
+        :rows="{-{$c.Style.Rows}-}" {-{if gt $c.Field.Len 33}-} type="textarea" show-word-limit {-{end}-}
+        placeholder="请输入{-{$c.Desc.Raw}-}" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-}/>
+        <template #prepend>Https://</template>
+    </el-form-item>
+    {-{- else if $c.Cmpnt.Equal "rtext"}-}
+    <!--{-{$c.Label}-} 输入控件 -->
+    <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
+      <rtext :html="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" @onChange="onRtext{-{$c.Name}-}Change"></rtext>
+    </el-form-item>
+    {-{- else}-}
+    <!--{-{$c.Label}-} 输入控件 -->
+    <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
+      <el-input clearable style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" {-{ if ne 0 $c.Field.Len}-} maxlength="{-{$c.Field.Len}-}" {-{end}-}
+      :rows="{-{$c.Style.Rows}-}" {-{if eq true $c.Field.IsLongText}-} type="textarea" show-word-limit {-{end}-}
+        placeholder="请输入{-{$c.Desc.Raw}-}" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-} />
+    </el-form-item>
+    {-{- end }-}
     </el-col>
     {-{- end}-}
-</el-row>
+    </el-row>

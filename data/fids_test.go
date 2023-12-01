@@ -96,8 +96,8 @@ func TestRelation2(t *testing.T) {
 	tab := tbs[0]
 	columns := tab.Columns.GetColumnsBy("alias")
 	assert.Equal(t, 1, len(columns))
-	assert.Equal(t, "a", columns[0].GetOpt("alias"))
-	a, b, c := columns[0].GetOpts("alias")
+	assert.Equal(t, "a", columns[0].GetOtherCmpntValue("alias"))
+	a, b, c := columns[0].GetOtherCmpntValues("alias")
 	assert.Equal(t, "a", a)
 	assert.Equal(t, "b", b)
 	assert.Equal(t, "c", c)

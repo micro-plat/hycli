@@ -1,11 +1,7 @@
 {-{- $ccols := .}-}
     rules:{
       {-{- range $i,$c := $ccols}-}
-      {-{$c.Name}-}:[{
-          required:{-{$c.Field.Required}-},
-          message:"请输入{-{$c.Label}-}",
-          trigger: 'blur',
-      }],
+      {-{$c.Name}-}:[{required:{-{$c.Field.Required}-},message:"请输入{-{$c.Label}-}",trigger: 'blur'}],
     {-{- end}-}
     },
     form:{
@@ -18,8 +14,8 @@
         {-{$c.Name}-}:"",
         {-{- end}-}
         {-{- end}-}
-        },
-        {-{- range $i,$c := $ccols.GetEnumColumns}-}
-        {-{.Name}-}List:[],
-        {-{- end}-}
-      }
+    },
+    {-{- range $i,$c := $ccols.GetEnumColumns}-}
+    {-{.Name}-}List:[],
+    {-{- end}-}
+    }
