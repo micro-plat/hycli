@@ -1,6 +1,8 @@
 package data
 
-import "github.com/micro-plat/lib4go/types"
+import (
+	"github.com/micro-plat/lib4go/types"
+)
 
 type tableOptrs struct {
 
@@ -73,7 +75,8 @@ func (t *tableOptrs) Sort() {
 	t.GraphOpts.Sort()
 }
 func (s optrslst) GetCompnents() optrslst {
-	return s.GetByName("CMPNT")
+	cmpnt := s.GetByName("CMPNT")
+	return cmpnt
 }
 func (s optrslst) GetConfirm() optrslst {
 	return s.GetByTag("CNFRM")

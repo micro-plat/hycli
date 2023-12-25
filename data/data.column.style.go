@@ -1,6 +1,8 @@
 package data
 
 import (
+	"strings"
+
 	"github.com/micro-plat/hycli/data/internal/md"
 	"github.com/micro-plat/lib4go/types"
 )
@@ -31,16 +33,14 @@ func createStyle(r *md.Row) displayStyle {
 
 	return displayStyle{
 		ListWidth:    md.GetConsNameByTagIgnorecase("lw", r.Constraints...),
-		Rows:         types.GetInt(md.GetConsNameByTagIgnorecase("row", r.Constraints...)),
+		Rows:         types.GetInt(md.GetConsNameByTagIgnorecase("rows", r.Constraints...)),
 		Position:     types.GetString(md.GetConsNameByTagIgnorecase("ps", r.Constraints...)),
 		HideOverflow: md.HasConstraint(r.Constraints, "hof", "HOF"),
 		Min:          types.GetInt(min),
 		Max:          types.GetInt(max),
 		HasBgColor:   hasBGcolor,
-		// CLR: color{
-		// 	Name:      "colorful",
-		// 	FontColor: fc,
-		// 	BgColor:   bc,
-		// },
 	}
+}
+func (d *displayStyle) IsFull() bool {
+	return strings.EqualFold(d.Position, "full")
 }

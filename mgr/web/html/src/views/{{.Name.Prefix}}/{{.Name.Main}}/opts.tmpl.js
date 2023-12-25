@@ -45,6 +45,9 @@ show_cmpnt(cmd,row){
     query.{-{$k}-} = (this.{-{f_string_trim $v "&"}-}||[]).join(",")
     {-{- else if eq true (f_string_start $v "#")}-}
     query.{-{$k}-} = fm.{-{f_string_trim $v "#"}-}
+    {-{- else if eq true (f_string_start $v "!")}-}
+    {-{- $xv:=f_string_trim $v "!"}-}
+    query.{-{$k}-} = this.$theia.user.get("{-{$xv}-}")
     {-{- else}-}
     query.{-{$k}-} = "{-{$v}-}"
     {-{- end}-}

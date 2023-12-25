@@ -1,30 +1,62 @@
 <template>
-    <div style="border: 1px solid #ccc">
-        <Toolbar style="border-bottom: 1px solid #ccc" :editor="editor" :defaultConfig="toolbarConfig" :mode="mode" />
-        <Editor style="height: 300px; overflow-y: hidden;" @customPaste="customPaste" v-model="content"
-            :defaultConfig="editorConfig" :mode="mode" @onChange="onChange" @onCreated="onCreated" />
+    <div style="border: 1px solid #eee">
+        <Toolbar style="min-width:100vh; border-bottom: 1px solid #eee" :editor="editor" :defaultConfig="toolbarConfig"
+            :mode="mode" />
+        <Editor :style="{ height: (rows * 35) + 'px' }" style="min-width:100vh; overflow-y: hidden;" @customPaste="customPaste"
+            v-model="content" :defaultConfig="editorConfig" :mode="mode" @onChange="onChange" @onCreated="onCreated" />
     </div>
 </template>
 <script >
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
-import { onBeforeUnmount, ref, shallowRef, onMounted } from 'vue'
+import { ref, shallowRef } from 'vue'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 
 export default {
     components: { Editor, Toolbar },
-    props: ['html'],
+    props: {
+        html: {
+            type: String,
+            default: ""
+        },
+        rows: {
+            type: Number,
+            default: 3
+        },
+    },
     data() {
         let _this = this;
         return {
             editor: null,
-            content:"",
-            toolbarConfig: {},
+            content: "",
+            toolbarConfig: {
+                toolbarKeys: [
+                    "clearStyle", // 清除格式    
+                    "bold", // 粗体
+                    "underline", // 下划线
+                    "italic", // 斜体
+                    "through", // 删除线
+                    "color", // 字体颜色
+                    "bgColor", // 背景色
+                    "fontSize", // 字号
+                    "headerSelect", // 标题
+                    "justifyLeft", // 左对齐
+                    "justifyRight", // 右对齐
+                    "justifyCenter", // 居中对齐
+                    "insertImage", // 网络图片
+                    "uploadImage", // 上传图片
+                    "divider", // 分割线
+                    "insertTable", // 插入表格
+                    "viewImageLink", // 查看链接
+                    "codeBlock", // 代码块
+                    "fullScreen"
+                ]
+            },
             editorConfig: {
                 placeholder: '请输入内容...',
                 // 所有的菜单配置，都要在 MENU_CONF 属性下
                 MENU_CONF: {
                     uploadImage: {
-                        server: _this.$theia.env.join("/file/upload"),
+                        server: "/file/upload",
                         metaWithUrl: true, // join params to url
                         headers: { 'Content-Type': 'multipart/form-data' },
                         customUpload(file, insertFn) {
@@ -32,7 +64,7 @@ export default {
                             let formData = new FormData();
                             formData.append('file', file);
                             formData.append('dir', 'supplier');
-                            return _this.$theia.http.upload(_this.$theia.env.join("/file/upload"), formData, {
+                            return _this.$theia.http.upload("/file/upload", formData, {
                                 'Content-Type': 'multipart/form-data',
                             })
                                 .then(async (res) => {
@@ -62,13 +94,23 @@ export default {
         }
     },
     watch: {
-        html(){
-        this.content = this.html
+        html() {
+            this.content = this.html
+        },
     },
-  },
+    mounted() {
+        this.$nextTick(() => {
+            this.content = this.html
+        })
+        this.editor = shallowRef()
+
+
+    },
     methods: {
         onChange(editor) {
-            this.$emit('onChange', editor.getHtml());
+            let html=editor.getHtml()
+            let urls=this.findAllImgSrcsFromHtml(html)
+            this.$emit('onChange',html,urls);
         },
         onCreated(editor) {
             this.editor = Object.seal(editor); // 【注意】一定要用 Object.seal() 否则会报错
@@ -93,66 +135,47 @@ export default {
         //     this.editor = editor // 一定要用 Object.seal() ，否则会报错
         // },
         customPaste(editor, event) {
-
-            // 获取粘贴的html部分（？？没错粘贴word时候，一部分内容就是html），该部分包含了图片img标签
+            // 获取粘贴的html部分（没错粘贴word时候，一部分内容就是html），该部分包含了图片img标签
             let html = event.clipboardData.getData('text/html');
-
             // 获取rtf数据（从word、wps复制粘贴时有），复制粘贴过程中图片的数据就保存在rtf中
             const rtf = event.clipboardData.getData('text/rtf');
-
             if (html && rtf) { // 该条件分支即表示要自定义word粘贴
-
                 // 列表缩进会超出边框，直接过滤掉
                 html = html.replace(/text\-indent:\-(.*?)pt/gi, '')
-
                 // 从html内容中查找粘贴内容中是否有图片元素，并返回img标签的属性src值的集合
                 const imgSrcs = this.findAllImgSrcsFromHtml(html);
-
                 // 如果有
                 if (imgSrcs && Array.isArray(imgSrcs) && imgSrcs.length) {
-
                     // 从rtf内容中查找图片数据
                     const rtfImageData = this.extractImageDataFromRtf(rtf);
-
                     // 如果找到
                     if (rtfImageData.length) {
-
-                        // TODO：此处可以将图片上传到自己的服务器上
-                        console.log("rtfImageData:", rtfImageData)
-
                         // 执行替换：将html内容中的img标签的src替换成ref中的图片数据，如果上面上传了则为图片路径
                         html = this.replaceImagesFileSourceWithInlineRepresentation(html, imgSrcs, rtfImageData)
                         editor.dangerouslyInsertHtml(html);
-
+                        console.log("html:",html)
                     }
                 }
-
                 // 阻止默认的粘贴行为
                 event.preventDefault();
                 return false;
             } else {
                 return true;
             }
-
         },
         findAllImgSrcsFromHtml(htmlData) {
-
             let imgReg = /<img.*?(?:>|\/>)/gi; //匹配图片中的img标签
             let srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i; // 匹配图片中的src
-
             let arr = htmlData.match(imgReg); //筛选出所有的img
             if (!arr || (Array.isArray(arr) && !arr.length)) {
                 return false;
             }
-
-
             let srcArr = [];
             for (let i = 0; i < arr.length; i++) {
                 let src = arr[i].match(srcReg);
                 // 获取图片地址
                 srcArr.push(src[1]);
             }
-
             return srcArr;
         },
 
@@ -225,9 +248,7 @@ export default {
             }).join(''));
         },
     },
-    mounted() {
-        this.editor = shallowRef()
-    },
+
     beforeDestroy() {
         const editor = this.editor
         if (editor == null) return
@@ -236,3 +257,22 @@ export default {
 
 }
 </script>
+<style>
+.w-e-toolbar {
+    height: 30px;
+}
+
+.w-e-bar-item {
+    padding: 0px !important;
+    height: auto !important;
+}
+.w-e-toolbar{
+    z-index: 99999 !important;
+}
+.w-e-menu {
+    z-index: 99999 !important;
+}
+.w-e-text-container {
+    z-index: 99999 !important;
+}
+</style>

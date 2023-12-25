@@ -1,6 +1,8 @@
 package member
 
 import (
+	"fmt"
+
 	"github.com/micro-plat/hydra"
 	"github.com/micro-plat/lib4go/types"
 )
@@ -39,4 +41,17 @@ func (m *MemberState) Get(name string, def ...string) string {
 		return types.GetString(v)
 	}
 	return types.GetStringByIndex(def, 0)
+}
+func GetSetMemberCtx(ctx hydra.IContext) {
+	v, err := GetMemberState(ctx)
+	if err != nil {
+		return
+	}
+	m, err := types.Struct2Map(v)
+	if err != nil {
+		return
+	}
+	for k, v := range m {
+		ctx.Request().SetValue(fmt.Sprintf("u_%s", k), v)
+	}
 }

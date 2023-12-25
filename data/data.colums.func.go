@@ -1,6 +1,7 @@
 package data
 
 import (
+	"fmt"
 	"sort"
 	"strings"
 
@@ -8,6 +9,13 @@ import (
 	"github.com/micro-plat/lib4go/types"
 )
 
+func (x Columns) Merge(c Columns) Columns {
+	cols := make(Columns, 0, 1)
+	cols = append(cols, x...)
+	cols = append(cols, c...)
+	return cols
+
+}
 func (Columns Columns) JoinNames(tp string, required bool, start string, end ...string) string {
 	names := make([]string, 0, 1)
 	tpColumn := Columns.GetColumns(tp)
@@ -29,6 +37,26 @@ func (Columns Columns) JoinNames(tp string, required bool, start string, end ...
 	}
 	return start + strings.Join(names, types.GetStringByIndex(end, 0)+start) + types.GetStringByIndex(end, 0)
 }
+func (c Columns) GetAllBKColumns(tp ...string) Columns {
+	tps := make([]string, 0, 1)
+	for _, t := range tp {
+		tps = append(tps, t)
+		tps = append(tps, fmt.Sprintf("b%s", t))
+		tps = append(tps, fmt.Sprintf("f%s", t))
+	}
+	currentColumns := c.GetColumns(strings.Join(tps, "-"))
+	result := make(Columns, 0, 1)
+	for _, v := range currentColumns {
+		if alias := v.GetOtherCmpntValue("alias"); alias != "" {
+			field := c.GetColumnByFieldName(alias)
+			result = append(result, field)
+			continue
+		}
+		result = append(result, v)
+	}
+	return result
+}
+
 func (Columns Columns) GetColumnByFieldName(name string) *Column {
 	for _, c := range Columns {
 		if strings.EqualFold(c.Field.Name, name) {
@@ -150,6 +178,9 @@ func (c Columns) GetAllUpdateColumns() Columns {
 func (c Columns) GetViewColumns() Columns {
 	return c.GetColumns("v")
 }
+func (c Columns) GetColumnsByTPS(tps ...string) Columns {
+	return c.GetColumns(strings.Join(tps, "-"))
+}
 
 func (c Columns) GetColumns(tp string, formName ...string) Columns {
 	cols := make(Columns, 0, 1)
@@ -181,6 +212,14 @@ func (c Columns) GetByCmpnt(cmpnt string) Columns {
 func (cs Columns) GetStaticColumns() Columns {
 	prefix := "#"
 	return cs.GetStartColumns(prefix)
+}
+func (cs Columns) HasStaticColumns() bool {
+	for _, c := range cs {
+		if md.HasStatic(c.Constraints...) {
+			return true
+		}
+	}
+	return false
 }
 func (cs Columns) GetCmpntValues(tp string) []string {
 	for _, c := range cs {

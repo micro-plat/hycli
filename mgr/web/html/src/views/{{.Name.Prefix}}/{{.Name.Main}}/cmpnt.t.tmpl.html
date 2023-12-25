@@ -2,8 +2,10 @@
 {-{- $opts:=  $table.Optrs.All.GetCompnents}-}
 {-{- if gt $opts.Len 0}-}
 <div>
-    {-{- range $x,$m:=  $opts}-}
+{-{- range $x,$m:=  $opts}-}
+   {-{- if eq false $m.HasCustomize}-}
    <{-{$m.UNQ}-} ref="cmpnt_{-{$m.UNQ}-}" @onsaved="onQuery"></{-{$m.UNQ}-}>
+   {-{- end}-}
    {-{- end}-}
 </div>
 {-{- end}-}

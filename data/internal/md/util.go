@@ -30,6 +30,10 @@ func GetFormat(tp string, cns ...string) string {
 	lst := GetConstraintByReg(cns, fmt.Sprintf(`^%s\(([^\(^\)]+)\)$`, tp))
 	return types.GetStringByIndex(lst, 0)
 }
+func HasStatic(cns ...string) bool {
+	lst := GetConstraintByReg(cns, `^*\(#([^\(^\)]+)\)$`)
+	return types.GetStringByIndex(lst, 0) != ""
+}
 func GetValue(name string, cns ...string) string {
 	lst := GetConstraintByReg(cns, fmt.Sprintf(`%s\((\w+)\)`, name))
 	return types.GetStringByIndex(lst, 0)

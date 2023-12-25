@@ -16,6 +16,11 @@ func TestRange(t *testing.T) {
 	assert.Equal(t, "100", max)
 
 }
+func TestHasStatic(t *testing.T) {
+	f := HasStatic("li(#123)")
+	assert.Equal(t, true, f)
+}
+
 func TestRange1(t *testing.T) {
 	min, max := GetRanges("range(100)")
 	assert.Equal(t, "", min)

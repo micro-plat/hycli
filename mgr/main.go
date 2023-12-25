@@ -23,6 +23,15 @@ func init() {
 						cli.BoolFlag{Name: "cover,v", Usage: `-文件已存在时自动覆盖`},
 					},
 				},
+				{
+					Name:   "crud",
+					Usage:  "创建表结构",
+					Action: api.CreateSCURDcriptByCtx,
+					Flags: []cli.Flag{
+						cli.StringFlag{Name: "table,t", Usage: `-表名称`},
+						cli.BoolFlag{Name: "cover,v", Usage: `-文件已存在时自动覆盖`},
+					},
+				},
 			},
 		},
 		cli.Command{

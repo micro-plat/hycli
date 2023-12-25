@@ -34,3 +34,4 @@
             multiQueryDateRange:[{-{- range $i,$c:= $dateRangeCmpnts}-}{label:"{-{$c.Label}-}",value:"{-{$c.Name}-}"},{-{end}-}],
             multiQueryText:[{-{- range $i,$c:= $textcmpnts}-}{label:"{-{$c.Label}-}",value:"{-{$c.Name}-}"},{-{end}-}],
             total_{-{.UNQ}-}:0,
+            note_dataList:[],

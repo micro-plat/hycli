@@ -113,12 +113,14 @@ export default {
     form.{-{$k}-} = (this.{-{f_string_trim $v "&"}-}||[]).join(",")
     {-{- else if eq true (f_string_start $v "#")}-}
     form.{-{$k}-} = fm.{-{f_string_trim $v "#"}-}
+    {-{- else if eq true (f_string_start $v "!")}-}
+    {-{- $xv:= f_string_trim $v "!"}-}
+    form.{-{$k}-} = this.$theia.user.get("{-{$xv}-}")
     {-{- else}-}
     form.{-{$k}-} = "{-{$v}-}"
     {-{- end}-}
     {-{- end}-}
     {-{- if $m.HasTag "CNFRM|DIALOG"}-}
-    // {-{- $m}-}
     this.$refs.cmpnt_{-{$m.UNQ}-}.show_{-{$m.UNQ}-}(form)
     {-{- else}-}
     this.$refs.cmpnt_{-{$m.UNQ}-}.show(form)

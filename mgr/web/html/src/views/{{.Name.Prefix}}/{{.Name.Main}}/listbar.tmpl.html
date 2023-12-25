@@ -31,14 +31,14 @@
   </el-col>
  
 
-      {-{- else if $c.HasTag "BAR|PIE|LINE"}-}
-      <!-- ChartOpts {-{$c.Tag}-} - {-{- $c.Name}-}-->
-    <el-col :span='{-{ $c.GetParam "span" "24"}-}'>
-      <{-{$c.UNQ}-} ref="chart_{-{$c.UNQ}-}" height='{-{ $c.GetParam "height" "200px"}-}' title="{-{$c.Label}-}"
-        unq="{-{$c.UNQ}-}" url="{-{$c.ReqURL}-}" type="{-{$c.Tag}-}" stack='{-{ $c.GetParam "stack" ""}-}'
-        rType='{-{ $c.GetParam "rType" ""}-}' margin='{-{ $c.GetParam "margin" "32px 0px 16px 0px"}-}'
-        showLabel='{-{ $c.GetParam "showLabel" "true"}-}' theme='{-{ $c.GetParam "theme" ""}-}'></{-{$c.UNQ}-}>
-    </el-col>
+    {-{- else if $c.HasTag "BAR|PIE|LINE"}-}
+    <!-- ChartOpts {-{$c.Tag}-} - {-{- $c.Name}-}-->
+  <el-col :span='{-{ $c.GetParam "span" "24"}-}'>
+    <{-{$c.UNQ}-} ref="chart_{-{$c.UNQ}-}" height='{-{ $c.GetParam "height" "200px"}-}' title="{-{$c.Label}-}"
+      unq="{-{$c.UNQ}-}" url="{-{$c.ReqURL}-}" type="{-{$c.Tag}-}" stack='{-{ $c.GetParam "stack" ""}-}'
+      rType='{-{ $c.GetParam "rType" ""}-}' margin='{-{ $c.GetParam "margin" "32px 0px 16px 0px"}-}'
+      showLabel='{-{ $c.GetParam "showLabel" "true"}-}' theme='{-{ $c.GetParam "theme" ""}-}'></{-{$c.UNQ}-}>
+  </el-col>
 
     
     {-{- else if $c.HasTag "tskbar"}-}
@@ -56,6 +56,12 @@
         unq="{-{$c.UNQ}-}" count='{-{ $c.GetParam "count" "10"}-}' url="{-{$c.ReqURL}-}" rows='{-{ $c.GetParam "rows" "1"}-}'  margin='{-{ $c.GetParam "margin" "8px 0px 16px 0px"}-}'
         ></{-{$c.UNQ}-}>
     </el-col>
+    {-{- else if $c.HasTag "note"}-}
+    <!-- note {-{$c.Tag}-} - {-{- $c.Name}-}-->
+   <el-col :span='{-{ $c.GetParam "span" "24"}-}'>
+     <{-{$c.UNQ}-} ref="ext_{-{$c.UNQ}-}" @query="query_note_{-{$c.UNQ}-}" :data="note_dataList" @save="save_note_{-{$c.UNQ}-}" @update="update_note_{-{$c.UNQ}-}" @del="del_note_{-{$c.UNQ}-}"  @changeSort="changeSort_note_{-{$c.UNQ}-}"></{-{$c.UNQ}-}>
+   </el-col>
+
     {-{- else}-}
    
     {-{- end}-}

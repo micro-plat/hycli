@@ -197,15 +197,23 @@
     {-{- else if $c.Cmpnt.Equal "rtext"}-}
     <!--{-{$c.Label}-} 输入控件 -->
     <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
-      <rtext :html="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" @onChange="onRtext{-{$c.Name}-}Change"></rtext>
+      <rtext :html="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" :rows="{-{$c.Style.Rows}-}" @onChange="onRtext{-{$c.Name}-}Change"></rtext>
     </el-form-item>
     {-{- else}-}
     <!--{-{$c.Label}-} 输入控件 -->
+    {-{- if gt (len $c.Desc.Raw) 200}-}
+    <el-space fill>
+      <el-alert style="margin-left:100px;padding-bottom: 0px;margin-bottom: 6px;" :closable="true">
+       <b>{-{ $c.Label}-}</b>
+        <p>{-{f_string_trim (f_string_trim $c.Desc.Raw $c.Label) ","}-}</p>
+      </el-alert>
+    </el-space>
+    {-{- end}-}
     <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
       <el-input clearable style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" {-{ if ne 0 $c.Field.Len}-} maxlength="{-{$c.Field.Len}-}" {-{end}-}
       :rows="{-{$c.Style.Rows}-}" {-{if eq true $c.Field.IsLongText}-} type="textarea" show-word-limit {-{end}-}
-        placeholder="请输入{-{$c.Desc.Raw}-}" {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-} />
-    </el-form-item>
+      {-{- if gt (len $c.Desc.Raw) 200}-}  placeholder="请输入{-{$c.Label}-}"{-{else}-} placeholder="请输入{-{$c.Desc.Raw}-}" {-{end}-}{-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-} />
+      </el-form-item>
     {-{- end }-}
     </el-col>
     {-{- end}-}

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"gitee.com/emshop/workspace/mgrserver/api/services/utils/enumutil"
 	"github.com/micro-plat/lib4go/errs"
 	"github.com/micro-plat/lib4go/types"
 )
@@ -40,7 +39,7 @@ func TransformBatchContent(fileds []string, enumsFields types.XMap, cfield strin
 			value := strings.Trim(types.GetStringByIndex(vlines, idx[0]-1), "\t")
 			//处理枚举类型数据
 			if enumsFields.Has(field) {
-				value = enumutil.GetValue(enumsFields.GetString(field), value)
+				value = GetValue(enumsFields.GetString(field), value)
 				if value == "" {
 					return nil, errs.NewError(511, fmt.Sprintf("未找到%s对应的数据", value))
 				}

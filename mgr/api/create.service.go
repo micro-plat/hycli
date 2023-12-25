@@ -24,7 +24,7 @@ func CreateServiceByCtx(c *cli.Context) (err error) {
 }
 func CreateService(mdpath string, tbs string, outpath string, cover bool) error {
 
-	logs.Log.Info("------------------生成接口文件------------------")
+	logs.Log.Info("------------------生成接口文件1------------------")
 	//转换md文件
 	otbls, err := data.Mds2Tables(mdpath)
 	if err != nil {
@@ -40,8 +40,10 @@ func CreateService(mdpath string, tbs string, outpath string, cover bool) error 
 	ntbs := data.NewTables(tbls)
 
 	data.Caches(ntbs)
+	logs.Log.Info("生成服务文件:", len(ntbs))
 	//创建服务文件
 	for _, tb := range ntbs {
+
 		if err = createService(outpath, tb, cover); err != nil {
 			return err
 		}

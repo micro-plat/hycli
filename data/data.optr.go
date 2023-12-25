@@ -12,6 +12,15 @@ import (
 
 type optParams map[string]string
 
+func (o optParams) Has(n string) bool {
+	for k := range o {
+		if k == n || "@"+n == k {
+			return true
+		}
+	}
+	return false
+}
+
 func (o optParams) Get(n string) string {
 	for k, v := range o {
 		if k == n || "@"+n == k {
@@ -42,6 +51,7 @@ func (o optParams) IsBatchCheck(k string) bool {
 // 操作信息
 type optrs struct {
 	Tag       string //
+	Customize bool
 	Name      string //link,dialog,cmpnt,tab,cnfrm,form,view
 	Cmd       string // batupdator lstbar chart
 	Label     string //修改,预览，删除
@@ -74,7 +84,9 @@ var viewOptCmd = []string{"view", "vwPg"}
 var lstatOptCmd = []string{"lstat"}
 var lstBarOptCmd = []string{"lst", "lstActn", "lstupdator"}
 var batchCheck = []string{"bcheck", "@bcheck", "&bcheck"}
-var qBarOptrCmd = []string{"export", "import", "lstbar", "batupdator", "barinsert", "batinsert", "list"}
+var qBarOptrCmd = []string{"export", "import", "lstbar", "batupdator", "barupdator", "barinsert", "batinsert", "barquery", "bardel", "list"}
+
+// var bkOptrCmd = []string{"updator", "insertor"}
 var charOptrCmd = []string{"chart"}
 var extCmptParam = []string{"add", "update", "view"}
 var extOptrsCmd = []string{"tskbar", "xbar"}
@@ -86,16 +98,17 @@ const (
 	PSN_QFORM  = "qform"
 )
 
-var addOpts = &optrs{Tag: ADD_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.add", Name: "CMPNT", ICON: "Plus", Label: "添加", Desc: "添加", RwName: "C", UNQ: defFids.Next(), index: 1}
-var queryOpts = &optrs{Tag: QUERY_TAG, URL: "", Name: "FORM", ICON: "Search", RwName: QUERY_COLUMN, Label: "查询", Desc: "查询", UNQ: defFids.Next(), index: 1}
-var detailOpts = &optrs{Tag: VIEW_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.view", Name: "CMPNT", Label: "详情", Desc: "详情", RwName: "V", UNQ: defFids.Next(), index: 1}
-var updateOpts = &optrs{Tag: UPDATE_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.edit", Name: "CMPNT", Label: "修改", Desc: "修改", RwName: "U", UNQ: defFids.Next(), index: 2}
-var delOpts = &optrs{Tag: DELETE_TAG, URL: "@/views/{@prefix}/{@main}/{@name}.cnfrm", ReqURL: "/{@mainPath}/del", Name: "CMPNT", Label: "删除", Desc: "删除", RwName: "D", IsMux: true, index: 99}
-var dialogOpts = &optrs{Tag: "DIALOG", URL: "@/views/{@prefix}/{@main}/{@name}.dialog", Name: "CMPNT", IsMux: true, index: 99}
-var cnfrmOpts = &optrs{Tag: "CNFRM", URL: "@/views/{@prefix}/{@main}/{@name}.cnfrm", Name: "CMPNT", IsMux: true, index: 99}
-var chartLinePieBarOpts = &optrs{Tag: "CHART", URL: "@/views/cmpnts/chart.base.vue", Name: "CMPNT"}
-var taskBarOpts = &optrs{Tag: "TSKBAR", URL: "@/views/cmpnts/task.bar.vue", Name: "CMPNT"}
-var xBarOpts = &optrs{Tag: "XBAR", URL: "@/views/cmpnts/xbar.vue", Name: "CMPNT"}
+var addOpts = &optrs{Tag: ADD_TAG, Customize: false, URL: "@/views/{@prefix}/{@main}/{@name}.add", Name: "CMPNT", ICON: "Plus", Label: "添加", Desc: "添加", RwName: "C", UNQ: defFids.Next(), index: 1}
+var queryOpts = &optrs{Tag: QUERY_TAG, Customize: false, URL: "", Name: "FORM", ICON: "Search", RwName: QUERY_COLUMN, Label: "查询", Desc: "查询", UNQ: defFids.Next(), index: 1}
+var detailOpts = &optrs{Tag: VIEW_TAG, Customize: false, URL: "@/views/{@prefix}/{@main}/{@name}.view", Name: "CMPNT", Label: "详情", Desc: "详情", RwName: "V", UNQ: defFids.Next(), index: 1}
+var updateOpts = &optrs{Tag: UPDATE_TAG, Customize: false, URL: "@/views/{@prefix}/{@main}/{@name}.edit", Name: "CMPNT", Label: "修改", Desc: "修改", RwName: "U", UNQ: defFids.Next(), index: 2}
+var delOpts = &optrs{Tag: DELETE_TAG, Customize: false, URL: "@/views/{@prefix}/{@main}/{@name}.cnfrm", ReqURL: "/{@mainPath}/del", Name: "CMPNT", Label: "删除", Desc: "删除", RwName: "D", IsMux: true, index: 99}
+var dialogOpts = &optrs{Tag: "DIALOG", Customize: false, URL: "@/views/{@prefix}/{@main}/{@name}.dialog", Name: "CMPNT", IsMux: true, index: 99}
+var cnfrmOpts = &optrs{Tag: "CNFRM", Customize: false, URL: "@/views/{@prefix}/{@main}/{@name}.cnfrm", Name: "CMPNT", IsMux: true, index: 99}
+var chartLinePieBarOpts = &optrs{Tag: "CHART", Customize: true, URL: "@/views/cmpnts/chart.base.vue", Name: "CMPNT"}
+var taskBarOpts = &optrs{Tag: "TSKBAR", Customize: true, URL: "@/views/cmpnts/task.bar.vue", Name: "CMPNT"}
+var xBarOpts = &optrs{Tag: "XBAR", Customize: true, URL: "@/views/cmpnts/xbar.vue", Name: "CMPNT"}
+var noteOpts = &optrs{Tag: "note", Customize: true, URL: "@/views/cmpnts/note.vue", Name: "CMPNT"}
 
 func (s *optrs) Get(tableName string) *optrs {
 	nopts := *s
@@ -117,9 +130,6 @@ func (s *optrs) NeedBatchCheck() bool {
 		}
 	}
 	return false
-}
-func (s *optrs) GetParams(p string) string {
-	return s.Params.Get(p)
 }
 
 func (s *optrs) String() string {
@@ -144,18 +154,16 @@ func (s *optrs) HasTag(bb string) bool {
 	}
 	return false
 }
+func (s *optrs) HasCustomize() bool {
+	return s.Customize
+}
 func (s *optrs) UNQKey() string {
 	return fmt.Sprintf("%s/%s/%s/%s/%s/%s/%s",
 		s.Table, s.ReqURL, s.URL,
 		s.Name, s.RwName, s.FwName,
 		s.Cmd)
 }
-func (t *optrs) NewScene(c Columns) *Scene {
-	return &Scene{
-		Columns: c,
-		FormUNQ: t.UNQ,
-	}
-}
+
 func (optr *optrs) IsMutilValue(name string, cs Columns) bool {
 	if optr.Params.IsBatchCheck(name) {
 		return true
@@ -187,9 +195,25 @@ func (s optrslst) Get(tag string) (*optrs, bool) {
 	}
 	return nil, false
 }
+func (s optrslst) GetOne(tag string) *optrs {
+	for _, v := range s {
+		if strings.EqualFold(v.Tag, tag) {
+			return v
+		}
+	}
+	return nil
+}
 func (s optrslst) FindName(name string) bool {
 	for _, v := range s {
 		if strings.EqualFold(v.Name, name) {
+			return true
+		}
+	}
+	return false
+}
+func (s optrslst) HasParam(name string) bool {
+	for _, v := range s {
+		if v.HasParam(name) {
 			return true
 		}
 	}
@@ -360,6 +384,11 @@ func createOptrs(tableName string, extInfo string, tag string) []*optrs {
 			opt.Tag = name
 			opt.ReqURL = types.GetStringByIndex(lst, 2)
 			opt.Table = tableName
+		case "NOTE":
+			opt = *noteOpts
+			opt.Tag = name
+			opt.ReqURL = types.GetStringByIndex(lst, 2)
+			opt.Table = tableName
 		case "LST", "TAB":
 			opt = optrs{
 				Tag:   tag,
@@ -370,11 +399,12 @@ func createOptrs(tableName string, extInfo string, tag string) []*optrs {
 			}
 		default:
 			opt = optrs{
-				Tag:   tag,
-				Name:  name,
-				URL:   types.GetStringByIndex(lst, 2),
-				index: 99,
-				Table: tableName,
+				Tag:    tag,
+				Name:   name,
+				URL:    types.GetStringByIndex(lst, 2),
+				ReqURL: types.GetStringByIndex(lst, 2),
+				index:  99,
+				Table:  tableName,
 			}
 		}
 

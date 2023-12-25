@@ -40,7 +40,7 @@
         {-{- else if $c.Cmpnt.Equal "img"}-}
         <el-table-column {-{if ne "" $show }-} v-if="{-{$show}-}" {-{end}-} {-{if ne "" $c.Style.ListWidth}-} min-width="{-{$c.Style.ListWidth}-}" {-{end}-} align="{-{$align}-}" label="{-{$c.Desc.Name}-}">
             <template #default="scope">
-                <el-image style="width:48px"  :src="scope.row.{-{$c.Name}-}" preview-teleported :fit="contain"  :preview-src-list="[scope.row.{-{$c.Name}-}]"
+                <el-image v-for="v in scope.row.{-{$c.Name}-}.split(',')" :key="v" style="width:64px"  :src="v" preview-teleported :fit="contain"  :preview-src-list="scope.row.{-{$c.Name}-}.split(',')"
                >
                     <template #error>
                         <div class="image-slot">
@@ -88,10 +88,11 @@
         {-{- end }-}
         {-{- end }-}
 
-        <!-- 甘特图 -->
+      
         {-{- range $i,$c:= $table.Optrs.BarOpts.GetByCmptName "list" }-}
-        {-{- $gantt := $c.GetParams "gantt"}-}
-        {-{- $ganttNoCount := $c.GetParams "ganttNoCount"}-}
+        {-{- if $c.HasParam "gantt"}-}
+        {-{- $gantt := $c.GetParam "gantt"}-}
+        {-{- $ganttNoCount := $c.GetParam "ganttNoCount"}-}
         <el-table-column :width="{-{f_string_get $ganttNoCount 20}-}*20+20" align="center" label="甘特图">
         <template #header>
             {-{- $ganntFields :=$table.Columns.GetColumns $gantt}-}
@@ -120,6 +121,7 @@
             {-{- end}-}]"></gantt>
         </template>
         </el-table-column>
+        {-{- end}-}
         {-{- end}-}
         {-{- template "opts.tmpl.html" $xtable}-}
     </el-table>

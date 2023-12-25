@@ -14,17 +14,19 @@ from {-{.Name.Raw}-} t
 where
 {-{- range $i,$v := $QColumns}-}
 {-{- if or ($v.Field.LikeQuery) ($v.Cmpnt.Equal "input")}-}
-	?t.{-{$v.Name}-}
+?t.{-{$v.Name}-}
 {-{- else if $v.Cmpnt.Equal "daterange"}-}
-	and ((@start_{-{$v.Name}-}='' and @end_{-{$v.Name}-}='') or (t.{-{$v.Name}-} >=  if(@start_{-{$v.Name}-}='', t.{-{$v.Name}-},@start_{-{$v.Name}-})
-	and t.{-{$v.Name}-} <  date_add(if(@end_{-{$v.Name}-}='',t.{-{$v.Name}-},@end_{-{$v.Name}-}), interval 1 day)))
+and ((@start_{-{$v.Name}-}='' and @end_{-{$v.Name}-}='') or (t.{-{$v.Name}-} >=  if(@start_{-{$v.Name}-}='', t.{-{$v.Name}-},@start_{-{$v.Name}-})
+and t.{-{$v.Name}-} <  date_add(if(@end_{-{$v.Name}-}='',t.{-{$v.Name}-},@end_{-{$v.Name}-}), interval 1 day)))
 {-{- else if $v.Cmpnt.Equal "date"}-}
-	and ((@start_{-{$v.Name}-}='' and @end_{-{$v.Name}-}='') or (t.{-{$v.Name}-} >=  if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-})
-	and t.{-{$v.Name}-} <  date_add(if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-}),interval 1 day)))	
+and ((@start_{-{$v.Name}-}='' and @end_{-{$v.Name}-}='') or (t.{-{$v.Name}-} >=  if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-})
+and t.{-{$v.Name}-} <  date_add(if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-}),interval 1 day)))	
 {-{- else if $v.Cmpnt.StartWith "multi"}-}
-	and (if(@{-{$v.Name}-} = '',NULL,@{-{$v.Name}-}) is null or  FIND_IN_SET(t.{-{$v.Name}-},@{-{$v.Name}-}))
+and (if(@{-{$v.Name}-} = '',NULL,@{-{$v.Name}-}) is null or  FIND_IN_SET(t.{-{$v.Name}-},@{-{$v.Name}-}))
+{-{- else if $v.Cmpnt.StartWith "ddmenu"}-}
+and (if(@{-{$v.Name}-} = '',NULL,@{-{$v.Name}-}) is null or  FIND_IN_SET(@{-{$v.Name}-},t.{-{$v.Name}-}))
 {-{- else}-}
-	&t.{-{$v.Name}-}
+&t.{-{$v.Name}-}
 {-{- end}-}
 {-{- end}-}`
 
@@ -146,32 +148,35 @@ where
 {-{- end}-}`
 {-{- end}-}
 
-{-{- $updator :=  $table.Optrs.All.GetByCmptName "batupdator-lstupdator"}-}
+
+{-{- $updator :=  $table.Optrs.All.GetByCmptName "batupdator-lstupdator-barupdator"}-}
 {-{- if gt $updator.Len 0}-}
 {-{- range $i,$c := $updator}-}
 {-{- $fds := f_string_contact $c.RwName "-" (f_string_contact "b" $c.RwName)}-}
-{-{- $fields :=  $table.Columns.GetColumns $fds}-}
+{-{- $xtable :=f_table_find_by_name $c.Table}-}
+{-{- $fields :=  $xtable.Columns.GetColumns $fds}-}
 
-//update{-{$table.Name.CName}-} 修改{-{$table.Desc}-}数据
+//pdator{-{$table.Name.CName}-}{-{$c.ReqURL}-} {-{$c.Label}-}
 var updator{-{$table.Name.CName}-}{-{$c.ReqURL}-} = `
 update {-{$table.Name.Raw}-} t set 
-{-{- range $i,$v := $fields}-}
+	{-{- range $i,$v := $fields}-}
 	{-{- $name := $v.GetOtherCmpntValue "alias" -}-}
 	{-{- if eq "" $name}-}
 	{-{- $name = $v.Name}-}
 	{-{- end}-}
-	t.{-{$name}-} = if(@{-{$name}-}='',{-{if ne "" $v.Field.DefaultValue}-} {-{$v.Field.DefaultValue}-} {-{else}-}t.{-{$name}-}{-{end}-},@{-{$v.Name}-}){-{if lt $i $fields.SLen}-},{-{end}-}
-{-{- end}-}
+	t.{-{$name}-} = if(@{-{$v.Name}-}='',{-{if ne "" $v.Field.DefaultValue}-} {-{$v.Field.DefaultValue}-} {-{else}-}t.{-{$name}-}{-{end}-},@{-{$v.Name}-}){-{if lt $i $fields.SLen}-},{-{end}-}
+	{-{- end}-}
 where
-{-{- range $i,$v :=  $table.Columns.GetColumns $c.FwName -}-}
+	{-{- $fds := f_string_contact $c.FwName "-" (f_string_contact "b" $c.FwName)}-}
+	{-{- range $i,$v :=  $xtable.Columns.GetColumns $fds -}-}
 	{-{- $name := $v.GetOtherCmpntValue "alias" -}-}
 	{-{- if eq "" $name}-}
 	{-{- $name = $v.Name}-}
 	{-{- end}-}
-	{-{- if  $c.IsMutilValue $name $table.Columns}-}
+	{-{- if  $c.IsMutilValue $name $xtable.Columns}-}
 	and FIND_IN_SET(t.{-{$name}-},@{-{$v.Name}-})
 	{-{- else}-}
-	&{-{$v.Name}-}
+	&t.{-{$name}-} = @{-{$v.Name}-}
 	{-{- end}-}
 {-{- end}-}`
 {-{- end}-}
@@ -182,9 +187,10 @@ where
 {-{- range $i,$c := $barinsert}-}
 {-{- $fds := f_string_contact $c.RwName "-" (f_string_contact "b" $c.RwName)}-}
 {-{- $fds = f_string_contact $fds "-" (f_string_contact "f" $c.RwName)}-}
-{-{- $Columns:=$table.Columns.GetValidColumns.GetColumns $fds}-}
+{-{- $xtable :=f_table_find_by_name $c.Table}-}
+{-{- $Columns:=$xtable.Columns.GetValidColumns.GetColumns $fds}-}
 
-// barinsert{-{$table.Name.CName}-} 保存{-{.Desc}-}数据
+//barinsert{-{$c.ReqURL|f_string_2cname}-}{-{$table.Name.CName}-} {-{$c.Label}-}
 var barinsert{-{$c.ReqURL|f_string_2cname}-}{-{$table.Name.CName}-} = `
 insert into {-{$table.Name.Raw}-}
 (
@@ -222,4 +228,86 @@ insert {-{$table.Name.Raw}-} (
 {-{- end}-}
 )`
 {-{- end}-}
+{-{- end}-}
+
+//---------------------------------barquery----------------------------------------------------------
+
+{-{- $barquery :=  $table.Optrs.All.GetByCmptName  "barquery"}-}
+{-{- if gt $barquery.Len 0}-}
+{-{- range $i,$c := $barquery}-}
+{-{- $QColumns:= ($table.Columns.GetAllBKColumns $c.FwName)}-}
+{-{- $LColumns:= ($table.Columns.GetColumns $c.RwName)}-}
+{-{- $orders := ($table.Columns.GetColumns $c.RwName).GetColumns "ord"}-}
+//barQuery{-{$table.Name.CName}-}{-{$c.ReqURL}-}ListCount 获取{-{$c.Label}-}列表条数
+var barQuery{-{$table.Name.CName}-}{-{$c.ReqURL}-}ListCount = `
+select 
+	count(1)
+from {-{$table.Name.Raw}-} t
+where
+{-{- range $i,$v := $QColumns}-}
+{-{- if or ($v.Field.LikeQuery) ($v.Cmpnt.Equal "input")}-}
+?t.{-{$v.Name}-}
+{-{- else if $v.Cmpnt.Equal "daterange"}-}
+and ((@start_{-{$v.Name}-}='' and @end_{-{$v.Name}-}='') or (t.{-{$v.Name}-} >=  if(@start_{-{$v.Name}-}='', t.{-{$v.Name}-},@start_{-{$v.Name}-})
+and t.{-{$v.Name}-} <  date_add(if(@end_{-{$v.Name}-}='',t.{-{$v.Name}-},@end_{-{$v.Name}-}), interval 1 day)))
+{-{- else if $v.Cmpnt.Equal "date"}-}
+and ((@start_{-{$v.Name}-}='' and @end_{-{$v.Name}-}='') or (t.{-{$v.Name}-} >=  if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-})
+and t.{-{$v.Name}-} <  date_add(if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-}),interval 1 day)))	
+{-{- else if $v.Cmpnt.StartWith "multi"}-}
+and (if(@{-{$v.Name}-} = '',NULL,@{-{$v.Name}-}) is null or  FIND_IN_SET(t.{-{$v.Name}-},@{-{$v.Name}-}))
+{-{- else if $v.Cmpnt.StartWith "ddmenu"}-}
+and (if(@{-{$v.Name}-} = '',NULL,@{-{$v.Name}-}) is null or  FIND_IN_SET(@{-{$v.Name}-},t.{-{$v.Name}-}))
+{-{- else}-}
+&t.{-{$v.Name}-}
+{-{- end}-}
+{-{- end}-}`
+
+//barQuery{-{$table.Name.CName}-}{-{$c.ReqURL}-}List 查询{-{.Desc}-}列表数据
+var barQuery{-{$table.Name.CName}-}{-{$c.ReqURL}-}List =[]string{ `
+select
+	{-{- range $i,$v :=  $LColumns}-}
+	t.{-{$v.Name}-}{-{if lt $i $LColumns.SLen}-},{-{end}-}
+	{-{- end}-}
+from {-{$table.Name.Raw}-} t
+where
+	{-{- range $i,$v := $QColumns}-}
+	{-{- if or ($v.Field.LikeQuery) ($v.Cmpnt.Equal "input")}-}
+	?t.{-{$v.Name}-}
+	{-{- else if $v.Cmpnt.Equal "daterange"}-}
+	and ((@start_{-{$v.Name}-}='' and @end_{-{$v.Name}-}='') or (t.{-{$v.Name}-} >=  if(@start_{-{$v.Name}-}='', t.{-{$v.Name}-},@start_{-{$v.Name}-})
+	and t.{-{$v.Name}-} <  date_add(if(@end_{-{$v.Name}-}='',t.{-{$v.Name}-},@end_{-{$v.Name}-}), interval 1 day)))
+	{-{- else if $v.Cmpnt.Equal "date"}-}
+	and ((@start_{-{$v.Name}-}='' and @end_{-{$v.Name}-}='') or (t.{-{$v.Name}-} >=  if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-})
+	and t.{-{$v.Name}-} <  date_add(if(@{-{$v.Name}-}='',t.{-{$v.Name}-},@{-{$v.Name}-}),interval 1 day)))	
+	{-{- else if $v.Cmpnt.StartWith "multi"}-}
+	and (if(@{-{$v.Name}-} = '',NULL,@{-{$v.Name}-}) is null or  FIND_IN_SET(t.{-{$v.Name}-},@{-{$v.Name}-}))
+	{-{- else if $v.Cmpnt.StartWith "ddmenu"}-}
+	and (if(@{-{$v.Name}-} = '',NULL,@{-{$v.Name}-}) is null or  FIND_IN_SET(@{-{$v.Name}-},t.{-{$v.Name}-}))
+	{-{- else}-}
+	&t.{-{$v.Name}-}
+	{-{- end}-}
+	{-{- end}-}
+order by {-{ range $i,$m := $orders}-}
+	t.{-{$m.Name}-}{-{if eq "asc" $m.Cmpnt.Format}-} asc {-{else}-} desc {-{end}-},
+{-{- end}-}
+{-{- range $i,$v := $table.Columns.GetPKColumns.GetValidColumns}-}
+	t.{-{$v.Name}-} desc
+{-{- end}-}
+limit @ps offset @offset`,
+}
+{-{- end}-}
+{-{- end}-}
+
+
+//---------------------------------bardel----------------------------------------------------------
+{-{- $bardel :=  $table.Optrs.All.GetByCmptName  "bardel"}-}
+{-{- range $i,$c := $bardel}-}
+{-{- $QColumns:= ($table.Columns.GetAllBKColumns $c.FwName)}-}
+//delete{-{$c.ReqURL|f_string_2cname}-}{-{$table.Name.CName}-} {-{$c.Label}-}
+var delete{-{$c.ReqURL|f_string_2cname}-}{-{$table.Name.CName}-} = `
+delete from {-{$table.Name.Raw}-}
+where 
+{-{- range $i,$v := $QColumns}-}
+	&{-{$v.Name}-}
+{-{- end}-}`
 {-{- end}-}

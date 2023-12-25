@@ -27,6 +27,13 @@ queryData_{-{$table.UNQ}-}(mform = {},nform={}){
     }
     {-{- else if  $c.Cmpnt.StartWith "multi"}-}
       queryForm.{-{$c.Name}-} = (queryForm.{-{$c.Name}-}||[]).join(",")
+    {-{- else if eq "cascader" $c.Cmpnt.Type  }-}
+    let {-{$c.Name}-} = []
+    let {-{$c.Name}-}Nodes = this.$refs.cascader_{-{$c.UNQ}-}.getCheckedNodes() || []
+    {-{$c.Name}-}Nodes.forEach(v => {
+      {-{$c.Name}-}.push(v.value)
+    })
+    queryForm.{-{$c.Name}-} = {-{$c.Name}-}.join(",")
     {-{- end}-}
     {-{- end}-}
 
@@ -102,13 +109,15 @@ queryData_{-{$table.UNQ}-}(mform = {},nform={}){
   resetItemData_{-{$table.UNQ}-}(that,lst){
     lst.forEach(item => {
       item.__raw = Object.assign({}, item)
-    {-{- range $i,$c := $LLERows}-}
+    {-{- range $i,$c := $LLERows.GetEnumColumns}-}
     {-{- if $c.Cmpnt.Equal "tree"}-}
     item.{-{$c.Name}-}_label = that.$theia.enum.getTreeNames("{-{$c.Enum.EnumType}-}",item.{-{$c.Name}-})
     {-{- else }-}
     item.{-{$c.Name}-}_label = that.$theia.enum.getName("{-{$c.Enum.EnumType}-}",item.{-{$c.Name}-})
     {-{- end}-}
-    
+    {-{- end}-}
+
+    {-{- range $i,$c := $LLERows}-}
     {-{- if $c.Cmpnt.Equal "switch"}-}
     item.{-{$c.Name}-}_switch = item.{-{$c.Name}-} == 0
     {-{- else if $c.Cmpnt.Equal "progress"}-}
@@ -208,5 +217,5 @@ queryData_{-{$table.UNQ}-}(mform = {},nform={}){
       })
     },
      {-{- end}-}
- {-{- $st := $table.NewSceneByList $table.Columns.GetAll}-}
+ {-{- $st := $table.NewScene $table.Columns.GetFontQueryColumns}-}
  {-{- template "enum.tmpl.js" $st }-}

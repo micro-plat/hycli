@@ -18,7 +18,7 @@
     :close-on-click-modal="false"
     :before-close="hide"
   >
-  <el-form :model="form"  ref="form" :rules="rules">
+  <el-form :model="form"  ref="form" :rules="rules_{-{$table.UNQ}-}">
     {-{- template "add.tmpl.html" $cColumns}-}
     </el-form>
     <template #footer>
@@ -51,7 +51,23 @@ export default {
         {-{- end  }-}
         uploadPath:this.$theia.env.join("/file/upload"),
       },
-    {-{- template "add.tmpl.js" $cColumns }-}
+    {-{- $st := $table.NewScene $cColumns}-}
+    {-{- template "rules.tmpl.js" $st }-}
+    form:{
+        {-{- range $i,$c := $cColumns}-}
+        {-{- if $c.Cmpnt.Equal "switch"}-}
+        {-{$c.Name}-}_switch:false,
+        {-{- else if $c.Cmpnt.StartWith "multi"}-}
+        {-{$c.Name}-}:[],
+        {-{- else}-}
+        {-{$c.Name}-}:"",
+        {-{- end}-}
+        {-{- end}-}
+    },
+    {-{- range $i,$c := $cColumns.GetEnumColumns}-}
+    {-{.Name}-}List:[],
+    {-{- end}-}
+    }
   },
   methods: {
     show(fm = {}) {
@@ -59,7 +75,7 @@ export default {
       this.conf.visible = true;
       this.loadEnums_{-{$table.UNQ}-}()
       let local = {}
-      {-{- $read2window := $addOpts.GetParams "read2window" -}-}
+      {-{- $read2window := $addOpts.GetParam "read2window" -}-}
       {-{- if ne "" $read2window}-}
         //将数据保存到window缓存中
       local = window.{-{$read2window}-} || {}
@@ -114,7 +130,7 @@ export default {
         {-{- end }-}
         {-{- end}-}
         {-{- $c:= $table.Optrs.BarOpts.GetAddOpt }-}
-        {-{- $save2window := $c.GetParams "save2window" -}-}
+        {-{- $save2window := $c.GetParam "save2window" -}-}
         {-{- if ne "" $save2window}-}
         //将数据保存到window缓存中
         window.{-{$save2window}-} = postForm
@@ -145,8 +161,9 @@ export default {
       this.$refs.form.resetFields();
     },
     {-{- range $i,$c:= $cColumns.GetByCmpnt "rtext"}-}
-    onRtext{-{$c.Name}-}Change(text){
+    onRtext{-{$c.Name}-}Change(text,urls){
       this.{-{$c.Ext.FormName}-}.{-{$c.Name}-} = text
+      this.{-{$c.Ext.FormName}-}.{-{$c.Name}-}_urls = (urls||[]).join(",")
     },
     {-{- end}-}
     onUploadSuccess(response){

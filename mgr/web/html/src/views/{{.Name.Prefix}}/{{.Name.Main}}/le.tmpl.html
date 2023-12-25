@@ -3,9 +3,10 @@
     <template #default="view">
         <el-row :gutter="24">
             {-{- range $i,$c:=$lecols}-}
+            {-{- $span := "7"}-}
             <el-col :span="5" class="text-right" style="min-height:26px">{-{ $c.Label }-}:</el-col>
             {-{- if $c.Cmpnt.Equal "img"}-}
-            <el-col :span="7" style="min-height:26px">
+            <el-col :span="{-{$span}-}" style="min-height:26px">
                 <el-image style="width:48px" :src="view.row.le_{-{$c.Name}-}" preview-teleported :fit="contain"  :preview-src-list="[view.row.le_{-{$c.Name}-}]">
                     <template #error>
                         <div class="image-slot">
@@ -15,19 +16,21 @@
                 </el-image>
             </el-col>
             {-{- else if $c.Enum.IsEnum}-}
-            <el-col :span="7" v-text="view.row.{-{$c.Name}-}_label" style="min-height:26px"
+            <el-col :span="{-{$span}-}" v-text="view.row.{-{$c.Name}-}_label" style="min-height:26px"
               {-{if $c.Style.HasBgColor}-}:class="$js.page.colorful(view.row.{-{$c.Name}-},'{-{$c.Name}-}')" {-{end}-}></el-col>
             {-{- else if $c.Cmpnt.Equal "link"}-}
-            <el-col :span="7" style="min-height:26px"
+            <el-col :span="{-{$span}-}" style="min-height:26px"
             {-{if $c.Style.HasBgColor}-}:class="$js.page.colorful(view.row.{-{$c.Name}-},'{-{$c.Name}-}')" {-{end}-}>
                 <el-link target="_blank" type="primary" :href="view.row.le_{-{$c.Name}-}" v-if="view.row.le_{-{$c.Name}-}" :title="view.row.le_{-{$c.Name}-}">查看</el-link>
             </el-col>
             {-{- else if $c.Cmpnt.Equal "cut"}-}
-            <el-col :span="7" v-text="view.row.le_{-{$c.Name}-}" style="min-height:26px"></el-col>
+            <el-col :span="{-{$span}-}" v-text="view.row.le_{-{$c.Name}-}" style="min-height:26px"></el-col>
             {-{- else if $c.Cmpnt.Equal "icon"}-}
-            <el-col :span="7"  style="min-height:26px"><i :class="view.row.le_{-{$c.Name}-}"></i></el-col>
+            <el-col :span="{-{$span}-}"  style="min-height:26px"><i :class="view.row.le_{-{$c.Name}-}"></i></el-col>
+            {-{- else if gt $c.Field.Len 32}-}
+            <el-col :span="{-{$span}-}" v-html="view.row.le_{-{$c.Name}-}||'-'" style="min-height:26px" {-{if $c.Style.HasBgColor}-}:class="$js.page.colorful(view.{-{$c.Name}-},'{-{$c.Name}-}')" {-{end}-}></el-col>
             {-{- else}-}
-            <el-col :span="7" v-text="view.row.le_{-{$c.Name}-}" style="min-height:26px"></el-col>
+            <el-col :span="{-{$span}-}" v-text="view.row.le_{-{$c.Name}-}" style="min-height:26px" {-{if $c.Style.HasBgColor}-}:class="$js.page.colorful(view.{-{$c.Name}-},'{-{$c.Name}-}')" {-{end}-}></el-col>
             {-{- end }-}
             {-{- end }-}
         </el-row>

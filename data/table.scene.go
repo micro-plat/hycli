@@ -2,18 +2,24 @@ package data
 
 type Scene struct {
 	Columns Columns
-	FormUNQ string
+	UNQ     string
 }
 
 func (t *Table) NewScene(c Columns) *Scene {
 	return &Scene{
 		Columns: c,
-		FormUNQ: t.UNQ,
+		UNQ:     t.UNQ,
 	}
 }
-func (t *Table) NewSceneByList(c Columns) *Scene {
+func (c Columns) NewScene(unq string) *Scene {
 	return &Scene{
 		Columns: c,
-		FormUNQ: t.UNQ,
+		UNQ:     unq,
+	}
+}
+func (t *optrs) NewScene(c Columns) *Scene {
+	return &Scene{
+		Columns: c,
+		UNQ:     t.UNQ,
 	}
 }

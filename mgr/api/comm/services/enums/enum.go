@@ -8,7 +8,8 @@ import (
 	"github.com/micro-plat/hydra"
 	"github.com/micro-plat/lib4go/errs"
 	"github.com/micro-plat/lib4go/types"
-	"{-{$table.PkgName}-}/services/utils/enumutil"
+	"{-{$table.PkgName}-}/services/utils"
+	"{-{$table.PkgName}-}/modules/biz/member"
 )
 
 // EnumsHandler 获取枚举处理服务
@@ -28,6 +29,7 @@ func (u *EnumsHandler) QueryHandle(ctx hydra.IContext) (r interface{}) {
 	ctx.Log().Info("1.查询数据列表",ctx.Request().GetString("type"))
 	sqls := getSQLs(ctx.Request().GetString("type"))
 	list := make(types.XMaps, 0, 1)
+	member.GetSetMemberCtx(ctx)
 	for _, sql := range sqls {
 		items, err := hydra.C.DB().GetRegularDB().Query(sql, ctx.Request().GetMap())
 		if err != nil {
@@ -35,7 +37,7 @@ func (u *EnumsHandler) QueryHandle(ctx hydra.IContext) (r interface{}) {
 		}
 		list = append(list, items...)
 	}
-	enumutil.Append(list)
+	utils.Append(list)
 	ctx.Log().Info("2.返回结果")
 	return list
 }
@@ -50,5 +52,5 @@ func (u *EnumsHandler) load() {
 		items, _ := hydra.C.DB().GetRegularDB().Query(sql, map[string]interface{}{})
 		list = append(list, items...)
 	}
-	enumutil.Append(list)
+	utils.Append(list)
 }

@@ -71,6 +71,7 @@ methods: {
   ganttChange(id) {
       this.ganttIdx = id
     },
+  {-{- template "cmpnt.mth.tmpl.js" $table }-}
   {-{- template "list.tmpl.js" $tbs }-}
   handleSizeChange(ps){
     this.form_{-{ $table.UNQ }-}.ps = ps

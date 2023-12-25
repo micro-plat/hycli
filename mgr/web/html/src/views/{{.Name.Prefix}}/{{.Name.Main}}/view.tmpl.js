@@ -2,40 +2,39 @@
 {-{- $vcols :=  $table.Columns.GetViewColumns}-}
 {-{- $viewOpts :=$table.Optrs.ViewOpts}-}
  show(form) {
-    {-{- $titles := $table.Columns.GetColumns "vwtitle" }-}
-    {-{- if gt $titles.Len 0}-}
+    {-{- $titles := $table.Columns.GetColumns "@title" }-}
+    {-{- if gt $titles.Len 0 }-}
     this.title = form.{-{$titles.First.Name}-}||this.title
     {-{- end}-}
     this.conf.visible = true
     this.form = form
     {-{- range $i,$c:= $viewOpts}-}
-      {-{- if $c.Equal "TAB|LST"}-}
-      //{-{ $c.Label}-}查询
-      let nform_{-{$c.UNQ}-} = {}
-      {-{- $ct:=  $c.GetAssociatedTable true}-}
-      {-{- $os :=  $c.GetParamsByAtPrefix }-}
-      {-{- range $k,$v := $os}-}
-      nform_{-{$c.UNQ}-}.{-{$k}-} =this.$route.params["{-{$k}-}"]|| "{-{$v}-}"
-      {-{- end}-}
-      this.queryData_{-{$ct.UNQ}-}(form,nform_{-{$c.UNQ}-})
-      {-{- end}-}
-     {-{- end}-}
-  
+    {-{- if $c.Equal "TAB|LST"}-}
+    //{-{ $c.Label}-}查询
+    let nform_{-{$c.UNQ}-} = {}
+    {-{- $ct:=  $c.GetAssociatedTable true}-}
+    {-{- $os :=  $c.GetParamsByAtPrefix }-}
+    {-{- range $k,$v := $os}-}
+    nform_{-{$c.UNQ}-}.{-{$k}-} =this.$route.params["{-{$k}-}"]|| "{-{$v}-}"
+    {-{- end}-}
+    this.queryData_{-{$ct.UNQ}-}(form,nform_{-{$c.UNQ}-})
+    {-{- end}-}
+    {-{- end}-}
    let that = this;
-    this.$theia.http
+   this.$theia.http
       .get("/{-{.Name.MainPath|lower}-}",form)
       .then((res) => {
         let item = Object.assign({}, res)
-    {-{- range $i,$c := $vcols }-}
+      {-{- range $i,$c := $vcols }-}
       {-{- if $c.Enum.IsEnum}-}
         item.{-{$c.Name}-}_label = that.$theia.enum.getName("{-{$c.Enum.EnumType}-}",item.{-{$c.Name}-})
       {-{- end }-}
       {-{- if $c.Cmpnt.Equal "switch"}-}
         item.{-{$c.Name}-}_switch = item.{-{$c.Name}-} == 0
       {-{- end}-}
-    {-{- end}-}
+      {-{- end}-}
     
-    {-{- range $i,$c := $vcols}-}
+      {-{- range $i,$c := $vcols}-}
         {-{- if and ($c.Cmpnt.HasFormat) ($c.Field.IsDate)}-}
         item.{-{$c.Name}-} = that.$theia.str.dateFormat(item.{-{$c.Name}-},'{-{$c.Cmpnt.Format}-}')
       {-{- else if and ($c.Cmpnt.HasFormat) ($c.Field.IsNumber)}-}
@@ -52,7 +51,6 @@
         that.conf.stepActive_{-{$m.UNQ}-} = that.getStepActive_{-{$m.UNQ}-}(res)
       {-{- end}-}
         that.view = item
-            
       })
       .catch((res) => {
         let code = res.response.status;
@@ -69,7 +67,7 @@
       {-{- end}-}
       that.$refs.view_{-{$m.UNQ}-}.show(query)
     },
-    {-{- end}-}
+  {-{- end}-}
 
  {-{- $stepOpts:= $viewOpts.GetByName "step"}-}
  {-{- if gt $stepOpts.Len 0}-}

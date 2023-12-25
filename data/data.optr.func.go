@@ -96,7 +96,10 @@ func (opts optrslst) GetByTag(tag string) optrslst {
 func (opts *optrs) GetParamsByAtPrefix() map[string]string {
 	outs := make(map[string]string)
 	for k, v := range opts.Params {
-		if !strings.EqualFold(k, "@showInView") && strings.HasPrefix(k, "@") {
+		if strings.EqualFold(k, "@showInView") {
+			continue
+		}
+		if strings.HasPrefix(k, "@") {
 			outs[strings.Trim(k, "@")] = v
 		}
 	}
@@ -112,11 +115,11 @@ func (opts *optrs) GetEventByAtPrefix() map[string]string {
 	return outs
 }
 
-func (opt *optrs) GetParam(name string, def string) string {
+func (opt *optrs) GetParam(name string, def ...string) string {
 	if v, ok := opt.Params[name]; ok {
 		return v
 	}
-	return def
+	return types.GetStringByIndex(def, 0)
 }
 func (opt *optrs) HasParam(name string) bool {
 	names := strings.Split(name, "|")

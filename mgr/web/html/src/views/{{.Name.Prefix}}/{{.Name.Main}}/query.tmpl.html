@@ -83,6 +83,25 @@
         {-{- end}-}
 
         {-{- range $i,$c:= $qcols}-}
+        {-{- if $c.Cmpnt.Equal "cascader"}-}
+        <!--{-{$c.Label}-} 选择树 -->
+        <el-form-item  label="{-{$c.Label}-}">
+          {-{- $empt:=""}-}
+          {-{- $Format := $c.Cmpnt.Format}-}
+          {-{- $multiple :=""}-}
+          {-{- if eq "multiple" $Format }-}
+          {-{- $multiple = "multiple:true,"}-}
+          {-{- end}-}
+           <el-cascader ref="cascader_{-{$c.UNQ}-}" style="width: 150px"
+           v-model="form_{-{$table.UNQ}-}.{-{ $c.Name }-}" 
+           placeholder="请选择{-{$c.Label}-}"
+           collapse-tags  collapse-tags-tooltip  clearable   :options="{-{$c.Name}-}List"
+           :props="{ {-{$multiple}-} children: 'children', label: 'name' }" />
+       </el-form-item>
+       {-{- end}-}
+       {-{- end}-}
+
+        {-{- range $i,$c:= $qcols}-}
         {-{- if $c.Cmpnt.Equal "select|radio"}-}
         <!--{-{$c.Label}-} 下拉控件 -->
         <el-form-item>
@@ -121,7 +140,7 @@
         <!-- 控件个数：{-{$cmpnts}-} -->
         {-{- if gt $cmpnts.Len 0}-}
          <el-form-item>
-            <el-input clearable style="width: 220px" v-model="form_{-{$table.UNQ}-}.single_text_value" maxlength="32"
+            <el-input clearable style="width: 180px" v-model="form_{-{$table.UNQ}-}.single_text_value" maxlength="32"
                 placeholder="关键字" >
                 <template #prepend>
                     <el-select v-model="form_{-{$table.UNQ}-}.single_text_name" placeholder="查询类型" style="width:84px;">

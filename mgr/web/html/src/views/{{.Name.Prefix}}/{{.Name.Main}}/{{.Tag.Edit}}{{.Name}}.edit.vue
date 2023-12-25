@@ -1,23 +1,22 @@
 {-{- $table := .}-}
 {-{- $ucols :=  $table.Columns.GetFontUpdateColumns}-}
 {-{- $enumColumns :=$table.Columns.GetEnumColumns}-}
-{-{- $editOpts :=$table.Optrs.BarOpts.GetEditOpt }-}
+{-{- $editOpts :=$table.Optrs.ListOpts.GetEditOpt }-}
 {-{- $title := f_string_contact "修改" $table.Desc}-}
-{-{- if ne "" $editOpts.Label}-}
-{-{- $title = $editOpts.Label}-}
-{-{- end}-}
+{-{- $title = $editOpts.GetParam "title" $title}-}
+
 <template tag="{-{.Marker}-}">
   <el-dialog
     v-model="conf.visible"
     {-{ if $table.Enum.IsEnum  }-}v-if="conf.visible" {-{ end }-}
-    title="{-{$title}-}"
+    :title="title"
     :width="conf.width"
     draggable
     align-center="true"
     :close-on-click-modal="false"
     :before-close="hide"
   >
-<el-form :model="form"  ref="form" :rules="rules">
+<el-form :model="form"  ref="form" :rules="rules_{-{$table.UNQ}-}">
 {-{- template "add.tmpl.html" $ucols}-}
 </el-form>
     <template #footer>
@@ -43,16 +42,36 @@ export default {
         width:"70%",
         {-{- else }-}
         {-{- $width:= "60%"}-}
-        {-{- $c:= $table.Optrs.ListOpts.GetEditOpt }-}
-        {-{- $width = $c.GetParam "width" "60%" }-}
+        {-{- $width = $editOpts.GetParam "width" "60%" }-}
         width:"{-{$width}-}",
-      {-{- end  }-}
+        {-{- end  }-}
         uploadPath:this.$theia.env.join("/file/upload"),
       },
-      {-{- template "add.tmpl.js" $ucols}-}
+      title:"修改{-{$table.Desc}-}",
+    {-{- $st := $table.NewScene $ucols}-}
+    {-{- template "rules.tmpl.js" $st }-}
+    form:{
+        {-{- range $i,$c := $ucols}-}
+        {-{- if $c.Cmpnt.Equal "switch"}-}
+        {-{$c.Name}-}_switch:false,
+        {-{- else if $c.Cmpnt.StartWith "multi"}-}
+        {-{$c.Name}-}:[],
+        {-{- else}-}
+        {-{$c.Name}-}:"",
+        {-{- end}-}
+        {-{- end}-}
+    },
+    {-{- range $i,$c := $ucols.GetEnumColumns}-}
+    {-{.Name}-}List:[],
+    {-{- end}-}
+    }
   },
   methods: {
     show(form) {
+    {-{- $titles := $table.Columns.GetColumns "@title" }-}
+    {-{- if gt $titles.Len 0 }-}
+    this.title = form.{-{$titles.First.Name}-}||this.title
+    {-{- end}-}
       this.conf.visible = true;
       this.loadEnums_{-{$table.UNQ}-}()
       this.form = Object.assign(form,this.$route.params)
@@ -66,32 +85,32 @@ export default {
         postForm.{-{$f.Name}-} = form.{-{$f.Name}-}
         {-{- end}-}
         this.$theia.http.get("/{-{.Name.MainPath|lower}-}",postForm).then(res=>{
-        {-{- range $i,$c := $ucols}-}
-        {-{- if $c.Cmpnt.Equal "switch"}-}
+          {-{- range $i,$c := $ucols}-}
+          {-{- if $c.Cmpnt.Equal "switch"}-}
           res.{-{$c.Name}-}_switch = res.{-{$c.Name}-} == 0
-        {-{- else if $c.Cmpnt.Equal "tree" }-}
-        that.$refs.tree_{-{$c.UNQ}-}.setCheckedKeys(res.{-{$c.Name}-}.split(","))
-        {-{- else if $c.Cmpnt.StartWith "multi"}-}
+          {-{- else if $c.Cmpnt.Equal "tree" }-}
+          that.$refs.tree_{-{$c.UNQ}-}.setCheckedKeys(res.{-{$c.Name}-}.split(","))
+          {-{- else if $c.Cmpnt.StartWith "multi"}-}
           res.{-{$c.Name}-} = (res.{-{$c.Name}-}+"").split(",")
-        {-{- end}-}
-        {-{- end}-}
-        that.form = Object.assign(that.form, res)
-        {-{- range $j,$x:=$ucols}-}
-        {-{- if and (eq true $x.Enum.IsEnum) ($x.Cmpnt.StartWith "tree")}-}
-        let {-{$x.Name}-} = that.form.{-{$x.Name}-}.split(",")
-        that.form.{-{$x.Name}-} = {-{$x.Name}-}
-        {-{- else if and (eq true $x.Enum.IsEnum) ($x.Cmpnt.StartWith "cascader")}-}
-        {-{- if eq $x.Cmpnt.Format "multiple"}-}
-        let {-{$x.Name}-} = that.form.{-{$x.Name}-}.split(",")
-        that.form.{-{$x.Name}-} = {-{$x.Name}-}
-        {-{- else}-}
-        that.form.{-{$x.Name}-} = that.form.{-{$x.Name}-}
-        {-{- end}-}
-        {-{- end}-}
-      {-{- end}-}
-      //处理枚举重新绑定
-      this.loadEnums_{-{$table.UNQ}-}()
-      that.conf.loading = false
+          {-{- end}-}
+          {-{- end}-}
+          that.form = Object.assign(that.form, res)
+          {-{- range $j,$x:=$ucols}-}
+          {-{- if and (eq true $x.Enum.IsEnum) ($x.Cmpnt.StartWith "tree")}-}
+          let {-{$x.Name}-} = that.form.{-{$x.Name}-}.split(",")
+          that.form.{-{$x.Name}-} = {-{$x.Name}-}
+          {-{- else if and (eq true $x.Enum.IsEnum) ($x.Cmpnt.StartWith "cascader")}-}
+          {-{- if eq $x.Cmpnt.Format "multiple"}-}
+          let {-{$x.Name}-} = that.form.{-{$x.Name}-}.split(",")
+          that.form.{-{$x.Name}-} = {-{$x.Name}-}
+          {-{- else}-}
+          that.form.{-{$x.Name}-} = that.form.{-{$x.Name}-}
+          {-{- end}-}
+          {-{- end}-}
+          {-{- end}-}
+        //处理枚举重新绑定
+          this.loadEnums_{-{$table.UNQ}-}()
+          that.conf.loading = false
         }).catch(res=>{
           let code = ((res||{}).response||{}).status||0
           let msg = `{-{.Desc}-}查询失败(${code})`
@@ -129,9 +148,8 @@ export default {
         postForm.{-{$c.Name}-} = (postForm.{-{$c.Name}-}||[]).join(",")
         {-{- end }-}
         {-{- end}-}
-        {-{- $c:=  $table.Optrs.All.GetEditOpt }-}
-        {-{- if ne "" $c.Tag}-}
-        {-{- $save2window := $c.GetParams "save2window" -}-}
+        {-{- if ne "" $editOpts.Tag}-}
+        {-{- $save2window := $editOpts.GetParam "save2window" -}-}
         {-{- if ne "" $save2window}-}
         //将数据保存到window缓存中
         window.{-{$save2window}-} = postForm
@@ -160,8 +178,9 @@ export default {
     },
     {-{- range $i,$c:= $ucols }-}
     {-{-  if $c.Cmpnt.Equal "rtext"}-}
-    onRtext{-{$c.Name}-}Change(text){
+    onRtext{-{$c.Name}-}Change(text,urls){
       this.{-{$c.Ext.FormName}-}.{-{$c.Name}-} = text
+      this.{-{$c.Ext.FormName}-}.{-{$c.Name}-}_urls = (urls||[]).join(",")
     },
     {-{- end}-}
     {-{- end}-}

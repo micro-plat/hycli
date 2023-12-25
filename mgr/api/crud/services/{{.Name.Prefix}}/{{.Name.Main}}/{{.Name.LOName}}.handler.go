@@ -6,30 +6,20 @@ package {-{.Name.Main}-}
 {-{- $ucols :=  $table.Columns.GetFontUpdateColumns.GetRequiedColumns}-}
 {-{- $switchs :=$table.Columns.GetAllListColumns.GetValidColumns.GetByCmpnt "switch"}-}
 {-{- $batinserts :=  $table.Optrs.BarOpts.GetByCmptName  "batinsert"}-}
-{-{- $hasStatic :=  gt $table.Columns.GetAll.GetStaticColumns.Len 0}-}
-
+{-{- $barinsert :=  $table.Optrs.BarOpts.GetByCmptName "barinsert"}-}
+{-{- $hasStatic :=  $table.Columns.HasStaticColumns}-}
+{-{- $totalChange := f_num_add $table.Columns.GetAllCreateColumns.Len $table.Columns.GetAllUpdateColumns.Len $barinsert.Len}-}
 import (
 	"net/http"
-	{-{- if or (gt $table.Columns.GetAllCreateColumns.Len 0) (gt $table.Columns.GetAllUpdateColumns.Len 0)}-}
 	"strings"
-	{-{- end}-}
 	"github.com/micro-plat/hydra"
 	"github.com/micro-plat/lib4go/errs"
-	{-{- if gt $table.Columns.GetAllQueryColumns.Len 0}-}
 	"github.com/micro-plat/lib4go/types"
-	{-{- end}-}
-	{-{- if eq true $hasStatic}-}
 	"{-{$table.PkgName}-}/modules/biz/member"
-	{-{- end}-}
-	{-{- if eq true $table.Conf.WriteLog}-}
 	"{-{$table.PkgName}-}/modules/biz/system"
 	"fmt"
-	{-{- end}-}
-	{-{- if gt $batinserts.Len 0}-}
 	"{-{$table.PkgName}-}/services/utils"
-	{-{- end}-}
 )
-
 
 //AuditInfoHandler 获取{-{.Desc}-}处理服务
 type {-{.Name.CName}-}Handler struct {
@@ -60,6 +50,7 @@ func (u *{-{.Name.CName}-}Handler) GetHandle(ctx hydra.IContext) (r interface{})
 		return err
 	}
 	ctx.Log().Info("2.查询数据")
+	member.GetSetMemberCtx(ctx)
 	items, err := hydra.C.DB().GetRegularDB().Query(get{-{.Name.CName}-}, ctx.Request().GetMap())
 	if err != nil {
 		return errs.NewErrorf(http.StatusNotExtended, "查询数据出错:%+v", err)
@@ -81,6 +72,7 @@ func (u *{-{.Name.CName}-}Handler) PutHandle(ctx hydra.IContext) (r interface{})
 	}
 	
 	ctx.Log().Info("2.修改数据")
+	member.GetSetMemberCtx(ctx)
 	{-{- $memberClus :=  $table.Columns.GetAllUpdateColumns.GetStaticColumns}-}
 	{-{- if gt $memberClus.Len 0}-}
 	member, err := member.GetMemberState(ctx)
@@ -123,6 +115,7 @@ func (u *{-{.Name.CName}-}Handler) PostHandle(ctx hydra.IContext) (r interface{}
 	}
 	
 	ctx.Log().Info("2.添加新数据")
+	member.GetSetMemberCtx(ctx)
 	{-{- $memberClus :=  $table.Columns.GetAllCreateColumns.GetStaticColumns}-}
 	{-{- if gt $memberClus.Len 0}-}
 	member, err := member.GetMemberState(ctx)
@@ -169,6 +162,7 @@ func (u *{-{.Name.CName}-}Handler) QueryHandle(ctx hydra.IContext) (r interface{
 	ctx.Log().Info("--------获取{-{.Desc}-}数据列表--------")
 
 	ctx.Log().Info("1.查询数据条数")
+	member.GetSetMemberCtx(ctx)
 	{-{- $memberClus :=  $table.Columns.GetAllQueryColumns.GetStaticColumns}-}
 	{-{- if gt $memberClus.Len 0}-}
 	member, err := member.GetMemberState(ctx)
@@ -191,7 +185,6 @@ func (u *{-{.Name.CName}-}Handler) QueryHandle(ctx hydra.IContext) (r interface{
 	m["ps"] = 10000
 	m["offset"] = 0
 	{-{end}-}
-	
 	count, err := hydra.C.DB().GetRegularDB().Scalar(get{-{.Name.CName}-}ListCount, m)
 	if err != nil {
 		return errs.NewErrorf(http.StatusNotExtended, "查询数据数量出错:%+v", err)
@@ -203,7 +196,6 @@ func (u *{-{.Name.CName}-}Handler) QueryHandle(ctx hydra.IContext) (r interface{
 			"count":0,
 		}
 	}
-
 	ctx.Log().Info("2.查询数据列表")
 	items, err := hydra.C.DB().GetRegularDB().QueryBatch(get{-{.Name.CName}-}List, m)
 	if err != nil {
@@ -294,6 +286,7 @@ func setChildren(current types.XMap, idName string, treeMap map[string]types.XMa
 }
 {-{- end}-}
 {-{- end}-}
+
 {-{- $dColumns :=  $table.Columns.GetDelColumns}-}
 {-{- if gt $dColumns.Len 0}-}
 
@@ -308,6 +301,7 @@ func (u *{-{.Name.CName}-}Handler) DelHandle(ctx hydra.IContext) (r interface{})
 	}
 	
 	ctx.Log().Info("2.删除数据")
+	member.GetSetMemberCtx(ctx)
 	rx, err := hydra.C.DB().GetRegularDB().Execute(delete{-{.Name.CName}-}, ctx.Request().GetMap())
 	if err == nil && rx == 0{
 		return errs.NewResult(204, nil)
@@ -339,6 +333,7 @@ func (u *{-{.Name.CName}-}Handler) SwitchHandle(ctx hydra.IContext) (r interface
 	}
 	
 	ctx.Log().Info("2.切换状态新数据")
+	member.GetSetMemberCtx(ctx)
 	rx, err := hydra.C.DB().GetRegularDB().Execute(switch{-{.Name.CName}-}, ctx.Request().GetMap())
 	if err == nil && rx == 0{
 		return errs.NewResult(204, nil)
@@ -355,7 +350,7 @@ func (u *{-{.Name.CName}-}Handler) SwitchHandle(ctx hydra.IContext) (r interface
 }
 {-{- end}-}
 
-{-{- $updator :=  $table.Optrs.All.GetByCmptName "batupdator-lstupdator"}-}
+{-{- $updator :=  $table.Optrs.All.GetByCmptName "batupdator-lstupdator-barupdator"}-}
 {-{- if gt $updator.Len 0}-}
 {-{- range $i,$c := $updator}-}
 
@@ -365,9 +360,12 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 	ctx.Log().Info("--------{-{$c.Label}-}--------")
 
 	ctx.Log().Info("1.检查必须字段")
-	reqFields :=[]string{
-		{-{ $table.Columns.JoinNames $c.FwName true `"` `",`}-}
-	}
+	{-{- $xtable :=f_table_find_by_name $c.Table}-}
+	{-{- $fds := f_string_contact $c.RwName "-" (f_string_contact "b" $c.RwName)}-}
+	{-{- $rwColumns := ($xtable.Columns.GetColumnsByTPS $fds).GetRequiedColumns}-}
+	{-{- $fwColumns := ($xtable.Columns.GetColumnsByTPS $c.FwName)}-}
+	{-{- $reqColumns := $rwColumns.Merge $fwColumns}-}
+	reqFields :=[]string{{-{- range $i,$x := $reqColumns -}-} "{-{$x.Name}-}"{-{if lt $i $reqColumns.SLen}-},{-{end}-} {-{- end -}-}}
 	if len(reqFields) == 0 {
 		return errs.NewErrorf(601, "FwName(%s)字段未配置","{-{$c.FwName}-}")
 	}
@@ -376,6 +374,17 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 	}
 	
 	ctx.Log().Info("2.修改数据")
+	member.GetSetMemberCtx(ctx)
+	{-{- $memberClus := ($table.Columns.GetAllBKColumns $c.RwName $c.FwName).GetStaticColumns}-}
+	{-{- if gt $memberClus.Len 0}-}
+	member, err := member.GetMemberState(ctx)
+	if err != nil {
+		return err
+	}
+	{-{- range $i,$v := $memberClus}-}
+	ctx.Request().SetValue("{-{$v.Name}-}",member.Get("{-{$v.Ext.Name}-}"))
+	{-{- end}-}
+	{-{- end}-}
 	rx, err := hydra.C.DB().GetRegularDB().Execute(updator{-{$table.Name.CName}-}{-{$c.ReqURL}-}, ctx.Request().GetMap())
 	if err == nil && rx == 0{
 		return errs.NewResult(204, nil)
@@ -396,16 +405,15 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 {-{- $barinsert :=  $table.Optrs.BarOpts.GetByCmptName "barinsert"}-}
 {-{- if gt $barinsert.Len 0}-}
 {-{- range $i,$c := $barinsert}-}
-
+{-{- $xtable :=f_table_find_by_name $c.Table}-}
 //{-{$c.ReqURL|f_string_2cname}-}Handle  保存{-{.Desc}-}数据
 func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(ctx hydra.IContext) (r interface{}) {
 
 	ctx.Log().Info("--------保存{-{.Desc}-}数据--------")
 
 	ctx.Log().Info("1.检查必须字段")
-	reqFields :=[]string{
-		{-{ $table.Columns.JoinNames $c.RwName true `"` `",`}-}
-	}
+	{-{- $reqColumns := ($xtable.Columns.GetColumnsByTPS $c.RwName $c.FwName).GetRequiedColumns}-}
+	reqFields :=[]string{{-{- range $i,$x := $reqColumns -}-} "{-{$x.Name}-}"{-{if lt $i $reqColumns.SLen}-},{-{end}-} {-{- end -}-}}
 	if len(reqFields) == 0 {
 		return errs.NewError(601, "RwName字段未配置")
 	}
@@ -414,7 +422,9 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 	}
 	
 	ctx.Log().Info("2.添加新数据")
-	{-{- $memberClus :=  $table.Columns.GetAllCreateColumns.GetStaticColumns}-}
+	member.GetSetMemberCtx(ctx)
+	{-{- $fds := f_string_contact $c.RwName "-" (f_string_contact "b" $c.RwName)}-}
+	{-{- $memberClus :=  ($xtable.Columns.GetColumns $fds ).GetStaticColumns}-}
 	{-{- if gt $memberClus.Len 0}-}
 	member, err := member.GetMemberState(ctx)
 	if err != nil {
@@ -424,7 +434,6 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 	ctx.Request().SetValue("{-{$v.Name}-}",member.Get("{-{$v.Ext.Name}-}"))
 	{-{- end}-}
 	{-{- end}-}
-
 	rx, err := hydra.C.DB().GetRegularDB().Execute(barinsert{-{$c.ReqURL|f_string_2cname}-}{-{$table.Name.CName}-}, ctx.Request().GetMap())
 	if err != nil{
 		if strings.Contains(err.Error(),"Error 1062"){
@@ -435,10 +444,10 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 	if rx <= 0 {
 		return errs.NewResult(204, nil)
 	}
-	{-{- if eq true $table.Conf.WriteLog}-}
+	{-{- if eq true $xtable.Conf.WriteLog}-}
 	ctx.Log().Info("3. 保存用户日志")
-	name := ctx.Request().GetString("{-{$table.Enum.Name}-}")
-	system.SaveLog(ctx,fmt.Sprintf("添加{-{$table.Desc}-} %s",name),string(ctx.Request().Marshal()))
+	name := ctx.Request().GetString("{-{$xtable.Enum.Name}-}")
+	system.SaveLog(ctx,fmt.Sprintf("添加{-{$xtable.Desc}-} %s",name),string(ctx.Request().Marshal()))
 	{-{- end}-}
 	return
 }
@@ -448,7 +457,7 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 {-{- $batinserts :=  $table.Optrs.BarOpts.GetByCmptName  "batinsert"}-}
 {-{- if gt $batinserts.Len 0}-}
 {-{- range $i,$c := $batinserts}-}
-
+{-{- $xtable :=f_table_find_by_name $c.Table}-}
 //{-{$c.ReqURL|f_string_2cname}-}Handle  {-{$c.Label}-}
 func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(ctx hydra.IContext) (r interface{}) {
 
@@ -456,7 +465,7 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 
 	ctx.Log().Info("1.检查必须字段")
 	reqFields :=[]string{
-		{-{ $table.Columns.JoinNames $c.RwName true `"` `",`}-}
+		{-{ $xtable.Columns.JoinNames $c.RwName true `"` `",`}-}
 	}
 	if len(reqFields) == 0 {
 		return errs.NewError(601, "RwName字段未配置")
@@ -465,17 +474,17 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 		return err
 	}
 	fileds := []string{
-		{-{ $table.Columns.JoinNames $c.FwName true `"` `",`}-}
+		{-{ $xtable.Columns.JoinNames $c.FwName true `"` `",`}-}
 	}
 	enumsMap := map[string]interface{}{
-		{-{- range $i,$c := $table.Columns.GetEnumColumns}-}
+		{-{- range $i,$c := $xtable.Columns.GetEnumColumns}-}
 		"{-{$c.Name}-}":"{-{$c.Enum.EnumType}-}",
 		{-{- end}-}
 	}
-	{-{ $binsertColumns := $table.Columns.GetColumns "batisert" -}-}
+	{-{ $binsertColumns := $xtable.Columns.GetColumns "batisert" -}-}
 	{-{- $binsertColum := $binsertColumns.First -}-}
 	cfield := "{-{- $binsertColum.Name}-}"
-	xfm :="{-{- f_string_join ($table.Columns.GetCmpntValues "batisert") ","}-}"
+	xfm :="{-{- f_string_join ($xtable.Columns.GetCmpntValues "batisert") ","}-}"
 	xms,err := utils.TransformBatchContent(fileds,enumsMap, cfield, xfm, ctx.Request().GetMap())
 	if err != nil{
 		return err
@@ -485,6 +494,7 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 	}
 
 	ctx.Log().Info("2.修改数据")
+	member.GetSetMemberCtx(ctx)
 	db, err := hydra.C.DB().GetRegularDB().Begin()
 	if err != nil {
 		return err
@@ -497,12 +507,121 @@ func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(c
 		}
 	}
 	db.Commit()
-	{-{- if eq true $table.Conf.WriteLog}-}
+	{-{- if eq true $xtable.Conf.WriteLog}-}
 	ctx.Log().Info("3. 保存用户日志")
-	name := ctx.Request().GetString("{-{$table.Enum.Name}-}")
-	system.SaveLog(ctx,fmt.Sprintf("批量添加{-{$table.Desc}-} {-{$c.Label}-} %s",name),string(ctx.Request().Marshal()))
+	name := ctx.Request().GetString("{-{$xtable.Enum.Name}-}")
+	system.SaveLog(ctx,fmt.Sprintf("批量添加{-{$xtable.Desc}-} {-{$c.Label}-} %s",name),string(ctx.Request().Marshal()))
 	{-{- end}-}
 	return
 }
 {-{- end}-}
 {-{- end}-}
+
+
+{-{- $barquery :=  $table.Optrs.BarOpts.GetByCmptName "barquery"}-}
+{-{- if gt $barquery.Len 0}-}
+{-{- range $i,$c := $barquery}-}
+{-{- $xtable :=f_table_find_by_name $c.Table}-}
+//{-{$c.ReqURL|f_string_2cname}-}Handle  {-{$c.Label}-}
+func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(ctx hydra.IContext) (r interface{}) {
+	ctx.Log().Info("--------获取{-{.Desc}-}数据列表--------")
+
+	ctx.Log().Info("1.查询数据条数")
+	member.GetSetMemberCtx(ctx)
+	{-{- $fds := f_string_contact $c.FwName "-" (f_string_contact "b" $c.FwName)}-}
+	{-{- $memberClus :=  ($xtable.Columns.GetColumns $fds ).GetStaticColumns}-}
+	{-{- if gt $memberClus.Len 0}-}
+	member, err := member.GetMemberState(ctx)
+	if err != nil {
+		return err
+	}
+	{-{- range $i,$v := $memberClus}-}
+	ctx.Request().SetValue("{-{$v.Name}-}",types.GetString(ctx.Request().GetValue("{-{$v.Name}-}"),member.Get("{-{$v.Ext.Name}-}")))
+	{-{- end}-}
+	{-{- end}-}
+	m := ctx.Request().GetMap()
+	m["ps"] = ctx.Request().GetInt("ps", 10) 
+	m["offset"] = (ctx.Request().GetInt("pi", 1) - 1) * ctx.Request().GetInt("ps", 10) 
+	count, err := hydra.C.DB().GetRegularDB().Scalar(barQuery{-{$table.Name.CName}-}{-{$c.ReqURL}-}ListCount, m)
+	if err != nil {
+		return errs.NewErrorf(http.StatusNotExtended, "查询数据数量出错:%+v", err)
+	}
+
+	rcount:=types.GetInt(count)
+	if  rcount== 0 {
+		return map[string]interface{}{
+			"count":0,
+		}
+	}
+
+	ctx.Log().Info("2.查询数据列表")
+	items, err := hydra.C.DB().GetRegularDB().QueryBatch(barQuery{-{$table.Name.CName}-}{-{$c.ReqURL}-}List, m)
+	if err != nil {
+		return errs.NewErrorf(http.StatusNotExtended, "查询数据出错:%+v", err)
+	}
+	ctx.Log().Info("3.返回结果")
+	return map[string]interface{}{
+		"items": items,
+		"count":rcount,
+	}
+}
+{-{- end}-}
+{-{- end}-}
+
+
+
+{-{- $bardel :=  $table.Optrs.BarOpts.GetByCmptName "bardel"}-}
+{-{- range $i,$c := $bardel}-}
+{-{- $xtable :=f_table_find_by_name $c.Table}-}
+//{-{$c.ReqURL|f_string_2cname}-}Handle  {-{$c.Label}-}
+func (u *{-{$table.Name.CName}-}Handler) {-{$c.ReqURL|f_string_2cname}-}Handle(ctx hydra.IContext) (r interface{}) {
+	ctx.Log().Info("--------删除{-{.Desc}-}数据--------")
+
+	ctx.Log().Info("1.检查必须字段")
+	{-{- $reqColumns := ($xtable.Columns.GetColumnsByTPS  $c.FwName).GetRequiedColumns}-}
+	reqFields :=[]string{{-{- range $i,$x := $reqColumns -}-} "{-{$x.Name}-}"{-{if lt $i $reqColumns.SLen}-},{-{end}-} {-{- end -}-}}
+	if len(reqFields) == 0 {
+		return errs.NewError(601, "FwName字段未配置")
+	}
+	if err := ctx.Request().Check(reqFields...); err != nil {
+		return err
+	}
+	
+	ctx.Log().Info("2.删除数据")
+	member.GetSetMemberCtx(ctx)
+	{-{- $memberClus :=  ($xtable.Columns.GetAllBKColumns $c.FwName).GetStaticColumns}-}
+	{-{- if gt $memberClus.Len 0}-}
+	member, err := member.GetMemberState(ctx)
+	if err != nil {
+		return err
+	}
+	{-{- range $i,$v := $memberClus}-}
+	ctx.Request().SetValue("{-{$v.Name}-}",member.Get("{-{$v.Ext.Name}-}"))
+	{-{- end}-}
+	{-{- end}-}
+	rx, err := hydra.C.DB().GetRegularDB().Execute(delete{-{$c.ReqURL|f_string_2cname}-}{-{$table.Name.CName}-}, ctx.Request().GetMap())
+	if err == nil && rx == 0{
+		return errs.NewResult(204, nil)
+	}
+	if err != nil||rx <= 0 {
+		return errs.NewErrorf(http.StatusNotExtended, "删除数据出错:%+v", err)
+	}
+	{-{- if eq true $xtable.Conf.WriteLog}-}
+	ctx.Log().Info("3. 保存用户日志")
+	name := ctx.Request().GetString("{-{$xtable.Enum.Name}-}")
+	system.SaveLog(ctx,fmt.Sprintf("删除{-{$xtable.Desc}-} %s",name),string(ctx.Request().Marshal()))
+	{-{- end}-}
+	return
+}
+{-{- end}-}
+
+
+
+func init(){
+	_ = types.GetInt
+	_ = strings.Contains
+	_ = member.GetMemberState
+	_ = system.SaveLog
+	_ = fmt.Sprintf
+	_ = utils.TransformBatchContent
+}
