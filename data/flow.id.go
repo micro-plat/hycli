@@ -9,7 +9,7 @@ const (
 	chars = "abcdefghijklmnopqrstuvwxyz"
 )
 
-var defFids = newFids(3)
+var defFids = newFids(5)
 var defFidsmp = map[string]string{}
 
 type fids struct {

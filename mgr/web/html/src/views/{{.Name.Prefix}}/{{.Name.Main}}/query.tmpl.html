@@ -59,7 +59,7 @@
         {-{- if gt $cmpnts.Len 0}-}
         <el-form-item>
             <!--多日期范围控件 -->
-            <el-select v-model="form_{-{$table.UNQ}-}.single_date_range_name" placeholder="日期类型" style="width:100px;" class="prepend">
+            <el-select v-model="form_{-{$table.UNQ}-}.single_date_range_name" filterable placeholder="日期类型" style="width:120px;" class="prepend">
                 <el-option
                 v-for="item in multiQueryDateRange"
                 :key="item.value"
@@ -85,7 +85,7 @@
         {-{- range $i,$c:= $qcols}-}
         {-{- if $c.Cmpnt.Equal "cascader"}-}
         <!--{-{$c.Label}-} 选择树 -->
-        <el-form-item  label="{-{$c.Label}-}">
+        <el-form-item>
           {-{- $empt:=""}-}
           {-{- $Format := $c.Cmpnt.Format}-}
           {-{- $multiple :=""}-}
@@ -105,7 +105,7 @@
         {-{- if $c.Cmpnt.Equal "select|radio"}-}
         <!--{-{$c.Label}-} 下拉控件 -->
         <el-form-item>
-            <el-select {-{if gt ( len ($qcols.GetColumnsByTriggerChangeEvent $c.Name)) 0}-}  @change="onChange_{-{$c.Name}-}"  {-{end}-} v-model="form_{-{$table.UNQ}-}.{-{.Name}-}" style="width: 100px" clearable placeholder="{-{$c.Label}-}">
+            <el-select {-{if gt ( len ($qcols.GetColumnsByTriggerChangeEvent $c.Name)) 0}-}  @change="onChange_{-{$c.Name}-}"  {-{end}-} v-model="form_{-{$table.UNQ}-}.{-{.Name}-}" style="width: 100px" filterable clearable placeholder="{-{$c.Label}-}">
                 <el-option v-for="item in {-{.Name}-}List" :key="item.value" :label="item.name" :value="item.value" />
             </el-select>
         </el-form-item>

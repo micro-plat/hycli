@@ -14,7 +14,6 @@
     draggable
     align-center="true"
     :close-on-click-modal="false"
-    :before-close="hide"
   >
 <el-form :model="form"  ref="form" :rules="rules_{-{$table.UNQ}-}">
 {-{- template "add.tmpl.html" $ucols}-}
@@ -39,7 +38,7 @@ export default {
       conf: {
         visible: false,
         {-{- if gt (len $ucols) 14}-}
-        width:"70%",
+        width:this.$size.gt("m")?"50%":"70%",
         {-{- else }-}
         {-{- $width:= "60%"}-}
         {-{- $width = $editOpts.GetParam "width" "60%" }-}

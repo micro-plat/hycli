@@ -16,7 +16,6 @@
     draggable
     {-{ if gt $cColumns.Len 9 }-}  align-center="true" {-{ else}-} top="10vh" {-{ end }-}
     :close-on-click-modal="false"
-    :before-close="hide"
   >
   <el-form :model="form"  ref="form" :rules="rules_{-{$table.UNQ}-}">
     {-{- template "add.tmpl.html" $cColumns}-}
@@ -42,7 +41,7 @@ export default {
         title:"{-{$title}-}",
         visible: false,
         {-{- if gt $cColumns.Len 14}-}
-        width:"70%",
+        width:this.$size.gt("m")?"50%":"70%",
         {-{- else }-}
         {-{- $width:= "60%"}-}
         {-{- $c :=$table.Optrs.BarOpts.GetAddOpt}-}

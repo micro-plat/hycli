@@ -119,6 +119,19 @@ methods: {
   margin-right: 4px;
 }
 
+/deep/.el-table td.el-table__cell div {
+  vertical-align: middle;
+}
+/deep/.el-button+.el-dropdown{
+  margin-left:0px;
+}
+/deep/.el-button+.el-button{
+  margin-left:0px;
+}
+.el-button{
+  padding-left: 6px !important;
+  padding-right: 6px !important;
+}
 .blist {
   margin-bottom: 8px;
   width: 100%;
@@ -148,7 +161,6 @@ methods: {
   display: flex;
   align-items: center;
   font-size: 0.65rem;
-  margin-top: 7px;
 }
 /deep/.el-button--small{
   padding: 5px 4px;

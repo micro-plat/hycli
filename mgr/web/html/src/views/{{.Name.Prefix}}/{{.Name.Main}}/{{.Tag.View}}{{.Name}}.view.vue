@@ -10,10 +10,10 @@
     align-center="true"
     width="68%"
     :close-on-click-modal="false"
-    :before-close="hide"
+
   >
   {-{- range $i,$c:= $viewOpts.GetByName "step"}-}
-  <el-steps class="steps" :active="conf.stepActive_{-{$c.UNQ}-}" align-center  finish-status="success">
+  <el-steps class="steps" :active="conf.stepActive_{-{$c.UNQ}-}" align-center="true"  finish-status="success">
     {-{- range $j,$s:=  $table.Columns.GetColumns $c.RwName}-}
     <el-step title="{-{$s.Label}-}" :description="view.{-{$s.Name}-}||'未设置'" />
     {-{- end }-}

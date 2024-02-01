@@ -264,7 +264,7 @@ export default {
 
 .gantt-header .gantt-title {
     width: 100%;
-    height: 46px;
+    height: 60px;
 }
 
 .gantt-container {
@@ -300,7 +300,7 @@ export default {
     width: var(--gant-cell-hd-width);
     border-width: 0px;
     border-width: 0 !important;
-    top: 22px !important;
+    top: 34px !important;
     cursor: pointer;
     line-height: 0.8rem;
     font-weight: 600;

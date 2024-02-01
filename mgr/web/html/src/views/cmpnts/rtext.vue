@@ -1,5 +1,5 @@
 <template>
-    <div style="border: 1px solid #eee">
+    <div style="border: 1px solid #eee;width:100%">
         <Toolbar style="min-width:100vh; border-bottom: 1px solid #eee" :editor="editor" :defaultConfig="toolbarConfig"
             :mode="mode" />
         <Editor :style="{ height: (rows * 35) + 'px' }" style="min-width:100vh; overflow-y: hidden;" @customPaste="customPaste"

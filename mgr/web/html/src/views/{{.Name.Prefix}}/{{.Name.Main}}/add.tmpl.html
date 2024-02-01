@@ -29,6 +29,7 @@
     {-{- $span = 12}-}
     {-{- $m = f_num_add $m 12}-}
     {-{- end }-}
+    <!-- {-{$c}-} -->
     {-{- if $c.Cmpnt.Equal "password"}-}
       <!--{-{$c.Label}-} 密码控件 -->
     <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
@@ -58,8 +59,8 @@
         placeholder="请选择{-{.Label}-}" format="YYYY-MM-DD HH:mm:ss" value-format="YYYY-MM-DD HH:mm:ss" 
         {-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{else if ne "" $c.Cmpnt.Format}-} :default-time="new Date($theia.str.dateFormat(new Date(),'{-{$c.Cmpnt.Format}-}'))"{-{end}-}/>
     </el-form-item>
-    {-{- else if  $c.Cmpnt.Equal "multiselect"}-}
-    <!--{-{$c.Label}-} 多选控件 -->
+    {-{- else if $c.Cmpnt.Equal "multiselect"}-}
+    <!--{-{$c.Label}-} 多选控件 --> 
     <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
       <el-select style="width: 100%"   v-model="{-{$c.Ext.FormName}-}.{-{.Name}-}" clearable multiple {-{if ne $span 24}-} collapse-tags {-{end}-}
       collapse-tags-tooltip
@@ -211,7 +212,7 @@
     {-{- end}-}
     <el-form-item prop="{-{$c.Name}-}" label="{-{$c.Label}-}" label-width="100px" label-position="right">
       <el-input clearable style="width: 100%" v-model="{-{$c.Ext.FormName}-}.{-{$c.Name}-}" {-{ if ne 0 $c.Field.Len}-} maxlength="{-{$c.Field.Len}-}" {-{end}-}
-      :rows="{-{$c.Style.Rows}-}" {-{if eq true $c.Field.IsLongText}-} type="textarea" show-word-limit {-{end}-}
+      :rows="{-{$c.Style.Rows}-}" {-{if or (eq true $c.Field.IsLongText) (gt $c.Style.Rows 1)}-} type="textarea" show-word-limit {-{end}-}
       {-{- if gt (len $c.Desc.Raw) 200}-}  placeholder="请输入{-{$c.Label}-}"{-{else}-} placeholder="请输入{-{$c.Desc.Raw}-}" {-{end}-}{-{ if eq "readonly" $c.Cmpnt.Format}-}disabled {-{end}-} />
       </el-form-item>
     {-{- end }-}
